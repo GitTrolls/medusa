@@ -28,7 +28,7 @@ class ProductVariantService extends BaseService {
    */
   validateId_(rawId) {
     const schema = Validator.objectId()
-    const { value, error } = schema.validate(rawId.toString())
+    const { value, error } = schema.validate(rawId)
     if (error) {
       throw new MedusaError(
         MedusaError.Types.INVALID_ARGUMENT,
@@ -61,7 +61,6 @@ class ProductVariantService extends BaseService {
     return variant
   }
 
-  // TODO: Validate productVariant
   /**
    * Creates an unpublished product variant.
    * @param {object} variant - the variant to create

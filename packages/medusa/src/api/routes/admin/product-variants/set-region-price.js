@@ -4,7 +4,7 @@ export default async (req, res) => {
   const { id } = req.params
 
   const schema = Validator.object().keys({
-    region_id: Validator.objectId().required(),
+    regionId: Validator.objectId().required(),
     amount: Validator.number().required(),
   })
 

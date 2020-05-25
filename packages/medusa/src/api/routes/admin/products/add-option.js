@@ -4,7 +4,7 @@ export default async (req, res) => {
   const { id } = req.params
 
   const schema = Validator.object().keys({
-    option_title: Validator.string().required(),
+    optionTitle: Validator.string().required(),
   })
   const { value, error } = schema.validate(req.body)
   if (error) {
@@ -13,9 +13,10 @@ export default async (req, res) => {
 
   try {
     const productService = req.scope.resolve("productService")
-    const newProduct = await productService.addOption(id, value.option_title)
-
-    const data = await productService.decorate(newProduct, [
+    const product = await productService.retrieve(id)
+    await productService.addOption(product._id, value.optionTitle)
+    let newProduct = await productService.retrieve(product._id)
+    newProduct = await productService.decorate(newProduct, [
       "title",
       "description",
       "tags",
@@ -25,8 +26,9 @@ export default async (req, res) => {
       "variants",
       "published",
     ])
-    res.json(data)
+    res.json(newProduct)
   } catch (err) {
+    console.log(err)
     throw err
   }
 }

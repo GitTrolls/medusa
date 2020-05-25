@@ -29,7 +29,7 @@ class ProductService extends BaseService {
    */
   validateId_(rawId) {
     const schema = Validator.objectId()
-    const { value, error } = schema.validate(rawId.toString())
+    const { value, error } = schema.validate(rawId)
     if (error) {
       throw new MedusaError(
         MedusaError.Types.INVALID_ARGUMENT,
@@ -184,7 +184,7 @@ class ProductService extends BaseService {
     }
 
     product.options.forEach(option => {
-      if (!variant.options.find(vo => option._id.equals(vo.option_id))) {
+      if (!variant.options.find(vo => vo.option_id === option._id)) {
         throw new MedusaError(
           MedusaError.Types.INVALID_DATA,
           `Variant options do not contain value for ${option.title}`
@@ -193,7 +193,7 @@ class ProductService extends BaseService {
     })
 
     let combinationExists = false
-    if (product.variants && product.variants.length) {
+    if (product.variants) {
       // Check if option value of the variant to add already exists. Go through
       // each existing variant. Check if this variants option values are
       // identical to the option values of the variant being added.
@@ -414,11 +414,11 @@ class ProductService extends BaseService {
   async deleteOption(productId, optionId) {
     const product = await this.retrieve(productId)
 
-    if (!product.options.find(o => o._id.equals(optionId))) {
+    if (!product.options.find(o => o._id === optionId)) {
       return Promise.resolve()
     }
 
-    if (product.variants.length) {
+    if (product.variants) {
       // For the option we want to delete, make sure that all variants have the
       // same option values. The reason for doing is, that we want to avoid
       // duplicate variants. For example, if we have a product with size and

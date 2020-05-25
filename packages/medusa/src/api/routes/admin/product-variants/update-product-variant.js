@@ -6,16 +6,10 @@ export default async (req, res) => {
   const schema = Validator.object().keys({
     title: Validator.string().optional(),
     prices: Validator.array()
-      .items({
-        currency_code: Validator.string().required(),
-        amount: Validator.number().required(),
-      })
+      .items({})
       .optional(),
     options: Validator.array()
-      .items({
-        option_id: Validator.objectId().required(),
-        value: Validator.string().required(),
-      })
+      .items({})
       .optional(),
     image: Validator.string().optional(),
     inventory_quantity: Validator.number().optional(),

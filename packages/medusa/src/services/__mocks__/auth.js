@@ -1,7 +1,7 @@
 import { IdMap } from "medusa-test-utils"
 
 const adminUser = {
-  _id: IdMap.getId("admin_user", true),
+  _id: IdMap.getId("admin_user"),
   password: "1235",
   name: "hi",
 }

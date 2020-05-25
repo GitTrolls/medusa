@@ -103,7 +103,6 @@ const emptyVariant = {
 
 const eur10us12 = {
   _id: IdMap.getId("eur-10-us-12"),
-  title: "EUR10US-12",
 }
 
 export const variants = {

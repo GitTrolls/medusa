@@ -10,12 +10,7 @@ describe("POST /admin/product-variants", () => {
       subject = await request("POST", "/admin/product-variants", {
         payload: {
           title: "Test Product Variant",
-          prices: [
-            {
-              currency_code: "DKK",
-              amount: 1234,
-            },
-          ],
+          prices: [{}],
         },
         adminSession: {
           jwt: {
@@ -37,12 +32,7 @@ describe("POST /admin/product-variants", () => {
       expect(ProductVariantServiceMock.createDraft).toHaveBeenCalledTimes(1)
       expect(ProductVariantServiceMock.createDraft).toHaveBeenCalledWith({
         title: "Test Product Variant",
-        prices: [
-          {
-            currency_code: "DKK",
-            amount: 1234,
-          },
-        ],
+        prices: [{}],
       })
     })
   })
