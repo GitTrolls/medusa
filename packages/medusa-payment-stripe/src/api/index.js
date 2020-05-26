@@ -1,10 +1,14 @@
 import { Router } from "express"
-import hooks from "./routes/hooks"
 
-export default (container) => {
+export default () => {
   const app = Router()
 
-  hooks(app)
+  app.get("/stripe", (req, res) => {
+    console.log("hi")
+    res.json({
+      success: true
+    })
+  })
 
   return app
 }
