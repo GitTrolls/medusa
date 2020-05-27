@@ -23,6 +23,7 @@ class CartService extends BaseService {
     shippingOptionService,
     shippingProfileService,
     discountService,
+    totalsService,
   }) {
     super()
 
@@ -55,6 +56,9 @@ class CartService extends BaseService {
 
     /** @private @const {DiscountService} */
     this.discountService_ = discountService
+
+    /** @private @const {DiscountService} */
+    this.totalsService_ = totalsService
   }
 
   /**
@@ -64,7 +68,7 @@ class CartService extends BaseService {
    */
   validateId_(rawId) {
     const schema = Validator.objectId()
-    const { value, error } = schema.validate(rawId)
+    const { value, error } = schema.validate(rawId.toString())
     if (error) {
       throw new MedusaError(
         MedusaError.Types.INVALID_ARGUMENT,
@@ -221,7 +225,9 @@ class CartService extends BaseService {
    * @return {Cart} return the decorated cart.
    */
   async decorate(cart, fields, expandFields = []) {
-    return cart
+    const c = cart.toObject()
+    c.total = await this.totalsService_.getTotal(cart)
+    return c
   }
 
   /**
@@ -442,9 +448,18 @@ class CartService extends BaseService {
     const cart = await this.retrieve(cartId)
     const { value, error } = Validator.address().validate(address)
     if (error) {
+      console.log(error)
       throw new MedusaError(
         MedusaError.Types.INVALID_DATA,
         "The address is not valid"
+      )
+    }
+
+    const region = await this.regionService_.retrieve(cart.region_id)
+    if (!region.countries.includes(address.country_code.toUpperCase())) {
+      throw new MedusaError(
+        MedusaError.Types.INVALID_DATA,
+        "Shipping country must be in the cart region"
       )
     }
 

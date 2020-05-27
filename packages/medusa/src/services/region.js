@@ -166,7 +166,7 @@ class RegionService extends BaseService {
    */
   validateId_(rawId) {
     const schema = Validator.objectId()
-    const { value, error } = schema.validate(rawId)
+    const { value, error } = schema.validate(rawId.toString())
     if (error) {
       throw new MedusaError(
         MedusaError.Types.INVALID_ARGUMENT,
@@ -193,6 +193,16 @@ class RegionService extends BaseService {
       )
     }
     return region
+  }
+
+  /**
+   * Lists all regions based on a query
+   * @param {string} regionId - the id of the region to retrieve
+   * @return {Region} the region
+   */
+  async list(query) {
+    const regions = await this.regionModel_.find(query)
+    return regions
   }
 
   /**
@@ -340,6 +350,19 @@ class RegionService extends BaseService {
         },
       }
     )
+  }
+
+  /**
+   * Decorates a region
+   * @param {object} region - the region to decorate
+   * @param {[string]} fields - the fields to include
+   * @param {[string]} expandFields - the fields to expand
+   * @return {Region} the region
+   */
+  async decorate(region, fields, expandFields = []) {
+    const requiredFields = ["_id", "metadata"]
+    const decorated = _.pick(region, fields.concat(requiredFields))
+    return decorated
   }
 }
 
