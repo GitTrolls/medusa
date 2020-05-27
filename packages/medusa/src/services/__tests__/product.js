@@ -130,7 +130,7 @@ describe("ProductService", () => {
     })
 
     const fakeProduct = {
-      _id: IdMap.getId("fakeId"),
+      _id: "1234",
       variants: ["1", "2", "3"],
       tags: "testtag1, testtag2",
       handle: "test-product",
@@ -148,7 +148,7 @@ describe("ProductService", () => {
         ["variants"]
       )
       expect(decorated).toEqual({
-        _id: IdMap.getId("fakeId"),
+        _id: "1234",
         metadata: { testKey: "testValue" },
         variants: [variants.one, variants.two, variants.three],
       })
@@ -161,7 +161,7 @@ describe("ProductService", () => {
         ["variants"]
       )
       expect(decorated).toEqual({
-        _id: IdMap.getId("fakeId"),
+        _id: "1234",
         metadata: { testKey: "testValue" },
         handle: "test-product",
         variants: [variants.one, variants.two, variants.three],
@@ -174,7 +174,7 @@ describe("ProductService", () => {
         "tags",
       ])
       expect(decorated).toEqual({
-        _id: IdMap.getId("fakeId"),
+        _id: "1234",
         metadata: { testKey: "testValue" },
         tags: "testtag1, testtag2",
         handle: "test-product",
@@ -184,7 +184,7 @@ describe("ProductService", () => {
     it("returns decorated product with metadata", async () => {
       const decorated = await productService.decorate(fakeProduct, [])
       expect(decorated).toEqual({
-        _id: IdMap.getId("fakeId"),
+        _id: "1234",
         metadata: { testKey: "testValue" },
       })
     })
@@ -310,168 +310,79 @@ describe("ProductService", () => {
     })
   })
 
-  describe("createVariant", () => {
+  describe("addVariant", () => {
     const productService = new ProductService({
       productModel: ProductModelMock,
       productVariantService: ProductVariantServiceMock,
     })
 
-    afterEach(() => {
+    beforeEach(() => {
       jest.clearAllMocks()
     })
 
     it("add variant to product successfilly", async () => {
-      await productService.createVariant(IdMap.getId("variantProductId"), {
-        title: "variant1",
-        options: [
-          {
-            option_id: IdMap.getId("color_id"),
-            value: "blue",
-          },
-          {
-            option_id: IdMap.getId("size_id"),
-            value: "160",
-          },
-        ],
-      })
+      await productService.addVariant(IdMap.getId("variantProductId"), "1")
 
-      expect(ProductVariantServiceMock.createDraft).toBeCalledTimes(1)
-      expect(ProductVariantServiceMock.createDraft).toBeCalledWith({
-        title: "variant1",
-        options: [
-          {
-            option_id: IdMap.getId("color_id"),
-            value: "blue",
-          },
-          {
-            option_id: IdMap.getId("size_id"),
-            value: "160",
-          },
-        ],
-      })
-
-      expect(ProductModelMock.findOne).toBeCalledTimes(2)
+      expect(ProductVariantServiceMock.retrieve).toBeCalledTimes(1)
+      expect(ProductVariantServiceMock.retrieve).toBeCalledWith("1")
+      expect(ProductModelMock.findOne).toBeCalledTimes(1)
       expect(ProductModelMock.findOne).toBeCalledWith({
         _id: IdMap.getId("variantProductId"),
       })
-
       expect(ProductModelMock.updateOne).toBeCalledTimes(1)
       expect(ProductModelMock.updateOne).toBeCalledWith(
         { _id: IdMap.getId("variantProductId") },
-        { $push: { variants: expect.stringMatching(/.*/) } }
-      )
-    })
-
-    it("add variant to product successfully", async () => {
-      await productService.createVariant(
-        IdMap.getId("productWithFourVariants"),
-        {
-          title: "variant1",
-          options: [
-            {
-              option_id: IdMap.getId("color_id"),
-              value: "blue",
-            },
-            {
-              option_id: IdMap.getId("size_id"),
-              value: "1600",
-            },
-          ],
-        }
-      )
-
-      expect(ProductVariantServiceMock.createDraft).toBeCalledTimes(1)
-      expect(ProductVariantServiceMock.createDraft).toBeCalledWith({
-        title: "variant1",
-        options: [
-          {
-            option_id: IdMap.getId("color_id"),
-            value: "blue",
-          },
-          {
-            option_id: IdMap.getId("size_id"),
-            value: "1600",
-          },
-        ],
-      })
-
-      expect(ProductModelMock.findOne).toBeCalledTimes(2)
-      expect(ProductModelMock.findOne).toBeCalledWith({
-        _id: IdMap.getId("productWithFourVariants"),
-      })
-
-      expect(ProductModelMock.updateOne).toBeCalledTimes(1)
-      expect(ProductModelMock.updateOne).toBeCalledWith(
-        { _id: IdMap.getId("productWithFourVariants") },
-        { $push: { variants: expect.stringMatching(/.*/) } }
+        { $push: { variants: "1" } }
       )
     })
 
     it("throws error if option id is not present in product", async () => {
-      await expect(
-        productService.createVariant(IdMap.getId("variantProductId"), {
-          title: "variant3",
-          options: [
-            {
-              option_id: "invalid_id",
-              value: "blue",
-            },
-            {
-              option_id: IdMap.getId("size_id"),
-              value: "150",
-            },
-          ],
-        })
-      ).rejects.toThrow("Variant options do not contain value for Color")
+      try {
+        await productService.addVariant(
+          IdMap.getId("variantProductId"),
+          "invalid_option"
+        )
+      } catch (err) {
+        expect(err.message).toEqual(
+          "Variant options do not contain value for Color"
+        )
+      }
     })
 
     it("throws error if product variant options is empty", async () => {
-      await expect(
-        productService.createVariant(IdMap.getId("variantProductId"), {
-          title: "variant3",
-          options: [],
-        })
-      ).rejects.toThrow(
-        "Product options length does not match variant options length. Product has 2 and variant has 0."
-      )
+      try {
+        await productService.addVariant(
+          IdMap.getId("variantProductId"),
+          "empty_option"
+        )
+      } catch (err) {
+        expect(err.message).toEqual(
+          "Product options length does not match variant options length. Product has 2 and variant has 0."
+        )
+      }
     })
 
     it("throws error if product options is empty and product variant contains options", async () => {
-      await expect(
-        productService.createVariant(IdMap.getId("emptyVariantProductId"), {
-          title: "variant1",
-          options: [
-            {
-              option_id: IdMap.getId("color_id"),
-              value: "blue",
-            },
-            {
-              option_id: IdMap.getId("size_id"),
-              value: "160",
-            },
-          ],
-        })
-      ).rejects.toThrow(
-        "Product options length does not match variant options length. Product has 0 and variant has 2."
-      )
+      try {
+        await productService.addVariant(
+          IdMap.getId("emptyVariantProductId"),
+          "1"
+        )
+      } catch (err) {
+        expect(err.message).toEqual(
+          "Product options length does not match variant options length. Product has 0 and variant has 2."
+        )
+      }
     })
 
     it("throws error if option values of added variant already exists", async () => {
-      await expect(
-        productService.createVariant(IdMap.getId("productWithVariants"), {
-          title: "variant3",
-          options: [
-            {
-              option_id: IdMap.getId("color_id"),
-              value: "blue",
-            },
-            {
-              option_id: IdMap.getId("size_id"),
-              value: "150",
-            },
-          ],
-        })
-      ).rejects.toThrow("Variant with provided options already exists")
+      try {
+        await productService.addVariant(IdMap.getId("productWithVariants"), "3")
+      } catch (err) {
+        expect(err.message).toEqual(
+          "Variant with provided options already exists"
+        )
+      }
     })
   })
 
@@ -628,7 +539,7 @@ describe("ProductService", () => {
     })
   })
 
-  describe("deleteVariant", () => {
+  describe("removeVariant", () => {
     const productService = new ProductService({
       productModel: ProductModelMock,
       productVariantService: ProductVariantServiceMock,
@@ -639,13 +550,10 @@ describe("ProductService", () => {
     })
 
     it("removes variant from product", async () => {
-      await productService.deleteVariant(
+      await productService.removeVariant(
         IdMap.getId("productWithVariants"),
         "1"
       )
-
-      expect(ProductVariantServiceMock.delete).toBeCalledTimes(1)
-      expect(ProductVariantServiceMock.delete).toBeCalledWith("1")
 
       expect(ProductModelMock.updateOne).toBeCalledTimes(1)
       expect(ProductModelMock.updateOne).toBeCalledWith(
@@ -836,57 +744,6 @@ describe("ProductService", () => {
           `Product variants and new variant order differ in length. To delete or add variants use removeVariant or addVariant`
         )
       }
-    })
-  })
-
-  describe("updateOptionValue", () => {
-    const productService = new ProductService({
-      productModel: ProductModelMock,
-      productVariantService: ProductVariantServiceMock,
-    })
-
-    afterEach(() => {
-      jest.clearAllMocks()
-    })
-
-    it("successfully updates an option value", async () => {
-      await productService.updateOptionValue(
-        IdMap.getId("productWithVariants"),
-        "1",
-        IdMap.getId("color_id"),
-        "Blue"
-      )
-
-      expect(ProductVariantServiceMock.updateOptionValue).toBeCalledTimes(1)
-      expect(ProductVariantServiceMock.updateOptionValue).toBeCalledWith(
-        "1",
-        IdMap.getId("color_id"),
-        "Blue"
-      )
-    })
-
-    it("throws product-variant relationship isn't valid", async () => {
-      await expect(
-        productService.updateOptionValue(
-          IdMap.getId("productWithFourVariants"),
-          "invalid_variant",
-          IdMap.getId("color_id"),
-          "Blue"
-        )
-      ).rejects.toThrow("The variant could not be found in the product")
-    })
-
-    it("throws if combination exists", async () => {
-      await expect(
-        productService.updateOptionValue(
-          IdMap.getId("productWithFourVariants"),
-          "1",
-          IdMap.getId("color_id"),
-          "black"
-        )
-      ).rejects.toThrow(
-        "A variant with the given option value combination already exist"
-      )
     })
   })
 })

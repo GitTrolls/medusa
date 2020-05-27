@@ -7,7 +7,7 @@ describe("GET /admin/regions/:region_id", () => {
     let subject
 
     beforeAll(async () => {
-      const id = IdMap.getId("testRegion")
+      const id = IdMap.getId("region")
       subject = await request("GET", `/admin/regions/${id}`, {
         adminSession: {
           jwt: {
@@ -24,7 +24,7 @@ describe("GET /admin/regions/:region_id", () => {
     it("calls service addCountry", () => {
       expect(RegionServiceMock.retrieve).toHaveBeenCalledTimes(1)
       expect(RegionServiceMock.retrieve).toHaveBeenCalledWith(
-        IdMap.getId("testRegion")
+        IdMap.getId("region")
       )
     })
   })

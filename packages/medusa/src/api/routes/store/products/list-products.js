@@ -6,24 +6,5 @@ export default async (req, res) => {
   const productService = req.scope.resolve("productService")
   const products = await productService.list(selector)
 
-  const data = await Promise.all(
-    products.map(p =>
-      productService.decorate(
-        p,
-        [
-          "title",
-          "description",
-          "tags",
-          "handle",
-          "images",
-          "options",
-          "variants",
-          "published",
-        ],
-        ["variants"]
-      )
-    )
-  )
-
-  res.json(data)
+  res.json(products)
 }

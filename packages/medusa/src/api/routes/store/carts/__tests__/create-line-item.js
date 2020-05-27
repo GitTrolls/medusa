@@ -32,8 +32,8 @@ describe("POST /store/carts/:id", () => {
       expect(LineItemServiceMock.generate).toHaveBeenCalledTimes(1)
       expect(LineItemServiceMock.generate).toHaveBeenCalledWith(
         IdMap.getId("testVariant"),
-        IdMap.getId("testRegion"),
-        3
+        3,
+        IdMap.getId("testRegion")
       )
     })
 
@@ -71,8 +71,8 @@ describe("POST /store/carts/:id", () => {
       expect(LineItemServiceMock.generate).toHaveBeenCalledTimes(1)
       expect(LineItemServiceMock.generate).toHaveBeenCalledWith(
         IdMap.getId("fail"),
-        IdMap.getId("testRegion"),
-        3
+        3,
+        IdMap.getId("testRegion")
       )
     })
 

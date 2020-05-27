@@ -43,10 +43,10 @@ export const ProductServiceMock = {
   delete: jest.fn().mockImplementation(_ => {
     return Promise.resolve()
   }),
-  createVariant: jest.fn().mockImplementation((productId, value) => {
+  addVariant: jest.fn().mockImplementation((productId, variantId) => {
     return Promise.resolve(products.productWithOptions)
   }),
-  deleteVariant: jest.fn().mockImplementation((productId, variantId) => {
+  removeVariant: jest.fn().mockImplementation((productId, variantId) => {
     return Promise.resolve(products.productWithOptions)
   }),
   decorate: jest.fn().mockImplementation((product, fields) => {
@@ -56,16 +56,8 @@ export const ProductServiceMock = {
   addOption: jest.fn().mockImplementation((productId, optionTitle) => {
     return Promise.resolve(products.productWithOptions)
   }),
-  updateOption: jest
-    .fn()
-    .mockReturnValue(Promise.resolve(products.productWithOptions)),
-  updateOptionValue: jest.fn().mockReturnValue(Promise.resolve()),
+  updateOption: jest.fn().mockReturnValue(Promise.resolve()),
   deleteOption: jest.fn().mockReturnValue(Promise.resolve()),
-  retrieveVariants: jest
-    .fn()
-    .mockReturnValue(
-      Promise.resolve([{ _id: IdMap.getId("1") }, { _id: IdMap.getId("2") }])
-    ),
   retrieve: jest.fn().mockImplementation(productId => {
     if (productId === IdMap.getId("product1")) {
       return Promise.resolve(products.product1)
@@ -109,7 +101,6 @@ export const ProductServiceMock = {
         {
           _id: "1234",
           title: "test",
-          thumbnail: "test.1234",
         },
       ])
     }

@@ -208,7 +208,7 @@ export const CartServiceMock = {
     if (cartId === IdMap.getId("cartWithPaySessions")) {
       return Promise.resolve(carts.cartWithPaySessions)
     }
-    throw new MedusaError(MedusaError.Types.NOT_FOUND, "cart not found")
+    return Promise.resolve(undefined)
   }),
   addLineItem: jest.fn().mockImplementation((cartId, lineItem) => {
     return Promise.resolve()
