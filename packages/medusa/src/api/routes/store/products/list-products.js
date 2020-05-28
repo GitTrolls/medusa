@@ -24,5 +24,6 @@ export default async (req, res) => {
       )
     )
   )
-  res.json({ products: data })
+
+  res.json(data)
 }

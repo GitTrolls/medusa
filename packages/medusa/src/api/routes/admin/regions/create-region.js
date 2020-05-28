@@ -18,7 +18,7 @@ export default async (req, res) => {
   try {
     const regionService = req.scope.resolve("regionService")
     const data = await regionService.create(value)
-    res.status(200).json({ region: data })
+    res.status(200).json(data)
   } catch (err) {
     throw err
   }

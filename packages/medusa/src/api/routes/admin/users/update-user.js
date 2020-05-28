@@ -14,9 +14,13 @@ export default async (req, res) => {
 
   try {
     const userService = req.scope.resolve("userService")
-    const data = await userService.update(user_id, value)
-    res.status(200).json({ user: data })
+
+    await userService.update(user_id, value)
+    const user = await userService.retrieve(user_id)
+
+    res.status(200).json(user)
   } catch (err) {
+    console.log(err)
     throw err
   }
 }

@@ -20,7 +20,7 @@ export default async (req, res) => {
 
     const customer = await customerService.retrieve(id)
     const data = await customerService.decorate(customer)
-    res.status(200).json({ customer: data })
+    res.status(200).json(data)
   } catch (err) {
     throw err
   }

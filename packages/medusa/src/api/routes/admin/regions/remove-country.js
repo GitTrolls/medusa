@@ -4,9 +4,9 @@ export default async (req, res) => {
   const { region_id, country_code } = req.params
   try {
     const regionService = req.scope.resolve("regionService")
-    const data = await regionService.removeCountry(region_id, country_code)
+    await regionService.removeCountry(region_id, country_code)
 
-    res.json({ region: data })
+    res.sendStatus(200)
   } catch (err) {
     throw err
   }

@@ -14,7 +14,7 @@ export default async (req, res) => {
     const profileService = req.scope.resolve("shippingProfileService")
     const data = await profileService.create(value)
 
-    res.status(200).json({ shipping_profile: data })
+    res.status(200).json(data)
   } catch (err) {
     throw err
   }

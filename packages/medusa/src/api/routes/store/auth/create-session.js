@@ -33,5 +33,5 @@ export default async (req, res) => {
     }
   )
 
-  res.json({ customer: result.customer })
+  res.json(result.customer)
 }
