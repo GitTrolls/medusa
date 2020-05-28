@@ -122,17 +122,14 @@ class StripeProviderService extends PaymentService {
 
   /**
    * Updates Stripe PaymentIntent.
-   * @param {object} data - The payment session data.
-   * @param {Object} cart - the current cart value
+   * @param {string} cart - the cart to update payment intent for
+   * @param {Object} data - the update object for the payment intent
    * @returns {Object} Stripe PaymentIntent
    */
-  async updatePayment(data, cart) {
+  async updatePayment(cart, update) {
     try {
-      const { id } = data
-      const amount = this.totalsService_.getTotal(cart)
-      return this.stripe_.paymentIntents.update(id, {
-        amount
-      })
+      const { data } = cart.payment_method
+      return this.stripe_.paymentIntents.update(data.id, update)
     } catch (error) {
       throw error
     }
