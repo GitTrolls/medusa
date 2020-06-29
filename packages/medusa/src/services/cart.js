@@ -448,18 +448,9 @@ class CartService extends BaseService {
     const cart = await this.retrieve(cartId)
     const { value, error } = Validator.address().validate(address)
     if (error) {
-      console.log(error)
       throw new MedusaError(
         MedusaError.Types.INVALID_DATA,
         "The address is not valid"
-      )
-    }
-
-    const region = await this.regionService_.retrieve(cart.region_id)
-    if (!region.countries.includes(address.country_code.toUpperCase())) {
-      throw new MedusaError(
-        MedusaError.Types.INVALID_DATA,
-        "Shipping country must be in the cart region"
       )
     }
 
@@ -692,15 +683,7 @@ class CartService extends BaseService {
           if (!region.payment_providers.includes(pSession.provider_id)) {
             return null
           }
-
-          const data = await this.paymentProviderService_.updateSession(
-            pSession,
-            cart
-          )
-          return {
-            provider_id: pSession.provider_id,
-            data,
-          }
+          return this.paymentProviderService_.updateSession(pSession, cart)
         })
       )
     }
@@ -716,11 +699,7 @@ class CartService extends BaseService {
           return null
         }
 
-        const data = await this.paymentProviderService_.createSession(pId, cart)
-        return {
-          provider_id: pId,
-          data,
-        }
+        return this.paymentProviderService_.createSession(pId, cart)
       })
     )
 
