@@ -2,6 +2,7 @@ import _ from "lodash"
 import { Validator, MedusaError } from "medusa-core-utils"
 import { BaseService } from "medusa-interfaces"
 import { countries } from "../utils/countries"
+import { currencies } from "../utils/currencies"
 
 /**
  * Provides layer to manipulate regions.
@@ -10,7 +11,6 @@ import { countries } from "../utils/countries"
 class RegionService extends BaseService {
   constructor({
     regionModel,
-    storeService,
     paymentProviderService,
     fulfillmentProviderService,
   }) {
@@ -18,9 +18,6 @@ class RegionService extends BaseService {
 
     /** @private @const {RegionModel} */
     this.regionModel_ = regionModel
-
-    /** @private @const {StoreService} */
-    this.storeService_ = storeService
 
     /** @private @const {PaymentProviderService} */
     this.paymentProviderService_ = paymentProviderService
@@ -72,7 +69,7 @@ class RegionService extends BaseService {
 
     if (region.currency_code) {
       region.currency_code = region.currency_code.toUpperCase()
-      await this.validateCurrency_(region.currency_code)
+      this.validateCurrency_(region.currency_code)
     }
 
     if (region.countries) {
@@ -126,10 +123,8 @@ class RegionService extends BaseService {
    * Validates a currency code. Will throw if the currency code doesn't exist.
    * @param {string} currencyCode - an ISO currency code
    */
-  async validateCurrency_(currencyCode) {
-    const store = await this.storeService_.retrieve()
-
-    if (!store.currencies.includes(currencyCode.toUpperCase())) {
+  validateCurrency_(currencyCode) {
+    if (!currencies[currencyCode]) {
       throw new MedusaError(
         MedusaError.Types.INVALID_DATA,
         "Invalid currency code"
@@ -355,6 +350,19 @@ class RegionService extends BaseService {
         },
       }
     )
+  }
+
+  /**
+   * Decorates a region
+   * @param {object} region - the region to decorate
+   * @param {[string]} fields - the fields to include
+   * @param {[string]} expandFields - the fields to expand
+   * @return {Region} the region
+   */
+  async decorate(region, fields, expandFields = []) {
+    const requiredFields = ["_id", "metadata"]
+    const decorated = _.pick(region, fields.concat(requiredFields))
+    return decorated
   }
 }
 

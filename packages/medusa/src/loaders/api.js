@@ -1,11 +1,9 @@
-import { getConfigFile, createRequireFromPath } from "medusa-core-utils"
-
 import routes from "../api"
 
 export default async ({ app, rootDirectory, container }) => {
   const { configModule } = getConfigFile(rootDirectory, `medusa-config`)
-  const config = configModule.projectConfig || {}
+  const config = (configModule && configModule.projectConfig) || {}
 
-  app.use("/", routes(container, config))
+  app.use("/", routes(container))
   return app
 }
