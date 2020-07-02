@@ -5,19 +5,16 @@ export default async (req, res) => {
     products = await Promise.all(
       products.map(
         async product =>
-          await productService.decorate(
-            product,
-            [
-              "title",
-              "description",
-              "tags",
-              "handle",
-              "images",
-              "options",
-              "published",
-            ],
-            ["variants"]
-          )
+          await productService.decorate(product, [
+            "title",
+            "description",
+            "tags",
+            "handle",
+            "images",
+            "options",
+            "variants",
+            "published",
+          ])
       )
     )
     res.json({ products })

@@ -33,6 +33,10 @@ export default app => {
 
   // Shipping Options
   route.post(
+    "/:id/shipping-options",
+    middlewares.wrap(require("./create-shipping-options").default)
+  )
+  route.post(
     "/:id/shipping-methods",
     middlewares.wrap(require("./add-shipping-method").default)
   )
