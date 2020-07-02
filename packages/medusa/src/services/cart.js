@@ -454,6 +454,14 @@ class CartService extends BaseService {
       )
     }
 
+    const region = await this.regionService_.retrieve(cart.region_id)
+    if (!region.countries.includes(address.country_code.toUpperCase())) {
+      throw new MedusaError(
+        MedusaError.Types.INVALID_DATA,
+        "Shipping country must be in the cart region"
+      )
+    }
+
     return this.cartModel_
       .updateOne(
         {
@@ -683,7 +691,15 @@ class CartService extends BaseService {
           if (!region.payment_providers.includes(pSession.provider_id)) {
             return null
           }
-          return this.paymentProviderService_.updateSession(pSession, cart)
+
+          const data = await this.paymentProviderService_.updateSession(
+            pSession,
+            cart
+          )
+          return {
+            provider_id: pSession.provider_id,
+            data,
+          }
         })
       )
     }
@@ -699,7 +715,11 @@ class CartService extends BaseService {
           return null
         }
 
-        return this.paymentProviderService_.createSession(pId, cart)
+        const data = await this.paymentProviderService_.createSession(pId, cart)
+        return {
+          provider_id: pId,
+          data,
+        }
       })
     )
 
