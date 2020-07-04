@@ -1,6 +1,6 @@
 import { FulfillmentService } from "medusa-interfaces"
 
-class ManualFulfillmentService extends FulfillmentService {
+class ManualFulfillmentService extends FulfillmentService { 
   static identifier = "manual"
 
   constructor() {
@@ -8,11 +8,9 @@ class ManualFulfillmentService extends FulfillmentService {
   }
 
   getFulfillmentOptions() {
-    return [
-      {
-        id: "manual-fulfillment",
-      },
-    ]
+    return [{
+      id: "manual-fulfillment"
+    }]
   }
 
   validateFulfillmentData(data, cart) {
@@ -20,7 +18,11 @@ class ManualFulfillmentService extends FulfillmentService {
   }
 
   validateOption(data) {
-    return true
+    if (data.id === "manual-fulfillment") {
+      return true
+    }
+
+    return false
   }
 
   canCalculate() {

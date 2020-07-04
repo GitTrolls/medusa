@@ -5,13 +5,11 @@ import { PaymentProviderServiceMock } from "../__mocks__/payment-provider"
 import { FulfillmentProviderServiceMock } from "../__mocks__/fulfillment-provider"
 import { ShippingProfileServiceMock } from "../__mocks__/shipping-profile"
 import { TotalsServiceMock } from "../__mocks__/totals"
-import { EventBusServiceMock } from "../__mocks__/event-bus"
 
 describe("OrderService", () => {
   describe("create", () => {
     const orderService = new OrderService({
       orderModel: OrderModelMock,
-      eventBusService: EventBusServiceMock,
     })
 
     beforeEach(async () => {
@@ -56,7 +54,6 @@ describe("OrderService", () => {
   describe("update", () => {
     const orderService = new OrderService({
       orderModel: OrderModelMock,
-      eventBusService: EventBusServiceMock,
     })
 
     beforeEach(async () => {
@@ -185,7 +182,6 @@ describe("OrderService", () => {
   describe("cancel", () => {
     const orderService = new OrderService({
       orderModel: OrderModelMock,
-      eventBusService: EventBusServiceMock,
     })
 
     beforeEach(async () => {
@@ -256,7 +252,6 @@ describe("OrderService", () => {
       paymentProviderService: PaymentProviderServiceMock,
       fulfillmentProviderService: FulfillmentProviderServiceMock,
       shippingProfileService: ShippingProfileServiceMock,
-      eventBusService: EventBusServiceMock,
     })
 
     beforeEach(async () => {

@@ -8,11 +8,6 @@ import { BaseService } from "medusa-interfaces"
  * @implements BaseService
  */
 class ProductService extends BaseService {
-  static Events = {
-    UPDATED: "product.updated",
-    CREATED: "product.created",
-  }
-
   /** @param { productModel: (ProductModel) } */
   constructor({ productModel, eventBusService, productVariantService }) {
     super()
@@ -91,15 +86,11 @@ class ProductService extends BaseService {
    * @param {object} product - the product to create
    * @return {Promise} resolves to the creation result.
    */
-  async createDraft(product) {
+  createDraft(product) {
     return this.productModel_
       .create({
         ...product,
         published: false,
-      })
-      .then(result => {
-        this.eventBus_.emit(ProductService.Events.CREATED, result)
-        return result
       })
       .catch(err => {
         throw new MedusaError(MedusaError.Types.DB_ERROR, err.message)
@@ -111,13 +102,9 @@ class ProductService extends BaseService {
    * @param {string} productId - ID of the product to publish.
    * @return {Promise} resolves to the creation result.
    */
-  async publish(productId) {
+  publish(productId) {
     return this.productModel_
       .updateOne({ _id: productId }, { $set: { published: true } })
-      .then(result => {
-        this.eventBus_.emit(ProductService.Events.UPDATED, result)
-        return result
-      })
       .catch(err => {
         throw new MedusaError(MedusaError.Types.DB_ERROR, err.message)
       })
@@ -143,10 +130,51 @@ class ProductService extends BaseService {
     }
 
     if (update.variants) {
-      throw new MedusaError(
-        MedusaError.Types.INVALID_DATA,
-        "Use addVariant, reorderVariants, removeVariant to update Product Variants"
+      update.variants = await Promise.all(
+        update.variants.map(async variant => {
+          if (variant._id) {
+            if (variant.prices && variant.prices.length) {
+              for (const price of variant.prices) {
+                if (price.region_id) {
+                  await this.productVariantService_.setRegionPrice(
+                    variant._id,
+                    price.region_id,
+                    price.amount
+                  )
+                } else {
+                  await this.productVariantService_.setCurrencyPrice(
+                    variant._id,
+                    price.currency_code,
+                    price.amount
+                  )
+                }
+              }
+            }
+
+            if (variant.options && variant.options.length) {
+              for (const option of variant.options) {
+                await this.updateOptionValue(
+                  productId,
+                  variant._id,
+                  option.option_id,
+                  option.value
+                )
+              }
+            }
+
+            delete variant.prices
+            delete variant.options
+
+            if (!_.isEmpty(variant)) {
+              await this.productVariantService_.update(variant._id, variant)
+            }
+          } else {
+            await this.createVariant(productId, variant).then(res => res._id)
+          }
+        })
       )
+
+      delete update.variants
     }
 
     return this.productModel_
@@ -155,10 +183,6 @@ class ProductService extends BaseService {
         { $set: update },
         { runValidators: true }
       )
-      .then(result => {
-        this.eventBus_.emit(ProductService.Events.UPDATED, result)
-        return result
-      })
       .catch(err => {
         throw new MedusaError(MedusaError.Types.DB_ERROR, err.message)
       })
@@ -242,15 +266,10 @@ class ProductService extends BaseService {
 
     const newVariant = await this.productVariantService_.createDraft(variant)
 
-    return this.productModel_
-      .updateOne({ _id: product._id }, { $push: { variants: newVariant._id } })
-      .then(result => {
-        this.eventBus_.emit(ProductService.Events.UPDATED, result)
-        return result
-      })
-      .catch(err => {
-        throw new MedusaError(MedusaError.Types.DB_ERROR, err.message)
-      })
+    return this.productModel_.updateOne(
+      { _id: product._id },
+      { $push: { variants: newVariant._id } }
+    )
   }
 
   /**
@@ -284,7 +303,7 @@ class ProductService extends BaseService {
             "Default Value"
           )
         )
-      ).catch(async err => {
+      ).catch(err => {
         // If any of the variants failed to add the new option value we clean up
         return Promise.all(
           product.variants.map(async variantId =>
@@ -310,11 +329,7 @@ class ProductService extends BaseService {
           },
         }
       )
-      .then(result => {
-        this.eventBus_.emit(ProductService.Events.UPDATED, result)
-        return result
-      })
-      .catch(async err => {
+      .catch(err => {
         // If we failed to update the product clean up its variants
         return Promise.all(
           product.variants.map(async variantId =>
@@ -348,22 +363,14 @@ class ProductService extends BaseService {
       return variant
     })
 
-    return this.productModel_
-      .updateOne(
-        {
-          _id: productId,
-        },
-        {
-          $set: { variants: newOrder },
-        }
-      )
-      .then(result => {
-        this.eventBus_.emit(ProductService.Events.UPDATED, result)
-        return result
-      })
-      .catch(err => {
-        throw new MedusaError(MedusaError.Types.DB_ERROR, err.message)
-      })
+    return this.productModel_.updateOne(
+      {
+        _id: productId,
+      },
+      {
+        $set: { variants: newOrder },
+      }
+    )
   }
 
   /**
@@ -397,22 +404,14 @@ class ProductService extends BaseService {
       return option
     })
 
-    return this.productModel_
-      .updateOne(
-        {
-          _id: productId,
-        },
-        {
-          $set: { options: newOrder },
-        }
-      )
-      .then(result => {
-        this.eventBus_.emit(ProductService.Events.UPDATED, result)
-        return result
-      })
-      .catch(err => {
-        throw new MedusaError(MedusaError.Types.DB_ERROR, err.message)
-      })
+    return this.productModel_.updateOne(
+      {
+        _id: productId,
+      },
+      {
+        $set: { options: newOrder },
+      }
+    )
   }
 
   /**
@@ -449,23 +448,15 @@ class ProductService extends BaseService {
     const update = {}
     update["options.$.title"] = title
 
-    return this.productModel_
-      .updateOne(
-        {
-          _id: productId,
-          "options._id": optionId,
-        },
-        {
-          $set: update,
-        }
-      )
-      .then(result => {
-        this.eventBus_.emit(ProductService.Events.UPDATED, result)
-        return result
-      })
-      .catch(err => {
-        throw new MedusaError(MedusaError.Types.DB_ERROR, err.message)
-      })
+    return this.productModel_.updateOne(
+      {
+        _id: productId,
+        "options._id": optionId,
+      },
+      {
+        $set: update,
+      }
+    )
   }
 
   /**
@@ -513,23 +504,16 @@ class ProductService extends BaseService {
       }
     }
 
-    const result = await this.productModel_
-      .updateOne(
-        { _id: productId },
-        {
-          $pull: {
-            options: {
-              _id: optionId,
-            },
+    const result = await this.productModel_.updateOne(
+      { _id: productId },
+      {
+        $pull: {
+          options: {
+            _id: optionId,
           },
-        }
-      )
-      .then(result => {
-        this.eventBus_.emit(ProductService.Events.UPDATED, result)
-      })
-      .catch(err => {
-        throw new MedusaError(MedusaError.Types.DB_ERROR, err.message)
-      })
+        },
+      }
+    )
 
     // If we reached this point, we can delete option value from variants
     if (product.variants) {
@@ -554,22 +538,14 @@ class ProductService extends BaseService {
 
     await this.productVariantService_.delete(variantId)
 
-    return this.productModel_
-      .updateOne(
-        { _id: product._id },
-        {
-          $pull: {
-            variants: variantId,
-          },
-        }
-      )
-      .then(result => {
-        this.eventBus_.emit(ProductService.Events.UPDATED, result)
-        return result
-      })
-      .catch(err => {
-        throw new MedusaError(MedusaError.Types.DB_ERROR, err.message)
-      })
+    return this.productModel_.updateOne(
+      { _id: product._id },
+      {
+        $pull: {
+          variants: variantId,
+        },
+      }
+    )
   }
 
   async updateOptionValue(productId, variantId, optionId, value) {
@@ -662,10 +638,6 @@ class ProductService extends BaseService {
     const keyPath = `metadata.${key}`
     return this.productModel_
       .updateOne({ _id: validatedId }, { $set: { [keyPath]: value } })
-      .then(result => {
-        this.eventBus_.emit(ProductService.Events.UPDATED, result)
-        return result
-      })
       .catch(err => {
         throw new MedusaError(MedusaError.Types.DB_ERROR, err.message)
       })

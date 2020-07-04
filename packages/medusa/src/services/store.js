@@ -28,7 +28,7 @@ class StoreService extends BaseService {
    */
   validateId_(rawId) {
     const schema = Validator.objectId()
-    const { value, error } = schema.validate(rawId.toString())
+    const { value, error } = schema.validate(rawId)
     if (error) {
       throw new MedusaError(
         MedusaError.Types.INVALID_ARGUMENT,

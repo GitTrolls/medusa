@@ -3,12 +3,6 @@ import { Validator, MedusaError } from "medusa-core-utils"
 import { BaseService } from "medusa-interfaces"
 
 class OrderService extends BaseService {
-  static Events = {
-    PLACED: "order.placed",
-    UPDATED: "order.updated",
-    CANCELLED: "order.cancelled",
-  }
-
   constructor({
     orderModel,
     paymentProviderService,
@@ -49,7 +43,7 @@ class OrderService extends BaseService {
    */
   validateId_(rawId) {
     const schema = Validator.objectId()
-    const { value, error } = schema.validate(rawId.toString())
+    const { value, error } = schema.validate(rawId)
     if (error) {
       throw new MedusaError(
         MedusaError.Types.INVALID_ARGUMENT,
@@ -146,29 +140,14 @@ class OrderService extends BaseService {
   }
 
   /**
-   * @param {Object} selector - the query object for find
-   * @return {Promise} the result of the find operation
-   */
-  list(selector) {
-    return this.orderModel_.find(selector)
-  }
-
-  /**
    * Creates an order
    * @param {object} order - the order to create
    * @return {Promise} resolves to the creation result.
    */
   async create(order) {
-    return this.orderModel_
-      .create(order)
-      .then(result => {
-        // Notify subscribers
-        this.eventBus_.emit(OrderService.Events.PLACED, result)
-        return result
-      })
-      .catch(err => {
-        throw new MedusaError(MedusaError.Types.DB_ERROR, err.message)
-      })
+    return this.orderModel_.create(order).catch(err => {
+      throw new MedusaError(MedusaError.Types.DB_ERROR, err.message)
+    })
   }
 
   /**
@@ -238,11 +217,6 @@ class OrderService extends BaseService {
         { $set: updateFields },
         { runValidators: true }
       )
-      .then(result => {
-        // Notify subscribers
-        this.eventBus_.emit(OrderService.Events.UPDATED, result)
-        return result
-      })
       .catch(err => {
         throw new MedusaError(MedusaError.Types.DB_ERROR, err.message)
       })
@@ -274,23 +248,14 @@ class OrderService extends BaseService {
 
     // TODO: cancel payment method
 
-    return this.orderModel_
-      .updateOne(
-        {
-          _id: orderId,
-        },
-        {
-          $set: { status: "cancelled" },
-        }
-      )
-      .then(result => {
-        // Notify subscribers
-        this.eventBus_.emit(OrderService.Events.CANCELLED, result)
-        return result
-      })
-      .catch(err => {
-        throw new MedusaError(MedusaError.Types.DB_ERROR, err.message)
-      })
+    return this.orderModel_.updateOne(
+      {
+        _id: orderId,
+      },
+      {
+        $set: { status: "cancelled" },
+      }
+    )
   }
 
   /**
@@ -371,23 +336,14 @@ class OrderService extends BaseService {
       })
     )
 
-    return this.orderModel_
-      .updateOne(
-        {
-          _id: orderId,
-        },
-        {
-          $set: updateFields,
-        }
-      )
-      .then(result => {
-        // Notify subscribers
-        this.eventBus_.emit(OrderService.Events.UPDATED, result)
-        return result
-      })
-      .catch(err => {
-        throw new MedusaError(MedusaError.Types.DB_ERROR, err.message)
-      })
+    return this.orderModel_.updateOne(
+      {
+        _id: orderId,
+      },
+      {
+        $set: updateFields,
+      }
+    )
   }
 
   /**
