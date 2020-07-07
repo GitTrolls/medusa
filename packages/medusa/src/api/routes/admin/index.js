@@ -11,7 +11,6 @@ import shippingProfileRoutes from "./shipping-profiles"
 import discountRoutes from "./discounts"
 import orderRoutes from "./orders"
 import storeRoutes from "./store"
-import uploadRoutes from "./uploads"
 
 const route = Router()
 
@@ -47,7 +46,6 @@ export default (app, container, config) => {
   discountRoutes(route)
   orderRoutes(route)
   storeRoutes(route)
-  uploadRoutes(route)
 
   return app
 }

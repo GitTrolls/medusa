@@ -1,14 +1,14 @@
 {
-  "name": "medusa-file-spaces",
-  "version": "0.3.0",
-  "description": "Digital Ocean Spaces file connector for Medusa",
+  "name": "medusa-plugin-economic",
+  "version": "1.0.0",
+  "description": "E-conomic financial reporting",
   "main": "index.js",
   "repository": {
     "type": "git",
     "url": "https://github.com/medusajs/medusa",
-    "directory": "packages/medusa-file-spaces"
+    "directory": "packages/medusa-plugin-economic"
   },
-  "author": "Sebastian Rindom",
+  "author": "Oliver Juhl",
   "license": "AGPL-3.0-or-later",
   "devDependencies": {
     "@babel/cli": "^7.7.5",
@@ -23,8 +23,7 @@
     "client-sessions": "^0.8.0",
     "cross-env": "^5.2.1",
     "eslint": "^6.8.0",
-    "jest": "^25.5.2",
-    "medusa-test-utils": "^0.3.0"
+    "jest": "^25.5.2"
   },
   "scripts": {
     "build": "babel src -d .",
@@ -34,13 +33,11 @@
   },
   "dependencies": {
     "@babel/plugin-transform-classes": "^7.9.5",
-    "aws-sdk": "^2.710.0",
+    "axios": "^0.19.2",
     "body-parser": "^1.19.0",
     "express": "^4.17.1",
     "medusa-core-utils": "^0.3.0",
     "medusa-interfaces": "^0.3.0",
-    "medusa-test-utils": "^0.3.0",
-    "stripe": "^8.50.0"
-  },
-  "gitHead": "35e0930650d5f4aedf2610749cd131ae8b7e17cc"
+    "medusa-test-utils": "^0.3.0"
+  }
 }
