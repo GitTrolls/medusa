@@ -1,7 +1,6 @@
 import axios from "axios"
 import moment from "moment"
 import { BaseService } from "medusa-interfaces"
-import { MedusaError } from "medusa-core-utils"
 
 ECONOMIC_BASE_URL = "https://restapi.e-conomic.com"
 
@@ -18,11 +17,7 @@ class EconomicService extends BaseService {
    *      unit_number: 42,
    *      payment_terms_number: 42,
    *      shipping_product_number: 42,
-   *      layout_number: 42,
-   *      vatzone_number_eu: 42,
-   *      vatzone_number_dk: 42,
-   *      vatzone_number_world: 42,
-   *      recipient_name: "Webshop customer"
+   *      layout_number: 42
    *    }
    */
   constructor({ orderService, totalsService, regionService }, options) {
@@ -41,36 +36,8 @@ class EconomicService extends BaseService {
       headers: {
         "X-AppSecretToken": options.secret_token,
         "X-AgreementGrantToken": options.agreement_token,
-        "Content-Type": "application/json",
       },
     })
-  }
-
-  decideCustomerAndVatNumber_(country) {
-    // Add these to utils
-    const EUCountries = []
-    const WorldCountries = []
-
-    const flag = false
-    switch (flag) {
-      case EUCountries.includes(country): {
-        return {
-          vat: this.options_.vatzone_number_eu,
-          customer: this.options_.customer_number_eu,
-        }
-      }
-      case WorldCountries.includes(country): {
-        return {
-          vat: this.options_.vatzone_number_world,
-          customer: this.options_.customer_number_world,
-        }
-      }
-      default:
-        return {
-          vat: this.options_.vatzone_number_dk,
-          customer: this.options_.customer_number_dk,
-        }
-    }
   }
 
   async createEconomicLinesFromOrder(order) {
@@ -96,7 +63,7 @@ class EconomicService extends BaseService {
             lineNumber: order_lines.length + 1,
             sortKey: 1,
             unit: {
-              unitNumber: this.options_.unit_number,
+              unitNumber: 1,
             },
             product: {
               productNumber: c.product.sku,
@@ -122,7 +89,7 @@ class EconomicService extends BaseService {
           lineNumber: order_lines.length + 1,
           sortKey: 1,
           unit: {
-            unitNumber: this.options_.unit_number,
+            unitNumber: 1,
           },
           product: {
             productNumber: item.content.product.sku,
@@ -135,39 +102,32 @@ class EconomicService extends BaseService {
     })
   }
 
-  async createInvoiceFromOrder(order) {
+  async createInvoiceFromOrder(order, lineItems) {
     // Fetch currency code from order region
-    const {
-      currency_code,
-      billing_address,
-    } = await this.regionService_.retrieve(order.region_id)
-
-    const vatZoneAndCustomer = this.decideCustomerAndVatNumber_(
-      billing_address.country
+    const { currency_code } = await this.regionService_.retrieve(
+      order.region_id
     )
 
-    const lines = await this.createEconomicLinesFromOrder(order)
-
-    return {
+    const invoice = {
       date: moment().format("YYYY-MM-DD"),
       currency: currency_code,
       paymentTerms: {
-        paymentTermsNumber: this.options_.payment_terms_number,
+        paymentTermsNumber: 14,
       },
       references: {
         other: order._id,
       },
       customer: {
-        customerNumber: vatZoneAndCustomer.customer,
+        customerNumber,
       },
       recipient: {
-        name: this.options_.recipient_name,
+        name: "Webshop Customer",
         vatZone: {
-          vatZoneNumber: vatZoneAndCustomer.vat,
+          vatZoneNumber,
         },
       },
       layout: {
-        layoutNumber: this.options_.layout_number,
+        layoutNumber: 19,
       },
       lines,
     }
@@ -175,49 +135,6 @@ class EconomicService extends BaseService {
 
   async draftEconomicInvoice(orderId) {
     const order = await this.orderService_.retrieve(orderId)
-    const invoice = await this.createInvoiceFromOrder(order)
-
-    try {
-      const draftInvoice = await this.economic_.post(
-        `${ECONOMIC_BASE_URL}/invoices/drafts`,
-        invoice
-      )
-
-      await this.orderService_.setMetadata(
-        order._id,
-        "economicDraftId",
-        draftInvoice.draftInvoiceNumber
-      )
-    } catch (error) {
-      throw error
-    }
-  }
-
-  async bookEconomicInvoice(orderId) {
-    try {
-      const order = await this.orderService_.retrieve(orderId)
-      const { economicDraftId } = order.setMetadata
-
-      if (!economicDraftId) {
-        throw new MedusaError(
-          MedusaError.Types.INVALID_ARGUMENT,
-          "The order does not have an invoice number"
-        )
-      }
-
-      const bookInvoiceRequest = {
-        draftInvoice: {
-          draftInvoiceNumber: parseInt(economicDraftId),
-        },
-      }
-
-      await this.economic_.post(
-        `${ECONOMIC_BASE_URL}/invoices/booked`,
-        bookInvoiceRequest
-      )
-    } catch (error) {
-      throw error
-    }
   }
 }
 

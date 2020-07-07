@@ -18,7 +18,6 @@ class OrderModel extends BaseModel {
     // awaiting, captured, refunded
     payment_status: { type: String, default: "awaiting" },
     email: { type: String, required: true },
-    cart_id: { type: String },
     billing_address: { type: AddressSchema, required: true },
     shipping_address: { type: AddressSchema, required: true },
     items: { type: [LineItemSchema], required: true },
