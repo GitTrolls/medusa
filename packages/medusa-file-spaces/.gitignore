@@ -4,7 +4,7 @@ node_modules
 .env*
 /*.js
 !index.js
-!jest.config.js
+yarn.lock
 
 /dist
 
@@ -12,4 +12,5 @@ node_modules
 /services
 /models
 /subscribers
+/__mocks__
 
