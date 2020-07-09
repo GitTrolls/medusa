@@ -188,9 +188,6 @@ class EconomicService extends BaseService {
         "economicDraftId",
         draftInvoice.draftInvoiceNumber
       )
-
-      const invoiceOrder = await this.orderService_.retrieve(order._id)
-      return invoiceOrder
     } catch (error) {
       throw error
     }
@@ -214,7 +211,7 @@ class EconomicService extends BaseService {
         },
       }
 
-      return this.economic_.post(
+      await this.economic_.post(
         `${ECONOMIC_BASE_URL}/invoices/booked`,
         bookInvoiceRequest
       )

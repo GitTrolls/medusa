@@ -1,6 +1,5 @@
 import { IdMap } from "medusa-test-utils"
 import { OrderModelMock, orders } from "../../models/__mocks__/order"
-import { carts } from "../../models/__mocks__/cart"
 import OrderService from "../order"
 import { PaymentProviderServiceMock } from "../__mocks__/payment-provider"
 import { FulfillmentProviderServiceMock } from "../__mocks__/fulfillment-provider"
@@ -31,27 +30,6 @@ describe("OrderService", () => {
     })
   })
 
-  describe("createFromCart", () => {
-    const orderService = new OrderService({
-      orderModel: OrderModelMock,
-      eventBusService: EventBusServiceMock,
-    })
-
-    beforeEach(async () => {
-      jest.clearAllMocks()
-    })
-
-    it("calls order model functions", async () => {
-      await orderService.createFromCart(carts.completeCart)
-
-      expect(OrderModelMock.create).toHaveBeenCalledTimes(1)
-      expect(OrderModelMock.create).toHaveBeenCalledWith({
-        ...carts.completeCart,
-        metadata: { cart_id: carts.completeCart._id },
-      })
-    })
-  })
-
   describe("retrieve", () => {
     let result
     const orderService = new OrderService({
@@ -67,29 +45,6 @@ describe("OrderService", () => {
       expect(OrderModelMock.findOne).toHaveBeenCalledTimes(1)
       expect(OrderModelMock.findOne).toHaveBeenCalledWith({
         _id: IdMap.getId("test-order"),
-      })
-    })
-
-    it("returns correct order", async () => {
-      expect(result._id).toEqual(IdMap.getId("test-order"))
-    })
-  })
-
-  describe("retrieveByCartId", () => {
-    let result
-    const orderService = new OrderService({
-      orderModel: OrderModelMock,
-    })
-
-    beforeAll(async () => {
-      jest.clearAllMocks()
-      result = await orderService.retrieveByCartId(IdMap.getId("test-cart"))
-    })
-
-    it("calls order model functions", async () => {
-      expect(OrderModelMock.findOne).toHaveBeenCalledTimes(1)
-      expect(OrderModelMock.findOne).toHaveBeenCalledWith({
-        metadata: { cart_id: IdMap.getId("test-cart") },
       })
     })
 

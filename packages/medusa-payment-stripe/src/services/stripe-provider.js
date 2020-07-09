@@ -104,8 +104,6 @@ class StripeProviderService extends PaymentService {
       customer: stripeCustomerId,
       amount: amount * 100, // Stripe amount is in cents
       currency: currency_code,
-      capture_method: "manual",
-      metadata: { cart_id: cart._id },
     })
 
     return paymentIntent
