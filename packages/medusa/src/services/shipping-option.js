@@ -136,8 +136,7 @@ class ShippingOptionService extends BaseService {
    * @return {ShippingOption} the validated shipping option
    */
   async validateCartOption(optionId, cart) {
-    const optionDoc = await this.retrieve(optionId)
-    let option = optionDoc.toObject()
+    let option = await this.retrieve(optionId)
 
     if (cart.region_id !== option.region_id) {
       throw new MedusaError(
@@ -151,7 +150,7 @@ class ShippingOptionService extends BaseService {
       if (requirement.type === "max_subtotal") {
         return requirement.value > subtotal
       } else if (requirement.type === "min_subtotal") {
-        return requirement.value <= subtotal
+        return requirement.value < subtotal
       }
 
       return true // default to true

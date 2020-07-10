@@ -22,7 +22,7 @@ export default async (req, res) => {
     await cartService.setPaymentMethod(id, session)
 
     let cart = await cartService.retrieve(id)
-    cart = await cartService.decorate(cart, [], ["region"])
+    cart = await cartService.decorate(cart)
 
     res.status(200).json({ cart })
   } catch (err) {

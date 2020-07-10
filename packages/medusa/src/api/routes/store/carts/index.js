@@ -20,10 +20,6 @@ export default app => {
     "/:id/line-items/:line_id",
     middlewares.wrap(require("./update-line-item").default)
   )
-  route.delete(
-    "/:id/line-items/:line_id",
-    middlewares.wrap(require("./delete-line-item").default)
-  )
 
   // Payment sessions
   route.post(
