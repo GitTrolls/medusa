@@ -736,20 +736,6 @@ class CartService extends BaseService {
       )
     }
 
-    // The provider service will be able to perform operations on the
-    // session we are trying to set as the payment method.
-    const provider = this.paymentProviderService_.retrieveProvider(
-      paymentMethod.provider_id
-    )
-
-    const status = await provider.getStatus(paymentMethod.data)
-    if (!(status === "authorized" || status === "succeeded")) {
-      throw new MedusaError(
-        MedusaError.Types.NOT_ALLOWED,
-        `The payment method was not authorized`
-      )
-    }
-
     // At this point we can register the payment method.
     return this.cartModel_
       .updateOne(
@@ -967,6 +953,21 @@ class CartService extends BaseService {
     if (cart.shipping_methods && cart.shipping_methods.length) {
       update.shipping_methods = []
     }
+
+    //if (cart.items.length && cart.payment_sessions.length) {
+    //  update.payment_sessions = await Promise.all(
+    //    region.payment_providers.map(async pId => {
+    //      const data = await this.paymentProviderService_.createSession(pId, {
+    //        ...cart,
+    //        ...update,
+    //      })
+    //      return {
+    //        provider_id: pId,
+    //        data,
+    //      }
+    //    })
+    //  )
+    //}
 
     // Payment methods are region specific so the user needs to find a
     // new payment method
