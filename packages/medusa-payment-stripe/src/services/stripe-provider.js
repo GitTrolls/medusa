@@ -35,7 +35,7 @@ class StripeProviderService extends PaymentService {
       return status
     }
 
-    if (paymentIntent.status === "requires_capture") {
+    if (paymentIntent.status === "requires_action") {
       status = "authorized"
     }
 
