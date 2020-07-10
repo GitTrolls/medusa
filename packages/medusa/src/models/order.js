@@ -5,7 +5,7 @@ import LineItemSchema from "./schemas/line-item"
 import PaymentMethodSchema from "./schemas/payment-method"
 import ShippingMethodSchema from "./schemas/shipping-method"
 import AddressSchema from "./schemas/address"
-import DiscountModel from "./discount"
+import DiscountSchema from "./schemas/discount"
 
 class OrderModel extends BaseModel {
   static modelName = "Order"
@@ -18,13 +18,13 @@ class OrderModel extends BaseModel {
     // awaiting, captured, refunded
     payment_status: { type: String, default: "awaiting" },
     email: { type: String, required: true },
-    cart_id: { type: String },
+    cart_id: { type: String, unique: true, sparse: true },
     billing_address: { type: AddressSchema, required: true },
     shipping_address: { type: AddressSchema, required: true },
     items: { type: [LineItemSchema], required: true },
     region_id: { type: String, required: true },
-    discounts: { type: [DiscountModel.schema], default: [] },
-    customer_id: { type: String, required: true },
+    discounts: { type: [DiscountSchema], default: [] },
+    customer_id: { type: String },
     payment_method: { type: PaymentMethodSchema, required: true },
     shipping_methods: { type: [ShippingMethodSchema], required: true },
     metadata: { type: mongoose.Schema.Types.Mixed, default: {} },
