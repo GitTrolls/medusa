@@ -12,10 +12,6 @@ class OrderSubscriber {
       await this.sendgridService_.transactionalEmail("order.cancelled", order)
     })
 
-    this.eventBus_.subscribe("order.completed", async (order) => {
-      await this.sendgridService_.transactionalEmail("order.completed", order)
-    })
-
     this.eventBus_.subscribe("order.updated", async (order) => {
       await this.sendgridService_.transactionalEmail("order.updated", order)
     })
