@@ -26,7 +26,7 @@ class KlarnaProviderService extends PaymentService {
     this.klarnaOrderManagementUrl_ = "/ordermanagement/v1/orders"
 
     this.backendUrl_ =
-      process.env.BACKEND_URL || "https://58721b1f44d9.ngrok.io"
+      process.env.BACKEND_URL || "https://2fe4e28015f5.ngrok.io"
 
     this.totalsService_ = totalsService
 
@@ -102,6 +102,7 @@ class KlarnaProviderService extends PaymentService {
       order_lines.push({
         name: `${shippingMethod.name}`,
         quantity: 1,
+        type: "shipping_fee",
         unit_price: price * (1 + taxRate) * 100,
         tax_rate: taxRate * 10000,
         total_amount: price * (1 + taxRate) * 100,
@@ -159,45 +160,35 @@ class KlarnaProviderService extends PaymentService {
       address_update: `${this.backendUrl_}/klarna/address`,
     }
 
-    const shippingOptions = await this.shippingProfileService_.fetchCartOptions(
-      cart
-    )
+    if (cart.shipping_address && cart.shipping_address.first_name) {
+      const shippingOptions = await this.shippingProfileService_.fetchCartOptions(
+        cart
+      )
 
-    // If the cart does not have shipping methods yet, preselect one from
-    // shipping_options and set the selected shipping method
-    if (!cart.shipping_methods.length) {
-      const shipping_method = shippingOptions[0]
-      order.selected_shipping_option = {
-        id: shipping_method._id,
-        name: shipping_method.name,
-        price: shipping_method.price * (1 + tax_rate) * 100,
-        tax_amount: shipping_method.price * tax_rate * 100,
-        // Medusa tax rate of e.g. 0.25 (25%) needs to be 2500 in Klarna
-        tax_rate: tax_rate * 10000,
+      // If the cart does not have shipping methods yet, preselect one from
+      // shipping_options and set the selected shipping method
+      if (cart.shipping_methods.length) {
+        const shipping_method = cart.shipping_methods[0]
+        order.selected_shipping_option = {
+          id: shipping_method._id,
+          name: shipping_method.name,
+          price: shipping_method.price * (1 + tax_rate) * 100,
+          tax_amount: shipping_method.price * tax_rate * 100,
+          tax_rate: tax_rate * 10000,
+        }
       }
-    } else {
-      const shipping_method = cart.shipping_methods[0]
-      order.selected_shipping_option = {
-        id: shipping_method._id,
-        name: shipping_method.name,
-        price: shipping_method.price * (1 + tax_rate) * 100,
-        tax_amount: shipping_method.price * tax_rate * 100,
+
+      // If the cart does have shipping methods, set the selected shipping method
+
+      order.shipping_options = shippingOptions.map((so) => ({
+        id: so._id,
+        name: so.name,
+        price: so.price * (1 + tax_rate) * 100,
+        tax_amount: so.price * tax_rate * 100,
         tax_rate: tax_rate * 10000,
-      }
+        preselected: shippingOptions.length === 1
+      }))
     }
-
-    // If the cart does have shipping methods, set the selected shipping method
-
-    order.shipping_options = shippingOptions.map((so) => ({
-      id: so._id,
-      name: so.name,
-      price: so.price * (1 + tax_rate) * 100,
-      tax_amount: so.price * tax_rate * 100,
-      tax_rate: tax_rate * 10000,
-      preselected:
-        cart.shipping_methods[0] &&
-        `${cart.shipping_methods[0].provider_id}` === `${so.provider_id}`,
-    }))
 
     return order
   }
@@ -210,12 +201,12 @@ class KlarnaProviderService extends PaymentService {
   async getStatus(paymentData) {
     try {
       const { order_id } = paymentData
-      const order = await this.klarna_.get(
+      const { data: order } = await this.klarna_.get(
         `${this.klarnaOrderUrl_}/${order_id}`
       )
 
       let status = "initial"
-      if (order.status === "AUTHORIZED") {
+      if (order.status === "checkout_complete") {
         status = "authorized"
       }
       return status
@@ -246,10 +237,10 @@ class KlarnaProviderService extends PaymentService {
    * @param {string} cart - the cart to retrieve order for
    * @returns {Object} Klarna order
    */
-  async retrievePayment(cart) {
+  async retrievePayment(paymentData) {
     try {
-      const { data } = cart.payment_method
-      return this.klarna_.get(`${this.klarnaOrderUrl_}/${data.order_id}`)
+      return this.klarna_.get(`${this.klarnaOrderUrl_}/${paymentData.order_id}`)
+        .then(({ data }) => data)
     } catch (error) {
       throw error
     }
@@ -316,7 +307,7 @@ class KlarnaProviderService extends PaymentService {
    */
   async updatePayment(paymentData, cart) {
     try {
-      const order = await this.cartToKlarnaOrder(cart)
+      const order = await this.cartToKlarnaOrder(cart, true)
       return this.klarna_
         .post(`${this.klarnaOrderUrl_}/${paymentData.order_id}`, order)
         .then(({ data }) => data)

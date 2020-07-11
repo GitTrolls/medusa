@@ -303,7 +303,7 @@ class CartService extends BaseService {
     const validatedLineItem = this.lineItemService_.validate(lineItem)
     const cart = await this.retrieve(cartId)
     const currentItem = cart.items.find(line =>
-      _.isEqual(line.content, validatedLineItem.content)
+      this.lineItemService_.isEqual(line, validatedLineItem)
     )
 
     // If content matches one of the line items currently in the cart we can
@@ -393,7 +393,7 @@ class CartService extends BaseService {
     }
 
     // Ensure that the line item exists in the cart
-    const lineItemExists = cart.items.find(i => i._id === lineItemId)
+    const lineItemExists = cart.items.find(i => i._id.equals(lineItemId))
     if (!lineItemExists) {
       throw new MedusaError(
         MedusaError.Types.INVALID_DATA,
@@ -519,6 +519,8 @@ class CartService extends BaseService {
       )
     }
 
+    address.country_code = address.country_code.toUpperCase()
+
     return this.cartModel_
       .updateOne(
         {
@@ -550,6 +552,8 @@ class CartService extends BaseService {
         "The address is not valid"
       )
     }
+
+    address.country_code = address.country_code.toUpperCase()
 
     const region = await this.regionService_.retrieve(cart.region_id)
     if (!region.countries.includes(address.country_code.toUpperCase())) {
@@ -679,6 +683,16 @@ class CartService extends BaseService {
           return result
         })
     }
+  }
+
+  async removeDiscount(cartId, discountCode) {
+    const cart = await this.retrieve(cartId)
+    return this.cartModel_.updateOne(
+      { _id: cart._id },
+      {
+        $pull: { discounts: { code: discountCode } },
+      }
+    )
   }
 
   /**
@@ -869,7 +883,7 @@ class CartService extends BaseService {
     // that has the same profile as the selected shipping method.
     let exists = false
     const newMethods = shipping_methods.map(sm => {
-      if (sm.profile_id === option.profile_id) {
+      if (option.profile_id.equals(sm.profile_id)) {
         exists = true
         return option
       }

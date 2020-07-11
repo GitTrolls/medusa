@@ -165,7 +165,7 @@ class OrderService extends BaseService {
    */
   async retrieveByCartId(cartId) {
     const order = await this.orderModel_
-      .findOne({ metadata: { cart_id: cartId } })
+      .findOne({ cart_id: cartId })
       .catch(err => {
         throw new MedusaError(MedusaError.Types.DB_ERROR, err.message)
       })
@@ -245,7 +245,7 @@ class OrderService extends BaseService {
     const dbSession = await this.orderModel_.startSession()
 
     // Initialize DB transaction
-    await dbSession.withTransaction(async () => {
+    return dbSession.withTransaction(async () => {
       // Check if order from cart already exists
       // If so, this function throws
       const exists = await this.existsByCartId(cart._id)
@@ -278,25 +278,29 @@ class OrderService extends BaseService {
         )
       }
 
+      const region = await this.regionService_.retrieve(cart.region_id)
       const paymentProvider = this.paymentProviderService_.retrieveProvider(
         paymentSession.provider_id
       )
       const paymentStatus = await paymentProvider.getStatus(paymentSession.data)
 
       // If payment status is not authorized, we throw
-      if (paymentStatus !== "authorized") {
+      if (paymentStatus !== "authorized" && paymentStatus !== "succeeded") {
         throw new MedusaError(
           MedusaError.Types.INVALID_ARGUMENT,
           "Payment method is not authorized"
         )
       }
 
-      paymentSession = this.paymentProviderService_.retrieveProvider(
-        paymentSession.provider_id
+      const paymentData = await paymentProvider.retrievePayment(
+        paymentSession.data
       )
 
       const o = {
-        payment_method: paymentSession,
+        payment_method: {
+          provider_id: paymentSession.provider_id,
+          data: paymentData,
+        },
         shipping_methods: cart.shipping_methods,
         items: cart.items,
         shipping_address: cart.shipping_address,
@@ -305,13 +309,15 @@ class OrderService extends BaseService {
         email: cart.email,
         customer_id: cart.customer_id,
         cart_id: cart._id,
+        currency_code: region.currency_code,
       }
 
-      const orderDocument = await this.orderModel_.create(o)
-      // Commit transaction
-      await dbSession.commitTransaction()
+      const orderDocument = await this.orderModel_.create([o], {
+        session: dbSession,
+      })
+
       // Emit and return
-      this.eventBus_emit(OrderService.Events.PLACED, orderDocument)
+      this.eventBus_.emit(OrderService.Events.PLACED, orderDocument)
       return orderDocument
     })
   }
