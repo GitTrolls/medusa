@@ -7,6 +7,7 @@ class OrderService extends BaseService {
     PLACED: "order.placed",
     UPDATED: "order.updated",
     CANCELLED: "order.cancelled",
+    COMPLETED: "order.completed",
   }
 
   constructor({
@@ -16,6 +17,7 @@ class OrderService extends BaseService {
     fulfillmentProviderService,
     lineItemService,
     totalsService,
+    regionService,
     eventBusService,
   }) {
     super()
@@ -37,6 +39,9 @@ class OrderService extends BaseService {
 
     /** @private @const {TotalsService} */
     this.totalsService_ = totalsService
+
+    /** @private @const {RegionService} */
+    this.regionService_ = regionService
 
     /** @private @const {EventBus} */
     this.eventBus_ = eventBusService
@@ -201,6 +206,37 @@ class OrderService extends BaseService {
   }
 
   /**
+   * @param {string} orderId - id of the order to complete
+   * @return {Promise} the result of the find operation
+   */
+  async completeOrder(orderId) {
+    const order = await this.retrieve(orderId)
+    this.orderModel_
+      .updateOne(
+        { _id: order._id },
+        {
+          $set: { status: "completed" },
+        }
+      )
+      .then(async result => {
+        const completeOrderJob = await this.eventBus_.emit(
+          OrderService.Events.COMPLETED,
+          result
+        )
+
+        return completeOrderJob
+          .finished()
+          .then(async () => {
+            return this.retrieve(order._id)
+          })
+          .catch(error => {
+            console.log(error)
+            throw error
+          })
+      })
+  }
+
+  /**
    * Creates an order from a cart
    * @param {object} order - the order to create
    * @return {Promise} resolves to the creation result.
@@ -210,7 +246,7 @@ class OrderService extends BaseService {
     const dbSession = await this.orderModel_.startSession()
 
     // Initialize DB transaction
-    return dbSession.withTransaction(async () => {
+    await dbSession.withTransaction(async () => {
       // Check if order from cart already exists
       // If so, this function throws
       const exists = await this.existsByCartId(cart._id)
@@ -231,10 +267,22 @@ class OrderService extends BaseService {
 
       const { payment_method } = cart
 
-      const paymentProvider = await this.paymentProviderService_.retrieveProvider(
-        payment_method.provider_id
+      let paymentSession = cart.payment_sessions.find(
+        ps => ps.provider_id === payment_method.provider_id
       )
-      const paymentStatus = await paymentProvider.getStatus(payment_method.data)
+
+      // Throw if payment method does not exist
+      if (!paymentSession) {
+        throw new MedusaError(
+          MedusaError.Types.INVALID_ARGUMENT,
+          "Cart does not have an authorized payment session"
+        )
+      }
+
+      const paymentProvider = this.paymentProviderService_.retrieveProvider(
+        paymentSession.provider_id
+      )
+      const paymentStatus = await paymentProvider.getStatus(paymentSession.data)
 
       // If payment status is not authorized, we throw
       if (paymentStatus !== "authorized") {
@@ -244,8 +292,12 @@ class OrderService extends BaseService {
         )
       }
 
+      paymentSession = this.paymentProviderService_.retrieveProvider(
+        paymentSession.provider_id
+      )
+
       const o = {
-        payment_method: cart.payment_method,
+        payment_method: paymentSession,
         shipping_methods: cart.shipping_methods,
         items: cart.items,
         shipping_address: cart.shipping_address,
@@ -594,9 +646,17 @@ class OrderService extends BaseService {
    * @return {Order} return the decorated order.
    */
   async decorate(order, fields, expandFields = []) {
-    const requiredFields = ["_id", "metadata"]
-    const decorated = _.pick(order, fields.concat(requiredFields))
-    return decorated
+    const o = order.toObject()
+    o.shipping_total = await this.totalsService_.getShippingTotal(order)
+    o.discount_total = await this.totalsService_.getDiscountTotal(order)
+    o.tax_total = await this.totalsService_.getTaxTotal(order)
+    o.subtotal = await this.totalsService_.getSubtotal(order)
+    o.total = await this.totalsService_.getTotal(order)
+    o.created = order._id.getTimestamp()
+    if (expandFields.includes("region")) {
+      o.region = await this.regionService_.retrieve(order.region_id)
+    }
+    return o
   }
 
   /**
