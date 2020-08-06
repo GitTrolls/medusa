@@ -10,7 +10,6 @@ export default async (req, res) => {
             [
               "title",
               "description",
-              "is_giftcard",
               "tags",
               "thumbnail",
               "handle",

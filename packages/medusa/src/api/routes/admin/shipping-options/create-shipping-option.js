@@ -33,14 +33,13 @@ export default async (req, res) => {
     const shippingProfileService = req.scope.resolve("shippingProfileService")
 
     // Add to default shipping profile
-    if (!value.profile_id) {
-      const { _id } = await shippingProfileService.retrieveDefault()
-      value.profile_id = _id
-    }
+    const { _id } = await shippingProfileService.retrieveDefault()
 
-    const data = await optionService.create(value)
-
-    await shippingProfileService.addShippingOption(value.profile_id, data._id)
+    const data = await optionService.create({
+      ...value,
+      profile_id: _id,
+    })
+    await shippingProfileService.addShippingOption(_id, data._id)
 
     res.status(200).json({ shipping_option: data })
   } catch (err) {

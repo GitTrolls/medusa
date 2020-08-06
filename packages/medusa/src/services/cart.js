@@ -250,23 +250,6 @@ class CartService extends BaseService {
   }
 
   /**
-   * Returns an array of product ids in a line item.
-   * @param {LineItem} item - the line item to fetch products from
-   * @return {[string]} an array of product ids
-   */
-  getItemProducts_(item) {
-    // Find all the products in the line item
-    const products = []
-    if (Array.isArray(item.content)) {
-      item.content.forEach(c => products.push(`${c.product._id}`))
-    } else {
-      products.push(`${item.content.product._id}`)
-    }
-
-    return products
-  }
-
-  /**
    * Removes a line item from the cart.
    * @param {string} cartId - the id of the cart that we will remove from
    * @param {LineItem} lineItemId - the line item to remove.
@@ -275,42 +258,33 @@ class CartService extends BaseService {
   async removeLineItem(cartId, lineItemId) {
     const cart = await this.retrieve(cartId)
     const itemToRemove = cart.items.find(line => line._id.equals(lineItemId))
+
     if (!itemToRemove) {
       return Promise.resolve(cart)
     }
 
-    const update = {
-      $pull: { items: { _id: itemToRemove._id } },
-    }
+    // If cart has more than one of those line items, we update the quantity
+    // instead of removing it
+    if (itemToRemove.quantity > 1) {
+      const newQuantity = itemToRemove.quantity - 1
 
-    // Remove shipping methods if they are not needed
-    if (cart.shipping_methods && cart.shipping_methods.length) {
-      const filteredItems = cart.items.filter(i => !i._id.equals(lineItemId))
-
-      let newShippingMethods = await Promise.all(
-        cart.shipping_methods.map(async m => {
-          const profile = await this.shippingProfileService_.retrieve(
-            m.profile_id
-          )
-          const hasItem = filteredItems.find(item => {
-            const products = this.getItemProducts_(item)
-            return products.some(p => profile.products.includes(p))
-          })
-
-          if (hasItem) {
-            return m
+      return this.cartModel_
+        .updateOne(
+          {
+            _id: cartId,
+            "items._id": itemToRemove._id,
+          },
+          {
+            $set: {
+              "items.$.quantity": newQuantity,
+            },
           }
-
-          return null
+        )
+        .then(result => {
+          // Notify subscribers
+          this.eventBus_.emit(CartService.Events.UPDATED, result)
+          return result
         })
-      )
-      newShippingMethods = newShippingMethods.filter(n => !!n)
-
-      if (newShippingMethods.length !== cart.shipping_methods.length) {
-        update.$set = {
-          shipping_methods: newShippingMethods,
-        }
-      }
     }
 
     return this.cartModel_
@@ -318,41 +292,17 @@ class CartService extends BaseService {
         {
           _id: cartId,
         },
-        update
+        {
+          $pull: {
+            items: { _id: itemToRemove._id },
+          },
+        }
       )
       .then(result => {
         // Notify subscribers
         this.eventBus_.emit(CartService.Events.UPDATED, result)
         return result
       })
-  }
-
-  /**
-   * Checks if a given line item has a shipping method that can fulfill it.
-   * Returns true if all products in the cart can be fulfilled with the current
-   * shipping methods.
-   * @param {Cart} cart - the cart
-   * @param {LineItem} lineItem - the line item
-   * @return {boolean}
-   */
-  async validateLineItemShipping_(shippingMethods, lineItem) {
-    if (shippingMethods && shippingMethods.length) {
-      const profiles = await Promise.all(
-        shippingMethods.map(m =>
-          this.shippingProfileService_.retrieve(m.profile_id)
-        )
-      )
-
-      const products = this.getItemProducts_(lineItem)
-
-      // Check if there is a shipping method for each product
-      const hasShipping = products.map(
-        p => !!profiles.find(profile => profile.products.includes(p))
-      )
-      return hasShipping.every(b => b)
-    }
-
-    return false
   }
 
   /**
@@ -366,11 +316,6 @@ class CartService extends BaseService {
     const cart = await this.retrieve(cartId)
     const currentItem = cart.items.find(line =>
       this.lineItemService_.isEqual(line, validatedLineItem)
-    )
-
-    const hasShipping = await this.validateLineItemShipping_(
-      cart.shipping_methods,
-      validatedLineItem
     )
 
     // If content matches one of the line items currently in the cart we can
@@ -400,7 +345,6 @@ class CartService extends BaseService {
           {
             $set: {
               "items.$.quantity": newQuantity,
-              "items.$.has_shipping": hasShipping,
             },
           }
         )
@@ -431,12 +375,7 @@ class CartService extends BaseService {
           _id: cartId,
         },
         {
-          $push: {
-            items: {
-              ...validatedLineItem,
-              has_shipping: hasShipping,
-            },
-          },
+          $push: { items: validatedLineItem },
         }
       )
       .then(result => {
@@ -869,25 +808,6 @@ class CartService extends BaseService {
     const cart = await this.retrieve(cartId)
     const region = await this.regionService_.retrieve(cart.region_id)
 
-    const total = await this.totalsService_.getTotal(cart)
-
-    if (total === 0) {
-      return this.cartModel_
-        .updateOne(
-          {
-            _id: cart._id,
-          },
-          {
-            $set: { payment_sessions: [] },
-          }
-        )
-        .then(result => {
-          // Notify subscribers
-          this.eventBus_.emit(CartService.Events.UPDATED, result)
-          return result
-        })
-    }
-
     // If there are existing payment sessions ensure that these are up to date
     let sessions = []
     if (cart.payment_sessions && cart.payment_sessions.length) {
@@ -897,22 +817,13 @@ class CartService extends BaseService {
             return null
           }
 
-          let data
-          try {
-            data = await this.paymentProviderService_.updateSession(
-              pSession,
-              cart
-            )
-          } catch (err) {
-            data = await this.paymentProviderService_.createSession(
-              pSession.provider_id,
-              cart
-            )
-          }
-
+          // const data = await this.paymentProviderService_.updateSession(
+          //   pSession,
+          //   cart
+          // )
           return {
             provider_id: pSession.provider_id,
-            data,
+            data: {},
           }
         })
       )
@@ -1070,19 +981,10 @@ class CartService extends BaseService {
       newMethods.push(option)
     }
 
-    const newItems = await Promise.all(
-      cart.items.map(async item => {
-        const hasShipping = await this.validateLineItemShipping_(
-          newMethods,
-          item
-        )
-
-        return {
-          ...item,
-          has_shipping: hasShipping,
-        }
-      })
-    )
+    const finalMethods = newMethods.map(m => {
+      const { _id, ...rest } = m
+      return rest
+    })
 
     return this.cartModel_
       .updateOne(
@@ -1090,7 +992,7 @@ class CartService extends BaseService {
           _id: cart._id,
         },
         {
-          $set: { shipping_methods: newMethods, items: newItems },
+          $set: { shipping_methods: finalMethods },
         }
       )
       .then(result => {
@@ -1148,15 +1050,20 @@ class CartService extends BaseService {
       update.shipping_methods = []
     }
 
-    if (cart.discounts && cart.discounts.length) {
-      const newDiscounts = cart.discounts.map(d => {
-        if (d.regions.includes(regionId)) {
-          return d
-        }
-      })
-
-      update.discounts = newDiscounts.filter(d => !!d)
-    }
+    //if (cart.items.length && cart.payment_sessions.length) {
+    //  update.payment_sessions = await Promise.all(
+    //    region.payment_providers.map(async pId => {
+    //      const data = await this.paymentProviderService_.createSession(pId, {
+    //        ...cart,
+    //        ...update,
+    //      })
+    //      return {
+    //        provider_id: pId,
+    //        data,
+    //      }
+    //    })
+    //  )
+    //}
 
     // Payment methods are region specific so the user needs to find a
     // new payment method

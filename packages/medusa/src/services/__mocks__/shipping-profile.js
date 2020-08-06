@@ -29,7 +29,7 @@ export const ShippingProfileServiceMock = {
     if (data === IdMap.getId("profile1")) {
       return Promise.resolve(profiles.other)
     }
-    return Promise.resolve(profiles.default)
+    return Promise.resolve()
   }),
   retrieveGiftCardDefault: jest.fn().mockImplementation(data => {
     return Promise.resolve({ _id: IdMap.getId("giftCardProfile") })

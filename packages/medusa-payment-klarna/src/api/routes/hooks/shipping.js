@@ -10,18 +10,15 @@ export default async (req, res) => {
     const cart = await cartService.retrieve(merchant_data)
     const shippingOptions = await shippingProfileService.fetchCartOptions(cart)
 
-    const ids = selected_shipping_option.id.split(".")
-    await Promise.all(ids.map(async id => {
-      const option = shippingOptions.find(({ _id }) => _id.equals(id))
+    const option = shippingOptions.find(({ _id }) => _id.equals(selected_shipping_option.id))
 
-      if (option) {
-        await cartService.addShippingMethod(cart._id, option._id, option.data)
-      }
-    }))
-
-    const newCart = await cartService.retrieve(cart._id)
-    const order = await klarnaProviderService.cartToKlarnaOrder(newCart)
-    res.json(order)
+    if (option) {
+      const newCart = await cartService.addShippingMethod(cart._id, option._id, option.data)
+      const order = await klarnaProviderService.cartToKlarnaOrder(newCart)
+      res.json(order)
+    } else {
+      res.sendStatus(400)
+    }
   } catch (error) {
     throw error
   }

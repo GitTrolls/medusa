@@ -18,13 +18,6 @@ export default async (req, res) => {
         title: Validator.string().optional(),
         sku: Validator.string().optional(),
         ean: Validator.string().optional(),
-        published: Validator.boolean(),
-        image: Validator.string()
-          .allow("")
-          .optional(),
-        barcode: Validator.string()
-          .allow("")
-          .optional(),
         prices: Validator.array().items(
           Validator.object()
             .keys({

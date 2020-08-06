@@ -33,9 +33,6 @@ class SendGridService extends BaseService {
   async transactionalEmail(event, data) {
     let templateId
     switch (event) {
-      case "order.gift_card_created":
-        templateId = this.options_.gift_card_created_template
-        break
       case "order.placed":
         templateId = this.options_.order_placed_template
         break
@@ -58,14 +55,12 @@ class SendGridService extends BaseService {
         return
     }
     try {
-      if (templateId) {
-        return SendGrid.send({
-          template_id: templateId,
-          from: this.options_.from,
-          to: data.email,
-          dynamic_template_data: data,
-        })
-      }
+      return SendGrid.send({
+        template_id: templateId,
+        from: this.options_.from,
+        to: data.email,
+        dynamic_template_data: data,
+      })
     } catch (error) {
       throw error
     }

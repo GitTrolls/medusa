@@ -101,7 +101,7 @@ class ShippingProfileService extends BaseService {
    * Retrieves the default gift card profile
    * @return the shipping profile for gift cards
    */
-  async retrieveGiftCardDefault() {
+  async retrieveGiftCardProfile() {
     return await this.profileModel_
       .findOne({ name: "default_gift_card_profile" })
       .catch(err => {
@@ -115,7 +115,7 @@ class ShippingProfileService extends BaseService {
    * @return {Promise<ShippingProfile>} the shipping profile
    */
   async createGiftCardDefault() {
-    const profile = await this.retrieveGiftCardDefault()
+    const profile = await this.retrieveGiftCardProfile()
     if (!profile) {
       return this.profileModel_.create({ name: "default_gift_card_profile" })
     }
@@ -388,21 +388,13 @@ class ShippingProfileService extends BaseService {
     )
 
     const options = await Promise.all(
-      optionIds.map(async oId => {
-        const option = await this.shippingOptionService_
+      optionIds.map(oId => {
+        return this.shippingOptionService_
           .validateCartOption(oId, cart)
           .catch(err => {
             // If validation failed we skip the option
             return null
           })
-
-        if (option) {
-          return {
-            ...option,
-            profile: profiles.find(p => p._id.equals(option.profile_id)),
-          }
-        }
-        return null
       })
     )
 

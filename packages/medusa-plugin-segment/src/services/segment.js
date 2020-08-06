@@ -50,6 +50,7 @@ class SegmentService extends BaseService {
 
 
   async buildOrder(order) {
+    console.log("build", order)
     const subtotal = await this.totalsService_.getSubtotal(order)
     const total = await this.totalsService_.getTotal(order)
     const tax = await this.totalsService_.getTaxTotal(order)

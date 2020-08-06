@@ -122,7 +122,7 @@ export const discounts = {
 }
 
 export const DiscountModelMock = {
-  create: jest.fn().mockImplementation(data => Promise.resolve(data)),
+  create: jest.fn().mockReturnValue(Promise.resolve()),
   updateOne: jest.fn().mockImplementation((query, update) => {
     return Promise.resolve()
   }),

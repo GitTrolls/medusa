@@ -87,7 +87,6 @@ export default async (req, res) => {
         "options",
         "thumbnail",
         "variants",
-        "is_giftcard",
         "published",
       ],
       ["variants"]

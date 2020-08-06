@@ -162,12 +162,6 @@ class StripeProviderService extends PaymentService {
     try {
       const { id } = data
       return this.stripe_.paymentIntents.cancel(id)
-        .catch(err => {
-          if (err.statusCode === 400) {
-            return
-          }
-          throw err
-        })
     } catch (error) {
       throw error
     }
