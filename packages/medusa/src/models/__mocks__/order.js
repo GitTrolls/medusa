@@ -51,13 +51,9 @@ export const orders = {
         price: 100,
         provider_id: "default_provider",
         profile_id: IdMap.getId("default"),
-      },
-      {
-        _id: IdMap.getId("freeShipping"),
-        name: "Free Shipping",
-        price: 10,
-        provider_id: "default_provider",
-        profile_id: IdMap.getId("profile1"),
+        data: {
+          extra: "hi",
+        },
       },
     ],
     fulfillment_status: "not_fulfilled",
@@ -109,6 +105,9 @@ export const orders = {
     customer_id: IdMap.getId("test-customer"),
     payment_method: {
       provider_id: "default_provider",
+      data: {
+        hi: "hi",
+      },
     },
     shipping_methods: [
       {
@@ -133,6 +132,7 @@ export const orders = {
   orderToRefund: {
     _id: IdMap.getId("refund-order"),
     email: "oliver@test.dk",
+    tax_rate: 0.25,
     billing_address: {
       first_name: "Oli",
       last_name: "Medusa",
