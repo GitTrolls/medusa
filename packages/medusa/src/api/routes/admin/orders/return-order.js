@@ -20,8 +20,7 @@ export default async (req, res) => {
 
   try {
     const orderService = req.scope.resolve("orderService")
-    let order = await orderService.return(id, value.items)
-    order = await orderService.decorate(order, [], ["region"])
+    const order = await orderService.return(id, value.items)
 
     res.status(200).json({ order })
   } catch (err) {

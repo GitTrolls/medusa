@@ -8,7 +8,6 @@ class OrderService extends BaseService {
     PAYMENT_CAPTURED: "order.payment_captured",
     SHIPMENT_CREATED: "order.shipment_created",
     ITEMS_RETURNED: "order.items_returned",
-    REFUND_CREATED: "order.refund_created",
     PLACED: "order.placed",
     UPDATED: "order.updated",
     CANCELLED: "order.cancelled",
@@ -17,7 +16,6 @@ class OrderService extends BaseService {
 
   constructor({
     orderModel,
-    counterService,
     paymentProviderService,
     shippingProfileService,
     discountService,
@@ -55,8 +53,6 @@ class OrderService extends BaseService {
 
     /** @private @const {EventBus} */
     this.eventBus_ = eventBusService
-
-    this.counterService_ = counterService
   }
 
   /**
@@ -186,6 +182,28 @@ class OrderService extends BaseService {
       throw new MedusaError(
         MedusaError.Types.NOT_FOUND,
         `Order with cart id ${cartId} was not found`
+      )
+    }
+    return order
+  }
+
+  /**
+   * Gets an order by metadata key value pair.
+   * @param {string} key - key of metadata
+   * @param {string} value - value of metadata
+   * @return {Promise<Order>} the order document
+   */
+  async retrieveByMetadata(key, value) {
+    const order = await this.orderModel_
+      .findOne({ metadata: { [key]: value } })
+      .catch(err => {
+        throw new MedusaError(MedusaError.Types.DB_ERROR, err.message)
+      })
+
+    if (!order) {
+      throw new MedusaError(
+        MedusaError.Types.NOT_FOUND,
+        `Order with metadata ${key}: ${value} was not found`
       )
     }
     return order
@@ -346,7 +364,6 @@ class OrderService extends BaseService {
         )
 
         const o = {
-          display_id: await this.counterService_.getNext("orders"),
           payment_method: {
             provider_id: paymentSession.provider_id,
             data: paymentData,
@@ -362,6 +379,7 @@ class OrderService extends BaseService {
           cart_id: cart._id,
           tax_rate: region.tax_rate,
           currency_code: region.currency_code,
+          metadata: cart.metadata,
         }
 
         const orderDocument = await this.orderModel_.create([o], {
@@ -378,39 +396,53 @@ class OrderService extends BaseService {
   /**
    * Adds a shipment to the order to indicate that an order has left the warehouse
    */
-  async createShipment(orderId, fulfillmentId, trackingNumbers, metadata = {}) {
+  async createShipment(orderId, shipment) {
     const order = await this.retrieve(orderId)
 
-    let shipment
-    const updated = order.fulfillments.map(f => {
-      if (f._id.equals(fulfillmentId)) {
-        shipment = {
-          ...f,
-          tracking_numbers: trackingNumbers,
-          metadata: {
-            ...f.metadata,
-            ...metadata,
-          },
-        }
-      }
-      return f
+    console.log(order)
+    if (order.fulfillment_status === "shipped") {
+      throw new MedusaError(
+        MedusaError.Types.NOT_ALLOWED,
+        "Order has already been shipped"
+      )
+    }
+
+    const shipmentSchema = Validator.object({
+      item_ids: Validator.array()
+        .items(Validator.string())
+        .required(),
+      tracking_number: Validator.string().required(),
     })
 
-    // Add the shipment to the order
-    return this.orderModel_
-      .updateOne(
-        { _id: orderId },
-        {
-          $set: { fulfillments: updated },
-        }
+    const { value, error } = shipmentSchema.validate(shipment)
+    if (error) {
+      throw new MedusaError(
+        MedusaError.Types.INVALID_DATA,
+        `Shipment not valid: ${error}`
       )
-      .then(result => {
-        this.eventBus_.emit(OrderService.Events.SHIPMENT_CREATED, {
-          order_id: orderId,
-          shipment,
-        })
-        return result
+    }
+
+    const existing = order.shipments || []
+    const shipments = [...existing, value]
+    const allCovered = order.items.every(
+      i => !!shipments.find(s => s.item_ids.includes(`${i._id}`))
+    )
+
+    const update = {
+      $push: { shipments: value },
+      $set: {
+        fulfillment_status: allCovered ? "shipped" : "partially_shipped",
+      },
+    }
+
+    // Add the shipment to the order
+    return this.orderModel_.updateOne({ _id: orderId }, update).then(result => {
+      this.eventBus_.emit(OrderService.Events.SHIPMENT_CREATED, {
+        order_id: orderId,
+        shipment,
       })
+      return result
+    })
   }
 
   /**
@@ -580,7 +612,19 @@ class OrderService extends BaseService {
       provider_id
     )
 
-    await paymentProvider.capturePayment(data)
+    const captureData = await paymentProvider.capturePayment(data)
+
+    // If Adyen is used as payment provider, we need to check the
+    // validity of the capture request
+    if (
+      captureData.data.pspReference &&
+      captureData.data.response !== "[capture-received]"
+    ) {
+      throw new MedusaError(
+        MedusaError.Types.INVALID_ARGUMENT,
+        "Could not process capture"
+      )
+    }
 
     return this.orderModel_
       .updateOne(
@@ -605,32 +649,8 @@ class OrderService extends BaseService {
    * @param {string} orderId - id of order to cancel.
    * @return {Promise} result of the update operation.
    */
-  async createFulfillment(orderId, itemsToFulfill, metadata = {}) {
+  async createFulfillment(orderId) {
     const order = await this.retrieve(orderId)
-
-    const lineItems = itemsToFulfill
-      .map(({ item_id, quantity }) => {
-        const item = order.items.find(i => i._id.equals(item_id))
-
-        if (!item) {
-          // This will in most cases be called by a webhook so to ensure that
-          // things go through smoothly in instances where extra items outside
-          // of Medusa are added we allow unknown items
-          return null
-        }
-
-        if (quantity > item.quantity - item.fulfilled_quantity) {
-          throw new MedusaError(
-            MedusaError.Types.NOT_ALLOWED,
-            "Cannot fulfill more items than have been purchased"
-          )
-        }
-        return {
-          ...item,
-          quantity,
-        }
-      })
-      .filter(i => !!i)
 
     if (order.fulfillment_status !== "not_fulfilled") {
       throw new MedusaError(
@@ -639,7 +659,7 @@ class OrderService extends BaseService {
       )
     }
 
-    const { shipping_methods } = order
+    const { shipping_methods, items } = order
 
     // prepare update object
     const updateFields = { fulfillment_status: "fulfilled" }
@@ -649,47 +669,19 @@ class OrderService extends BaseService {
     }
 
     // partition order items to their dedicated shipping method
-    const fulfillments = await this.partitionItems_(shipping_methods, lineItems)
+    updateFields.shipping_methods = await this.partitionItems_(
+      shipping_methods,
+      items
+    )
 
-    let successfullyFulfilled = []
-    const results = await Promise.all(
-      fulfillments.map(async method => {
+    await Promise.all(
+      updateFields.shipping_methods.map(method => {
         const provider = this.fulfillmentProviderService_.retrieveProvider(
           method.provider_id
         )
-
-        const data = await provider
-          .createOrder(method.data, method.items)
-          .then(res => {
-            successfullyFulfilled = [...successfullyFulfilled, ...method.items]
-            return res
-          })
-
-        return {
-          provider_id: method.provider_id,
-          items: method.items,
-          data,
-          metadata,
-        }
+        return provider.createOrder(method.data, method.items)
       })
     )
-
-    // Reflect the fulfillments in the items
-    updateFields.items = order.items.map(i => {
-      const ful = successfullyFulfilled.find(f => i._id.equals(f._id))
-      if (ful) {
-        if (i.quantity === ful.quantity) {
-          i.fulfilled = true
-        }
-
-        return {
-          ...i,
-          fulfilled_quantity: ful.quantity,
-        }
-      }
-
-      return i
-    })
 
     return this.orderModel_
       .updateOne(
@@ -697,7 +689,6 @@ class OrderService extends BaseService {
           _id: orderId,
         },
         {
-          $push: { fulfillments: { $each: results } },
           $set: updateFields,
         }
       )
@@ -720,16 +711,6 @@ class OrderService extends BaseService {
   async return(orderId, lineItems, refundAmount) {
     const order = await this.retrieve(orderId)
 
-    const total = await this.totalsService_.getTotal(order)
-    const refunded = await this.totalsService_.getRefundedTotal(order)
-
-    if (refundAmount > total - refunded) {
-      throw new MedusaError(
-        MedusaError.Types.INVALID_DATA,
-        "Cannot refund more than the original payment"
-      )
-    }
-
     // Find the lines to return
     const returnLines = lineItems.map(({ item_id, quantity }) => {
       const item = order.items.find(i => i._id.equals(item_id))
@@ -737,14 +718,6 @@ class OrderService extends BaseService {
         throw new MedusaError(
           MedusaError.Types.INVALID_DATA,
           "Return contains invalid line item"
-        )
-      }
-
-      const returnable = item.quantity - item.returned_quantity
-      if (quantity > returnable) {
-        throw new MedusaError(
-          MedusaError.Types.NOT_ALLOWED,
-          "Cannot return more items than have been purchased"
         )
       }
 
@@ -784,22 +757,17 @@ class OrderService extends BaseService {
     const newItems = order.items.map(i => {
       const isReturn = returnLines.find(r => r._id.equals(i._id))
       if (isReturn) {
-        const returnedQuantity = i.returned_quantity + isReturn.quantity
         let returned = false
-        if (i.quantity === returnedQuantity) {
+        if (i.quantity === isReturn.quantity) {
           returned = true
-        } else {
-          isFullReturn = false
         }
         return {
           ...i,
-          returned_quantity: returnedQuantity,
+          returned_quantity: isReturn.quantity,
           returned,
         }
       } else {
-        if (!i.returned) {
-          isFullReturn = false
-        }
+        isFullReturn = false
         return i
       }
     })
@@ -810,15 +778,6 @@ class OrderService extends BaseService {
           _id: orderId,
         },
         {
-          $push: {
-            refunds: {
-              amount,
-            },
-            returns: {
-              items: lineItems,
-              refund_amount: amount,
-            },
-          },
           $set: {
             items: newItems,
             fulfillment_status: isFullReturn
@@ -830,10 +789,7 @@ class OrderService extends BaseService {
       .then(result => {
         this.eventBus_.emit(OrderService.Events.ITEMS_RETURNED, {
           order: result,
-          return: {
-            items: lineItems,
-            refund_amount: amount,
-          },
+          items: returnLines,
         })
         return result
       })
@@ -866,56 +822,6 @@ class OrderService extends BaseService {
   }
 
   /**
-   * Refunds a given amount back to the customer.
-   */
-  async createRefund(orderId, refundAmount, reason, note) {
-    const order = await this.retrieve(orderId)
-    const total = await this.totalsService_.getTotal(order)
-    const refunded = await this.totalsService_.getRefundedTotal(order)
-
-    if (refundAmount > total - refunded) {
-      throw new MedusaError(
-        MedusaError.Types.NOT_ALLOWED,
-        "Cannot refund more than original order amount"
-      )
-    }
-
-    const { provider_id, data } = order.payment_method
-    const paymentProvider = this.paymentProviderService_.retrieveProvider(
-      provider_id
-    )
-
-    await paymentProvider.refundPayment(data, refundAmount)
-
-    return this.orderModel_
-      .updateOne(
-        {
-          _id: orderId,
-        },
-        {
-          $push: {
-            refunds: {
-              amount: refundAmount,
-              reason,
-              note,
-            },
-          },
-        }
-      )
-      .then(result => {
-        this.eventBus_.emit(OrderService.Events.REFUND_CREATED, {
-          order: result,
-          refund: {
-            amount: refundAmount,
-            reason,
-            note,
-          },
-        })
-        return result
-      })
-  }
-
-  /**
    * Decorates an order.
    * @param {Order} order - the order to decorate.
    * @param {string[]} fields - the fields to include.
@@ -929,8 +835,6 @@ class OrderService extends BaseService {
     o.tax_total = await this.totalsService_.getTaxTotal(order)
     o.subtotal = await this.totalsService_.getSubtotal(order)
     o.total = await this.totalsService_.getTotal(order)
-    o.refunded_total = await this.totalsService_.getRefundedTotal(order)
-    o.refundable_amount = o.total - o.refunded_total
     o.created = order._id.getTimestamp()
     if (expandFields.includes("region")) {
       o.region = await this.regionService_.retrieve(order.region_id)
@@ -939,10 +843,7 @@ class OrderService extends BaseService {
     o.items = o.items.map(i => {
       return {
         ...i,
-        refundable: this.totalsService_.getLineItemRefund(o, {
-          ...i,
-          quantity: i.quantity - i.returned_quantity,
-        }),
+        refundable: this.totalsService_.getLineItemRefund(o, i),
       }
     })
 

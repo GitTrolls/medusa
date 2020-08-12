@@ -51,9 +51,13 @@ export const orders = {
         price: 100,
         provider_id: "default_provider",
         profile_id: IdMap.getId("default"),
-        data: {
-          extra: "hi",
-        },
+      },
+      {
+        _id: IdMap.getId("freeShipping"),
+        name: "Free Shipping",
+        price: 10,
+        provider_id: "default_provider",
+        profile_id: IdMap.getId("profile1"),
       },
     ],
     fulfillment_status: "not_fulfilled",

@@ -1,5 +1,4 @@
 export default async ({ container }) => {
-  const counterService = container.resolve("counterService")
   const storeService = container.resolve("storeService")
   const profileService = container.resolve("shippingProfileService")
 
@@ -24,7 +23,6 @@ export default async ({ container }) => {
     payment_providers: payIds,
   })
 
-  await counterService.createDefaults()
   await profileService.createDefault()
   await profileService.createGiftCardDefault()
 }

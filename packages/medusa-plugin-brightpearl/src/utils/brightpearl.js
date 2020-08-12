@@ -23,7 +23,7 @@ class BrightpearlClient {
 
   constructor(options) {
     this.client_ = axios.create({
-      baseURL: `https://${options.url}/public-api/${options.account}`,
+      baseURL: `${options.url}/public-api/${options.account}`,
       headers: {
         "brightpearl-app-ref": "medusa-dev",
         "brightpearl-dev-ref": "sebrindom",
@@ -97,14 +97,6 @@ class BrightpearlClient {
           })
           .then(({ data }) => data.response)
       },
-      retrieveGoodsOutNote: (id) => {
-        return this.client_
-          .request({
-            url: `/warehouse-service/order/*/goods-note/goods-out/${id}`,
-            method: "GET",
-          })
-          .then(({ data }) => data.response && data.response[id])
-      },
       createGoodsOutNote: (orderId, data) => {
         return this.client_
           .request({
@@ -165,15 +157,6 @@ class BrightpearlClient {
             url: `/order-service/sales-order`,
             method: "POST",
             data: order,
-          })
-          .then(({ data }) => data.response)
-      },
-      createCredit: (salesCredit) => {
-        return this.client_
-          .request({
-            url: `/order-service/sales-credit`,
-            method: "POST",
-            data: salesCredit,
           })
           .then(({ data }) => data.response)
       },
