@@ -3,19 +3,12 @@ import middlewares from "../../../middlewares"
 
 const route = Router()
 
-export default (app, container) => {
-  const middlewareService = container.resolve("middlewareService")
-
+export default app => {
   app.use("/carts", route)
 
   route.get("/:id", middlewares.wrap(require("./get-cart").default))
 
-  route.post(
-    "/",
-    middlewareService.usePreCartCreation(),
-    middlewares.wrap(require("./create-cart").default)
-  )
-
+  route.post("/", middlewares.wrap(require("./create-cart").default))
   route.post("/:id", middlewares.wrap(require("./update-cart").default))
 
   // Line items
