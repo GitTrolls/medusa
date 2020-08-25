@@ -36,16 +36,7 @@ export default async (req, res) => {
       region.currency_code
     )
 
-    // Adyen does not behave 100% correctly in regards to allowed methods
-    // Therefore, we sanity filter before sending them to the storefront
-    const { paymentMethods, groups } = data
-    const methods = paymentMethods.filter((pm) =>
-      allowedMethods.includes(pm.type)
-    )
-
-    res
-      .status(200)
-      .json({ paymentMethods: { paymentMethods: methods, groups } })
+    res.status(200).json({ paymentMethods: data })
   } catch (err) {
     throw err
   }

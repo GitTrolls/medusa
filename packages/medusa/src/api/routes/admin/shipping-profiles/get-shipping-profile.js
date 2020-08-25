@@ -5,13 +5,7 @@ export default async (req, res) => {
 
     const data = await profileService.retrieve(profile_id)
 
-    const profile = await profileService.decorate(
-      data,
-      ["name"],
-      ["products", "shipping_options"]
-    )
-
-    res.status(200).json({ shipping_profile: profile })
+    res.status(200).json({ shipping_profile: data })
   } catch (err) {
     throw err
   }

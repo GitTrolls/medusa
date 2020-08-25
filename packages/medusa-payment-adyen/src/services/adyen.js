@@ -24,7 +24,7 @@ class AdyenService extends BaseService {
     })
 
     this.adyenPaymentApi = axios.create({
-      baseURL: "https://pal-test.adyen.com/pal/servlet/Payment/v52",
+      baseURL: "https://pal-test.adyen.com/pal/servlet/Payment/v53",
       headers: {
         "Content-Type": "application/json",
         "x-API-key": this.options_.api_key,
@@ -154,7 +154,7 @@ class AdyenService extends BaseService {
     const { pspReference, amount } = data
 
     try {
-      const captured = await this.adyenPaymentApi.post("/capture", {
+      const captured = this.adyenPaymentApi.post("/capture", {
         originalReference: pspReference,
         modificationAmount: amount,
         merchantAccount: this.options_.merchant_account,
@@ -187,7 +187,7 @@ class AdyenService extends BaseService {
     const { pspReference, amount } = data
 
     try {
-      return this.adyenPaymentApi.post("/refund", {
+      return this.adyenPaymentApi.post("/capture", {
         originalReference: pspReference,
         merchantAccount: this.options_.merchant_account,
         modificationAmount: amount,
@@ -206,7 +206,7 @@ class AdyenService extends BaseService {
     const { pspReference } = paymentData
 
     try {
-      return this.adyenPaymentApi.post("/cancel", {
+      return this.adyenPaymentApi.post("/capture", {
         originalReference: pspReference,
         merchantAccount: this.options_.merchant_account,
       })
