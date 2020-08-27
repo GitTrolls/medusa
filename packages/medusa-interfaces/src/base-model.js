@@ -67,16 +67,8 @@ class BaseModel {
    * @return {Array<mongoose.Document>} the retreived mongoose documents or
    * an empty array
    */
-  find(query, options, offset, limit) {
-    return this.mongooseModel_
-      .find(query, options)
-      .skip(offset)
-      .limit(limit)
-      .lean()
-  }
-
-  count() {
-    return this.mongooseModel_.count({})
+  find(query, options) {
+    return this.mongooseModel_.find(query, options).lean()
   }
 
   /**

@@ -168,9 +168,7 @@ class ContentfulService extends BaseService {
 
       const variantEntries = await this.getVariantEntries_(product._id)
       const variantLinks = this.getVariantLinks_(variantEntries)
-
-      const productEntryFields = {
-        ...productEntry.fields,
+      productEntry.fields = _.assignIn(productEntry.fields, {
         title: {
           "en-US": product.title,
         },
@@ -183,9 +181,7 @@ class ContentfulService extends BaseService {
         objectId: {
           "en-US": product._id,
         },
-      }
-
-      productEntry.fields = productEntryFields
+      })
 
       const updatedEntry = await productEntry.update()
       const publishedEntry = await updatedEntry.publish()
@@ -222,8 +218,7 @@ class ContentfulService extends BaseService {
         return this.createProductVariantInContentful(variant)
       }
 
-      const variantEntryFields = {
-        ...variantEntry.fields,
+      variantEntry.fields = _.assignIn(variantEntry.fields, {
         title: {
           "en-US": variant.title,
         },
@@ -239,9 +234,7 @@ class ContentfulService extends BaseService {
         objectId: {
           "en-US": variant._id,
         },
-      }
-
-      variantEntry.fields = variantEntryFields
+      })
 
       const updatedEntry = await variantEntry.update()
       const publishedEntry = await updatedEntry.publish()

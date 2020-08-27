@@ -3,9 +3,8 @@ import { MedusaError, Validator } from "medusa-core-utils"
 export default async (req, res) => {
   const { discount_id } = req.params
   const schema = Validator.object().keys({
-    code: Validator.string().optional(),
+    code: Validator.string().required(),
     is_dynamic: Validator.boolean().default(false),
-    is_giftcard: Validator.boolean().optional(),
     discount_rule: Validator.object()
       .keys({
         description: Validator.string().optional(),
@@ -15,7 +14,7 @@ export default async (req, res) => {
         valid_for: Validator.array().items(Validator.string()),
         usage_limit: Validator.number().optional(),
       })
-      .optional(),
+      .required(),
     usage_count: Validator.number().optional(),
     disabled: Validator.boolean().optional(),
     starts_at: Validator.date().optional(),

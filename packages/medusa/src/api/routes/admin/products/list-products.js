@@ -10,10 +10,7 @@ export default async (req, res) => {
       "description",
     ])
 
-    const limit = parseInt(req.query.limit) || 0
-    const offset = parseInt(req.query.offset) || 0
-
-    let products = await productService.list(query, offset, limit)
+    let products = await productService.list(query)
 
     products = await Promise.all(
       products.map(
@@ -35,10 +32,7 @@ export default async (req, res) => {
           )
       )
     )
-
-    const numProducts = await productService.count()
-
-    res.json({ products, total_count: numProducts })
+    res.json({ products })
   } catch (error) {
     console.log(error)
     throw error
