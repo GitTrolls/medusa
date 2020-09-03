@@ -38,7 +38,7 @@ class QueryBuilderService extends BaseService {
     if (_.isEmpty(search)) return
 
     const searchQuery = searchProperties.map(s => ({
-      [s]: new RegExp(search.q, "i"),
+      [s]: new RegExp(search.q),
     }))
 
     return { $or: searchQuery }
