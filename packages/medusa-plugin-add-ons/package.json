@@ -1,15 +1,15 @@
 {
-  "name": "medusa-plugin-brightpearl",
-  "version": "1.0.11",
-  "description": "Brightpearl plugin for Medusa Commerce",
+  "name": "medusa-plugin-add-ons",
+  "version": "1.0.0",
+  "description": "Add-on plugin for Medusa Commerce",
   "main": "index.js",
   "repository": {
     "type": "git",
     "url": "https://github.com/medusajs/medusa",
-    "directory": "packages/medusa-plugin-brightpearl"
+    "directory": "packages/medusa-plugin-add-ons"
   },
-  "author": "Sebastian Rindom",
-  "license": "MIT",
+  "author": "Oliver Juhl",
+  "license": "AGPL-3.0-or-later",
   "devDependencies": {
     "@babel/cli": "^7.7.5",
     "@babel/core": "^7.7.5",
@@ -25,8 +25,7 @@
     "cross-env": "^5.2.1",
     "eslint": "^6.8.0",
     "jest": "^25.5.2",
-    "medusa-test-utils": "^1.0.10",
-    "prettier": "^2.0.5"
+    "medusa-test-utils": "^1.0.1"
   },
   "scripts": {
     "build": "babel src -d .",
@@ -34,15 +33,12 @@
     "watch": "babel -w src --out-dir . --ignore **/__tests__",
     "test": "jest"
   },
-  "peerDependencies": {
-    "medusa-interfaces": "1.x"
-  },
   "dependencies": {
-    "axios": "^0.19.2",
-    "axios-rate-limit": "^1.2.1",
+    "body-parser": "^1.19.0",
+    "cors": "^2.8.5",
     "express": "^4.17.1",
     "medusa-core-utils": "^1.0.10",
-    "randomatic": "^3.1.1"
+    "redis": "^3.0.2"
   },
   "gitHead": "3cc7cbe5124cbcbb75f6e1435db4dcfaa2a60408"
 }
