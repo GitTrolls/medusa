@@ -6,7 +6,6 @@ class OrderService extends BaseService {
   static Events = {
     GIFT_CARD_CREATED: "order.gift_card_created",
     PAYMENT_CAPTURED: "order.payment_captured",
-    PAYMENT_CAPTURE_FAILED: "order.payment_capture_failed",
     SHIPMENT_CREATED: "order.shipment_created",
     FULFILLMENT_CREATED: "order.fulfillment_created",
     RETURN_REQUESTED: "order.return_requested",
@@ -419,39 +418,22 @@ class OrderService extends BaseService {
   async createShipment(orderId, fulfillmentId, trackingNumbers, metadata = {}) {
     const order = await this.retrieve(orderId)
 
-    let shipment
-    const updated = order.fulfillments.map(f => {
-      if (f._id.equals(fulfillmentId)) {
-        // For each item in the shipment, we set their status to shipped
-        f.items.map(item => {
-          const itemIdx = order.items.findIndex(el => el._id.equals(item._id))
-          // Update item in order.items and in fullfillment.items to
-          // ensure consistency
-          if (item !== -1) {
-            item.shipped_quantity = item.quantity
-            order.items[itemIdx].shipped_quantity += item.quantity
-          }
-        })
-        shipment = {
-          ...f,
-          tracking_numbers: trackingNumbers,
-          shipped_at: Date.now(),
-          metadata: {
-            ...f.metadata,
-            ...metadata,
-          },
-        }
-        return shipment
-      }
-      return f
-    })
+    const shipment = order.fulfillments.find(f => f._id.equals(fulfillmentId))
+    if (!shipment) {
+      throw new MedusaError(
+        MedusaError.Types.NOT_FOUND,
+        `Could not find a fulfillment with the provided id`
+      )
+    }
 
-    let fulfillmentStatus = "shipped"
-    for (const item of order.items) {
-      if (item.quantity !== item.shipped_quantity) {
-        fulfillmentStatus = "partially_shipped"
-        break
-      }
+    const updated = {
+      ...shipment,
+      tracking_numbers: trackingNumbers,
+      shipped_at: Date.now(),
+      metadata: {
+        ...shipment.metadata,
+        ...metadata,
+      },
     }
 
     // Add the shipment to the order
@@ -459,11 +441,7 @@ class OrderService extends BaseService {
       .updateOne(
         { _id: orderId, "fulfillments._id": fulfillmentId },
         {
-          $set: {
-            "fulfillments.$": updated,
-            items: order.items,
-            fulfillment_status: fulfillmentStatus,
-          },
+          $set: { "fulfillments.$": updated },
         }
       )
       .then(result => {
@@ -660,26 +638,7 @@ class OrderService extends BaseService {
       provider_id
     )
 
-    try {
-      await paymentProvider.capturePayment(data)
-    } catch (error) {
-      return this.orderModel_
-        .updateOne(
-          {
-            _id: orderId,
-          },
-          {
-            $set: { payment_status: "requires_action" },
-          }
-        )
-        .then(result => {
-          this.eventBus_.emit(
-            OrderService.Events.PAYMENT_CAPTURE_FAILED,
-            result
-          )
-          return result
-        })
-    }
+    await paymentProvider.capturePayment(data)
 
     return this.orderModel_
       .updateOne(
@@ -746,7 +705,12 @@ class OrderService extends BaseService {
 
     const { shipping_methods } = order
 
-    const updateFields = {}
+    // prepare update object
+    const updateFields = { fulfillment_status: "fulfilled" }
+    const completed = order.payment_status !== "awaiting"
+    if (completed) {
+      updateFields.status = "completed"
+    }
 
     // partition order items to their dedicated shipping method
     const fulfillments = await this.partitionItems_(shipping_methods, lineItems)
@@ -765,14 +729,6 @@ class OrderService extends BaseService {
             return res
           })
 
-        method.items = method.items.map(el => {
-          return {
-            ...el,
-            fulfilled_quantity: el.quantity,
-            fulfilled: true,
-          }
-        })
-
         return {
           provider_id: method.provider_id,
           items: method.items,
@@ -789,21 +745,12 @@ class OrderService extends BaseService {
         return {
           ...i,
           fulfilled: i.quantity === ful.quantity,
-          fulfilled_quantity: i.fulfilled_quantity + ful.quantity,
+          fulfilled_quantity: ful.quantity,
         }
       }
 
       return i
     })
-
-    updateFields.fulfillment_status = "fulfilled"
-
-    for (const el of updateFields.items) {
-      if (el.quantity !== el.fulfilled_quantity) {
-        updateFields.fulfillment_status = "partially_fulfilled"
-        break
-      }
-    }
 
     return this.orderModel_
       .updateOne(
