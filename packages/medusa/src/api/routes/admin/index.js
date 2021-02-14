@@ -18,7 +18,6 @@ import appRoutes from "./apps"
 import swapRoutes from "./swaps"
 import returnRoutes from "./returns"
 import variantRoutes from "./variants"
-import collectionRoutes from "./collections"
 
 const route = Router()
 
@@ -61,7 +60,6 @@ export default (app, container, config) => {
   swapRoutes(route)
   returnRoutes(route)
   variantRoutes(route)
-  collectionRoutes(route)
 
   return app
 }

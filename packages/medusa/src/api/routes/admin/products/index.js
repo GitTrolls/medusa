@@ -8,11 +8,6 @@ export default app => {
 
   route.post("/", middlewares.wrap(require("./create-product").default))
   route.post("/:id", middlewares.wrap(require("./update-product").default))
-  route.get("/types", middlewares.wrap(require("./list-types").default))
-  route.get(
-    "/tag-usage",
-    middlewares.wrap(require("./list-tag-usage-count").default)
-  )
 
   route.post(
     "/:id/variants",
@@ -57,9 +52,6 @@ export const defaultRelations = [
   "variants.options",
   "images",
   "options",
-  "tags",
-  "type",
-  "collection",
 ]
 
 export const defaultFields = [
@@ -67,12 +59,11 @@ export const defaultFields = [
   "title",
   "subtitle",
   "description",
+  "tags",
   "handle",
   "is_giftcard",
   "thumbnail",
   "profile_id",
-  "collection_id",
-  "type_id",
   "weight",
   "length",
   "height",
@@ -91,12 +82,11 @@ export const allowedFields = [
   "title",
   "subtitle",
   "description",
+  "tags",
   "handle",
   "is_giftcard",
   "thumbnail",
   "profile_id",
-  "collection_id",
-  "type_id",
   "weight",
   "length",
   "height",
@@ -115,7 +105,4 @@ export const allowedRelations = [
   "variants.prices",
   "images",
   "options",
-  "tags",
-  "type",
-  "collection",
 ]

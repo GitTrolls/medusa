@@ -17,13 +17,9 @@ import {
 import { ulid } from "ulid"
 
 import { Image } from "./image"
-import { ProductCollection } from "./product-collection"
 import { ProductOption } from "./product-option"
-import { ProductTag } from "./product-tag"
-import { ProductType } from "./product-type"
 import { ProductVariant } from "./product-variant"
 import { ShippingProfile } from "./shipping-profile"
-import _ from "lodash"
 
 @Entity()
 export class Product {
@@ -38,6 +34,9 @@ export class Product {
 
   @Column({ nullable: true })
   description: string
+
+  @Column({ nullable: true })
+  tags: string
 
   @Index({ unique: true })
   @Column({ nullable: true })
@@ -108,34 +107,6 @@ export class Product {
   @Column({ nullable: true })
   material: string
 
-  @Column({ nullable: true })
-  collection_id: string
-
-  @ManyToOne(() => ProductCollection)
-  @JoinColumn({ name: "collection_id" })
-  collection: ProductCollection
-
-  @Column({ nullable: true })
-  type_id: string
-
-  @ManyToOne(() => ProductType)
-  @JoinColumn({ name: "type_id" })
-  type: ProductType
-
-  @ManyToMany(() => ProductTag)
-  @JoinTable({
-    name: "product_tags",
-    joinColumn: {
-      name: "product_id",
-      referencedColumnName: "id",
-    },
-    inverseJoinColumn: {
-      name: "product_tag_id",
-      referencedColumnName: "id",
-    },
-  })
-  tags: ProductTag[]
-
   @CreateDateColumn({ type: "timestamptz" })
   created_at: Date
 
@@ -153,9 +124,5 @@ export class Product {
     if (this.id) return
     const id = ulid()
     this.id = `prod_${id}`
-
-    if (!this.handle) {
-      this.handle = _.kebabCase(this.title)
-    }
   }
 }

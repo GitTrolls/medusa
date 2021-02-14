@@ -34,12 +34,11 @@ describe("GET /admin/products/:id", () => {
             "title",
             "subtitle",
             "description",
+            "tags",
             "handle",
             "is_giftcard",
             "thumbnail",
             "profile_id",
-            "collection_id",
-            "type_id",
             "weight",
             "length",
             "height",
@@ -58,9 +57,6 @@ describe("GET /admin/products/:id", () => {
             "variants.options",
             "images",
             "options",
-            "tags",
-            "type",
-            "collection",
           ],
         }
       )
