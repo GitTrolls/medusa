@@ -905,11 +905,13 @@ class OrderService extends BaseService {
 
       const result = await orderRepo.save(order)
 
-      this.eventBus_
-        .withTransaction(manager)
-        .emit(OrderService.Events.PAYMENT_CAPTURED, {
-          id: result.id,
-        })
+      if (order.payment_status === "captured") {
+        this.eventBus_
+          .withTransaction(manager)
+          .emit(OrderService.Events.PAYMENT_CAPTURED, {
+            id: result.id,
+          })
+      }
 
       return result
     })
@@ -957,7 +959,16 @@ class OrderService extends BaseService {
   async createFulfillment(orderId, itemsToFulfill, metadata = {}) {
     return this.atomicPhase_(async manager => {
       const order = await this.retrieve(orderId, {
+        select: [
+          "subtotal",
+          "shipping_total",
+          "discount_total",
+          "tax_total",
+          "gift_card_total",
+          "total",
+        ],
         relations: [
+          "discounts",
           "region",
           "fulfillments",
           "shipping_address",

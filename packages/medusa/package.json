@@ -1,6 +1,6 @@
 {
   "name": "@medusajs/medusa",
-  "version": "1.1.6",
+  "version": "1.1.7",
   "description": "E-commerce for JAMstack",
   "main": "dist/index.js",
   "repository": {
@@ -49,6 +49,7 @@
   "dependencies": {
     "@babel/plugin-transform-classes": "^7.9.5",
     "@hapi/joi": "^16.1.8",
+    "@types/lodash": "^4.14.168",
     "awilix": "^4.2.3",
     "body-parser": "^1.19.0",
     "bull": "^3.12.1",
