@@ -1,13 +1,6 @@
 import { IdMap, MockRepository, MockManager } from "medusa-test-utils"
 import SwapService from "../swap"
 
-const eventBusService = {
-  emit: jest.fn(),
-  withTransaction: function() {
-    return this
-  },
-}
-
 const generateOrder = (orderId, items, additional = {}) => {
   return {
     id: IdMap.getId(orderId),
@@ -77,9 +70,7 @@ describe("SwapService", () => {
     })
 
     it("fails if item is returned", async () => {
-      const swapService = new SwapService({
-        eventBusService,
-      })
+      const swapService = new SwapService({})
       const res = () =>
         swapService.validateReturnItems_(
           {
@@ -177,7 +168,6 @@ describe("SwapService", () => {
 
       const swapService = new SwapService({
         manager: MockManager,
-        eventBusService,
         swapRepository: swapRepo,
         cartService,
         lineItemService,
@@ -246,7 +236,6 @@ describe("SwapService", () => {
         })
         const swapService = new SwapService({
           manager: MockManager,
-          eventBusService,
           swapRepository: swapRepo,
         })
         const res = swapService.createCart(IdMap.getId("swap-1"))
@@ -285,7 +274,6 @@ describe("SwapService", () => {
 
       const swapService = new SwapService({
         manager: MockManager,
-        eventBusService,
         swapRepository: swapRepo,
         returnService,
         lineItemService,
@@ -370,7 +358,6 @@ describe("SwapService", () => {
       })
       const swapService = new SwapService({
         manager: MockManager,
-        eventBusService,
         swapRepository: swapRepo,
         returnService,
       })
@@ -414,7 +401,6 @@ describe("SwapService", () => {
       })
       const swapService = new SwapService({
         manager: MockManager,
-        eventBusService,
         swapRepository: swapRepo,
         returnService,
       })
@@ -489,7 +475,6 @@ describe("SwapService", () => {
       })
       const swapService = new SwapService({
         manager: MockManager,
-        eventBusService,
         swapRepository: swapRepo,
         fulfillmentService,
         lineItemService,
@@ -610,7 +595,6 @@ describe("SwapService", () => {
 
       const swapService = new SwapService({
         manager: MockManager,
-        eventBusService,
         swapRepository: swapRepo,
         lineItemService,
         eventBusService,
@@ -707,7 +691,6 @@ describe("SwapService", () => {
 
       const swapService = new SwapService({
         manager: MockManager,
-        eventBusService,
         swapRepository: swapRepo,
         totalsService,
         paymentProviderService,
@@ -787,7 +770,6 @@ describe("SwapService", () => {
 
       const swapService = new SwapService({
         manager: MockManager,
-        eventBusService,
         swapRepository: swapRepo,
         paymentProviderService,
         eventBusService,

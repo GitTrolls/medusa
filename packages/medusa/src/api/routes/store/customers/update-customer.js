@@ -20,7 +20,7 @@ export default async (req, res) => {
     let customer = await customerService.update(id, value)
 
     customer = await customerService.retrieve(customer.id, {
-      relations: ["shipping_addresses"],
+      relations: ["orders", "shipping_addresses"],
     })
 
     res.status(200).json({ customer })
