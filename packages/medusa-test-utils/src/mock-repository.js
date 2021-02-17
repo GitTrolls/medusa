@@ -6,7 +6,6 @@ class MockRepo {
     softRemove,
     find,
     findOne,
-    findOneWithRelations,
     findOneOrFail,
     save,
     findAndCount,
@@ -20,7 +19,6 @@ class MockRepo {
     this.findOneOrFail_ = findOneOrFail;
     this.save_ = save;
     this.findAndCount_ = findAndCount;
-    this.findOneWithRelations_ = findOneWithRelations;
   }
 
   setFindOne(fn) {
@@ -53,11 +51,6 @@ class MockRepo {
   findOneOrFail = jest.fn().mockImplementation((...args) => {
     if (this.findOneOrFail_) {
       return this.findOneOrFail_(...args);
-    }
-  });
-  findOneWithRelations = jest.fn().mockImplementation((...args) => {
-    if (this.findOneWithRelations_) {
-      return this.findOneWithRelations_(...args);
     }
   });
   findOne = jest.fn().mockImplementation((...args) => {

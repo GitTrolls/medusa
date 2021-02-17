@@ -4,7 +4,6 @@ import {
   BaseService,
   PaymentService,
   FulfillmentService,
-  NotificationService,
   FileService,
   OauthService,
 } from "medusa-interfaces"
@@ -228,20 +227,6 @@ async function registerServices(pluginDetails, container) {
             cradle => new loaded(cradle, pluginDetails.options)
           ).singleton(),
           [`fp_${loaded.identifier}`]: aliasTo(name),
-        })
-      } else if (loaded.prototype instanceof NotificationService) {
-        container.registerAdd(
-          "notificationProviders",
-          asFunction(cradle => new loaded(cradle, pluginDetails.options))
-        )
-
-        // Add the service directly to the container in order to make simple
-        // resolution if we already know which payment provider we need to use
-        container.register({
-          [name]: asFunction(
-            cradle => new loaded(cradle, pluginDetails.options)
-          ).singleton(),
-          [`noti_${loaded.identifier}`]: aliasTo(name),
         })
       } else if (loaded.prototype instanceof FileService) {
         // Add the service directly to the container in order to make simple

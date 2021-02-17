@@ -18,8 +18,7 @@ import appRoutes from "./apps"
 import swapRoutes from "./swaps"
 import returnRoutes from "./returns"
 import variantRoutes from "./variants"
-import collectionRoutes from "./collections"
-import notificationRoutes from "./notifications"
+import draftOrderRoutes from "./draft-orders"
 
 const route = Router()
 
@@ -62,8 +61,7 @@ export default (app, container, config) => {
   swapRoutes(route)
   returnRoutes(route)
   variantRoutes(route)
-  collectionRoutes(route)
-  notificationRoutes(route)
+  draftOrderRoutes(route)
 
   return app
 }

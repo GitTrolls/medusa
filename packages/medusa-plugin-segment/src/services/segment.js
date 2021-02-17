@@ -106,10 +106,10 @@ class SegmentService extends BaseService {
           let name = item.title
 
           const unit_price = item.unit_price
-          const line_total = this.totalsService_.getLineItemRefund(order, item)
+          const line_total = (unit_price * item.quantity) / 100
           const revenue = await this.getReportingValue(
             order.currency_code,
-            line_total / 100
+            line_total
           )
 
           let sku = ""
@@ -126,7 +126,7 @@ class SegmentService extends BaseService {
           return {
             name,
             variant,
-            price: line_total / 100 / item.quantity,
+            price: unit_price / 100,
             reporting_revenue: revenue,
             product_id: item.variant.product_id,
             sku,
