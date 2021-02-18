@@ -328,7 +328,9 @@ class OrderService extends BaseService {
       query.select = select
     }
 
-    const raw = await orderRepo.findOne(query)
+    const rels = query.relations
+    delete query.relations
+    const raw = await orderRepo.findOneWithRelations(rels, query)
 
     if (!raw) {
       throw new MedusaError(
@@ -484,6 +486,7 @@ class OrderService extends BaseService {
         payment_status: "awaiting",
         discounts: cart.discounts,
         gift_cards: cart.gift_cards,
+        payment_status: "awaiting",
         shipping_methods: cart.shipping_methods,
         shipping_address_id: cart.shipping_address_id,
         billing_address_id: cart.billing_address_id,
@@ -904,11 +907,13 @@ class OrderService extends BaseService {
 
       const result = await orderRepo.save(order)
 
-      this.eventBus_
-        .withTransaction(manager)
-        .emit(OrderService.Events.PAYMENT_CAPTURED, {
-          id: result.id,
-        })
+      if (order.payment_status === "captured") {
+        this.eventBus_
+          .withTransaction(manager)
+          .emit(OrderService.Events.PAYMENT_CAPTURED, {
+            id: result.id,
+          })
+      }
 
       return result
     })
@@ -956,7 +961,16 @@ class OrderService extends BaseService {
   async createFulfillment(orderId, itemsToFulfill, metadata = {}) {
     return this.atomicPhase_(async manager => {
       const order = await this.retrieve(orderId, {
+        select: [
+          "subtotal",
+          "shipping_total",
+          "discount_total",
+          "tax_total",
+          "gift_card_total",
+          "total",
+        ],
         relations: [
+          "discounts",
           "region",
           "fulfillments",
           "shipping_address",

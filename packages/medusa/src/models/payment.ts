@@ -16,7 +16,6 @@ import { Swap } from "./swap"
 import { Currency } from "./currency"
 import { Cart } from "./cart"
 import { Order } from "./order"
-import { DraftOrder } from "./draft-order"
 
 @Entity()
 export class Payment {

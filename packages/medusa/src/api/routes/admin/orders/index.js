@@ -162,6 +162,14 @@ export default app => {
   )
 
   /**
+   * Creates claim fulfillment
+   */
+  route.post(
+    "/:id/claims/:claim_id/shipments",
+    middlewares.wrap(require("./create-claim-shipment").default)
+  )
+
+  /**
    * Delete metadata key / value pair.
    */
   route.delete(
@@ -208,7 +216,6 @@ export const defaultFields = [
   "payment_status",
   "display_id",
   "cart_id",
-  "draft_order_id",
   "customer_id",
   "email",
   "region_id",
@@ -236,7 +243,6 @@ export const allowedFields = [
   "payment_status",
   "display_id",
   "cart_id",
-  "draft_order_id",
   "customer_id",
   "email",
   "region_id",
