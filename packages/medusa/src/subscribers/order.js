@@ -6,7 +6,6 @@ class OrderSubscriber {
     giftCardService,
     totalsService,
     orderService,
-    draftOrderService,
     regionService,
   }) {
     this.manager_ = manager
@@ -18,15 +17,11 @@ class OrderSubscriber {
 
     this.orderService_ = orderService
 
-    this.draftOrderService_ = draftOrderService
-
     this.regionService_ = regionService
 
     this.eventBus_ = eventBusService
 
     this.eventBus_.subscribe("order.placed", this.handleOrderPlaced)
-
-    this.eventBus_.subscribe("order.placed", this.updateDraftOrder)
   }
 
   handleOrderPlaced = async data => {
@@ -58,21 +53,6 @@ class OrderSubscriber {
         })
       })
     )
-  }
-
-  updateDraftOrder = async data => {
-    const order = await this.orderService_.retrieve(data.id)
-
-    const draftOrder = await this.draftOrderService_.retrieveByCartId(
-      order.cart_id
-    )
-
-    if (draftOrder) {
-      await this.draftOrderService_.registerCartCompletion(
-        draftOrder.id,
-        order.id
-      )
-    }
   }
 }
 

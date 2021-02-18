@@ -223,14 +223,7 @@ class PaymentProviderService extends BaseService {
    */
   retrieveProvider(providerId) {
     try {
-      let provider
-      if (providerId === "system") {
-        console.log(this.container_)
-        provider = this.container_[`systemPaymentProviderService`]
-      } else {
-        provider = this.container_[`pp_${providerId}`]
-      }
-
+      const provider = this.container_[`pp_${providerId}`]
       return provider
     } catch (err) {
       throw new MedusaError(

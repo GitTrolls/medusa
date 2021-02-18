@@ -328,7 +328,9 @@ class OrderService extends BaseService {
       query.select = select
     }
 
-    const raw = await orderRepo.findOneWithRelations(query.relations, query)
+    const rels = query.relations
+    delete query.relations
+    const raw = await orderRepo.findOneWithRelations(rels, query)
 
     if (!raw) {
       throw new MedusaError(
@@ -484,6 +486,7 @@ class OrderService extends BaseService {
         payment_status: "awaiting",
         discounts: cart.discounts,
         gift_cards: cart.gift_cards,
+        payment_status: "awaiting",
         shipping_methods: cart.shipping_methods,
         shipping_address_id: cart.shipping_address_id,
         billing_address_id: cart.billing_address_id,
