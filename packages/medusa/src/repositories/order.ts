@@ -10,22 +10,28 @@ export class OrderRepository extends Repository<Order> {
   ): Promise<Order[]> {
     const entities = await this.find(optionsWithoutRelations)
     const entitiesIds = entities.map(({ id }) => id)
-
-    const groupedRelations = {}
-    for (const rel of relations) {
-      const [topLevel] = rel.split(".")
-      if (groupedRelations[topLevel]) {
-        groupedRelations[topLevel].push(rel)
-      } else {
-        groupedRelations[topLevel] = [rel]
-      }
-    }
-
     const entitiesIdsWithRelations = await Promise.all(
-      Object.entries(groupedRelations).map(([_, rels]) => {
+      relations.map(relation => {
+        const relationParts = relation.split(".") as string[]
+
+        const partialRelations = relationParts.reduce(
+          (acc: string[], _: string, index: number) => {
+            const toPush = []
+
+            for (let i = 0; i <= index; i++) {
+              toPush.push(relationParts[i])
+            }
+
+            acc.push(toPush.join("."))
+
+            return acc
+          },
+          [] as string[]
+        )
+
         return this.findByIds(entitiesIds, {
           select: ["id"],
-          relations: rels as string[],
+          relations: partialRelations,
         })
       })
     ).then(flatten)
@@ -41,9 +47,6 @@ export class OrderRepository extends Repository<Order> {
     relations: Array<keyof Order> = [],
     optionsWithoutRelations: Omit<FindManyOptions<Order>, "relations"> = {}
   ): Promise<Order> {
-    // Limit 1
-    optionsWithoutRelations.take = 1
-
     const result = await this.findWithRelations(
       relations,
       optionsWithoutRelations
