@@ -2,7 +2,7 @@ import { NotificationService } from "medusa-interfaces";
 
 class TestNotiService extends NotificationService {
   static identifier = "test-not";
-   
+
   constructor() {
     super();
   }
@@ -11,7 +11,7 @@ class TestNotiService extends NotificationService {
     return Promise.resolve();
   }
 
-  async resendNotification() {
+  async reSendNotification() {
     return Promise.resolve();
   }
 }

@@ -22,7 +22,6 @@ import { FulfillmentProvider } from "./fulfillment-provider"
 import { FulfillmentItem } from "./fulfillment-item"
 import { Swap } from "./swap"
 import { ClaimOrder } from "./claim-order"
-import { TrackingLink } from "./tracking-link"
 
 @Entity()
 export class Fulfillment {
@@ -76,13 +75,6 @@ export class Fulfillment {
     { eager: true, cascade: true }
   )
   items: FulfillmentItem[]
-
-  @OneToMany(
-    () => TrackingLink,
-    tl => tl.fulfillment,
-    { cascade: ["insert"] }
-  )
-  tracking_links: TrackingLink[]
 
   @Column({ type: "jsonb", default: [] })
   tracking_numbers: string[]

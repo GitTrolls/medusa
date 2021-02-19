@@ -328,9 +328,7 @@ class OrderService extends BaseService {
       query.select = select
     }
 
-    const rels = query.relations
-    delete query.relations
-    const raw = await orderRepo.findOneWithRelations(rels, query)
+    const raw = await orderRepo.findOneWithRelations(query.relations, query)
 
     if (!raw) {
       throw new MedusaError(
@@ -486,7 +484,6 @@ class OrderService extends BaseService {
         payment_status: "awaiting",
         discounts: cart.discounts,
         gift_cards: cart.gift_cards,
-        payment_status: "awaiting",
         shipping_methods: cart.shipping_methods,
         shipping_address_id: cart.shipping_address_id,
         billing_address_id: cart.billing_address_id,
@@ -553,13 +550,13 @@ class OrderService extends BaseService {
    * have been created in regards to the shipment.
    * @param {string} orderId - the id of the order that has been shipped
    * @param {string} fulfillmentId - the fulfillment that has now been shipped
-   * @param {TrackingLink[]} trackingLinks - array of tracking numebers
+   * @param {Array<String>} trackingNumbers - array of tracking numebers
    *   associated with the shipment
    * @param {Dictionary<String, String>} metadata - optional metadata to add to
    *   the fulfillment
    * @return {order} the resulting order following the update.
    */
-  async createShipment(orderId, fulfillmentId, trackingLinks, metadata = {}) {
+  async createShipment(orderId, fulfillmentId, trackingNumbers, metadata = {}) {
     return this.atomicPhase_(async manager => {
       const order = await this.retrieve(orderId, { relations: ["items"] })
       const shipment = await this.fulfillmentService_.retrieve(fulfillmentId)
@@ -573,7 +570,7 @@ class OrderService extends BaseService {
 
       const shipmentRes = await this.fulfillmentService_
         .withTransaction(manager)
-        .createShipment(fulfillmentId, trackingLinks, metadata)
+        .createShipment(fulfillmentId, trackingNumbers, metadata)
 
       order.fulfillment_status = "shipped"
       for (const item of order.items) {
