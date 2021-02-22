@@ -41,7 +41,6 @@ class OrderService extends BaseService {
     cartService,
     addressRepository,
     giftCardService,
-    draftOrderService,
     eventBusService,
   }) {
     super()
@@ -99,9 +98,6 @@ class OrderService extends BaseService {
 
     /** @private @constant {SwapService} */
     this.swapService_ = swapService
-
-    /** @private @constant {DraftOrderService} */
-    this.draftOrderService_ = draftOrderService
   }
 
   withTransaction(manager) {
@@ -124,11 +120,9 @@ class OrderService extends BaseService {
       cartService: this.cartService_,
       swapService: this.swapService_,
       giftCardService: this.giftCardService_,
-      draftOrderService: this.draftOrderService_,
     })
 
     cloned.transactionManager_ = manager
-    cloned.manager_ = manager
 
     return cloned
   }
@@ -488,11 +482,11 @@ class OrderService extends BaseService {
       }
 
       const orderRepo = manager.getCustomRepository(this.orderRepository_)
-
-      const toCreate = {
+      const o = await orderRepo.create({
         payment_status: "awaiting",
         discounts: cart.discounts,
         gift_cards: cart.gift_cards,
+        payment_status: "awaiting",
         shipping_methods: cart.shipping_methods,
         shipping_address_id: cart.shipping_address_id,
         billing_address_id: cart.billing_address_id,
@@ -503,17 +497,7 @@ class OrderService extends BaseService {
         tax_rate: region.tax_rate,
         currency_code: region.currency_code,
         metadata: cart.metadata || {},
-      }
-
-      if (cart.type === "draft_order") {
-        const draft = await this.draftOrderService_
-          .withTransaction(manager)
-          .retrieveByCartId(cart.id)
-
-        toCreate.draft_order_id = draft.id
-      }
-
-      const o = await orderRepo.create(toCreate)
+      })
 
       const result = await orderRepo.save(o)
 

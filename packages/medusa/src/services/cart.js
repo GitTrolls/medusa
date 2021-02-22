@@ -998,7 +998,6 @@ class CartService extends BaseService {
 
       // The region must have the provider id in its providers array
       if (
-        providerId !== "system" &&
         !(
           cart.region.payment_providers.length &&
           cart.region.payment_providers.find(({ id }) => providerId === id)
