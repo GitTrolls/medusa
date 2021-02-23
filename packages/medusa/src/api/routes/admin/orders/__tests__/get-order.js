@@ -10,8 +10,6 @@ const defaultRelations = [
   "shipping_methods",
   "payments",
   "fulfillments",
-  "fulfillments.tracking_links",
-  "fulfillments.items",
   "returns",
   "gift_cards",
   "gift_card_transactions",
