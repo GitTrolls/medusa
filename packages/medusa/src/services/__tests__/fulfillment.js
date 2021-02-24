@@ -95,7 +95,6 @@ describe("FulfillmentService", () => {
   })
 
   describe("createShipment", () => {
-    const trackingLinkRepository = MockRepository({ create: c => c })
     const fulfillmentRepository = MockRepository({
       findOne: () => Promise.resolve({ id: IdMap.getId("fulfillment") }),
     })
@@ -103,7 +102,6 @@ describe("FulfillmentService", () => {
     const fulfillmentService = new FulfillmentService({
       manager: MockManager,
       fulfillmentRepository,
-      trackingLinkRepository,
     })
 
     const now = new Date()
@@ -115,17 +113,14 @@ describe("FulfillmentService", () => {
     it("calls order model functions", async () => {
       await fulfillmentService.createShipment(
         IdMap.getId("fulfillment"),
-        [{ tracking_number: "1234" }, { tracking_number: "2345" }],
+        ["1234", "2345"],
         {}
       )
 
       expect(fulfillmentRepository.save).toHaveBeenCalledTimes(1)
       expect(fulfillmentRepository.save).toHaveBeenCalledWith({
         id: IdMap.getId("fulfillment"),
-        tracking_links: [
-          { tracking_number: "1234" },
-          { tracking_number: "2345" },
-        ],
+        tracking_numbers: ["1234", "2345"],
         metadata: {},
         shipped_at: now,
       })

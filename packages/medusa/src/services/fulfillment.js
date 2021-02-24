@@ -11,7 +11,6 @@ class FulfillmentService extends BaseService {
     manager,
     totalsService,
     fulfillmentRepository,
-    trackingLinkRepository,
     shippingProfileService,
     lineItemService,
     fulfillmentProviderService,
@@ -26,9 +25,6 @@ class FulfillmentService extends BaseService {
 
     /** @private @const {FulfillmentRepository} */
     this.fulfillmentRepository_ = fulfillmentRepository
-
-    /** @private @const {TrackingLinkRepository} */
-    this.trackingLinkRepository_ = trackingLinkRepository
 
     /** @private @const {ShippingProfileService} */
     this.shippingProfileService_ = shippingProfileService
@@ -48,7 +44,6 @@ class FulfillmentService extends BaseService {
     const cloned = new FulfillmentService({
       manager: transactionManager,
       totalsService: this.totalsService_,
-      trackingLinkRepository: this.trackingLinkRepository_,
       fulfillmentRepository: this.fulfillmentRepository_,
       shippingProfileService: this.shippingProfileService_,
       lineItemService: this.lineItemService_,
@@ -240,17 +235,14 @@ class FulfillmentService extends BaseService {
    * Creates a shipment by marking a fulfillment as shipped. Adds
    * tracking numbers and potentially more metadata.
    * @param {Order} fulfillmentId - the fulfillment to ship
-   * @param {TrackingLink[]} trackingNumbers - tracking numbers for the shipment
+   * @param {string[]} trackingNumbers - tracking numbers for the shipment
    * @param {object} metadata - potential metadata to add
    * @return {Fulfillment} the shipped fulfillment
    */
-  async createShipment(fulfillmentId, trackingLinks, metadata) {
+  async createShipment(fulfillmentId, trackingNumbers, metadata) {
     return this.atomicPhase_(async manager => {
       const fulfillmentRepository = manager.getCustomRepository(
         this.fulfillmentRepository_
-      )
-      const trackingLinkRepo = manager.getCustomRepository(
-        this.trackingLinkRepository_
       )
 
       const fulfillment = await this.retrieve(fulfillmentId, {
@@ -259,11 +251,7 @@ class FulfillmentService extends BaseService {
 
       const now = new Date()
       fulfillment.shipped_at = now
-
-      fulfillment.tracking_links = trackingLinks.map(tl =>
-        trackingLinkRepo.create(tl)
-      )
-
+      fulfillment.tracking_numbers = trackingNumbers
       fulfillment.metadata = {
         ...fulfillment.metadata,
         ...metadata,

@@ -671,12 +671,12 @@ class SwapService extends BaseService {
    * @param {string} swapId - the id of the swap that has been shipped.
    * @param {string} fulfillmentId - the id of the specific fulfillment that
    *   has been shipped
-   * @param {TrackingLink[]} trackingLinks - the tracking numbers associated
+   * @param {Array<string>} trackingNumbers - the tracking numbers associated
    *   with the shipment
    * @param {object} metadata - optional metadata to attach to the shipment.
    * @returns {Promise<Swap>} the updated swap with new fulfillments and status.
    */
-  async createShipment(swapId, fulfillmentId, trackingLinks, metadata = {}) {
+  async createShipment(swapId, fulfillmentId, trackingNumbers, metadata = {}) {
     return this.atomicPhase_(async manager => {
       const swap = await this.retrieve(swapId, {
         relations: ["additional_items"],
@@ -685,7 +685,7 @@ class SwapService extends BaseService {
       // Update the fulfillment to register
       const shipment = await this.fulfillmentService_
         .withTransaction(manager)
-        .createShipment(fulfillmentId, trackingLinks, metadata)
+        .createShipment(fulfillmentId, trackingNumbers, metadata)
 
       swap.fulfillment_status = "shipped"
 
