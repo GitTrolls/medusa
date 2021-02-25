@@ -14,23 +14,13 @@ export default async (req, res) => {
       selector.q = req.query.q
     }
 
-    let includeFields = []
-    if ("fields" in req.query) {
-      includeFields = req.query.fields.split(",")
-    }
-
-    let expandFields = []
-    if ("expand" in req.query) {
-      expandFields = req.query.expand.split(",")
-    }
-
     if ("is_giftcard" in req.query) {
       selector.is_giftcard = req.query.is_giftcard === "true"
     }
 
     const listConfig = {
-      select: includeFields.length ? includeFields : defaultFields,
-      relations: expandFields.length ? expandFields : defaultRelations,
+      select: defaultFields,
+      relations: defaultRelations,
       skip: offset,
       take: limit,
     }

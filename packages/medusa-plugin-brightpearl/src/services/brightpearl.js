@@ -5,7 +5,6 @@ import Brightpearl from "../utils/brightpearl"
 class BrightpearlService extends BaseService {
   constructor(
     {
-      manager,
       oauthService,
       totalsService,
       productVariantService,
@@ -19,7 +18,6 @@ class BrightpearlService extends BaseService {
   ) {
     super()
 
-    this.manager_ = manager
     this.options = options
     this.productVariantService_ = productVariantService
     this.regionService_ = regionService
@@ -191,12 +189,8 @@ class BrightpearlService extends BaseService {
         .retrieveBySKU(sku)
         .catch((_) => undefined)
       if (variant && variant.manage_inventory) {
-        await this.manager_.transaction((m) => {
-          return this.productVariantService_
-            .withTransaction(m)
-            .update(variant.id, {
-              inventory_quantity: onHand,
-            })
+        await this.productVariantService_.update(variant.id, {
+          inventory_quantity: onHand,
         })
       }
     }
