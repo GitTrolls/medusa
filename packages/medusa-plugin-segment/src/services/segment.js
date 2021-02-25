@@ -10,12 +10,11 @@ class SegmentService extends BaseService {
    *      write_key: Segment write key given in Segment dashboard
    *    }
    */
-  constructor({ totalsService, productService }, options) {
+  constructor({ totalsService }, options) {
     super()
 
     this.totalsService_ = totalsService
     this.options_ = options
-    this.productService_ = productService
 
     this.analytics_ = new Analytics(options.write_key)
   }
@@ -103,7 +102,7 @@ class SegmentService extends BaseService {
       tax,
       discount,
       coupon,
-      currency: order.currency_code.toUpperCase(),
+      currency: order.currency_code,
       products: await Promise.all(
         order.items.map(async (item) => {
           let name = item.title
@@ -130,20 +129,12 @@ class SegmentService extends BaseService {
             variant = item.variant.sku
           }
 
-          const product = await this.productService_.retrieve(
-            item.variant.product_id,
-            { relations: ["collection", "type"] }
-          )
-
           return {
             name,
             variant,
             price: lineTotal / 100 / item.quantity,
             reporting_revenue: revenue,
             product_id: item.variant.product_id,
-            category: product.collection?.title,
-            subtitle: product.subtitle,
-            type: product.type?.value,
             sku,
             quantity: item.quantity,
           }
