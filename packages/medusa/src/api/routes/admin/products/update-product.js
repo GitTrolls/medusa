@@ -90,11 +90,8 @@ export default async (req, res) => {
 
   try {
     const productService = req.scope.resolve("productService")
-    const entityManager = req.scope.resolve("manager")
 
-    await entityManager.transaction(async manager => {
-      await productService.withTransaction(manager).update(id, value)
-    })
+    await productService.update(id, value)
 
     const product = await productService.retrieve(id, {
       select: defaultFields,

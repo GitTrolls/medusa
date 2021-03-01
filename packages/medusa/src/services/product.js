@@ -80,7 +80,7 @@ class ProductService extends BaseService {
    * @param {Object} listOptions - the query object for find
    * @return {Promise} the result of the find operation
    */
-  async list(selector = {}, config = { relations: [], skip: 0, take: 20 }) {
+  list(selector = {}, config = { relations: [], skip: 0, take: 20 }) {
     const productRepo = this.manager_.getCustomRepository(
       this.productRepository_
     )
@@ -101,7 +101,7 @@ class ProductService extends BaseService {
       query.select = config.select
     }
 
-    let rels = query.relations
+    const rels = query.relations
     delete query.relations
 
     if (q) {
@@ -110,28 +110,27 @@ class ProductService extends BaseService {
       delete where.description
       delete where.title
 
-      const raw = await productRepo
-        .createQueryBuilder("product")
-        .leftJoinAndSelect("product.variants", "variant")
-        .leftJoinAndSelect("product.collection", "collection")
-        .select(["product.id"])
-        .where(where)
-        .andWhere(
+      query.join = {
+        alias: "product",
+        leftJoinAndSelect: {
+          variant: "product.variants",
+          collection: "product.collection",
+        },
+      }
+
+      query.where = qb => {
+        qb.where(where)
+
+        qb.andWhere(
           new Brackets(qb => {
-            qb.where(`product.description ILIKE :q`, { q: `%${q}%` })
-              .orWhere(`product.title ILIKE :q`, { q: `%${q}%` })
+            qb.where(`product.title ILIKE :q`, { q: `%${q}%` })
               .orWhere(`product.description ILIKE :q`, { q: `%${q}%` })
               .orWhere(`variant.title ILIKE :q`, { q: `%${q}%` })
               .orWhere(`variant.sku ILIKE :q`, { q: `%${q}%` })
               .orWhere(`collection.title ILIKE :q`, { q: `%${q}%` })
           })
         )
-        .getMany()
-
-      return productRepo.findWithRelations(
-        rels,
-        raw.map(i => i.id)
-      )
+      }
     }
 
     return productRepo.findWithRelations(rels, query)
