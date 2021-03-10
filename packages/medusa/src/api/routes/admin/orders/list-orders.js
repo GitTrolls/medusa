@@ -1,25 +1,16 @@
 import _ from "lodash"
-import { Not } from "typeorm"
-import { defaultRelations, defaultFields } from "./"
-/**
- * @oas [get] /orders
- * operationId: "GetOrders"
- * summary: "List Orders"
- * description: "Retrieves an list of Orders"
- * tags:
- *   - Order
- * responses:
- *   200:
- *     description: OK
- *     content:
- *       application/json:
- *         schema:
- *           properties:
- *             order:
- *               $ref: "#/components/schemas/order"
- */
+import { defaultRelations, defaultFields, filterableFields } from "./"
+import { MedusaError, Validator } from "medusa-core-utils"
 
 export default async (req, res) => {
+  const schema = Validator.orderFilter()
+
+  const { value, error } = schema.validate(req.query)
+
+  if (error) {
+    throw new MedusaError(MedusaError.Types.INVALID_DATA, error.details)
+  }
+
   try {
     const orderService = req.scope.resolve("orderService")
 
@@ -35,6 +26,8 @@ export default async (req, res) => {
     let includeFields = []
     if ("fields" in req.query) {
       includeFields = req.query.fields.split(",")
+      // Ensure created_at is included, since we are sorting on this
+      includeFields.push("created_at")
     }
 
     let expandFields = []
@@ -42,17 +35,9 @@ export default async (req, res) => {
       expandFields = req.query.expand.split(",")
     }
 
-    if ("new" in req.query) {
-      selector = {
-        payment_status: Not("captured"),
-        fulfillment_status: Not("shipped"),
-      }
-    }
-
-    if ("requires_more" in req.query) {
-      selector = {
-        payment_status: Not("captured"),
-        fulfillment_status: Not("shipped"),
+    for (const k of filterableFields) {
+      if (k in value) {
+        selector[k] = value[k]
       }
     }
 
@@ -69,8 +54,12 @@ export default async (req, res) => {
       listConfig
     )
 
+    let data = orders
+
     const fields = [...includeFields, ...expandFields]
-    const data = orders.map(o => _.pick(o, fields))
+    if (fields.length) {
+      data = orders.map(o => _.pick(o, fields))
+    }
 
     res.json({ orders: data, count, offset, limit })
   } catch (error) {

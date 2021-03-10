@@ -1,5 +1,4 @@
 export { Address } from "./models/address"
-export { Notification } from "./models/notification"
 export { Cart } from "./models/cart"
 export { ClaimImage } from "./models/claim-image"
 export { ClaimItem } from "./models/claim-item"

@@ -13,18 +13,12 @@ module.exports = {
         offset: -300,
       },
     },
-    `gatsby-transformer-json`,
+    `gatsby-transformer-yaml`,
     `gatsby-plugin-emotion`,
     {
       resolve: `gatsby-source-filesystem`,
       options: {
         path: `${__dirname}/../docs/api/store`,
-      },
-    },
-    {
-      resolve: `gatsby-source-filesystem`,
-      options: {
-        path: `${__dirname}/../docs/api`,
       },
     },
   ],
