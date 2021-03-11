@@ -629,7 +629,7 @@ class CartService extends BaseService {
       if ("discounts" in update) {
         cart.discounts = []
         for (const { code } of update.discounts) {
-          await this.applyDiscount_(cart, code)
+          await this.applyDiscount(cart, code)
         }
       }
 
@@ -797,7 +797,7 @@ class CartService extends BaseService {
    * @param {string} discountCode - the discount code
    * @return {Promise} the result of the update operation
    */
-  async applyDiscount_(cart, discountCode) {
+  async applyDiscount(cart, discountCode) {
     const discount = await this.discountService_.retrieveByCode(discountCode, [
       "rule",
       "regions",
@@ -1000,6 +1000,7 @@ class CartService extends BaseService {
 
       // The region must have the provider id in its providers array
       if (
+        providerId !== "system" &&
         !(
           cart.region.payment_providers.length &&
           cart.region.payment_providers.find(({ id }) => providerId === id)

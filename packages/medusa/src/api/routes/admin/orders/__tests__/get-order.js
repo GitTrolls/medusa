@@ -39,6 +39,7 @@ const defaultFields = [
   "payment_status",
   "display_id",
   "cart_id",
+  "draft_order_id",
   "customer_id",
   "email",
   "region_id",
