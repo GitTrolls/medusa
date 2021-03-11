@@ -116,7 +116,6 @@ import { ShippingMethod } from "./shipping-method"
 export enum CartType {
   DEFAULT = "default",
   SWAP = "swap",
-  DRAFT_ORDER = "draft_order",
   PAYMENT_LINK = "payment_link",
 }
 

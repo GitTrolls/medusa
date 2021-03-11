@@ -32,7 +32,6 @@ import { Refund } from "./refund"
 import { Swap } from "./swap"
 import { ClaimOrder } from "./claim-order"
 import { ShippingMethod } from "./shipping-method"
-import { DraftOrder } from "./draft-order"
 
 export enum OrderStatus {
   PENDING = "pending",
@@ -212,13 +211,6 @@ export class Order {
     { cascade: ["insert"] }
   )
   swaps: Swap[]
-
-  @Column({ nullable: true })
-  draft_order_id: string
-
-  @OneToOne(() => DraftOrder)
-  @JoinColumn({ name: "draft_order_id" })
-  draft_order: DraftOrder
 
   @OneToMany(
     () => LineItem,
