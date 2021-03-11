@@ -1,14 +1,18 @@
 const { dropDatabase } = require("pg-god");
 const path = require("path");
-const { Region, GiftCard } = require("@medusajs/medusa");
+const { Region } = require("@medusajs/medusa");
 
 const setupServer = require("../../../helpers/setup-server");
 const { useApi } = require("../../../helpers/use-api");
 const { initDb } = require("../../../helpers/use-db");
 
+const cartSeeder = require("../../helpers/cart-seeder");
+
+const fixtureWriter = require("../../utils/write-fixture").default;
+
 jest.setTimeout(30000);
 
-describe("/store/gift-cards", () => {
+describe("/store/carts", () => {
   let medusaProcess;
   let dbConnection;
 
@@ -20,12 +24,12 @@ describe("/store/gift-cards", () => {
 
   afterAll(async () => {
     dbConnection.close();
-    await dropDatabase({ databaseName: "medusa-integration" });
+    await dropDatabase({ databaseName: "medusa-fixtures" });
 
     medusaProcess.kill();
   });
 
-  describe("GET /store/gift-cards/:code", () => {
+  describe("POST /store/carts", () => {
     beforeEach(async () => {
       const manager = dbConnection.manager;
       await manager.insert(Region, {
@@ -34,32 +38,30 @@ describe("/store/gift-cards", () => {
         currency_code: "usd",
         tax_rate: 0,
       });
-      await manager.insert(GiftCard, {
-        id: "gift_test",
-        code: "GC_TEST",
-        value: 200,
-        balance: 120,
-        region_id: "region",
-      });
+      await manager.query(
+        `UPDATE "country" SET region_id='region' WHERE iso_2 = 'us'`
+      );
     });
 
     afterEach(async () => {
       const manager = dbConnection.manager;
-      await manager.query(`DELETE FROM "gift_card"`);
+      await manager.query(`DELETE FROM "cart"`);
+      await manager.query(
+        `UPDATE "country" SET region_id=NULL WHERE iso_2 = 'us'`
+      );
       await manager.query(`DELETE FROM "region"`);
     });
 
-    it("retrieves a gift card", async () => {
+    it("creates a cart", async () => {
       const api = useApi();
 
-      const response = await api.get("/store/gift-cards/GC_TEST");
+      const response = await api.post("/store/carts");
       expect(response.status).toEqual(200);
-      expect(response.data.gift_card).toEqual({
-        id: "gift_test",
-        code: "GC_TEST",
-        value: 200,
-        balance: 120,
-      });
+
+      const getRes = await api.post(`/store/carts/${response.data.cart.id}`);
+      expect(getRes.status).toEqual(200);
+
+      fixtureWriter.addFixture("cart", getRes.data.cart);
     });
   });
 });
