@@ -6,7 +6,7 @@ import { defaultRelations, defaultFields } from "./"
  * summary: "Retrieve Gift Card by Code"
  * description: "Retrieves a Gift Card by its associated unqiue code."
  * tags:
- *   - Gift Card
+ *   - Region
  * responses:
  *   200:
  *     description: OK
@@ -22,8 +22,6 @@ import { defaultRelations, defaultFields } from "./"
  *               description: The original value of the Gift Card.
  *             balance:
  *               description: The current balanace of the Gift Card
- *             region:
- *               $ref: "#/components/schemas/region"
  */
 export default async (req, res) => {
   const { code } = req.params

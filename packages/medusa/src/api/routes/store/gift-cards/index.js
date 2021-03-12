@@ -11,10 +11,10 @@ export default app => {
   return app
 }
 
-export const defaultRelations = ["region"]
+export const defaultRelations = []
 
 export const defaultFields = ["id", "code", "value", "balance"]
 
-export const allowedRelations = ["region"]
+export const allowedRelations = []
 
 export const allowedFields = ["id", "code", "value", "balance"]
