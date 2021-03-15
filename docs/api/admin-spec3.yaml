@@ -2739,6 +2739,24 @@ paths:
                     type: array
                     items:
                       $ref: '#/components/schemas/product_type'
+  /returns:
+    get:
+      operationId: GetReturns
+      summary: List Returns
+      description: Retrieves a list of Returns
+      tags:
+        - Return
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                properties:
+                  returns:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/return'
   '/regions/{id}/countries':
     post:
       operationId: PostRegionsRegionCountries
@@ -3151,24 +3169,6 @@ paths:
                 properties:
                   region:
                     $ref: '#/components/schemas/region'
-  /returns:
-    get:
-      operationId: GetReturns
-      summary: List Returns
-      description: Retrieves a list of Returns
-      tags:
-        - Return
-      responses:
-        '200':
-          description: OK
-          content:
-            application/json:
-              schema:
-                properties:
-                  returns:
-                    type: array
-                    items:
-                      $ref: '#/components/schemas/return'
   /shipping-options:
     post:
       operationId: PostShippingOptions
@@ -3480,24 +3480,6 @@ paths:
                 properties:
                   shipping_profiles:
                     $ref: '#/components/schemas/shipping_profile'
-  /swaps:
-    get:
-      operationId: GetSwaps
-      summary: List Swaps
-      description: Retrieves a list of Swaps.
-      tags:
-        - Swap
-      responses:
-        '200':
-          description: OK
-          content:
-            application/json:
-              schema:
-                properties:
-                  swaps:
-                    type: array
-                    items:
-                      $ref: '#/components/schemas/swap'
   '/store/currencies/{code}':
     post:
       operationId: PostStoreCurrenciesCode
@@ -3608,6 +3590,24 @@ paths:
                     type: array
                     items:
                       $ref: '#/components/schemas/store'
+  /swaps:
+    get:
+      operationId: GetSwaps
+      summary: List Swaps
+      description: Retrieves a list of Swaps.
+      tags:
+        - Swap
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                properties:
+                  swaps:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/swap'
   /variants:
     get:
       operationId: GetVariants
