@@ -7,7 +7,8 @@ executors:
       parameters:
         image:
           type: string
-          default: "12.13"
+          # First 10.x LTS release, but old Yarn
+          default: "10.14"
       docker:
         - image: circleci/node:<< parameters.image >>
 

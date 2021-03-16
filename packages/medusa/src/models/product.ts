@@ -46,7 +46,7 @@ export class Product {
   @Column({ default: false })
   is_giftcard: boolean
 
-  @ManyToMany(() => Image, { cascade: ["insert"] })
+  @ManyToMany(() => Image)
   @JoinTable({
     name: "product_images",
     joinColumn: {

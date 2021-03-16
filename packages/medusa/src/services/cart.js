@@ -641,14 +641,6 @@ class CartService extends BaseService {
         }
       }
 
-      if ("context" in update) {
-        const prevContext = cart.context || {}
-        cart.context = {
-          ...prevContext,
-          ...update.context,
-        }
-      }
-
       const result = await cartRepo.save(cart)
 
       if ("email" in update || "customer_id" in update) {
