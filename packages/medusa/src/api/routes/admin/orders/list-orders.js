@@ -1,12 +1,11 @@
 import _ from "lodash"
-import { defaultRelations, defaultFields, filterableFields } from "./"
-import { MedusaError, Validator } from "medusa-core-utils"
-
+import { Not } from "typeorm"
+import { defaultRelations, defaultFields } from "./"
 /**
  * @oas [get] /orders
  * operationId: "GetOrders"
  * summary: "List Orders"
- * description: "Retrieves an list of Orders"
+ * description: "Retrieves a list of Orders"
  * tags:
  *   - Order
  * responses:
@@ -16,18 +15,13 @@ import { MedusaError, Validator } from "medusa-core-utils"
  *       application/json:
  *         schema:
  *           properties:
- *             order:
- *               $ref: "#/components/schemas/order"
+ *             orders:
+ *               type: array
+ *               items:
+ *                 $ref: "#/components/schemas/order"
  */
+
 export default async (req, res) => {
-  const schema = Validator.orderFilter()
-
-  const { value, error } = schema.validate(req.query)
-
-  if (error) {
-    throw new MedusaError(MedusaError.Types.INVALID_DATA, error.details)
-  }
-
   try {
     const orderService = req.scope.resolve("orderService")
 
@@ -43,8 +37,6 @@ export default async (req, res) => {
     let includeFields = []
     if ("fields" in req.query) {
       includeFields = req.query.fields.split(",")
-      // Ensure created_at is included, since we are sorting on this
-      includeFields.push("created_at")
     }
 
     let expandFields = []
@@ -52,9 +44,17 @@ export default async (req, res) => {
       expandFields = req.query.expand.split(",")
     }
 
-    for (const k of filterableFields) {
-      if (k in value) {
-        selector[k] = value[k]
+    if ("new" in req.query) {
+      selector = {
+        payment_status: Not("captured"),
+        fulfillment_status: Not("shipped"),
+      }
+    }
+
+    if ("requires_more" in req.query) {
+      selector = {
+        payment_status: Not("captured"),
+        fulfillment_status: Not("shipped"),
       }
     }
 
@@ -71,12 +71,8 @@ export default async (req, res) => {
       listConfig
     )
 
-    let data = orders
-
     const fields = [...includeFields, ...expandFields]
-    if (fields.length) {
-      data = orders.map(o => _.pick(o, fields))
-    }
+    const data = orders.map(o => _.pick(o, fields))
 
     res.json({ orders: data, count, offset, limit })
   } catch (error) {

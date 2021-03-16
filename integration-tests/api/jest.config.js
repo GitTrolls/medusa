@@ -1,7 +1,13 @@
-// API
+const glob = require(`glob`);
+
+const pkgs = glob
+  .sync(`${__dirname}/*/`)
+  .map((p) => p.replace(__dirname, `<rootDir>/integration-tests`));
 
 module.exports = {
   testEnvironment: `node`,
+  rootDir: `../`,
+  roots: pkgs,
   testPathIgnorePatterns: [
     `/examples/`,
     `/www/`,
@@ -11,6 +17,6 @@ module.exports = {
     `__testfixtures__`,
     `.cache`,
   ],
-  transform: { "^.+\\.[jt]s$": `../../jest-transformer.js` },
-  setupFilesAfterEnv: ["../setup.js"],
+  transform: { "^.+\\.[jt]s$": `<rootDir>/jest-transformer.js` },
+  setupFilesAfterEnv: ["<rootDir>/integration-tests/setup.js"],
 };

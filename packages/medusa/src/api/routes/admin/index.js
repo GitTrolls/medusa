@@ -11,7 +11,6 @@ import shippingProfileRoutes from "./shipping-profiles"
 import discountRoutes from "./discounts"
 import giftCardRoutes from "./gift-cards"
 import orderRoutes from "./orders"
-import returnReasonRoutes from "./return-reasons"
 import storeRoutes from "./store"
 import uploadRoutes from "./uploads"
 import customerRoutes from "./customers"
@@ -65,7 +64,6 @@ export default (app, container, config) => {
   variantRoutes(route)
   collectionRoutes(route)
   notificationRoutes(route)
-  returnReasonRoutes(route)
 
   return app
 }

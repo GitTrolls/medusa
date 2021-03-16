@@ -11,6 +11,9 @@ describe("BaseService", () => {
           id: "1234",
           test1: ["123", "12", "1"],
           test2: Not("this"),
+          rec: {
+            first: ["1", "2", "3"],
+          },
         },
         {
           relations: ["1234"],
@@ -22,6 +25,9 @@ describe("BaseService", () => {
           id: "1234",
           test1: In(["123", "12", "1"]),
           test2: Not("this"),
+          rec: {
+            first: In(["1", "2", "3"]),
+          },
         },
         relations: ["1234"],
       })

@@ -23,7 +23,6 @@ class ProductService extends BaseService {
     productCollectionService,
     productTypeRepository,
     productTagRepository,
-    imageRepository,
   }) {
     super()
 
@@ -53,9 +52,6 @@ class ProductService extends BaseService {
 
     /** @private @const {ProductCollectionService} */
     this.productTagRepository_ = productTagRepository
-
-    /** @private @const {ImageRepository} */
-    this.imageRepository_ = imageRepository
   }
 
   withTransaction(transactionManager) {
@@ -73,7 +69,6 @@ class ProductService extends BaseService {
       productCollectionService: this.productCollectionService_,
       productTagRepository: this.productTagRepository_,
       productTypeRepository: this.productTypeRepository_,
-      imageRepository: this.imageRepository_,
     })
 
     cloned.transactionManager_ = transactionManager
@@ -238,7 +233,7 @@ class ProductService extends BaseService {
     })
 
     if (existing) {
-      return existing.id
+      return existing
     }
 
     const created = productTypeRepository.create(type)
@@ -282,17 +277,9 @@ class ProductService extends BaseService {
         this.productOptionRepository_
       )
 
-      const { options, tags, type, images, ...rest } = productObject
-
-      if (!rest.thumbnail && images && images.length) {
-        rest.thumbnail = images[0]
-      }
+      const { options, tags, type, ...rest } = productObject
 
       let product = productRepo.create(rest)
-
-      if (images && images.length) {
-        product.images = await this.upsertImages_(images)
-      }
 
       if (tags) {
         product.tags = await this.upsertProductTags_(tags)
@@ -323,28 +310,6 @@ class ProductService extends BaseService {
     })
   }
 
-  async upsertImages_(images) {
-    const imageRepository = this.manager_.getCustomRepository(
-      this.imageRepository_
-    )
-
-    let productImages = []
-    for (const img of images) {
-      const existing = await imageRepository.findOne({
-        where: { url: img },
-      })
-
-      if (existing) {
-        productImages.push(existing)
-      } else {
-        const created = imageRepository.create({ url: img })
-        productImages.push(created)
-      }
-    }
-
-    return productImages
-  }
-
   /**
    * Updates a product. Product variant updates should use dedicated methods,
    * e.g. `addVariant`, etc. The function will throw errors if metadata or
@@ -362,7 +327,7 @@ class ProductService extends BaseService {
       )
 
       const product = await this.retrieve(productId, {
-        relations: ["variants", "tags", "images"],
+        relations: ["variants", "tags"],
       })
 
       const {
@@ -377,10 +342,6 @@ class ProductService extends BaseService {
 
       if (!product.thumbnail && !update.thumbnail && images && images.length) {
         product.thumbnail = images[0]
-      }
-
-      if (images && images.length) {
-        product.images = await this.upsertImages_(images)
       }
 
       if (metadata) {

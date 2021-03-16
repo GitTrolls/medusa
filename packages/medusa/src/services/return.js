@@ -14,7 +14,6 @@ class ReturnService extends BaseService {
     returnRepository,
     returnItemRepository,
     shippingOptionService,
-    returnReasonService,
     fulfillmentProviderService,
   }) {
     super()
@@ -39,8 +38,6 @@ class ReturnService extends BaseService {
 
     /** @private @const {FulfillmentProviderService} */
     this.fulfillmentProviderService_ = fulfillmentProviderService
-
-    this.returnReasonService_ = returnReasonService
   }
 
   withTransaction(transactionManager) {
@@ -56,7 +53,6 @@ class ReturnService extends BaseService {
       returnItemRepository: this.returnItemRepository_,
       shippingOptionService: this.shippingOptionService_,
       fulfillmentProviderService: this.fulfillmentProviderService_,
-      returnReasonService: this.returnReasonService_,
     })
 
     cloned.transactionManager_ = transactionManager
@@ -76,9 +72,9 @@ class ReturnService extends BaseService {
    */
   async getFulfillmentItems_(order, items, transformer) {
     const toReturn = await Promise.all(
-      items.map(async data => {
-        const item = order.items.find(i => i.id === data.item_id)
-        return transformer(item, data.quantity, data)
+      items.map(async ({ item_id, quantity }) => {
+        const item = order.items.find(i => i.id === item_id)
+        return transformer(item, quantity)
       })
     )
 
@@ -131,11 +127,10 @@ class ReturnService extends BaseService {
    * @param {LineItem?} item - the line item to check has sufficient returnable
    *   quantity.
    * @param {number} quantity - the quantity that is requested to be returned.
-   * @param {object} additional - the quantity that is requested to be returned.
    * @return {LineItem} a line item where the quantity is set to the requested
    *   return quantity.
    */
-  validateReturnLineItem_(item, quantity, additional) {
+  validateReturnLineItem_(item, quantity) {
     if (!item) {
       throw new MedusaError(
         MedusaError.Types.INVALID_DATA,
@@ -151,20 +146,10 @@ class ReturnService extends BaseService {
       )
     }
 
-    const toReturn = {
+    return {
       ...item,
       quantity,
     }
-
-    if ("reason_id" in additional) {
-      toReturn.reason_id = additional.reason_id
-    }
-
-    if ("note" in additional) {
-      toReturn.note = additional.note
-    }
-
-    return toReturn
   }
 
   /**
@@ -255,15 +240,6 @@ class ReturnService extends BaseService {
         this.validateReturnLineItem_
       )
 
-      if (data.shipping_method) {
-        if (typeof data.shipping_method.price === "undefined") {
-          const opt = await this.shippingOptionService_.retrieve(
-            data.shipping_method.option_id
-          )
-          data.shipping_method.price = opt.amount
-        }
-      }
-
       let toRefund = data.refund_amount
       if (typeof toRefund !== "undefined") {
         const refundable = orderLike.total - orderLike.refunded_total
@@ -303,8 +279,6 @@ class ReturnService extends BaseService {
           item_id: i.id,
           quantity: i.quantity,
           requested_quantity: i.quantity,
-          reason_id: i.reason_id,
-          note: i.note,
           metadata: i.metadata,
         })
       )

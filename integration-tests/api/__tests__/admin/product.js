@@ -42,7 +42,6 @@ describe("/admin/products", () => {
       const manager = dbConnection.manager;
       await manager.query(`DELETE FROM "product_option_value"`);
       await manager.query(`DELETE FROM "product_option"`);
-      await manager.query(`DELETE FROM "image"`);
       await manager.query(`DELETE FROM "money_amount"`);
       await manager.query(`DELETE FROM "product_variant"`);
       await manager.query(`DELETE FROM "product"`);
@@ -63,7 +62,6 @@ describe("/admin/products", () => {
         title: "Test product",
         description: "test-product-description",
         type: { value: "test-type" },
-        images: ["test-image.png", "test-image-2.png"],
         collection_id: "test-collection",
         tags: [{ value: "123" }, { value: "456" }],
         options: [{ title: "size" }, { title: "color" }],
@@ -93,15 +91,6 @@ describe("/admin/products", () => {
         expect.objectContaining({
           title: "Test product",
           handle: "test-product",
-          images: expect.arrayContaining([
-            expect.objectContaining({
-              url: "test-image.png",
-            }),
-            expect.objectContaining({
-              url: "test-image-2.png",
-            }),
-          ]),
-          thumbnail: "test-image.png",
           tags: [
             expect.objectContaining({
               value: "123",
@@ -148,15 +137,13 @@ describe("/admin/products", () => {
       );
     });
 
-    it("updates a product (update tags, delete collection, delete type, replaces images)", async () => {
+    it("updates a product (update tags, delete collection, delete type)", async () => {
       const api = useApi();
 
       const payload = {
         collection_id: null,
         type: null,
         tags: [{ value: "123" }],
-        images: ["test-image-2.png"],
-        type: { value: "test-type-2" },
       };
 
       const response = await api
@@ -173,12 +160,6 @@ describe("/admin/products", () => {
 
       expect(response.data.product).toEqual(
         expect.objectContaining({
-          images: expect.arrayContaining([
-            expect.objectContaining({
-              url: "test-image-2.png",
-            }),
-          ]),
-          thumbnail: "test-image-2.png",
           tags: [
             expect.objectContaining({
               value: "123",
@@ -186,9 +167,6 @@ describe("/admin/products", () => {
           ],
           type: null,
           collection: null,
-          type: expect.objectContaining({
-            value: "test-type-2",
-          }),
         })
       );
     });

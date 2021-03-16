@@ -4,11 +4,10 @@ FIXTURE_PATTERN=$1
 
 lerna run build
 
-medusa-dev --set-path-to-repo .
-
 cd docs-util/fixture-gen
 
-medusa-dev --force-install --scan-once
+yarn
+yarn link @medusajs/medusa medusa-interfaces
 
 cd ../..
 

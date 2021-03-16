@@ -21,12 +21,6 @@ import { defaultRelations, defaultFields } from "./"
  *                 item_id:
  *                   description: The id of the Line Item.
  *                   type: string
- *                 reason_id:
- *                   description: The id of the Return Reason to use.
- *                   type: string
- *                 note:
- *                   description: An optional note with information about the Return.
- *                   type: string
  *                 quantity:
  *                   description: The quantity of the Line Item.
  *                   type: integer
@@ -66,8 +60,6 @@ export default async (req, res) => {
       .items({
         item_id: Validator.string().required(),
         quantity: Validator.number().required(),
-        reason_id: Validator.string().optional(),
-        note: Validator.string().optional(),
       })
       .required(),
     return_shipping: Validator.object()

@@ -1,15 +1,17 @@
 const { dropDatabase } = require("pg-god");
 const path = require("path");
 
-const { ReturnReason } = require("@medusajs/medusa");
-
 const setupServer = require("../../../helpers/setup-server");
 const { useApi } = require("../../../helpers/use-api");
 const { initDb } = require("../../../helpers/use-db");
 
+const adminSeeder = require("../../helpers/admin-seeder");
+
+const fixtureWriter = require("../../utils/write-fixture").default;
+
 jest.setTimeout(30000);
 
-describe("/store/return-reasons", () => {
+describe("/admin/auth", () => {
   let medusaProcess;
   let dbConnection;
 
@@ -21,23 +23,15 @@ describe("/store/return-reasons", () => {
 
   afterAll(async () => {
     await dbConnection.close();
-    await dropDatabase({ databaseName: "medusa-integration" });
+    await dropDatabase({ databaseName: "medusa-fixtures" });
 
     medusaProcess.kill();
   });
 
-  describe("GET /store/return-reasons", () => {
-    let rrId;
-
+  describe("POST /admin/products", () => {
     beforeEach(async () => {
       try {
-        const created = dbConnection.manager.create(ReturnReason, {
-          value: "too_big",
-          label: "Too Big",
-        });
-
-        const result = await dbConnection.manager.save(created);
-        rrId = result.id;
+        await adminSeeder(dbConnection);
       } catch (err) {
         console.log(err);
         throw err;
@@ -46,24 +40,23 @@ describe("/store/return-reasons", () => {
 
     afterEach(async () => {
       const manager = dbConnection.manager;
-      await manager.query(`DELETE FROM "return_reason"`);
+      await manager.query(`DELETE FROM "user"`);
     });
 
-    it("list return reasons", async () => {
+    it("authenticates user", async () => {
       const api = useApi();
 
-      const response = await api.get("/store/return-reasons").catch((err) => {
-        console.log(err);
-      });
-
+      const response = await api
+        .post("/admin/auth", {
+          email: "admin@medusa.js",
+          password: "secret_password",
+        })
+        .catch((err) => {
+          console.log(err);
+        });
       expect(response.status).toEqual(200);
 
-      expect(response.data.return_reasons).toEqual([
-        expect.objectContaining({
-          id: rrId,
-          value: "too_big",
-        }),
-      ]);
+      fixtureWriter.addFixture("user", response.data.user);
     });
   });
 });
