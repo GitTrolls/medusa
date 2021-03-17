@@ -11,7 +11,6 @@ const checkContentTypes = async (container) => {
     if (!product) {
       throw Error("Content type: `product` is missing in Contentful")
     }
-
     if (!variant) {
       throw Error("Content type: `productVariant` is missing in Contentful")
     }

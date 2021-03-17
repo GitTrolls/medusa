@@ -64,7 +64,12 @@ export default async (req, res) => {
           .required(),
         allocation: Validator.string().required(),
         valid_for: Validator.array().items(Validator.string()),
-        usage_limit: Validator.number().optional(),
+        usage_limit: Validator.number()
+          .positive()
+          .optional(),
+        usage_count: Validator.number()
+          .positive()
+          .optional(),
       })
       .required(),
     is_disabled: Validator.boolean().default(false),

@@ -7,7 +7,7 @@ import { defaultFields, defaultRelations } from "./"
  * summary: "Create a Swap"
  * description: "Creates a Swap. Swaps are used to handle Return of previously purchased goods and Fulfillment of replacements simultaneously."
  * parameters:
- *   - (path) id=* {string} The id of the Order.
+ *   - (path) id=* {string} The id of the Swap.
  * requestBody:
  *   content:
  *     application/json:

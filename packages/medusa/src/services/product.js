@@ -444,7 +444,6 @@ class ProductService extends BaseService {
         .withTransaction(manager)
         .emit(ProductService.Events.UPDATED, {
           id: result.id,
-          fields: Object.keys(update),
         })
       return result
     })
