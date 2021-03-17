@@ -237,6 +237,12 @@ paths:
                       quantity:
                         description: The quantity of the Product Variant to add
                         type: integer
+                context:
+                  description: >-
+                    An optional object to provide context to the Cart. The
+                    `context` field is automatically populated with `ip` and
+                    `user_agent`
+                  type: object
       tags:
         - Cart
       responses:
@@ -594,6 +600,9 @@ paths:
                 customer_id:
                   description: The id of the Customer to associate the Cart with.
                   type: string
+                context:
+                  description: An optional object to provide context to the Cart.
+                  type: object
       tags:
         - Cart
       responses:
@@ -977,6 +986,79 @@ paths:
                 password:
                   type: string
                   description: The new password to set for the Customer.
+  '/gift-cards/{code}':
+    get:
+      operationId: GetGiftCardsCode
+      summary: Retrieve Gift Card by Code
+      description: Retrieves a Gift Card by its associated unqiue code.
+      tags:
+        - Region
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                properties:
+<<<<<<< HEAD
+                  id:
+                    description: The id of the Gift Card
+                  code:
+                    description: The code of the Gift Card
+                  value:
+                    description: The original value of the Gift Card.
+                  balance:
+                    description: The current balanace of the Gift Card
+  '/products/{id}':
+    get:
+      operationId: GetProductsProduct
+      summary: Retrieves a Product
+      description: Retrieves a Product.
+      parameters:
+        - in: path
+          name: id
+          required: true
+          description: The id of the Product.
+          schema:
+            type: string
+      tags:
+        - Product
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                properties:
+                  product:
+                    $ref: '#/components/schemas/product'
+  /products:
+    get:
+      operationId: GetProducts
+      summary: List Products
+      description: Retrieves a list of Products.
+      tags:
+        - Product
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                properties:
+                  count:
+                    description: The total number of Products.
+                    type: integer
+                  offset:
+                    description: The offset for pagination.
+                    type: integer
+                  limit:
+                    description: 'The maxmimum number of Products to return,'
+                    type: integer
+                  products:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/product'
   '/orders/cart/{cart_id}':
     get:
       operationId: GetOrdersOrderCartId
@@ -1023,6 +1105,8 @@ paths:
             application/json:
               schema:
                 properties:
+=======
+>>>>>>> origin/master
                   customer:
                     $ref: '#/components/schemas/customer'
   '/regions/{id}':
@@ -1075,16 +1159,61 @@ paths:
                     type: array
                     items:
                       $ref: '#/components/schemas/region'
+<<<<<<< HEAD
+  '/swaps/{cart_id}':
+    get:
+      operationId: GetSwapsSwapCartId
+      summary: Retrieve Swap by Cart id
+      description: Retrieves a Swap by the id of the Cart used to confirm the Swap.
+      parameters:
+        - in: path
+          name: cart_id
+          required: true
+          description: The id of the Cart
+          schema:
+            type: string
+      tags:
+        - Swap
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                properties:
+                  swap:
+                    $ref: '#/components/schemas/swap'
+  /shipping-options:
+=======
   '/products/{id}':
+>>>>>>> origin/master
     get:
       operationId: GetProductsProduct
       summary: Retrieves a Product
       description: Retrieves a Product.
       parameters:
+<<<<<<< HEAD
+        - in: query
+          name: is_return
+          description: >-
+            Whether return Shipping Options should be included. By default all
+            Shipping Options are returned.
+          schema:
+            type: boolean
+        - in: query
+          name: product_ids
+          description: A comma separated list of Product ids to filter Shipping Options by.
+          schema:
+            type: string
+        - in: query
+          name: region_id
+          description: the Region to retrieve Shipping Options from.
+=======
         - in: path
           name: id
           required: true
           description: The id of the Product.
+>>>>>>> origin/master
           schema:
             type: string
       tags:
@@ -1124,6 +1253,9 @@ paths:
                   products:
                     type: array
                     items:
+<<<<<<< HEAD
+                      $ref: '#/components/schemas/shipping_option'
+=======
                       $ref: '#/components/schemas/product'
   '/swaps/{cart_id}':
     get:
@@ -1148,6 +1280,7 @@ paths:
                 properties:
                   swap:
                     $ref: '#/components/schemas/swap'
+>>>>>>> origin/master
   '/variants/{variant_id}':
     get:
       operationId: GetVariantsVariant
