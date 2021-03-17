@@ -298,10 +298,7 @@ class ProductVariantService extends BaseService {
       const result = await variantRepo.save(variant)
       await this.eventBus_
         .withTransaction(manager)
-        .emit(ProductVariantService.Events.UPDATED, {
-          id: result.id,
-          fields: Object.keys(update),
-        })
+        .emit(ProductVariantService.Events.UPDATED, result)
       return result
     })
   }

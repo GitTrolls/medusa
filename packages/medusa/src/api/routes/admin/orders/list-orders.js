@@ -6,7 +6,7 @@ import { MedusaError, Validator } from "medusa-core-utils"
  * @oas [get] /orders
  * operationId: "GetOrders"
  * summary: "List Orders"
- * description: "Retrieves a list of Orders"
+ * description: "Retrieves an list of Orders"
  * tags:
  *   - Order
  * responses:
@@ -16,10 +16,8 @@ import { MedusaError, Validator } from "medusa-core-utils"
  *       application/json:
  *         schema:
  *           properties:
- *             orders:
- *               type: array
- *               items:
- *                 $ref: "#/components/schemas/order"
+ *             order:
+ *               $ref: "#/components/schemas/order"
  */
 export default async (req, res) => {
   const schema = Validator.orderFilter()
