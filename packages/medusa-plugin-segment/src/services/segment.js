@@ -1,7 +1,6 @@
 import Analytics from "analytics-node"
 import axios from "axios"
 import { BaseService } from "medusa-interfaces"
-import { humanizeAmount } from "medusa-core-utils"
 
 class SegmentService extends BaseService {
   /**
@@ -44,7 +43,7 @@ class SegmentService extends BaseService {
       "EUR"
 
     if (fromCurrency === toCurrency) {
-      return this.rounded_(value)
+      return this.totalsService_.rounded(value)
     }
 
     const exchangeRate = await axios
@@ -55,17 +54,15 @@ class SegmentService extends BaseService {
         return data.rates[fromCurrency]
       })
 
-    return this.rounded_(value / exchangeRate)
+    return this.totalsService_.rounded(value / exchangeRate)
   }
 
   async buildOrder(order) {
-    const curr = order.currency_code
-
-    const subtotal = humanizeAmount(order.subtotal, curr)
-    const total = humanizeAmount(order.total, curr)
-    const tax = humanizeAmount(order.tax_total, curr)
-    const discount = humanizeAmount(order.discount_total, curr)
-    const shipping = humanizeAmount(order.shipping_total, curr)
+    const subtotal = order.subtotal / 100
+    const total = order.total / 100
+    const tax = order.tax_total / 100
+    const discount = order.discount_total / 100
+    const shipping = order.shipping_total / 100
     const revenue = total - tax
 
     let coupon
@@ -122,7 +119,7 @@ class SegmentService extends BaseService {
 
           const revenue = await this.getReportingValue(
             order.currency_code,
-            humanizeAmount(lineTotal, curr)
+            lineTotal / 100
           )
 
           let sku = ""
@@ -144,9 +141,7 @@ class SegmentService extends BaseService {
           return {
             name,
             variant,
-            price: this.rounded_(
-              humanizeAmount(lineTotal, curr) / item.quantity
-            ),
+            price: lineTotal / 100 / item.quantity,
             reporting_revenue: revenue,
             product_id: item.variant.product_id,
             category: product.collection?.title,
@@ -160,10 +155,6 @@ class SegmentService extends BaseService {
     }
 
     return orderData
-  }
-
-  rounded_(v) {
-    return Number(Math.round(v + "e2") + "e-2")
   }
 }
 

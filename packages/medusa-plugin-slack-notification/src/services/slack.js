@@ -1,13 +1,10 @@
 import axios from "axios"
-import { zeroDecimalCurrencies, humanizeAmount } from "medusa-core-utils"
 import { BaseService } from "medusa-interfaces"
 
 class SlackService extends BaseService {
   /**
    * @param {Object} options - options defined in `medusa-config.js`
    *    {
-   *      show_discount_code: If set to true the discount code used will be
-   *        displayed in the order channel.
    *      slack_url: "https://hooks.slack.com/services/...",
    *      admin_orders_url: "https:..../orders"
    *    }
@@ -61,14 +58,6 @@ class SlackService extends BaseService {
     const currencyCode = order.currency_code.toUpperCase()
     const taxRate = order.tax_rate / 100
 
-    const getDisplayAmount = (amount) => {
-      const humanAmount = humanizeAmount(amount, currencyCode)
-      if (zeroDecimalCurrencies.includes(currencyCode.toLowerCase())) {
-        return humanAmount
-      }
-      return humanAmount.toFixed(2)
-    }
-
     let blocks = [
       {
         type: "section",
@@ -94,46 +83,32 @@ class SlackService extends BaseService {
         type: "section",
         text: {
           type: "mrkdwn",
-          text: `*Subtotal*\t${getDisplayAmount(
-            subtotal
-          )} ${currencyCode}\n*Shipping*\t${getDisplayAmount(
-            shipping_total
-          )} ${currencyCode}\n*Discount Total*\t${getDisplayAmount(
-            discount_total
-          )} ${currencyCode}\n*Tax*\t${getDisplayAmount(
-            tax_total
-          )} ${currencyCode}\n*Total*\t${getDisplayAmount(
-            total
+          text: `*Subtotal*\t${(subtotal / 100).toFixed(
+            2
+          )} ${currencyCode}\n*Shipping*\t${(shipping_total / 100).toFixed(
+            2
+          )} ${currencyCode}\n*Discount Total*\t${(
+            discount_total / 100
+          ).toFixed(2)} ${currencyCode}\n*Tax*\t${(tax_total / 100).toFixed(
+            2
+          )} ${currencyCode}\n*Total*\t${(total / 100).toFixed(
+            2
           )} ${currencyCode}`,
         },
       },
     ]
 
-    if (order.gift_card_total) {
+    order.discounts.forEach((d) => {
       blocks.push({
         type: "section",
         text: {
           type: "mrkdwn",
-          text: `*Gift Card Total*\t${getDisplayAmount(
-            order.gift_card_total
-          )} ${currencyCode}`,
+          text: `*Promo Code*\t${d.code} ${d.rule.value}${
+            d.rule.type === "percentage" ? "%" : ` ${currencyCode}`
+          }`,
         },
       })
-    }
-
-    if (this.options_.show_discount_code) {
-      order.discounts.forEach((d) => {
-        blocks.push({
-          type: "section",
-          text: {
-            type: "mrkdwn",
-            text: `*Promo Code*\t${d.code} ${d.rule.value}${
-              d.rule.type === "percentage" ? "%" : ` ${currencyCode}`
-            }`,
-          },
-        })
-      })
-    }
+    })
 
     blocks.push({
       type: "divider",
@@ -144,15 +119,19 @@ class SlackService extends BaseService {
         type: "section",
         text: {
           type: "mrkdwn",
-          text: `*${lineItem.title}*\n${lineItem.quantity} x ${getDisplayAmount(
-            lineItem.unit_price * (1 + taxRate)
-          )} ${currencyCode}`,
+          text: `*${lineItem.title}*\n${lineItem.quantity} x ${(
+            (lineItem.unit_price / 100) *
+            (1 + taxRate)
+          ).toFixed(2)} ${currencyCode}`,
         },
       }
 
       if (lineItem.thumbnail) {
         let url = lineItem.thumbnail
-        if (lineItem.thumbnail.startsWith("//")) {
+        if (
+          !lineItem.thumbnail.startsWith("http:") &&
+          !lineItem.thumbnail.startsWith("https:")
+        ) {
           url = `https:${lineItem.thumbnail}`
         }
 

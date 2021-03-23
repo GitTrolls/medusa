@@ -1,7 +1,5 @@
-import SendGrid from "@sendgrid/mail"
-
 import { NotificationService } from "medusa-interfaces"
-import { humanizeAmount, zeroDecimalCurrencies } from "medusa-core-utils"
+import SendGrid from "@sendgrid/mail"
 
 class SendGridService extends NotificationService {
   static identifier = "sendgrid"
@@ -363,24 +361,18 @@ class SendGridService extends NotificationService {
       date: order.created_at.toDateString(),
       items,
       discounts,
-      subtotal: `${this.humanPrice_(
-        subtotal * (1 + taxRate),
-        currencyCode
-      )} ${currencyCode}`,
+      subtotal: `${this.humanPrice_(subtotal * (1 + taxRate))} ${currencyCode}`,
       gift_card_total: `${this.humanPrice_(
-        gift_card_total * (1 + taxRate),
-        currencyCode
+        gift_card_total * (1 + taxRate)
       )} ${currencyCode}`,
-      tax_total: `${this.humanPrice_(tax_total, currencyCode)} ${currencyCode}`,
+      tax_total: `${this.humanPrice_(tax_total)} ${currencyCode}`,
       discount_total: `${this.humanPrice_(
-        discount_total * (1 + taxRate),
-        currencyCode
+        discount_total * (1 + taxRate)
       )} ${currencyCode}`,
       shipping_total: `${this.humanPrice_(
-        shipping_total * (1 + taxRate),
-        currencyCode
+        shipping_total * (1 + taxRate)
       )} ${currencyCode}`,
-      total: `${this.humanPrice_(total, currencyCode)} ${currencyCode}`,
+      total: `${this.humanPrice_(total)} ${currencyCode}`,
     }
   }
 
@@ -458,23 +450,15 @@ class SendGridService extends NotificationService {
       has_shipping: !!returnRequest.shipping_method,
       email: order.email,
       items: this.processItems_(returnItems, taxRate, currencyCode),
-      subtotal: `${this.humanPrice_(
-        item_subtotal,
-        currencyCode
-      )} ${currencyCode}`,
-      shipping_total: `${this.humanPrice_(
-        shippingTotal,
-        currencyCode
-      )} ${currencyCode}`,
+      subtotal: `${this.humanPrice_(item_subtotal)} ${currencyCode}`,
+      shipping_total: `${this.humanPrice_(shippingTotal)} ${currencyCode}`,
       refund_amount: `${this.humanPrice_(
-        returnRequest.refund_amount,
-        currencyCode
+        returnRequest.refund_amount
       )} ${currencyCode}`,
       return_request: {
         ...returnRequest,
         refund_amount: `${this.humanPrice_(
-          returnRequest.refund_amount,
-          currencyCode
+          returnRequest.refund_amount
         )} ${currencyCode}`,
       },
       order,
@@ -555,18 +539,9 @@ class SendGridService extends NotificationService {
       email: order.email,
       items: this.processItems_(swap.additional_items, taxRate, currencyCode),
       return_items: returnItems,
-      return_total: `${this.humanPrice_(
-        returnTotal,
-        currencyCode
-      )} ${currencyCode}`,
-      refund_amount: `${this.humanPrice_(
-        refundAmount,
-        currencyCode
-      )} ${currencyCode}`,
-      additional_total: `${this.humanPrice_(
-        additionalTotal,
-        currencyCode
-      )} ${currencyCode}`,
+      return_total: `${this.humanPrice_(returnTotal)} ${currencyCode}`,
+      refund_amount: `${this.humanPrice_(refundAmount)} ${currencyCode}`,
+      additional_total: `${this.humanPrice_(additionalTotal)} ${currencyCode}`,
     }
   }
 
@@ -627,25 +602,12 @@ class SendGridService extends NotificationService {
       date: swap.updated_at.toDateString(),
       email: order.email,
       tax_amount: `${this.humanPrice_(
-        swap.difference_due * taxRate,
-        currencyCode
+        swap.difference_due * taxRate
       )} ${currencyCode}`,
-      paid_total: `${this.humanPrice_(
-        swap.difference_due,
-        currencyCode
-      )} ${currencyCode}`,
-      return_total: `${this.humanPrice_(
-        returnTotal,
-        currencyCode
-      )} ${currencyCode}`,
-      refund_amount: `${this.humanPrice_(
-        refundAmount,
-        currencyCode
-      )} ${currencyCode}`,
-      additional_total: `${this.humanPrice_(
-        additionalTotal,
-        currencyCode
-      )} ${currencyCode}`,
+      paid_total: `${this.humanPrice_(swap.difference_due)} ${currencyCode}`,
+      return_total: `${this.humanPrice_(returnTotal)} ${currencyCode}`,
+      refund_amount: `${this.humanPrice_(refundAmount)} ${currencyCode}`,
+      additional_total: `${this.humanPrice_(additionalTotal)} ${currencyCode}`,
       fulfillment: shipment,
       tracking_links: shipment.tracking_links,
       tracking_number: shipment.tracking_numbers.join(", "),
@@ -685,20 +647,14 @@ class SendGridService extends NotificationService {
         ...i,
         thumbnail: this.normalizeThumbUrl_(i.thumbnail),
         price: `${this.humanPrice_(
-          i.unit_price * (1 + taxRate),
-          currencyCode
+          i.unit_price * (1 + taxRate)
         )} ${currencyCode}`,
       }
     })
   }
 
-  humanPrice_(amount, currency) {
-    if (!amount) {
-      return "0.00"
-    }
-
-    const normalized = humanizeAmount(amount, currency)
-    return normalized.toFixed(zeroDecimalCurrencies.includes(currency.toLowerCase()) ? 0 : 2)
+  humanPrice_(amount) {
+    return amount ? (amount / 100).toFixed(2) : "0.00"
   }
 
   normalizeThumbUrl_(url) {
