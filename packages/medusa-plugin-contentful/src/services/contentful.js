@@ -449,14 +449,9 @@ class ContentfulService extends BaseService {
       "options",
     ]
 
-    // Update came directly from product variant service so only act on a couple
-    // of fields. When the update comes from the product we want to ensure 
-    // references are set up correctly so we run through everything.
-    if (variant.fields) {
-      const found = variant.fields.find((f) => updateFields.includes(f))
-      if (!found) {
-        return
-      }
+    const found = variant.fields.find((f) => updateFields.includes(f))
+    if (!found) {
+      return
     }
 
     try {

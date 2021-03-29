@@ -83,35 +83,27 @@ class ClaimItemService extends BaseService {
         )
       }
 
-      let tagsToAdd = []
-      if (tags && tags.length) {
-        const claimTagRepo = manager.getCustomRepository(
-          this.claimTagRepository_
-        )
-        tagsToAdd = await Promise.all(
-          tags.map(async t => {
-            const normalized = t.trim().toLowerCase()
-            const existing = await claimTagRepo.findOne({
-              where: { value: normalized },
-            })
-            if (existing) {
-              return existing
-            }
-
-            return claimTagRepo.create({ value: normalized })
+      const claimTagRepo = manager.getCustomRepository(this.claimTagRepository_)
+      const tagsToAdd = await Promise.all(
+        tags.map(async t => {
+          const normalized = t.trim().toLowerCase()
+          const existing = await claimTagRepo.findOne({
+            where: { value: normalized },
           })
-        )
-      }
+          if (existing) {
+            return existing
+          }
 
-      let imagesToAdd = []
-      if (images && images.length) {
-        const claimImgRepo = manager.getCustomRepository(
-          this.claimImageRepository_
-        )
-        imagesToAdd = images.map(url => {
-          return claimImgRepo.create({ url })
+          return claimTagRepo.create({ value: normalized })
         })
-      }
+      )
+
+      const claimImgRepo = manager.getCustomRepository(
+        this.claimImageRepository_
+      )
+      const imagesToAdd = images.map(url => {
+        return claimImgRepo.create({ url })
+      })
 
       const created = ciRepo.create({
         ...rest,
