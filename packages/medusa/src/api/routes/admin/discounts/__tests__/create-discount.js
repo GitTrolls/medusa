@@ -11,7 +11,6 @@ describe("POST /admin/discounts", () => {
         payload: {
           code: "TEST",
           rule: {
-            description: "Test",
             type: "fixed",
             value: 10,
             allocation: "total",
@@ -34,7 +33,6 @@ describe("POST /admin/discounts", () => {
       expect(DiscountServiceMock.create).toHaveBeenCalledWith({
         code: "TEST",
         rule: {
-          description: "Test",
           type: "fixed",
           value: 10,
           allocation: "total",
@@ -53,7 +51,6 @@ describe("POST /admin/discounts", () => {
         payload: {
           code: "10%OFF",
           rule: {
-            description: "Test",
             value: 10,
             allocation: "total",
           },

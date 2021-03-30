@@ -30,7 +30,7 @@ export class DiscountRule {
   @PrimaryColumn()
   id: string
 
-  @Column({ nullable: true })
+  @Column()
   description: string
 
   @Column({
@@ -62,6 +62,12 @@ export class DiscountRule {
     },
   })
   valid_for: Product[]
+
+  @Column({ nullable: true })
+  usage_limit: number
+
+  @Column({ default: 0 })
+  usage_count: number
 
   @CreateDateColumn({ type: "timestamptz" })
   created_at: Date
@@ -115,6 +121,12 @@ export class DiscountRule {
  *     type: array
  *     items:
  *       $ref: "#/components/schemas/product"
+ *   usage_limit:
+ *     description: "The maximum number of times that a discount can be used."
+ *     type: integer
+ *   usage_count:
+ *     description: "The number of times a discount has been used."
+ *     type: integer
  *   created_at:
  *     description: "The date with timezone at which the resource was created."
  *     type: string
