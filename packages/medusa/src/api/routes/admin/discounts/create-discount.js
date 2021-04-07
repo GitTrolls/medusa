@@ -36,9 +36,6 @@ import { MedusaError, Validator } from "medusa-core-utils"
  *             type: array
  *             items:
  *               type: string
- *           usage_limit:
- *             type: number
- *             description: Maximum times the discount can be used
  *           metadata:
  *             description: An optional set of key-value pairs to hold additional information.
  *             type: object
@@ -67,14 +64,14 @@ export default async (req, res) => {
           .required(),
         allocation: Validator.string().required(),
         valid_for: Validator.array().items(Validator.string()),
+        usage_limit: Validator.number()
+          .positive()
+          .optional(),
       })
       .required(),
     is_disabled: Validator.boolean().default(false),
     starts_at: Validator.date().optional(),
     ends_at: Validator.date().optional(),
-    usage_limit: Validator.number()
-      .positive()
-      .optional(),
     regions: Validator.array()
       .items(Validator.string())
       .optional(),

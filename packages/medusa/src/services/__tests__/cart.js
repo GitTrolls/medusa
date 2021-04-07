@@ -1467,9 +1467,10 @@ describe("CartService", () => {
             id: IdMap.getId("limit-reached"),
             code: "limit-reached",
             regions: [{ id: IdMap.getId("good") }],
-            rule: {},
-            usage_count: 2,
-            usage_limit: 2,
+            rule: {
+              usage_count: 2,
+              usage_limit: 2,
+            },
           })
         }
         if (code === "null-count") {
@@ -1477,9 +1478,10 @@ describe("CartService", () => {
             id: IdMap.getId("null-count"),
             code: "null-count",
             regions: [{ id: IdMap.getId("good") }],
-            rule: {},
-            usage_count: null,
-            usage_limit: 2,
+            rule: {
+              usage_count: null,
+              usage_limit: 2,
+            },
           })
         }
         if (code === "FREESHIPPING") {
@@ -1628,9 +1630,10 @@ describe("CartService", () => {
             id: IdMap.getId("null-count"),
             code: "null-count",
             regions: [{ id: IdMap.getId("good") }],
-            usage_count: 0,
-            usage_limit: 2,
-            rule: {},
+            rule: {
+              usage_count: 0,
+              usage_limit: 2,
+            },
           },
         ],
         discount_total: 0,
