@@ -10,12 +10,10 @@ class MockRepo {
     findOneOrFail,
     save,
     findAndCount,
-    del,
   }) {
     this.create_ = create;
     this.update_ = update;
     this.remove_ = remove;
-    this.delete_ = del;
     this.softRemove_ = softRemove;
     this.find_ = find;
     this.findOne_ = findOne;
@@ -92,12 +90,6 @@ class MockRepo {
   findAndCount = jest.fn().mockImplementation((...args) => {
     if (this.findAndCount_) {
       return this.findAndCount_(...args);
-    }
-    return {};
-  });
-  delete = jest.fn().mockImplementation((...args) => {
-    if (this.delete_) {
-      return this.delete_(...args);
     }
     return {};
   });

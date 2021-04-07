@@ -1,8 +1,4 @@
 export default {
-  getRepository: function (repo) {
-    return repo;
-  },
-
   getCustomRepository: function (repo) {
     return repo;
   },

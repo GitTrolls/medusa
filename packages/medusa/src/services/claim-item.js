@@ -97,6 +97,7 @@ class ClaimItemService extends BaseService {
             if (existing) {
               return existing
             }
+
             return claimTagRepo.create({ value: normalized })
           })
         )
