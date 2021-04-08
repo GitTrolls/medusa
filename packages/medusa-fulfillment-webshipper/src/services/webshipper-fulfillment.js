@@ -244,8 +244,6 @@ class WebshipperFulfillmentService extends FulfillmentService {
 
     if (!webshipperOrder) {
       let invoice
-      let certificateOfOrigin
-
       if (this.invoiceGenerator_) {
         const base64Invoice = await this.invoiceGenerator_.createInvoice(
           fromOrder,
@@ -265,27 +263,6 @@ class WebshipperFulfillmentService extends FulfillmentService {
           .catch((err) => {
             throw err
           })
-
-        if (this.invoiceGenerator_.createCertificateOfOrigin) {
-          const base64Coo = await this.invoiceGenerator_.createCertificateOfOrigin(
-            fromOrder,
-            fulfillmentItems
-          )
-
-          certificateOfOrigin = await this.client_.documents
-            .create({
-              type: "documents",
-              attributes: {
-                document_size: this.options_.document_size || "A4",
-                document_format: "PDF",
-                base64: base64Coo,
-                document_type: "certificate",
-              },
-            })
-            .catch((err) => {
-              throw err
-            })
-        }
       }
 
       let id = fulfillment.id
@@ -358,25 +335,14 @@ class WebshipperFulfillmentService extends FulfillmentService {
           country_code: methodData.drop_point_country_code.toUpperCase(),
         }
       }
-
-      if (invoice || certificateOfOrigin) {
-        const docData = []
-        if (invoice) {
-          docData.push({
-            id: invoice.data.id,
-            type: invoice.data.type,
-          })
-        }
-
-        if (certificateOfOrigin) {
-          docData.push({
-            id: certificateOfOrigin.data.id,
-            type: certificateOfOrigin.data.type,
-          })
-        }
-
+      if (invoice) {
         newOrder.relationships.documents = {
-          data: docData,
+          data: [
+            {
+              id: invoice.data.id,
+              type: invoice.data.type,
+            },
+          ],
         }
       }
 
