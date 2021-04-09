@@ -30,6 +30,7 @@ class SendGridService extends NotificationService {
       fulfillmentService,
       fulfillmentProviderService,
       totalsService,
+      productVariantService,
     },
     options
   ) {
@@ -46,6 +47,7 @@ class SendGridService extends NotificationService {
     this.swapService_ = swapService
     this.fulfillmentService_ = fulfillmentService
     this.totalsService_ = totalsService
+    this.productVariantService_ = productVariantService
 
     SendGrid.setApiKey(options.api_key)
   }
@@ -121,6 +123,11 @@ class SendGridService extends NotificationService {
         return this.userPasswordResetData(eventData, attachmentGenerator)
       case "customer.password_reset":
         return this.customerPasswordResetData(eventData, attachmentGenerator)
+      case "restock-notification.restocked":
+        return await this.restockNotificationData(
+          eventData,
+          attachmentGenerator
+        )
       default:
         return {}
     }
@@ -154,6 +161,8 @@ class SendGridService extends NotificationService {
         return this.options_.user_password_reset_template
       case "customer.password_reset":
         return this.options_.customer_password_reset_template
+      case "restock-notification.restocked":
+        return this.options_.medusa_restock_template
       default:
         return null
     }
@@ -671,6 +680,19 @@ class SendGridService extends NotificationService {
     }
   }
 
+  async restockNotificationData({ variant_id, emails }) {
+    const variant = await this.productVariantService_.retrieve(variant_id, {
+      relations: ["product"],
+    })
+
+    return {
+      product: variant.product,
+      variant,
+      variant_id,
+      emails,
+    }
+  }
+
   userPasswordResetData(data) {
     return data
   }
@@ -698,7 +720,9 @@ class SendGridService extends NotificationService {
     }
 
     const normalized = humanizeAmount(amount, currency)
-    return normalized.toFixed(zeroDecimalCurrencies.includes(currency.toLowerCase()) ? 0 : 2)
+    return normalized.toFixed(
+      zeroDecimalCurrencies.includes(currency.toLowerCase()) ? 0 : 2
+    )
   }
 
   normalizeThumbUrl_(url) {
