@@ -32,7 +32,7 @@
     "medusa-interfaces": "1.x"
   },
   "dependencies": {
-    "medusa-core-utils": "^1.1.4",
+    "medusa-core-utils": "^1.1.5",
     "medusa-test-utils": "^1.1.8",
     "mongoose": "^5.8.0"
   },
