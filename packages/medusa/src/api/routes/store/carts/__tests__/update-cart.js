@@ -65,7 +65,7 @@ describe("POST /store/carts/:id", () => {
       expect(CartServiceMock.retrieve).toHaveBeenCalledWith(
         IdMap.getId("emptyCart"),
         {
-          relations: ["payment_sessions", "shipping_methods"],
+          relations: ["payment_sessions"],
         }
       )
       expect(CartServiceMock.retrieve).toHaveBeenCalledWith(

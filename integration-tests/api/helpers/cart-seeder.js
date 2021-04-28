@@ -4,17 +4,10 @@ const {
   Cart,
   DiscountRule,
   Discount,
-  ShippingProfile,
-  ShippingOption,
-  ShippingMethod,
 } = require("@medusajs/medusa");
 
 module.exports = async (connection, data = {}) => {
   const manager = connection.manager;
-
-  const defaultProfile = await manager.findOne(ShippingProfile, {
-    type: "default",
-  });
 
   const r = manager.create(Region, {
     id: "test-region",
@@ -23,25 +16,23 @@ module.exports = async (connection, data = {}) => {
     tax_rate: 0,
   });
 
-  const freeRule = manager.create(DiscountRule, {
-    id: "free-shipping-rule",
-    description: "Free shipping rule",
-    type: "free_shipping",
-    value: 100,
+  await manager.insert(DiscountRule, {
+    id: "test-discount-rule",
+    description: "Dynamic rule",
+    type: "percentage",
+    value: 10,
     allocation: "total",
   });
 
-  const freeDisc = manager.create(Discount, {
-    id: "free-shipping",
-    code: "FREE_SHIPPING",
-    is_dynamic: false,
+  await manager.insert(Discount, {
+    id: "test-discount",
+    code: "DYNAMIC",
+    rule_id: "test-discount-rule",
+    is_dynamic: true,
+    usage_count: 0,
+    usage_limit: 1,
     is_disabled: false,
   });
-
-  freeDisc.regions = [r];
-  freeDisc.rule = freeRule;
-
-  await manager.save(freeDisc);
 
   const d = await manager.create(Discount, {
     id: "test-discount",
@@ -82,17 +73,6 @@ module.exports = async (connection, data = {}) => {
     email: "some-customer@email.com",
   });
 
-  await manager.insert(ShippingOption, {
-    id: "test-option",
-    name: "test-option",
-    provider_id: "test-ful",
-    region_id: "test-region",
-    profile_id: defaultProfile.id,
-    price_type: "flat_rate",
-    amount: 1000,
-    data: {},
-  });
-
   const cart = manager.create(Cart, {
     id: "test-cart",
     customer_id: "some-customer",
@@ -108,12 +88,4 @@ module.exports = async (connection, data = {}) => {
   });
 
   await manager.save(cart);
-
-  await manager.insert(ShippingMethod, {
-    id: "test-method",
-    shipping_option_id: "test-option",
-    cart_id: "test-cart",
-    price: 1000,
-    data: {},
-  });
 };

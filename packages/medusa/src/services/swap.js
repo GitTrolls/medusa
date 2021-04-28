@@ -400,13 +400,8 @@ class SwapService extends BaseService {
 
       const order = swap.order
 
-      // filter out free shipping discounts
-      const discounts =
-        order?.discounts?.filter(({ rule }) => rule.type !== "free_shipping") ||
-        undefined
-
       const cart = await this.cartService_.withTransaction(manager).create({
-        discounts,
+        discounts: order.discounts,
         email: order.email,
         billing_address_id: order.billing_address_id,
         shipping_address_id: order.shipping_address_id,

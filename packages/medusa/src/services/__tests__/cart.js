@@ -1281,7 +1281,6 @@ describe("CartService", () => {
             profile_id: IdMap.getId(m.profile),
           },
         })),
-        discounts: [],
       }
     }
 
