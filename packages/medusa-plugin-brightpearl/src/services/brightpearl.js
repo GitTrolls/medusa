@@ -126,6 +126,7 @@ class BrightpearlService extends BaseService {
 
   async syncInventory() {
     const client = await this.getClient()
+    const variants = await this.productVariantService_.list()
 
     let search = true
     let bpProducts = []
@@ -140,39 +141,31 @@ class BrightpearlService extends BaseService {
     }
 
     if (bpProducts.length) {
-      const productRange = bpProducts
-        .map(({ productId }) => productId)
-        .join(",")
+      const productRange = `${bpProducts[0].productId}-${
+        bpProducts[bpProducts.length - 1].productId
+      }`
 
       const availabilities = await client.products.retrieveAvailability(
         productRange
       )
-
       return Promise.all(
-        bpProducts.map(async (bpProduct) => {
-          const { SKU: sku, productId } = bpProduct
-
-          const variant = await this.productVariantService_
-            .retrieveBySKU(sku, {
-              select: ["id", "manage_inventory", "inventory_quantity"],
-            })
-            .catch((_) => undefined)
-
-          const prodAvail = availabilities[productId]
-
-          let onHand = 0
-          if (
-            prodAvail &&
-            prodAvail.warehouses &&
-            prodAvail.warehouses[`${this.options.warehouse}`]
-          ) {
-            onHand = prodAvail.warehouses[`${this.options.warehouse}`].onHand
+        variants.map(async (v) => {
+          const brightpearlProduct = bpProducts.find(
+            (prod) => prod.SKU === v.sku
+          )
+          if (!brightpearlProduct) {
+            return
           }
 
-          if (variant && variant.manage_inventory) {
-            if (parseInt(variant.inventory_quantity) !== parseInt(onHand)) {
-              return this.productVariantService_.update(variant.id, {
-                inventory_quantity: parseInt(onHand),
+          const { productId } = brightpearlProduct
+          const availability = availabilities[productId]
+          if (availability) {
+            const onHand = availability.total.onHand
+
+            // Only update if the inventory levels have changed
+            if (parseInt(v.inventory_quantity) !== parseInt(onHand)) {
+              return this.productVariantService_.update(v.id, {
+                inventory_quantity: onHand,
               })
             }
           }
