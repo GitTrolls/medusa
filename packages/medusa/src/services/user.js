@@ -153,12 +153,9 @@ class UserService extends BaseService {
       const userRepo = manager.getCustomRepository(this.userRepository_)
 
       const validatedEmail = this.validateEmail_(user.email)
-      if (password) {
-        const hashedPassword = await this.hashPassword_(password)
-        user.password_hash = hashedPassword
-      }
-
+      const hashedPassword = await this.hashPassword_(password)
       user.email = validatedEmail
+      user.password_hash = hashedPassword
 
       const created = await userRepo.create(user)
 
