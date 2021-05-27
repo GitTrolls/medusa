@@ -22,7 +22,7 @@ export default async (req, res) => {
   try {
     const customerService = req.scope.resolve("customerService")
     const customer = await customerService.retrieve(id, {
-      relations: ["orders", "shipping_addresses"],
+      relations: ["orders"],
     })
 
     res.json({ customer })
