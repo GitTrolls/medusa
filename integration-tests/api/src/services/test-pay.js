@@ -28,7 +28,7 @@ class TestPayService extends PaymentService {
   }
 
   async authorizePayment(sessionData, context = {}) {
-    return { data: {}, status: "authorized" };
+    return {};
   }
 
   async updatePaymentData(sessionData, update) {
