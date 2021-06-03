@@ -50,7 +50,7 @@ export default async (req, res) => {
         value.variant_id,
         cart.region_id,
         value.quantity,
-        { metadata: value.metadata }
+        value.metadata
       )
       await cartService.withTransaction(m).addLineItem(id, line)
 
