@@ -57,7 +57,6 @@ const testOrder = generateOrder(
     currency_code: "dkk",
     region_id: IdMap.getId("region"),
     tax_rate: 0,
-    no_notification: true,
     shipping_address: {
       first_name: "test",
       last_name: "testson",
@@ -328,7 +327,6 @@ describe("SwapService", () => {
           order_id: IdMap.getId("test"),
           fulfillment_status: "not_fulfilled",
           payment_status: "not_paid",
-          no_notification: true,
           additional_items: [
             {
               unit_price: 100,
@@ -344,8 +342,8 @@ describe("SwapService", () => {
       it.each([
         [true, true],
         [false, false],
-        [undefined, true],
-      ])( "passes correct no_notification to eventBus with %s", async (input, expected) => {
+        [undefined, undefined]
+      ])( "passes correct notification to eventBus with %s", async (input, expected) => {
 
         await swapService.create(
           testOrder,
@@ -359,11 +357,11 @@ describe("SwapService", () => {
         )
 
         expect(eventBusService.emit).toHaveBeenCalledWith(
-          expect.any(String),
+          expect.anything(),
           {"id": undefined, "no_notification": expected})
       })
-      })
     })
+  })
 
   describe("receiveReturn", () => {
     beforeEach(() => {

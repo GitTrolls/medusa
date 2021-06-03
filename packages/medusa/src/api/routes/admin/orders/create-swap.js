@@ -46,7 +46,7 @@ import { defaultFields, defaultRelations } from "./"
  *                   description: The quantity of the Product Variant to ship.
  *                   type: integer
  *           no_notification:
- *             description: If set to true no notification will be send related to this Swap.
+ *             description: If set to true no notification will be send.
  *             type: boolean
  * tags:
  *   - Order
@@ -138,7 +138,7 @@ export default async (req, res) => {
                   value.return_items,
                   value.additional_items,
                   value.return_shipping,
-                  value.no_notification,
+                  no_notification,
                   { idempotency_key: idempotencyKey.idempotency_key }
                 )
 
