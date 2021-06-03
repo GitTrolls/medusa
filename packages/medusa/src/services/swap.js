@@ -204,7 +204,6 @@ class SwapService extends BaseService {
    *  the customer.
    * @param {ReturnShipping?} returnShipping - an optional shipping method for
    *  returning the returnItems.
-   * @param {boolean?} noNotification - an optional flag to disable sending notification when creating swap
    * @returns {Promise<Swap>} the newly created swap.
    */
   async create(
@@ -212,7 +211,6 @@ class SwapService extends BaseService {
     returnItems,
     additionalItems,
     returnShipping,
-    noNotification,
     custom = {}
   ) {
     return this.atomicPhase_(async manager => {
@@ -258,7 +256,6 @@ class SwapService extends BaseService {
         .withTransaction(manager)
         .emit(SwapService.Events.CREATED, {
           id: result.id,
-          no_notification: noNotification,
         })
 
       return result
