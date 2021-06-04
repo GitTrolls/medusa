@@ -359,9 +359,6 @@ describe("ShippingOptionService", () => {
     }
 
     const regionService = {
-      withTransaction: function() {
-        return this
-      },
       retrieve: () => {
         return Promise.resolve({ fulfillment_providers: [{ id: "provider" }] })
       },
