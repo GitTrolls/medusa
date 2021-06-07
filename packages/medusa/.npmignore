@@ -1,9 +1,5 @@
 src
-.prettierrc
-.env
 .babelrc.js
 .eslintrc
 .gitignore
-ormconfig.json
-tsconfig.json
 jest.config.md
