@@ -89,31 +89,17 @@ class LineItemService extends BaseService {
     return lineItem
   }
 
-  async generate(variantId, regionId, quantity, config = {}) {
+  async generate(variantId, regionId, quantity, metadata = {}) {
     const variant = await this.productVariantService_.retrieve(variantId, {
       relations: ["product"],
     })
 
     const region = await this.regionService_.retrieve(regionId)
 
-    let price
-    let shouldMerge = true
-
-    if (config.unit_price && typeof config.unit_price !== `undefined`) {
-      // if custom unit_price, we ensure positive values
-      // and we choose to not merge the items
-      shouldMerge = false
-      if (config.unit_price < 0) {
-        price = 0
-      } else {
-        price = config.unit_price
-      }
-    } else {
-      price = await this.productVariantService_.getRegionPrice(
-        variant.id,
-        region.id
-      )
-    }
+    const price = await this.productVariantService_.getRegionPrice(
+      variant.id,
+      region.id
+    )
 
     const toCreate = {
       unit_price: price,
@@ -124,8 +110,8 @@ class LineItemService extends BaseService {
       quantity: quantity || 1,
       allow_discounts: !variant.product.is_giftcard,
       is_giftcard: variant.product.is_giftcard,
-      metadata: config?.metadata || {},
-      should_merge: shouldMerge,
+      metadata: metadata || {},
+      should_merge: true,
     }
 
     return toCreate

@@ -67,7 +67,7 @@ describe("/admin/orders", () => {
       await manager.query(`DELETE FROM "user"`);
     });
 
-    it("gets orders", async () => {
+    it("creates a cart", async () => {
       const api = useApi();
 
       const response = await api

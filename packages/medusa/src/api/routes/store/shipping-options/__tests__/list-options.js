@@ -26,7 +26,6 @@ describe("GET /store/shipping-options", () => {
       expect(ShippingOptionServiceMock.list).toHaveBeenCalledTimes(1)
       expect(ShippingOptionServiceMock.list).toHaveBeenCalledWith(
         {
-          admin_only: false,
           profile_id: [undefined, undefined],
           region_id: "test-region",
         },

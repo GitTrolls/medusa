@@ -38,7 +38,6 @@ class OrderService extends BaseService {
     cartService,
     addressRepository,
     giftCardService,
-    draftOrderService,
     eventBusService,
   }) {
     super()
@@ -90,9 +89,6 @@ class OrderService extends BaseService {
 
     /** @private @constant {AddressRepository} */
     this.addressRepository_ = addressRepository
-
-    /** @private @constant {DraftOrderService} */
-    this.draftOrderService_ = draftOrderService
   }
 
   withTransaction(manager) {
@@ -114,11 +110,9 @@ class OrderService extends BaseService {
       totalsService: this.totalsService_,
       cartService: this.cartService_,
       giftCardService: this.giftCardService_,
-      draftOrderService: this.draftOrderService_,
     })
 
     cloned.transactionManager_ = manager
-    cloned.manager_ = manager
 
     return cloned
   }
@@ -248,8 +242,7 @@ class OrderService extends BaseService {
       query.relations = relations
     }
 
-    const raw = await orderRepo.findWithRelations(query.relations, query)
-    const count = await orderRepo.count(query)
+    const [raw, count] = await orderRepo.findAndCount(query)
     const orders = raw.map(r => this.decorateTotals_(r, totalsToSelect))
 
     return [orders, count]
@@ -468,9 +461,9 @@ class OrderService extends BaseService {
           )
         }
 
-        const paymentStatus = await this.paymentProviderService_.getStatus(
-          payment
-        )
+        const paymentStatus = await this.paymentProviderService_
+          .withTransaction(manager)
+          .getStatus(payment)
 
         // If payment status is not authorized, we throw
         if (paymentStatus !== "authorized" && paymentStatus !== "succeeded") {
@@ -482,11 +475,11 @@ class OrderService extends BaseService {
       }
 
       const orderRepo = manager.getCustomRepository(this.orderRepository_)
-
-      const toCreate = {
+      const o = await orderRepo.create({
         payment_status: "awaiting",
         discounts: cart.discounts,
         gift_cards: cart.gift_cards,
+        payment_status: "awaiting",
         shipping_methods: cart.shipping_methods,
         shipping_address_id: cart.shipping_address_id,
         billing_address_id: cart.billing_address_id,
@@ -497,17 +490,7 @@ class OrderService extends BaseService {
         tax_rate: region.tax_rate,
         currency_code: region.currency_code,
         metadata: cart.metadata || {},
-      }
-
-      if (cart.type === "draft_order") {
-        const draft = await this.draftOrderService_
-          .withTransaction(manager)
-          .retrieveByCartId(cart.id)
-
-        toCreate.draft_order_id = draft.id
-      }
-
-      const o = await orderRepo.create(toCreate)
+      })
 
       const result = await orderRepo.save(o)
 

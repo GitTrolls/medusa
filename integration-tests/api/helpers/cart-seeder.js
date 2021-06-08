@@ -7,7 +7,6 @@ const {
   ShippingProfile,
   ShippingOption,
   ShippingMethod,
-  Address,
 } = require("@medusajs/medusa");
 
 module.exports = async (connection, data = {}) => {
@@ -15,12 +14,6 @@ module.exports = async (connection, data = {}) => {
 
   const defaultProfile = await manager.findOne(ShippingProfile, {
     type: "default",
-  });
-
-  await manager.insert(Address, {
-    id: "test-general-address",
-    first_name: "superman",
-    country_code: "us",
   });
 
   const r = manager.create(Region, {
