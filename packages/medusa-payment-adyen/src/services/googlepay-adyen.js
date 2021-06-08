@@ -1,8 +1,8 @@
 import _ from "lodash"
 import { PaymentService } from "medusa-interfaces"
 
-class MobilePayAdyenService extends PaymentService {
-  static identifier = "mobilepay-adyen"
+class GooglePayAdyenService extends PaymentService {
+  static identifier = "paywithgoogle-adyen"
 
   constructor({ adyenService }) {
     super()
@@ -55,4 +55,4 @@ class MobilePayAdyenService extends PaymentService {
   }
 }
 
-export default MobilePayAdyenService
+export default GooglePayAdyenService

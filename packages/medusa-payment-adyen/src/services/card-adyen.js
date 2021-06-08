@@ -1,13 +1,17 @@
 import _ from "lodash"
 import { PaymentService } from "medusa-interfaces"
 
-class MobilePayAdyenService extends PaymentService {
-  static identifier = "mobilepay-adyen"
+class CardAdyenService extends PaymentService {
+  static identifier = "scheme-adyen"
 
   constructor({ adyenService }) {
     super()
 
     this.adyenService_ = adyenService
+  }
+
+  async retrieveSavedMethods(customer) {
+    return this.adyenService_.retrieveSavedMethods(customer)
   }
 
   async getStatus(paymentData) {
@@ -26,16 +30,16 @@ class MobilePayAdyenService extends PaymentService {
     return this.adyenService_.retrievePayment(data)
   }
 
+  async getPaymentData(data) {
+    return this.adyenService_.getPaymentData(data)
+  }
+
   async updatePayment(data, _) {
     return this.adyenService_.updatePayment(data)
   }
 
   async updatePaymentData(sessionData, update) {
     return this.adyenService_.updatePaymentData(sessionData, update)
-  }
-
-  async getPaymentData(data) {
-    return this.adyenService_.getPaymentData(data)
   }
 
   async deletePayment(data) {
@@ -55,4 +59,4 @@ class MobilePayAdyenService extends PaymentService {
   }
 }
 
-export default MobilePayAdyenService
+export default CardAdyenService

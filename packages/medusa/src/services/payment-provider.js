@@ -27,7 +27,6 @@ class PaymentProviderService extends BaseService {
 
     const cloned = new PaymentProviderService(this.container_)
     cloned.transactionManager_ = manager
-    cloned.manager_ = manager
 
     return cloned
   }
