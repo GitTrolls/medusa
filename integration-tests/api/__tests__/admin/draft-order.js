@@ -45,7 +45,6 @@ describe("/admin/draft-orders", () => {
       await manager.query(`DELETE FROM "product_variant"`);
       await manager.query(`DELETE FROM "product"`);
       await manager.query(`DELETE FROM "shipping_method"`);
-      await manager.query(`DELETE FROM "shipping_option_requirement"`);
       await manager.query(`DELETE FROM "shipping_option"`);
       await manager.query(`UPDATE "discount" SET rule_id=NULL`);
       await manager.query(`DELETE FROM "discount"`);
@@ -89,79 +88,6 @@ describe("/admin/draft-orders", () => {
         shipping_methods: [
           {
             option_id: "test-option",
-          },
-        ],
-      };
-
-      const response = await api
-        .post("/admin/draft-orders", payload, {
-          headers: {
-            Authorization: "Bearer test_token",
-          },
-        })
-        .catch((err) => {
-          console.log(err);
-        });
-      expect(response.status).toEqual(200);
-    });
-
-    it("fails to create a draft order with option requirement", async () => {
-      const api = useApi();
-
-      const payload = {
-        email: "oli@test.dk",
-        shipping_address: "oli-shipping",
-        items: [
-          {
-            quantity: 1,
-            metadata: {},
-            unit_price: 1,
-          },
-        ],
-        region_id: "test-region",
-        customer_id: "oli-test",
-        shipping_methods: [
-          {
-            option_id: "test-option-req",
-          },
-        ],
-      };
-
-      const response = await api
-        .post("/admin/draft-orders", payload, {
-          headers: {
-            Authorization: "Bearer test_token",
-          },
-        })
-        .catch((err) => {
-          return err.response;
-        });
-      expect(response.status).toEqual(400);
-    });
-
-    it("creates a draft order with option requirement", async () => {
-      const api = useApi();
-
-      const payload = {
-        email: "oli@test.dk",
-        shipping_address: "oli-shipping",
-        items: [
-          {
-            variant_id: "test-variant",
-            quantity: 2,
-            metadata: {},
-          },
-          {
-            quantity: 1,
-            metadata: {},
-            unit_price: 10000,
-          },
-        ],
-        region_id: "test-region",
-        customer_id: "oli-test",
-        shipping_methods: [
-          {
-            option_id: "test-option-req",
           },
         ],
       };
@@ -396,7 +322,6 @@ describe("/admin/draft-orders", () => {
       await manager.query(`DELETE FROM "product_variant"`);
       await manager.query(`DELETE FROM "product"`);
       await manager.query(`DELETE FROM "shipping_method"`);
-      await manager.query(`DELETE FROM "shipping_option_requirement"`);
       await manager.query(`DELETE FROM "shipping_option"`);
       await manager.query(`UPDATE "discount" SET rule_id=NULL`);
       await manager.query(`DELETE FROM "discount"`);
@@ -506,7 +431,6 @@ describe("/admin/draft-orders", () => {
       await manager.query(`DELETE FROM "product_variant"`);
       await manager.query(`DELETE FROM "product"`);
       await manager.query(`DELETE FROM "shipping_method"`);
-      await manager.query(`DELETE FROM "shipping_option_requirement"`);
       await manager.query(`DELETE FROM "shipping_option"`);
       await manager.query(`UPDATE "discount" SET rule_id=NULL`);
       await manager.query(`DELETE FROM "discount"`);
@@ -572,7 +496,6 @@ describe("/admin/draft-orders", () => {
       await manager.query(`DELETE FROM "product_variant"`);
       await manager.query(`DELETE FROM "product"`);
       await manager.query(`DELETE FROM "shipping_method"`);
-      await manager.query(`DELETE FROM "shipping_option_requirement"`);
       await manager.query(`DELETE FROM "shipping_option"`);
       await manager.query(`UPDATE "discount" SET rule_id=NULL`);
       await manager.query(`DELETE FROM "discount"`);
@@ -689,7 +612,6 @@ describe("/admin/draft-orders", () => {
       await manager.query(`DELETE FROM "product_variant"`);
       await manager.query(`DELETE FROM "product"`);
       await manager.query(`DELETE FROM "shipping_method"`);
-      await manager.query(`DELETE FROM "shipping_option_requirement"`);
       await manager.query(`DELETE FROM "shipping_option"`);
       await manager.query(`UPDATE "discount" SET rule_id=NULL`);
       await manager.query(`DELETE FROM "discount"`);
