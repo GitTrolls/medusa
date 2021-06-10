@@ -654,6 +654,37 @@ paths:
                 data:
                   type: object
                   description: The data to update the payment session with.
+  '/gift-cards/{code}':
+    get:
+      operationId: GetGiftCardsCode
+      summary: Retrieve Gift Card by Code
+      description: Retrieves a Gift Card by its associated unqiue code.
+      parameters:
+        - in: path
+          name: code
+          required: true
+          description: The unique Gift Card code.
+          schema:
+            type: string
+      tags:
+        - Gift Card
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                properties:
+                  id:
+                    description: The id of the Gift Card
+                  code:
+                    description: The code of the Gift Card
+                  value:
+                    description: The original value of the Gift Card.
+                  balance:
+                    description: The current balanace of the Gift Card
+                  region:
+                    $ref: '#/components/schemas/region'
   '/customers/{id}/addresses':
     post:
       operationId: PostCustomersCustomerAddresses
@@ -986,37 +1017,6 @@ paths:
                 password:
                   type: string
                   description: The new password to set for the Customer.
-  '/gift-cards/{code}':
-    get:
-      operationId: GetGiftCardsCode
-      summary: Retrieve Gift Card by Code
-      description: Retrieves a Gift Card by its associated unqiue code.
-      parameters:
-        - in: path
-          name: code
-          required: true
-          description: The unique Gift Card code.
-          schema:
-            type: string
-      tags:
-        - Gift Card
-      responses:
-        '200':
-          description: OK
-          content:
-            application/json:
-              schema:
-                properties:
-                  id:
-                    description: The id of the Gift Card
-                  code:
-                    description: The code of the Gift Card
-                  value:
-                    description: The original value of the Gift Card.
-                  balance:
-                    description: The current balanace of the Gift Card
-                  region:
-                    $ref: '#/components/schemas/region'
   '/orders/cart/{cart_id}':
     get:
       operationId: GetOrdersOrderCartId
@@ -1147,47 +1147,6 @@ paths:
                     type: array
                     items:
                       $ref: '#/components/schemas/product'
-  '/return-reasons/{id}':
-    get:
-      operationId: GetReturnReasonsReason
-      summary: Retrieve a Return Reason
-      description: Retrieves a Return Reason.
-      parameters:
-        - in: path
-          name: id
-          required: true
-          description: The id of the Return Reason.
-          schema:
-            type: string
-      tags:
-        - Return Reason
-      responses:
-        '200':
-          description: OK
-          content:
-            application/json:
-              schema:
-                properties:
-                  return_reason:
-                    $ref: '#/components/schemas/return_reason'
-  /return-reasons:
-    get:
-      operationId: GetReturnReasons
-      summary: List Return Reasons
-      description: Retrieves a list of Return Reasons.
-      tags:
-        - Return Reason
-      responses:
-        '200':
-          description: OK
-          content:
-            application/json:
-              schema:
-                properties:
-                  return_reasons:
-                    type: array
-                    items:
-                      $ref: '#/components/schemas/return_reason'
   '/regions/{id}':
     get:
       operationId: GetRegionsRegion
@@ -1346,6 +1305,47 @@ paths:
                     type: array
                     items:
                       $ref: '#/components/schemas/shipping_option'
+  '/return-reasons/{id}':
+    get:
+      operationId: GetReturnReasonsReason
+      summary: Retrieve a Return Reason
+      description: Retrieves a Return Reason.
+      parameters:
+        - in: path
+          name: id
+          required: true
+          description: The id of the Return Reason.
+          schema:
+            type: string
+      tags:
+        - Return Reason
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                properties:
+                  return_reason:
+                    $ref: '#/components/schemas/return_reason'
+  /return-reasons:
+    get:
+      operationId: GetReturnReasons
+      summary: List Return Reasons
+      description: Retrieves a list of Return Reasons.
+      tags:
+        - Return Reason
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                properties:
+                  return_reasons:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/return_reason'
   '/swaps/{cart_id}':
     get:
       operationId: GetSwapsSwapCartId
@@ -1682,6 +1682,8 @@ components:
         deleted_at:
           type: string
           format: date-time
+        no_notification:
+          type: boolean
         metadata:
           type: object
     claim_tag:
@@ -1829,9 +1831,6 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/product'
-        usage_limit:
-          description: The maximum number of times that a discount can be used.
-          type: integer
         created_at:
           description: The date with timezone at which the resource was created.
           type: string
@@ -1894,6 +1893,12 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/region'
+        usage_limit:
+          description: The maximum number of times that a discount can be used.
+          type: integer
+        usage_count:
+          description: The number of times a discount has been used.
+          type: integer
         created_at:
           description: The date with timezone at which the resource was created.
           type: string
@@ -1909,6 +1914,49 @@ components:
         metadata:
           description: An optional key-value map with additional information.
           type: object
+    draft-order:
+      title: DraftOrder
+      description: Represents a draft order
+      x-resourceId: draft-order
+      properties:
+        id:
+          type: string
+        status:
+          type: string
+          enum:
+            - open
+            - completed
+        display_id:
+          type: string
+        cart_id:
+          type: string
+        cart:
+          anyOf:
+            - $ref: '#/components/schemas/cart'
+        order_id:
+          type: string
+        order:
+          anyOf:
+            - $ref: '#/components/schemas/order'
+        canceled_at:
+          type: string
+          format: date-time
+        created_at:
+          type: string
+          format: date-time
+        update_at:
+          type: string
+          format: date-time
+        deleted_at:
+          type: string
+          format: date-time
+        completed_at:
+          type: string
+          format: date-time
+        metadata:
+          type: object
+        idempotency_key:
+          type: string
     fulfillment_item:
       title: Fulfillment Item
       description: >-
@@ -2527,6 +2575,10 @@ components:
           type: integer
         gift_card_total:
           type: integer
+        paid_total:
+          type: integer
+        no_notification:
+          type: boolean
     payment_provider:
       title: Payment Provider
       description: Represents a Payment Provider plugin and holds its installation status.
@@ -3332,6 +3384,11 @@ components:
           description: The date with timezone at which the resource was last updated.
           type: string
           format: date-time
+        no_notification:
+          description: >-
+            When set to true, no notification will be sent related to this
+            return.
+          type: boolean
         metadata:
           description: An optional key-value map with additional information.
           type: object
@@ -3692,6 +3749,9 @@ components:
           description: The date with timezone at which the resource was last updated.
           type: string
           format: date-time
+        no_notification:
+          description: 'If set to true, no notification will be sent related to this swap'
+          type: boolean
         metadata:
           description: An optional key-value map with additional information.
           type: object
