@@ -134,9 +134,6 @@ export class ClaimOrder {
   @DeleteDateColumn({ type: "timestamptz" })
   deleted_at: Date
 
-  @Column({ type: "boolean", nullable: true})
-  no_notification: Boolean
-
   @Column({ type: "jsonb", nullable: true })
   metadata: any
 
@@ -226,9 +223,6 @@ export class ClaimOrder {
  *   deleted_at:
  *     type: string
  *     format: date-time
- *   no_notification:
- *     description: "Flag for describing whether or not notifications related to this should be send."
- *     type: boolean
  *   metadata:
  *     type: object
  */
