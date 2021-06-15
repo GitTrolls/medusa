@@ -165,6 +165,10 @@ class NotificationService extends BaseService {
       return
     }
 
+    if(data['no_notification'] === true) {
+      return
+    }
+
     return Promise.all(
       subs.map(async providerId => {
         return this.send(eventName, data, providerId).catch(err => {
