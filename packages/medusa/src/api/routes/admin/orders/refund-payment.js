@@ -25,9 +25,6 @@ import { defaultRelations, defaultFields } from "./"
  *           note:
  *             description: A not with additional details about the Refund.
  *             type: string
- *           no_notification:
- *             description: If set to true no notification will be send related to this Swap.
- *             type: boolean
  * tags:
  *   - Order
  * responses:
@@ -50,7 +47,6 @@ export default async (req, res) => {
     note: Validator.string()
       .allow("")
       .optional(),
-    no_notification: Validator.boolean().optional(),
   })
 
   const { value, error } = schema.validate(req.body)
@@ -61,7 +57,7 @@ export default async (req, res) => {
   try {
     const orderService = req.scope.resolve("orderService")
 
-    await orderService.createRefund(id, value.amount, value.reason, value.note, value.no_notification)
+    await orderService.createRefund(id, value.amount, value.reason, value.note)
 
     const order = await orderService.retrieve(id, {
       select: defaultFields,
