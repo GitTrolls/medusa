@@ -62,7 +62,6 @@ const defaultFields = [
   "total",
   "paid_total",
   "refundable_amount",
-  "no_notification",
 ]
 
 describe("GET /admin/orders", () => {

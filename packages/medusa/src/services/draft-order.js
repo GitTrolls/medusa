@@ -248,8 +248,7 @@ class DraftOrderService extends BaseService {
         )
       }
 
-      const { items, shipping_methods, discounts, no_notification_order=undefined, ...rest } = data
-
+      const { items, shipping_methods, discounts, ...rest } = data
 
       if (discounts) {
         for (const { code } of discounts) {
@@ -264,7 +263,7 @@ class DraftOrderService extends BaseService {
         .withTransaction(manager)
         .create({ type: "draft_order", ...rest })
 
-      const draftOrder = draftOrderRepo.create({ cart_id: createdCart.id, no_notification_order})
+      const draftOrder = draftOrderRepo.create({ cart_id: createdCart.id })
       const result = await draftOrderRepo.save(draftOrder)
 
       await this.eventBus_
