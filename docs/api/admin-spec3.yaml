@@ -227,6 +227,119 @@ paths:
                 properties:
                   collection:
                     $ref: '#/components/schemas/product_collection'
+  /customers:
+    post:
+      operationId: PostCustomers
+      summary: Create a Customer
+      description: Creates a Customer.
+      parameters: []
+      tags:
+        - Customer
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                properties:
+                  customer:
+                    $ref: '#/components/schemas/customer'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - email
+                - first_name
+                - last_name
+              properties:
+                email:
+                  type: string
+                  description: The Customer's email address.
+                first_name:
+                  type: string
+                  description: The Customer's first name.
+                last_name:
+                  type: string
+                  description: The Customer's last name.
+                phone:
+                  type: string
+                  description: The Customer's phone number.
+    get:
+      operationId: GetCustomers
+      summary: List Customers
+      description: Retrieves a list of Customers.
+      tags:
+        - Customer
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                properties:
+                  customer:
+                    $ref: '#/components/schemas/customer'
+  '/customers/{id}':
+    get:
+      operationId: GetCustomersCustomer
+      summary: Retrieve a Customer
+      description: Retrieves a Customer.
+      parameters:
+        - in: path
+          name: id
+          required: true
+          description: The id of the Customer.
+          schema:
+            type: string
+      tags:
+        - Customer
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                properties:
+                  customer:
+                    $ref: '#/components/schemas/customer'
+    post:
+      operationId: PostCustomersCustomer
+      summary: Update a Customer
+      description: Updates a Customer.
+      parameters:
+        - in: path
+          name: id
+          required: true
+          description: The id of the Customer.
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              properties:
+                first_name:
+                  type: string
+                  description: The Customer's first name.
+                last_name:
+                  type: string
+                  description: The Customer's last name.
+                phone:
+                  description: The Customer's phone number.
+                  type: object
+      tags:
+        - Customer
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                properties:
+                  customer:
+                    $ref: '#/components/schemas/customer'
   '/discounts/{id}/regions/{region_id}':
     post:
       operationId: PostDiscountsDiscountRegionsRegion
@@ -365,9 +478,6 @@ paths:
                   type: array
                   items:
                     type: string
-                usage_limit:
-                  type: number
-                  description: Maximum times the discount can be used
                 metadata:
                   description: >-
                     An optional set of key-value pairs to hold additional
@@ -585,29 +695,6 @@ paths:
                 properties:
                   discount:
                     $ref: '#/components/schemas/discount'
-  '/discounts/code/{id}':
-    get:
-      operationId: GetDiscountsDiscountCode
-      summary: Retrieve a Discount by code
-      description: Retrieves a Discount by its discount code
-      parameters:
-        - in: path
-          name: code
-          required: true
-          description: The code of the Discount
-          schema:
-            type: string
-      tags:
-        - Discount
-      responses:
-        '200':
-          description: OK
-          content:
-            application/json:
-              schema:
-                properties:
-                  discount:
-                    $ref: '#/components/schemas/discount'
   /gift-cards:
     post:
       operationId: PostGiftCards
@@ -780,458 +867,6 @@ paths:
                 properties:
                   gift_card:
                     $ref: '#/components/schemas/gift_card'
-  /customers:
-    post:
-      operationId: PostCustomers
-      summary: Create a Customer
-      description: Creates a Customer.
-      parameters: []
-      tags:
-        - Customer
-      responses:
-        '200':
-          description: OK
-          content:
-            application/json:
-              schema:
-                properties:
-                  customer:
-                    $ref: '#/components/schemas/customer'
-      requestBody:
-        content:
-          application/json:
-            schema:
-              type: object
-              required:
-                - email
-                - first_name
-                - last_name
-              properties:
-                email:
-                  type: string
-                  description: The Customer's email address.
-                first_name:
-                  type: string
-                  description: The Customer's first name.
-                last_name:
-                  type: string
-                  description: The Customer's last name.
-                phone:
-                  type: string
-                  description: The Customer's phone number.
-    get:
-      operationId: GetCustomers
-      summary: List Customers
-      description: Retrieves a list of Customers.
-      tags:
-        - Customer
-      responses:
-        '200':
-          description: OK
-          content:
-            application/json:
-              schema:
-                properties:
-                  customer:
-                    $ref: '#/components/schemas/customer'
-  '/customers/{id}':
-    get:
-      operationId: GetCustomersCustomer
-      summary: Retrieve a Customer
-      description: Retrieves a Customer.
-      parameters:
-        - in: path
-          name: id
-          required: true
-          description: The id of the Customer.
-          schema:
-            type: string
-      tags:
-        - Customer
-      responses:
-        '200':
-          description: OK
-          content:
-            application/json:
-              schema:
-                properties:
-                  customer:
-                    $ref: '#/components/schemas/customer'
-    post:
-      operationId: PostCustomersCustomer
-      summary: Update a Customer
-      description: Updates a Customer.
-      parameters:
-        - in: path
-          name: id
-          required: true
-          description: The id of the Customer.
-          schema:
-            type: string
-      requestBody:
-        content:
-          application/json:
-            schema:
-              properties:
-                first_name:
-                  type: string
-                  description: The Customer's first name.
-                last_name:
-                  type: string
-                  description: The Customer's last name.
-                phone:
-                  description: The Customer's phone number.
-                  type: object
-      tags:
-        - Customer
-      responses:
-        '200':
-          description: OK
-          content:
-            application/json:
-              schema:
-                properties:
-                  customer:
-                    $ref: '#/components/schemas/customer'
-  /draft-orders:
-    post:
-      operationId: PostDraftOrders
-      summary: Create a Draft Order
-      description: Creates a Draft Order
-      requestBody:
-        content:
-          application/json:
-            schema:
-              properties:
-                status:
-                  description: The status of the draft order
-                  type: string
-                email:
-                  description: The email of the customer of the draft order
-                  type: string
-                billing_address:
-                  description: The Address to be used for billing purposes.
-                  anyOf:
-                    - $ref: '#/components/schemas/address'
-                shipping_address:
-                  description: The Address to be used for shipping.
-                  anyOf:
-                    - $ref: '#/components/schemas/address'
-                items:
-                  description: The Line Items that have been received.
-                  type: array
-                  items:
-                    properties:
-                      variant_id:
-                        description: >-
-                          The id of the Product Variant to generate the Line
-                          Item from.
-                        type: string
-                      unit_price:
-                        description: The potential custom price of the item.
-                        type: integer
-                      title:
-                        description: The potential custom title of the item.
-                        type: string
-                      quantity:
-                        description: The quantity of the Line Item.
-                        type: integer
-                      metadata:
-                        description: >-
-                          The optional key-value map with additional details
-                          about the Line Item.
-                        type: object
-                region_id:
-                  description: The id of the region for the draft order
-                  type: string
-                discounts:
-                  description: The discounts to add on the draft order
-                  type: array
-                  items:
-                    properties:
-                      code:
-                        description: The code of the discount to apply
-                        type: string
-                customer_id:
-                  description: The id of the customer to add on the draft order
-                  type: string
-                shipping_methods:
-                  description: The shipping methods for the draft order
-                  type: array
-                  items:
-                    properties:
-                      option_id:
-                        description: The id of the shipping option in use
-                        type: string
-                      data:
-                        description: >-
-                          The optional additional data needed for the shipping
-                          method
-                        type: object
-                      price:
-                        description: The potential custom price of the shipping
-                        type: integer
-                metadata:
-                  description: >-
-                    The optional key-value map with additional details about the
-                    Draft Order.
-                  type: object
-      tags:
-        - Draft Order
-      responses:
-        '200':
-          description: OK
-          content:
-            application/json:
-              schema:
-                properties:
-                  draft_order:
-                    $ref: '#/components/schemas/draft-order'
-    get:
-      operationId: GetDraftOrders
-      summary: List Draft Orders
-      description: Retrieves an list of Draft Orders
-      tags:
-        - Draft Order
-      responses:
-        '200':
-          description: OK
-          content:
-            application/json:
-              schema:
-                properties:
-                  draft_order:
-                    $ref: '#/components/schemas/draft-order'
-  '/draft-orders/{id}/line-items':
-    post:
-      operationId: PostDraftOrdersDraftOrderLineItems
-      summary: Create a Line Item for Draft Order
-      description: Creates a Line Item for the Draft Order
-      requestBody:
-        content:
-          application/json:
-            schema:
-              properties:
-                variant_id:
-                  description: >-
-                    The id of the Product Variant to generate the Line Item
-                    from.
-                  type: string
-                unit_price:
-                  description: The potential custom price of the item.
-                  type: integer
-                title:
-                  description: The potential custom title of the item.
-                  type: string
-                quantity:
-                  description: The quantity of the Line Item.
-                  type: integer
-                metadata:
-                  description: >-
-                    The optional key-value map with additional details about the
-                    Line Item.
-                  type: object
-      tags:
-        - Draft Order
-      responses:
-        '200':
-          description: OK
-          content:
-            application/json:
-              schema:
-                properties:
-                  draft_order:
-                    $ref: '#/components/schemas/draft-order'
-  '/draft-orders/{id}':
-    delete:
-      operationId: DeleteDraftOrdersDraftOrder
-      summary: Delete a Draft Order
-      description: Deletes a Draft Order
-      parameters:
-        - in: path
-          name: id
-          required: true
-          description: The id of the Draft Order.
-          schema:
-            type: string
-      tags:
-        - Draft Order
-      responses:
-        '200':
-          description: OK
-          content:
-            application/json:
-              schema:
-                properties:
-                  id:
-                    type: string
-                    description: The id of the deleted Draft Order.
-                  object:
-                    type: string
-                    description: The type of the object that was deleted.
-                  deleted:
-                    type: boolean
-    get:
-      operationId: GetDraftOrdersDraftOrder
-      summary: Retrieve a Draft Order
-      description: Retrieves a Draft Order.
-      parameters:
-        - in: path
-          name: id
-          required: true
-          description: The id of the Draft Order.
-          schema:
-            type: string
-      tags:
-        - Draft Order
-      responses:
-        '200':
-          description: OK
-          content:
-            application/json:
-              schema:
-                properties:
-                  draft_order:
-                    $ref: '#/components/schemas/draft-order'
-  '/draft-orders/{id}/line-items/{line_id}':
-    delete:
-      operationId: DeleteDraftOrdersDraftOrderLineItemsItem
-      summary: Delete a Line Item
-      description: Removes a Line Item from a Draft Order.
-      parameters:
-        - in: path
-          name: id
-          required: true
-          description: The id of the Draft Order.
-          schema:
-            type: string
-        - in: path
-          name: line_id
-          required: true
-          description: The id of the Draft Order.
-          schema:
-            type: string
-      tags:
-        - Draft Order
-      responses:
-        '200':
-          description: OK
-          content:
-            application/json:
-              schema:
-                properties:
-                  draft_order:
-                    $ref: '#/components/schemas/draft-order'
-    post:
-      operationId: PostDraftOrdersDraftOrderLineItemsItem
-      summary: Update a Line Item for a Draft Order
-      description: Updates a Line Item for a Draft Order
-      requestBody:
-        content:
-          application/json:
-            schema:
-              properties:
-                unit_price:
-                  description: The potential custom price of the item.
-                  type: integer
-                title:
-                  description: The potential custom title of the item.
-                  type: string
-                quantity:
-                  description: The quantity of the Line Item.
-                  type: integer
-                metadata:
-                  description: >-
-                    The optional key-value map with additional details about the
-                    Line Item.
-                  type: object
-      tags:
-        - Draft Order
-      responses:
-        '200':
-          description: OK
-          content:
-            application/json:
-              schema:
-                properties:
-                  draft_order:
-                    $ref: '#/components/schemas/draft-order'
-  '/draft-orders/{id}/register-payment':
-    post:
-      summary: Registers a payment for a Draft Order
-      operationId: PostDraftOrdersDraftOrderRegisterPayment
-      description: Registers a payment for a Draft Order.
-      parameters:
-        - in: path
-          name: id
-          required: true
-          description: The Draft Order id.
-          schema:
-            type: string
-      tags:
-        - Draft Order
-      responses:
-        '200':
-          description: OK
-          content:
-            application/json:
-              schema:
-                properties:
-                  draft_order:
-                    $ref: '#/components/schemas/draft-order'
-  '/admin/draft-orders/{id}':
-    post:
-      operationId: PostDraftOrdersDraftOrder
-      summary: Update a Draft Order"
-      description: Updates a Draft Order.
-      parameters:
-        - in: path
-          name: id
-          required: true
-          description: The id of the Draft Order.
-          schema:
-            type: string
-      requestBody:
-        content:
-          application/json:
-            schema:
-              properties:
-                region_id:
-                  type: string
-                  description: The id of the Region to create the Draft Order in.
-                email:
-                  type: string
-                  description: An email to be used on the Draft Order.
-                billing_address:
-                  description: The Address to be used for billing purposes.
-                  anyOf:
-                    - $ref: '#/components/schemas/address'
-                shipping_address:
-                  description: The Address to be used for shipping.
-                  anyOf:
-                    - $ref: '#/components/schemas/address'
-                discounts:
-                  description: An array of Discount codes to add to the Draft Order.
-                  type: array
-                  items:
-                    properties:
-                      code:
-                        description: The code that a Discount is identifed by.
-                        type: string
-                customer_id:
-                  description: The id of the Customer to associate the Draft Order with.
-                  type: string
-      tags:
-        - Draft Order
-      responses:
-        '200':
-          description: OK
-          content:
-            application/json:
-              schema:
-                properties:
-                  draft_order:
-                    $ref: '#/components/schemas/draft-order'
   /notifications:
     get:
       operationId: GetNotifications
@@ -1523,21 +1158,11 @@ paths:
                       price:
                         description: The price to charge for the Shipping Method
                         type: integer
-                shipping_address:
-                  type: object
-                  description: >-
-                    An optional shipping address to send the claim to. Defaults
-                    to the parent order's shipping address
                 refund_amount:
                   description: >-
                     The amount to refund the Customer when the Claim type is
                     `refund`.
                   type: integer
-                no_notification:
-                  description: >-
-                    If set to true no notification will be send related to this
-                    Claim.
-                  type: boolean
                 metadata:
                   description: >-
                     An optional set of key-value pairs to hold additional
@@ -1731,11 +1356,6 @@ paths:
                       quantity:
                         description: The quantity of the Product Variant to ship.
                         type: integer
-                no_notification:
-                  description: >-
-                    If set to true no notification will be send related to this
-                    Swap.
-                  type: boolean
       tags:
         - Order
       responses:
@@ -1916,6 +1536,54 @@ paths:
           description: The id of the Swap.
           schema:
             type: string
+      tags:
+        - Order
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                properties:
+                  order:
+                    $ref: '#/components/schemas/order'
+  '/orders/{id}/returns/{return_id}/receive':
+    post:
+      operationId: PostOrdersOrderReturnsReturnReceive
+      summary: Receive a Return
+      description: Registers a Return as received.
+      parameters:
+        - in: path
+          name: id
+          required: true
+          description: The id of the Order.
+          schema:
+            type: string
+        - in: path
+          name: return_id
+          required: true
+          description: The id of the Return.
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              properties:
+                items:
+                  description: The Line Items that have been received.
+                  type: array
+                  items:
+                    properties:
+                      item_id:
+                        description: The id of the Line Item.
+                        type: string
+                      quantity:
+                        description: The quantity of the Line Item.
+                        type: integer
+                refund:
+                  description: The amount to refund.
+                  type: integer
       tags:
         - Order
       responses:
@@ -2158,11 +1826,6 @@ paths:
                       price:
                         description: The price to charge for the Shipping Method
                         type: integer
-                no_notification:
-                  description: >-
-                    If set to true no notification will be send related to this
-                    Swap.
-                  type: boolean
                 metadata:
                   description: >-
                     An optional set of key-value pairs to hold additional
@@ -2179,418 +1842,6 @@ paths:
                 properties:
                   order:
                     $ref: '#/components/schemas/order'
-  '/regions/{id}/countries':
-    post:
-      operationId: PostRegionsRegionCountries
-      summary: Add Country
-      description: Adds a Country to the list of Countries in a Region
-      parameters:
-        - in: path
-          name: id
-          required: true
-          description: The id of the Region.
-          schema:
-            type: string
-      requestBody:
-        content:
-          application/json:
-            schema:
-              properties:
-                country_code:
-                  description: The 2 character ISO code for the Country.
-                  type: string
-      tags:
-        - Region
-      responses:
-        '200':
-          description: OK
-          content:
-            application/json:
-              schema:
-                properties:
-                  region:
-                    $ref: '#/components/schemas/region'
-  '/regions/{id}/fulfillment-providers':
-    post:
-      operationId: PostRegionsRegionFulfillmentProviders
-      summary: Add Fulfillment Provider
-      description: Adds a Fulfillment Provider to a Region
-      parameters:
-        - in: path
-          name: id
-          required: true
-          description: The id of the Region.
-          schema:
-            type: string
-      requestBody:
-        content:
-          application/json:
-            schema:
-              properties:
-                provider_id:
-                  description: The id of the Fulfillment Provider to add.
-                  type: string
-      tags:
-        - Region
-      responses:
-        '200':
-          description: OK
-          content:
-            application/json:
-              schema:
-                properties:
-                  region:
-                    $ref: '#/components/schemas/region'
-  '/regions/{id}/payment-providers':
-    post:
-      operationId: PostRegionsRegionPaymentProviders
-      summary: Add Payment Provider
-      description: Adds a Payment Provider to a Region
-      parameters:
-        - in: path
-          name: id
-          required: true
-          description: The id of the Region.
-          schema:
-            type: string
-      requestBody:
-        content:
-          application/json:
-            schema:
-              properties:
-                provider_id:
-                  description: The id of the Payment Provider to add.
-                  type: string
-      tags:
-        - Region
-      responses:
-        '200':
-          description: OK
-          content:
-            application/json:
-              schema:
-                properties:
-                  region:
-                    $ref: '#/components/schemas/region'
-  /regions:
-    post:
-      operationId: PostRegions
-      summary: Create a Region
-      description: Creates a Region
-      requestBody:
-        content:
-          application/json:
-            schema:
-              properties:
-                name:
-                  description: The name of the Region
-                  type: string
-                currency_code:
-                  description: The 3 character ISO currency code to use for the Region.
-                  type: string
-                tax_code:
-                  description: An optional tax code the Region.
-                  type: string
-                tax_rate:
-                  description: The tax rate to use on Orders in the Region.
-                  type: number
-                payment_providers:
-                  description: >-
-                    A list of Payment Providers that should be enabled for the
-                    Region
-                  type: array
-                  items:
-                    type: string
-                fulfillment_providers:
-                  description: >-
-                    A list of Fulfillment Providers that should be enabled for
-                    the Region
-                  type: array
-                  items:
-                    type: string
-                countries:
-                  description: A list of countries that should be included in the Region.
-                  type: array
-                  items:
-                    type: string
-      tags:
-        - Region
-      responses:
-        '200':
-          description: OK
-          content:
-            application/json:
-              schema:
-                properties:
-                  region:
-                    $ref: '#/components/schemas/region'
-    get:
-      operationId: GetRegions
-      summary: List Regions
-      description: Retrieves a list of Regions.
-      tags:
-        - Region
-      responses:
-        '200':
-          description: OK
-          content:
-            application/json:
-              schema:
-                properties:
-                  regions:
-                    type: array
-                    items:
-                      $ref: '#/components/schemas/region'
-  '/regions/{id}/metadata/{key}':
-    delete:
-      operationId: DeleteRegionsRegionMetadataKey
-      summary: Delete Metadata
-      description: Deletes a metadata key.
-      parameters:
-        - in: path
-          name: id
-          required: true
-          description: The id of the Region.
-          schema:
-            type: string
-        - in: path
-          name: key
-          required: true
-          description: The metadata key.
-          schema:
-            type: string
-      tags:
-        - Region
-      responses:
-        '200':
-          description: OK
-          content:
-            application/json:
-              schema:
-                properties:
-                  region:
-                    $ref: '#/components/schemas/region'
-  '/regions/{id}':
-    delete:
-      operationId: DeleteRegionsRegion
-      summary: Delete a Region
-      description: Deletes a Region.
-      parameters:
-        - in: path
-          name: id
-          required: true
-          description: The id of the Region.
-          schema:
-            type: string
-      tags:
-        - Region
-      responses:
-        '200':
-          description: OK
-          content:
-            application/json:
-              schema:
-                properties:
-                  id:
-                    type: string
-                    description: The id of the deleted Region.
-                  object:
-                    type: string
-                    description: The type of the object that was deleted.
-                  deleted:
-                    type: boolean
-    get:
-      operationId: GetRegionsRegion
-      summary: Retrieve a Region
-      description: Retrieves a Region.
-      parameters:
-        - in: path
-          name: id
-          required: true
-          description: The id of the Region.
-          schema:
-            type: string
-      tags:
-        - Region
-      responses:
-        '200':
-          description: OK
-          content:
-            application/json:
-              schema:
-                properties:
-                  region:
-                    $ref: '#/components/schemas/region'
-    post:
-      operationId: PostRegionsRegion
-      summary: Update a Region
-      description: Updates a Region
-      parameters:
-        - in: path
-          name: id
-          required: true
-          description: The id of the Region.
-          schema:
-            type: string
-      requestBody:
-        content:
-          application/json:
-            schema:
-              properties:
-                name:
-                  description: The name of the Region
-                  type: string
-                currency_code:
-                  description: The 3 character ISO currency code to use for the Region.
-                  type: string
-                tax_code:
-                  description: An optional tax code the Region.
-                  type: string
-                tax_rate:
-                  description: The tax rate to use on Orders in the Region.
-                  type: number
-                payment_providers:
-                  description: >-
-                    A list of Payment Providers that should be enabled for the
-                    Region
-                  type: array
-                  items:
-                    type: string
-                fulfillment_providers:
-                  description: >-
-                    A list of Fulfillment Providers that should be enabled for
-                    the Region
-                  type: array
-                  items:
-                    type: string
-                countries:
-                  description: A list of countries that should be included in the Region.
-                  type: array
-                  items:
-                    type: string
-      tags:
-        - Region
-      responses:
-        '200':
-          description: OK
-          content:
-            application/json:
-              schema:
-                properties:
-                  region:
-                    $ref: '#/components/schemas/region'
-  '/regions/{id}/fulfillment-options':
-    get:
-      operationId: GetRegionsRegionFulfillmentOptions
-      summary: List Fulfillment Options available in the Region
-      description: Gathers all the fulfillment options available to in the Region.
-      parameters:
-        - in: path
-          name: id
-          required: true
-          description: The id of the Region.
-          schema:
-            type: string
-      tags:
-        - Product
-      responses:
-        '200':
-          description: OK
-          content:
-            application/json:
-              schema:
-                properties:
-                  fulfillment_options:
-                    type: array
-                    items:
-                      type: object
-  '/regions/{id}/countries/{country_code}':
-    delete:
-      operationId: PostRegionsRegionCountriesCountry
-      summary: Remove Country
-      description: Removes a Country from the list of Countries in a Region
-      parameters:
-        - in: path
-          name: id
-          required: true
-          description: The id of the Region.
-          schema:
-            type: string
-        - in: path
-          name: country_code
-          required: true
-          description: The 2 character ISO code for the Country.
-          schema:
-            type: string
-      tags:
-        - Region
-      responses:
-        '200':
-          description: OK
-          content:
-            application/json:
-              schema:
-                properties:
-                  region:
-                    $ref: '#/components/schemas/region'
-  '/regions/{id}/fulfillment-providers/{provider_id}':
-    delete:
-      operationId: PostRegionsRegionFulfillmentProvidersProvider
-      summary: Remove Fulfillment Provider
-      description: Removes a Fulfillment Provider.
-      parameters:
-        - in: path
-          name: id
-          required: true
-          description: The id of the Region.
-          schema:
-            type: string
-        - in: path
-          name: provider_id
-          required: true
-          description: The id of the Fulfillment Provider.
-          schema:
-            type: string
-      tags:
-        - Region
-      responses:
-        '200':
-          description: OK
-          content:
-            application/json:
-              schema:
-                properties:
-                  region:
-                    $ref: '#/components/schemas/region'
-  '/regions/{id}/payment-providers/{provider_id}':
-    delete:
-      operationId: PostRegionsRegionPaymentProvidersProvider
-      summary: Remove Payment Provider
-      description: Removes a Payment Provider.
-      parameters:
-        - in: path
-          name: id
-          required: true
-          description: The id of the Region.
-          schema:
-            type: string
-        - in: path
-          name: provider_id
-          required: true
-          description: The id of the Payment Provider.
-          schema:
-            type: string
-      tags:
-        - Region
-      responses:
-        '200':
-          description: OK
-          content:
-            application/json:
-              schema:
-                properties:
-                  region:
-                    $ref: '#/components/schemas/region'
   '/products/{id}/options':
     post:
       operationId: PostProductsProductOptions
@@ -3496,6 +2747,418 @@ paths:
                     type: array
                     items:
                       $ref: '#/components/schemas/product_type'
+  '/regions/{id}/countries':
+    post:
+      operationId: PostRegionsRegionCountries
+      summary: Add Country
+      description: Adds a Country to the list of Countries in a Region
+      parameters:
+        - in: path
+          name: id
+          required: true
+          description: The id of the Region.
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              properties:
+                country_code:
+                  description: The 2 character ISO code for the Country.
+                  type: string
+      tags:
+        - Region
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                properties:
+                  region:
+                    $ref: '#/components/schemas/region'
+  '/regions/{id}/fulfillment-providers':
+    post:
+      operationId: PostRegionsRegionFulfillmentProviders
+      summary: Add Fulfillment Provider
+      description: Adds a Fulfillment Provider to a Region
+      parameters:
+        - in: path
+          name: id
+          required: true
+          description: The id of the Region.
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              properties:
+                provider_id:
+                  description: The id of the Fulfillment Provider to add.
+                  type: string
+      tags:
+        - Region
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                properties:
+                  region:
+                    $ref: '#/components/schemas/region'
+  '/regions/{id}/payment-providers':
+    post:
+      operationId: PostRegionsRegionPaymentProviders
+      summary: Add Payment Provider
+      description: Adds a Payment Provider to a Region
+      parameters:
+        - in: path
+          name: id
+          required: true
+          description: The id of the Region.
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              properties:
+                provider_id:
+                  description: The id of the Payment Provider to add.
+                  type: string
+      tags:
+        - Region
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                properties:
+                  region:
+                    $ref: '#/components/schemas/region'
+  /regions:
+    post:
+      operationId: PostRegions
+      summary: Create a Region
+      description: Creates a Region
+      requestBody:
+        content:
+          application/json:
+            schema:
+              properties:
+                name:
+                  description: The name of the Region
+                  type: string
+                currency_code:
+                  description: The 3 character ISO currency code to use for the Region.
+                  type: string
+                tax_code:
+                  description: An optional tax code the Region.
+                  type: string
+                tax_rate:
+                  description: The tax rate to use on Orders in the Region.
+                  type: number
+                payment_providers:
+                  description: >-
+                    A list of Payment Providers that should be enabled for the
+                    Region
+                  type: array
+                  items:
+                    type: string
+                fulfillment_providers:
+                  description: >-
+                    A list of Fulfillment Providers that should be enabled for
+                    the Region
+                  type: array
+                  items:
+                    type: string
+                countries:
+                  description: A list of countries that should be included in the Region.
+                  type: array
+                  items:
+                    type: string
+      tags:
+        - Region
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                properties:
+                  region:
+                    $ref: '#/components/schemas/region'
+    get:
+      operationId: GetRegions
+      summary: List Regions
+      description: Retrieves a list of Regions.
+      tags:
+        - Region
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                properties:
+                  regions:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/region'
+  '/regions/{id}/metadata/{key}':
+    delete:
+      operationId: DeleteRegionsRegionMetadataKey
+      summary: Delete Metadata
+      description: Deletes a metadata key.
+      parameters:
+        - in: path
+          name: id
+          required: true
+          description: The id of the Region.
+          schema:
+            type: string
+        - in: path
+          name: key
+          required: true
+          description: The metadata key.
+          schema:
+            type: string
+      tags:
+        - Region
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                properties:
+                  region:
+                    $ref: '#/components/schemas/region'
+  '/regions/{id}':
+    delete:
+      operationId: DeleteRegionsRegion
+      summary: Delete a Region
+      description: Deletes a Region.
+      parameters:
+        - in: path
+          name: id
+          required: true
+          description: The id of the Region.
+          schema:
+            type: string
+      tags:
+        - Region
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                properties:
+                  id:
+                    type: string
+                    description: The id of the deleted Region.
+                  object:
+                    type: string
+                    description: The type of the object that was deleted.
+                  deleted:
+                    type: boolean
+    get:
+      operationId: GetRegionsRegion
+      summary: Retrieve a Region
+      description: Retrieves a Region.
+      parameters:
+        - in: path
+          name: id
+          required: true
+          description: The id of the Region.
+          schema:
+            type: string
+      tags:
+        - Region
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                properties:
+                  region:
+                    $ref: '#/components/schemas/region'
+    post:
+      operationId: PostRegionsRegion
+      summary: Update a Region
+      description: Updates a Region
+      parameters:
+        - in: path
+          name: id
+          required: true
+          description: The id of the Region.
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              properties:
+                name:
+                  description: The name of the Region
+                  type: string
+                currency_code:
+                  description: The 3 character ISO currency code to use for the Region.
+                  type: string
+                tax_code:
+                  description: An optional tax code the Region.
+                  type: string
+                tax_rate:
+                  description: The tax rate to use on Orders in the Region.
+                  type: number
+                payment_providers:
+                  description: >-
+                    A list of Payment Providers that should be enabled for the
+                    Region
+                  type: array
+                  items:
+                    type: string
+                fulfillment_providers:
+                  description: >-
+                    A list of Fulfillment Providers that should be enabled for
+                    the Region
+                  type: array
+                  items:
+                    type: string
+                countries:
+                  description: A list of countries that should be included in the Region.
+                  type: array
+                  items:
+                    type: string
+      tags:
+        - Region
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                properties:
+                  region:
+                    $ref: '#/components/schemas/region'
+  '/regions/{id}/fulfillment-options':
+    get:
+      operationId: GetRegionsRegionFulfillmentOptions
+      summary: List Fulfillment Options available in the Region
+      description: Gathers all the fulfillment options available to in the Region.
+      parameters:
+        - in: path
+          name: id
+          required: true
+          description: The id of the Region.
+          schema:
+            type: string
+      tags:
+        - Product
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                properties:
+                  fulfillment_options:
+                    type: array
+                    items:
+                      type: object
+  '/regions/{id}/countries/{country_code}':
+    delete:
+      operationId: PostRegionsRegionCountriesCountry
+      summary: Remove Country
+      description: Removes a Country from the list of Countries in a Region
+      parameters:
+        - in: path
+          name: id
+          required: true
+          description: The id of the Region.
+          schema:
+            type: string
+        - in: path
+          name: country_code
+          required: true
+          description: The 2 character ISO code for the Country.
+          schema:
+            type: string
+      tags:
+        - Region
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                properties:
+                  region:
+                    $ref: '#/components/schemas/region'
+  '/regions/{id}/fulfillment-providers/{provider_id}':
+    delete:
+      operationId: PostRegionsRegionFulfillmentProvidersProvider
+      summary: Remove Fulfillment Provider
+      description: Removes a Fulfillment Provider.
+      parameters:
+        - in: path
+          name: id
+          required: true
+          description: The id of the Region.
+          schema:
+            type: string
+        - in: path
+          name: provider_id
+          required: true
+          description: The id of the Fulfillment Provider.
+          schema:
+            type: string
+      tags:
+        - Region
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                properties:
+                  region:
+                    $ref: '#/components/schemas/region'
+  '/regions/{id}/payment-providers/{provider_id}':
+    delete:
+      operationId: PostRegionsRegionPaymentProvidersProvider
+      summary: Remove Payment Provider
+      description: Removes a Payment Provider.
+      parameters:
+        - in: path
+          name: id
+          required: true
+          description: The id of the Region.
+          schema:
+            type: string
+        - in: path
+          name: provider_id
+          required: true
+          description: The id of the Payment Provider.
+          schema:
+            type: string
+      tags:
+        - Region
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                properties:
+                  region:
+                    $ref: '#/components/schemas/region'
   /return-reasons:
     post:
       operationId: PostReturnReasons
@@ -3634,50 +3297,6 @@ paths:
                     type: array
                     items:
                       $ref: '#/components/schemas/return'
-  '/returns/{id}receive':
-    post:
-      operationId: PostReturnsReturnReceive
-      summary: Receive a Return
-      description: >-
-        Registers a Return as received. Updates statuses on Orders and Swaps
-        accordingly.
-      parameters:
-        - in: path
-          name: id
-          required: true
-          description: The id of the Return.
-          schema:
-            type: string
-      requestBody:
-        content:
-          application/json:
-            schema:
-              properties:
-                items:
-                  description: The Line Items that have been received.
-                  type: array
-                  items:
-                    properties:
-                      item_id:
-                        description: The id of the Line Item.
-                        type: string
-                      quantity:
-                        description: The quantity of the Line Item.
-                        type: integer
-                refund:
-                  description: The amount to refund.
-                  type: integer
-      tags:
-        - Return
-      responses:
-        '200':
-          description: OK
-          content:
-            application/json:
-              schema:
-                properties:
-                  return:
-                    $ref: '#/components/schemas/return'
   /shipping-options:
     post:
       operationId: PostShippingOptions
@@ -4401,8 +4020,6 @@ components:
         deleted_at:
           type: string
           format: date-time
-        no_notification:
-          type: boolean
         metadata:
           type: object
     claim_tag:
@@ -4550,6 +4167,9 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/product'
+        usage_limit:
+          description: The maximum number of times that a discount can be used.
+          type: integer
         created_at:
           description: The date with timezone at which the resource was created.
           type: string
@@ -4612,12 +4232,6 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/region'
-        usage_limit:
-          description: The maximum number of times that a discount can be used.
-          type: integer
-        usage_count:
-          description: The number of times a discount has been used.
-          type: integer
         created_at:
           description: The date with timezone at which the resource was created.
           type: string
@@ -4633,49 +4247,6 @@ components:
         metadata:
           description: An optional key-value map with additional information.
           type: object
-    draft-order:
-      title: DraftOrder
-      description: Represents a draft order
-      x-resourceId: draft-order
-      properties:
-        id:
-          type: string
-        status:
-          type: string
-          enum:
-            - open
-            - completed
-        display_id:
-          type: string
-        cart_id:
-          type: string
-        cart:
-          anyOf:
-            - $ref: '#/components/schemas/cart'
-        order_id:
-          type: string
-        order:
-          anyOf:
-            - $ref: '#/components/schemas/order'
-        canceled_at:
-          type: string
-          format: date-time
-        created_at:
-          type: string
-          format: date-time
-        update_at:
-          type: string
-          format: date-time
-        deleted_at:
-          type: string
-          format: date-time
-        completed_at:
-          type: string
-          format: date-time
-        metadata:
-          type: object
-        idempotency_key:
-          type: string
     fulfillment_item:
       title: Fulfillment Item
       description: >-
@@ -5294,10 +4865,6 @@ components:
           type: integer
         gift_card_total:
           type: integer
-        paid_total:
-          type: integer
-        no_notification:
-          type: boolean
     payment_provider:
       title: Payment Provider
       description: Represents a Payment Provider plugin and holds its installation status.
@@ -6103,11 +5670,6 @@ components:
           description: The date with timezone at which the resource was last updated.
           type: string
           format: date-time
-        no_notification:
-          description: >-
-            When set to true, no notification will be sent related to this
-            return.
-          type: boolean
         metadata:
           description: An optional key-value map with additional information.
           type: object
@@ -6468,9 +6030,6 @@ components:
           description: The date with timezone at which the resource was last updated.
           type: string
           format: date-time
-        no_notification:
-          description: 'If set to true, no notification will be sent related to this swap'
-          type: boolean
         metadata:
           description: An optional key-value map with additional information.
           type: object

@@ -205,10 +205,4 @@ describe("DraftOrderService", () => {
       }
     })
   })
-
-  describe("update", () => {
-  
-    fail('implement tests for update');
-  })
-
 })

@@ -35,9 +35,6 @@ import { defaultCartFields, defaultCartRelations, defaultFields } from "."
  *                 code:
  *                   description: "The code that a Discount is identifed by."
  *                   type: string
- *           no_notification_order:
- *             description: "An optional flag passed to the resulting order to determine use of notifications.""
- *             type: boolean
  *           customer_id:
  *             description: "The id of the Customer to associate the Draft Order with."
  *             type: string
@@ -71,7 +68,6 @@ export default async (req, res) => {
       })
       .optional(),
     customer_id: Validator.string().optional(),
-    no_notification_order: Validator.boolean().optional(),
   })
 
   const { value, error } = schema.validate(req.body)
@@ -91,8 +87,6 @@ export default async (req, res) => {
         "You are only allowed to update open draft orders"
       )
     }
-
-    await draftOrderService.update(draftOrder.id, value)
 
     await cartService.update(draftOrder.cart_id, value)
 
