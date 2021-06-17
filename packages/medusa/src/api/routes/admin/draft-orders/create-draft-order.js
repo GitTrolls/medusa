@@ -1,8 +1,4 @@
-import {
-  MedusaError,
-  Validator,
-  transformIdableFields,
-} from "medusa-core-utils"
+import { MedusaError, Validator } from "medusa-core-utils"
 import { defaultFields, defaultRelations } from "."
 
 /**
@@ -137,12 +133,10 @@ export default async (req, res) => {
     metadata: Validator.object().optional(),
   })
 
-  let { value, error } = schema.validate(req.body)
+  const { value, error } = schema.validate(req.body)
   if (error) {
     throw new MedusaError(MedusaError.Types.INVALID_DATA, error.details)
   }
-
-  value = transformIdableFields(value, ["shipping_address", "billing_address"])
 
   try {
     const draftOrderService = req.scope.resolve("draftOrderService")

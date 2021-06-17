@@ -8,17 +8,11 @@ import { countries } from "../utils/countries"
  * @implements BaseService
  */
 class RegionService extends BaseService {
-  static Events = {
-    UPDATED: "region.updated",
-    CREATED: "region.created",
-  }
-
   constructor({
     manager,
     regionRepository,
     countryRepository,
     storeService,
-    eventBusService,
     currencyRepository,
     paymentProviderRepository,
     fulfillmentProviderRepository,
@@ -38,9 +32,6 @@ class RegionService extends BaseService {
 
     /** @private @const {StoreService} */
     this.storeService_ = storeService
-
-    /** @private @const {EventBus} */
-    this.eventBus_ = eventBusService
 
     /** @private @const {CurrencyRepository} */
     this.currencyRepository_ = currencyRepository
@@ -69,7 +60,6 @@ class RegionService extends BaseService {
       currencyRepository: this.currencyRepository_,
       countryRepository: this.countryRepository_,
       storeService: this.storeService_,
-      eventBusService: this.eventBus_,
       paymentProviderRepository: this.paymentProviderRepository_,
       paymentProviderService: this.paymentProviderService_,
       fulfillmentProviderRepository: this.fulfillmentProviderRepository_,
@@ -127,13 +117,6 @@ class RegionService extends BaseService {
 
       const created = regionRepository.create(regionObject)
       const result = await regionRepository.save(created)
-
-      await this.eventBus_
-        .withTransaction(manager)
-        .emit(RegionService.Events.CREATED, {
-          id: result.id,
-        })
-
       return result
     })
   }
@@ -185,14 +168,6 @@ class RegionService extends BaseService {
       }
 
       const result = await regionRepository.save(region)
-
-      await this.eventBus_
-        .withTransaction(manager)
-        .emit(RegionService.Events.UPDATED, {
-          id: result.id,
-          fields: Object.keys(update),
-        })
-
       return result
     })
   }
@@ -415,14 +390,6 @@ class RegionService extends BaseService {
       region.countries = [...(region.countries || []), country]
 
       const updated = await regionRepo.save(region)
-
-      await this.eventBus_
-        .withTransaction(manager)
-        .emit(RegionService.Events.UPDATED, {
-          id: updated.id,
-          fields: ["countries"],
-        })
-
       return updated
     })
   }
@@ -452,12 +419,6 @@ class RegionService extends BaseService {
       )
 
       const updated = await regionRepo.save(region)
-      await this.eventBus_
-        .withTransaction(manager)
-        .emit(RegionService.Events.UPDATED, {
-          id: updated.id,
-          fields: ["countries"],
-        })
       return updated
     })
   }
@@ -497,14 +458,6 @@ class RegionService extends BaseService {
       region.payment_providers = [...region.payment_providers, pp]
 
       const updated = await regionRepo.save(region)
-
-      await this.eventBus_
-        .withTransaction(manager)
-        .emit(RegionService.Events.UPDATED, {
-          id: updated.id,
-          fields: ["payment_providers"],
-        })
-
       return updated
     })
   }
@@ -544,12 +497,6 @@ class RegionService extends BaseService {
       region.fulfillment_providers = [...region.fulfillment_providers, fp]
 
       const updated = await regionRepo.save(region)
-      await this.eventBus_
-        .withTransaction(manager)
-        .emit(RegionService.Events.UPDATED, {
-          id: updated.id,
-          fields: ["fulfillment_providers"],
-        })
       return updated
     })
   }
@@ -578,12 +525,6 @@ class RegionService extends BaseService {
       )
 
       const updated = await regionRepo.save(region)
-      await this.eventBus_
-        .withTransaction(manager)
-        .emit(RegionService.Events.UPDATED, {
-          id: updated.id,
-          fields: ["payment_providers"],
-        })
       return updated
     })
   }
@@ -612,14 +553,22 @@ class RegionService extends BaseService {
       )
 
       const updated = await regionRepo.save(region)
-      await this.eventBus_
-        .withTransaction(manager)
-        .emit(RegionService.Events.UPDATED, {
-          id: updated.id,
-          fields: ["fulfillment_providers"],
-        })
       return updated
     })
+  }
+
+  /**
+   * Decorates a region
+   * @param {object} region - the region to decorate
+   * @param {[string]} fields - the fields to include
+   * @param {[string]} expandFields - the fields to expand
+   * @return {Region} the region
+   */
+  async decorate(region, fields, expandFields = []) {
+    const requiredFields = ["id", "metadata"]
+    const decorated = _.pick(region, fields.concat(requiredFields))
+    const final = await this.runDecorators_(decorated)
+    return final
   }
 }
 
