@@ -22,6 +22,7 @@ describe("ClaimService", () => {
       order: {
         id: "1234",
         region_id: "order_region",
+        no_notification: true,
         items: [
           {
             id: "itm_1",
@@ -138,6 +139,7 @@ describe("ClaimService", () => {
       expect(claimRepo.create).toHaveBeenCalledTimes(1)
       expect(claimRepo.create).toHaveBeenCalledWith({
         payment_status: "not_refunded",
+        no_notification: true,
         refund_amount: 1000,
         type: "refund",
         order_id: "1234",
@@ -156,6 +158,7 @@ describe("ClaimService", () => {
       expect(eventBusService.emit).toHaveBeenCalledTimes(1)
       expect(eventBusService.emit).toHaveBeenCalledWith("claim.created", {
         id: "claim_134",
+        no_notification: true,
       })
     })
 
@@ -207,6 +210,34 @@ describe("ClaimService", () => {
           claim_items: [],
         })
       ).rejects.toThrow(`Claims must have at least one claim item.`)
+    })
+
+    it.each(
+      [
+        [false, false],
+<<<<<<< HEAD
+        [undefined, true],
+        [null, true],
+      ])
+      ("passes correct no_notification status to event bus, with '%s'", async (input, expected) => {
+=======
+        [undefined, true]
+      ],
+      "passes correct no_notification status to event bus", async (input, expected) => {
+>>>>>>> 04fe5292f7e9dcd14cb1a4ea17db8978f9b52c03
+        await claimService.create({
+           ...testClaim,
+           no_notification: input,
+          })
+
+        expect(eventBusService.emit).toHaveBeenCalledWith(expect.any(String),{
+          id: expect.any(String),
+          no_notification: expected
+        })
+<<<<<<< HEAD
+=======
+
+>>>>>>> 04fe5292f7e9dcd14cb1a4ea17db8978f9b52c03
     })
   })
 

@@ -1,8 +1,4 @@
-import {
-  MedusaError,
-  Validator,
-  transformIdableFields,
-} from "medusa-core-utils"
+import { MedusaError, Validator } from "medusa-core-utils"
 import { defaultFields, defaultRelations } from "."
 
 /**
@@ -63,6 +59,9 @@ import { defaultFields, defaultRelations } from "."
  *           customer_id:
  *             description: The id of the customer to add on the draft order
  *             type: string
+ *           no_notification_order:
+ *             description: An optional flag passed to the resulting order to determine use of notifications.
+ *             type: boolean
  *           shipping_methods:
  *             description: The shipping methods for the draft order
  *             type: array
@@ -123,6 +122,7 @@ export default async (req, res) => {
       })
       .optional(),
     customer_id: Validator.string().optional(),
+    no_notification_order: Validator.boolean().optional(),
     shipping_methods: Validator.array()
       .items({
         option_id: Validator.string().required(),
@@ -137,12 +137,10 @@ export default async (req, res) => {
     metadata: Validator.object().optional(),
   })
 
-  let { value, error } = schema.validate(req.body)
+  const { value, error } = schema.validate(req.body)
   if (error) {
     throw new MedusaError(MedusaError.Types.INVALID_DATA, error.details)
   }
-
-  value = transformIdableFields(value, ["shipping_address", "billing_address"])
 
   try {
     const draftOrderService = req.scope.resolve("draftOrderService")

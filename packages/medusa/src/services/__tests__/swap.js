@@ -57,6 +57,7 @@ const testOrder = generateOrder(
     currency_code: "dkk",
     region_id: IdMap.getId("region"),
     tax_rate: 0,
+    no_notification: true,
     shipping_address: {
       first_name: "test",
       last_name: "testson",
@@ -327,6 +328,7 @@ describe("SwapService", () => {
           order_id: IdMap.getId("test"),
           fulfillment_status: "not_fulfilled",
           payment_status: "not_paid",
+          no_notification: true,
           additional_items: [
             {
               unit_price: 100,
@@ -338,8 +340,35 @@ describe("SwapService", () => {
 
         expect(returnService.create).toHaveBeenCalledTimes(1)
       })
+      
+      it.each([
+        [true, true],
+        [false, false],
+        [undefined, true],
+<<<<<<< HEAD
+        [null, true],
+      ])( "passes correct no_notification to eventBus with '%s'", async (input, expected) => {
+=======
+      ])( "passes correct no_notification to eventBus with %s", async (input, expected) => {
+>>>>>>> 04fe5292f7e9dcd14cb1a4ea17db8978f9b52c03
+
+        await swapService.create(
+          testOrder,
+          [{ item_id: IdMap.getId("line"), quantity: 1 }],
+          [{ variant_id: IdMap.getId("new-variant"), quantity: 1 }],
+          {
+            id: IdMap.getId("return-shipping"),
+            price: 20,
+          },
+          input
+        )
+
+        expect(eventBusService.emit).toHaveBeenCalledWith(
+          expect.any(String),
+          {"id": undefined, "no_notification": expected})
+      })
+      })
     })
-  })
 
   describe("receiveReturn", () => {
     beforeEach(() => {
@@ -918,4 +947,6 @@ describe("SwapService", () => {
       })
     })
   })
+
+
 })

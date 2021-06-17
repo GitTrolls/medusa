@@ -204,6 +204,9 @@ class SwapService extends BaseService {
    *  the customer.
    * @param {ReturnShipping?} returnShipping - an optional shipping method for
    *  returning the returnItems.
+   * @param {boolean?} noNotification - an optional flag to disable sending 
+   * notification when creating swap. If set, it overrules the attribute inherited 
+   * from the order.
    * @returns {Promise<Swap>} the newly created swap.
    */
   async create(
@@ -211,6 +214,7 @@ class SwapService extends BaseService {
     returnItems,
     additionalItems,
     returnShipping,
+    noNotification,
     custom = {}
   ) {
     return this.atomicPhase_(async manager => {
@@ -234,6 +238,12 @@ class SwapService extends BaseService {
         })
       )
 
+<<<<<<< HEAD
+      const evaluatedNoNotification = noNotification !== undefined && noNotification !== null ? noNotification : order.no_notification
+=======
+      const evaluatedNoNotification = noNotification !== undefined ? noNotification : order.no_notification
+>>>>>>> 04fe5292f7e9dcd14cb1a4ea17db8978f9b52c03
+
       const swapRepo = manager.getCustomRepository(this.swapRepository_)
       const created = swapRepo.create({
         ...custom,
@@ -241,6 +251,7 @@ class SwapService extends BaseService {
         payment_status: "not_paid",
         order_id: order.id,
         additional_items: newItems,
+        no_notification: evaluatedNoNotification
       })
 
       const result = await swapRepo.save(created)
@@ -256,6 +267,7 @@ class SwapService extends BaseService {
         .withTransaction(manager)
         .emit(SwapService.Events.CREATED, {
           id: result.id,
+          no_notification: evaluatedNoNotification,
         })
 
       return result
@@ -353,6 +365,10 @@ class SwapService extends BaseService {
 
       if ("metadata" in update) {
         swap.metadata = this.setMetadata_(swap, update.metadata)
+      }
+
+      if("no_notification" in update){
+        swap.no_notification = update.no_notification
       }
 
       if ("shipping_address" in update) {
@@ -556,6 +572,7 @@ class SwapService extends BaseService {
         .withTransaction(manager)
         .emit(SwapService.Events.PAYMENT_COMPLETED, {
           id: swap.id,
+          no_notification: swap.no_notification
         })
 
       return result
@@ -747,6 +764,7 @@ class SwapService extends BaseService {
         .emit(SwapService.Events.SHIPMENT_CREATED, {
           id: swapId,
           fulfillment_id: shipment.id,
+          no_notification: swap.no_notification
         })
       return result
     })
@@ -803,6 +821,7 @@ class SwapService extends BaseService {
         .emit(SwapService.Events.RECEIVED, {
           id: id,
           order_id: result.order_id,
+          no_notification: swap.no_notification
         })
 
       return result
