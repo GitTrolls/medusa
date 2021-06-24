@@ -47,7 +47,6 @@ export const orders = {
       providerid: "default_provider",
       data: {},
     },
-    no_notification: true,
     shipping_method: [
       {
         providerid: "default_provider",
@@ -100,7 +99,6 @@ export const orders = {
     payment_method: {
       providerid: "default_provider",
     },
-    no_notification: false,
     shipping_methods: [
       {
         id: IdMap.getId("expensiveShipping"),

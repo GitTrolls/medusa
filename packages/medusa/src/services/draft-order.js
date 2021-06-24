@@ -10,7 +10,6 @@ import { Brackets } from "typeorm"
 class DraftOrderService extends BaseService {
   static Events = {
     CREATED: "draft_order.created",
-    UPDATED: "draft_order.updated",
   }
 
   constructor({
@@ -249,8 +248,7 @@ class DraftOrderService extends BaseService {
         )
       }
 
-      const { items, shipping_methods, discounts, no_notification_order=undefined, ...rest } = data
-
+      const { items, shipping_methods, discounts, ...rest } = data
 
       if (discounts) {
         for (const { code } of discounts) {
@@ -265,7 +263,7 @@ class DraftOrderService extends BaseService {
         .withTransaction(manager)
         .create({ type: "draft_order", ...rest })
 
-      const draftOrder = draftOrderRepo.create({ cart_id: createdCart.id, no_notification_order})
+      const draftOrder = draftOrderRepo.create({ cart_id: createdCart.id })
       const result = await draftOrderRepo.save(draftOrder)
 
       await this.eventBus_
@@ -335,43 +333,6 @@ class DraftOrderService extends BaseService {
       draftOrder.order_id = orderId
 
       await draftOrderRepo.save(draftOrder)
-    })
-  }
-  /**
-   * Updates a draft order with the given data
-   * @param {String} doId - id of the draft order
-   * @param {DraftOrder} data - values to update the order with
-   * @returns {Promise<DraftOrder>} the updated draft order
-   */
-  async update(doId, data){
-    return this.atomicPhase_(async manager => {
-      const doRepo = manager.getCustomRepository(this.draftOrderRepository_)
-      const draftOrder = await this.retrieve(doId)
-      let touched = false
-     
-      if(draftOrder.status === "completed"){
-        throw new MedusaError(
-          MedusaError.Types.NOT_ALLOWED,
-          "Can't update a draft order which is complete"
-        )
-      }
-      
-      if(data.no_notification_order !== undefined){
-        touched = true
-        draftOrder.no_notification_order = data.no_notification_order
-      }
-
-      if(touched){
-        doRepo.save(draftOrder)
-
-        await this.eventBus_
-        .withTransaction(manager)
-        .emit(DraftOrderService.Events.UPDATED, {
-          id: draftOrder.id
-        })
-      }
-      
-      return draftOrder
     })
   }
 }
