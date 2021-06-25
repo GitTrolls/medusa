@@ -19,11 +19,6 @@ class OrderSubscriber {
 
     eventBusService.subscribe("order.placed", this.sendToBrightpearl)
 
-    eventBusService.subscribe(
-      "brightpearl.goods_out_note",
-      this.createFulfillmentFromGoodsOut
-    )
-
     eventBusService.subscribe("claim.created", this.registerClaim)
 
     eventBusService.subscribe("order.refund_created", this.registerRefund)
@@ -53,10 +48,6 @@ class OrderSubscriber {
 
   registerCapturedPayment = ({ id }) => {
     return this.brightpearlService_.createPayment(id)
-  }
-
-  createFulfillmentFromGoodsOut = ({ id }) => {
-    return this.brightpearlService_.createFulfillmentFromGoodsOut(id)
   }
 
   registerSwapPayment = async (data) => {

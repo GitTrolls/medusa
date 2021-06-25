@@ -140,31 +140,13 @@ class BrightpearlService extends BaseService {
     }
 
     if (bpProducts.length) {
-      let availabilities = {}
-      const perChunk = 100
-      const chunkedProducts = bpProducts.reduce((resultArray, item, index) => {
-        const chunkIndex = Math.floor(index / perChunk)
+      const productRange = bpProducts
+        .map(({ productId }) => productId)
+        .join(",")
 
-        if (!resultArray[chunkIndex]) {
-          resultArray[chunkIndex] = [] // start a new chunk
-        }
-
-        resultArray[chunkIndex].push(item)
-
-        return resultArray
-      }, [])
-
-      // For large product catalogues we get 414 Too long URI so to avoid this
-      // we chunk things up
-      for (const chunk of chunkedProducts) {
-        const productRange = chunk.map(({ productId }) => productId).join(",")
-
-        const chunkAvails = await client.products.retrieveAvailability(
-          productRange
-        )
-
-        availabilities = Object.assign(availabilities, chunkAvails)
-      }
+      const availabilities = await client.products.retrieveAvailability(
+        productRange
+      )
 
       return Promise.all(
         bpProducts.map(async (bpProduct) => {
@@ -1128,63 +1110,55 @@ class BrightpearlService extends BaseService {
   }
 
   async createFulfillmentFromGoodsOut(id) {
-    await this.manager_.transaction(async (m) => {
-      const client = await this.getClient()
+    const client = await this.getClient()
 
-      // Get goods out and associated order
-      const goodsOut = await client.warehouses.retrieveGoodsOutNote(id)
-      const order = await client.orders.retrieve(goodsOut.orderId)
+    // Get goods out and associated order
+    const goodsOut = await client.warehouses.retrieveGoodsOutNote(id)
+    const order = await client.orders.retrieve(goodsOut.orderId)
 
-      // Only relevant for medusa orders check channel id
-      if (order.channelId !== parseInt(this.options.channel_id)) {
-        return
-      }
+    // Only relevant for medusa orders check channel id
+    if (order.channelId !== parseInt(this.options.channel_id)) {
+      return
+    }
 
-      // Combine the line items that we are going to create a fulfillment for
-      const lines = Object.keys(goodsOut.orderRows)
-        .map((key) => {
-          const row = order.rows.find((r) => r.id == key)
-          if (row) {
-            return {
-              item_id: row.externalRef,
+    // Combine the line items that we are going to create a fulfillment for
+    const lines = Object.keys(goodsOut.orderRows)
+      .map((key) => {
+        const row = order.rows.find((r) => r.id == key)
+        if (row) {
+          return {
+            item_id: row.externalRef,
 
-              // Brightpearl sometimes gives multiple order row entries
-              quantity: goodsOut.orderRows[key].reduce(
-                (sum, next) => sum + next.quantity,
-                0
-              ),
-            }
+            // Brightpearl sometimes gives multiple order row entries
+            quantity: goodsOut.orderRows[key].reduce(
+              (sum, next) => sum + next.quantity,
+              0
+            ),
           }
-
-          return null
-        })
-        .filter((i) => !!i)
-
-      // Orders with a concatenated externalReference are swap orders
-      const [_, partId] = order.externalRef.split(".")
-
-      if (partId) {
-        if (partId.startsWith("claim")) {
-          return this.claimService_
-            .withTransaction(m)
-            .createFulfillment(partId, {
-              goods_out_note: id,
-            })
-        } else {
-          return this.swapService_
-            .withTransaction(m)
-            .createFulfillment(partId, {
-              goods_out_note: id,
-            })
         }
-      }
 
-      return this.orderService_
-        .withTransaction(m)
-        .createFulfillment(order.externalRef, lines, {
+        return null
+      })
+      .filter((i) => !!i)
+
+    // Orders with a concatenated externalReference are swap orders
+    const [_, partId] = order.externalRef.split(".")
+
+    if (partId) {
+      if (partId.startsWith("claim")) {
+        return this.claimService_.createFulfillment(partId, {
           goods_out_note: id,
         })
-    }, "SERIALIZABLE")
+      } else {
+        return this.swapService_.createFulfillment(partId, {
+          goods_out_note: id,
+        })
+      }
+    }
+
+    return this.orderService_.createFulfillment(order.externalRef, lines, {
+      goods_out_note: id,
+    })
   }
 
   async createCustomer(fromOrder) {

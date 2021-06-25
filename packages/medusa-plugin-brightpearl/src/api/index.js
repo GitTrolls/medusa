@@ -22,10 +22,10 @@ export default (container) => {
 
   app.post("/brightpearl/goods-out", bodyParser.json(), async (req, res) => {
     const { id, lifecycle_event } = req.body
-    const eventBusService = req.scope.resolve("eventBusService")
+    const brightpearlService = req.scope.resolve("brightpearlService")
 
     if (lifecycle_event === "created") {
-      eventBusService.emit("brightpearl.goods_out_note", { id })
+      await brightpearlService.createFulfillmentFromGoodsOut(id)
     }
 
     res.sendStatus(200)
