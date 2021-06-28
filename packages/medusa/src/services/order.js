@@ -111,10 +111,13 @@ class OrderService extends BaseService {
       shippingOptionService: this.shippingOptionService_,
       shippingProfileService: this.shippingProfileService_,
       fulfillmentProviderService: this.fulfillmentProviderService_,
+      fulfillmentService: this.fulfillmentService_,
+      customerService: this.customerService_,
       discountService: this.discountService_,
       totalsService: this.totalsService_,
       cartService: this.cartService_,
       giftCardService: this.giftCardService_,
+      addressRepository: this.addressRepository_,
       draftOrderService: this.draftOrderService_,
     })
 
@@ -1022,9 +1025,6 @@ class OrderService extends BaseService {
         ],
       })
 
-
-      console.log("metadata:" + metadata)
-
       if (!order.shipping_methods?.length) {
         throw new MedusaError(
           MedusaError.Types.NOT_ALLOWED,
@@ -1037,8 +1037,8 @@ class OrderService extends BaseService {
         .withTransaction(manager)
         .createFulfillment(order, itemsToFulfill, {
           metadata,
+          noNotification: noNotification,
           order_id: orderId,
-          no_notification: noNotification
         })
       let successfullyFulfilled = []
       for (const f of fulfillments) {
