@@ -6,7 +6,6 @@ const {
   Product,
   ShippingProfile,
   ProductVariant,
-  MoneyAmount,
   Image,
 } = require("@medusajs/medusa");
 
@@ -75,14 +74,7 @@ module.exports = async (connection, data = {}) => {
     inventory_quantity: 10,
     title: "Test variant",
     product_id: "test-product",
-    prices: [],
+    prices: [{ id: "test-price", currency_code: "usd", amount: 100 }],
     options: [{ id: "test-variant-option", value: "Default variant" }],
-  });
-
-  await manager.insert(MoneyAmount, {
-    variant_id: "test-variant",
-    id: "test-price",
-    currency_code: "usd",
-    amount: 100,
   });
 };

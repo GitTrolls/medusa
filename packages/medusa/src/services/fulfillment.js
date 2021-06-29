@@ -165,7 +165,7 @@ class FulfillmentService extends BaseService {
    * those partitions.
    * @param {Order} order - order to create fulfillment for
    * @param {{ item_id: string, quantity: number}[]} itemsToFulfill - the items in the order to fulfill
-   * @param {object} config - potential configurations, including metadata to add
+   * @param {object} metadata - potential metadata to add
    * @return {Fulfillment[]} the created fulfillments
    */
   async createFulfillment(order, itemsToFulfill, custom = {}) {
@@ -180,10 +180,6 @@ class FulfillmentService extends BaseService {
         this.validateFulfillmentLineItem_
       )
 
-      const { noNotification, ...rest} = custom
-
-      const evaluatedNoNotification = noNotification !== undefined ? noNotification : order.no_notification
-
       const { shipping_methods } = order
 
       // partition order items to their dedicated shipping method
@@ -192,10 +188,9 @@ class FulfillmentService extends BaseService {
       const created = await Promise.all(
         fulfillments.map(async ({ shipping_method, items }) => {
           const ful = fulfillmentRepository.create({
-            ...rest,
+            ...custom,
             provider_id: shipping_method.shipping_option.provider_id,
             items: items.map(i => ({ item_id: i.id, quantity: i.quantity })),
-            no_notification: evaluatedNoNotification,
             data: {},
           })
 
