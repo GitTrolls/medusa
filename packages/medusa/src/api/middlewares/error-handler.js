@@ -9,9 +9,6 @@ export default () => {
 
     let statusCode = 500
     switch (err.name) {
-      case MedusaError.Types.DUPLICATE_ERROR:
-        statusCode = 409
-        break
       case MedusaError.Types.NOT_ALLOWED:
       case MedusaError.Types.INVALID_DATA:
         statusCode = 400
