@@ -19,6 +19,9 @@ import { Product } from "./product"
 import { MoneyAmount } from "./money-amount"
 import { ProductOptionValue } from "./product-option-value"
 
+
+
+
 @Entity()
 export class ProductVariant {
   @PrimaryColumn()
@@ -47,19 +50,19 @@ export class ProductVariant {
   prices: MoneyAmount[]
 
   @Column({ nullable: true })
-  @Index({ unique: true, where: "deleted_at IS NOT NULL" })
+  @Index({ unique: true })
   sku: string
 
+  @Index({ unique: true })
   @Column({ nullable: true })
-  @Index({ unique: true, where: "deleted_at IS NOT NULL" })
   barcode: string
 
+  @Index({ unique: true })
   @Column({ nullable: true })
-  @Index({ unique: true, where: "deleted_at IS NOT NULL" })
   ean: string
 
+  @Index({ unique: true })
   @Column({ nullable: true })
-  @Index({ unique: true, where: "deleted_at IS NOT NULL" })
   upc: string
 
   @Column({ type: "int" })

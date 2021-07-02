@@ -1,5 +1,4 @@
 import { Validator, MedusaError } from "medusa-core-utils"
-import { defaultRelations, defaultFields } from "./"
 
 /**
  * @oas [post] /customers/{id}/addresses/{address_id}
@@ -51,8 +50,7 @@ export default async (req, res) => {
     )
 
     customer = await customerService.retrieve(id, {
-      relations: defaultRelations,
-      select: defaultFields,
+      relations: ["shipping_addresses"],
     })
 
     res.json({ customer })

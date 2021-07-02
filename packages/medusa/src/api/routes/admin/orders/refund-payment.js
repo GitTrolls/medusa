@@ -25,6 +25,9 @@ import { defaultRelations, defaultFields } from "./"
  *           note:
  *             description: A not with additional details about the Refund.
  *             type: string
+ *           no_notification:
+ *             description: If set to true no notification will be send related to this Swap.
+ *             type: boolean
  * tags:
  *   - Order
  * responses:
@@ -47,9 +50,11 @@ export default async (req, res) => {
     note: Validator.string()
       .allow("")
       .optional(),
+    no_notification: Validator.boolean().optional(),
   })
 
   const { value, error } = schema.validate(req.body)
+
   if (error) {
     throw new MedusaError(MedusaError.Types.INVALID_DATA, error.details)
   }
@@ -57,7 +62,7 @@ export default async (req, res) => {
   try {
     const orderService = req.scope.resolve("orderService")
 
-    await orderService.createRefund(id, value.amount, value.reason, value.note)
+    await orderService.createRefund(id, value.amount, value.reason, value.note, {noNotification: value.no_notification})
 
     const order = await orderService.retrieve(id, {
       select: defaultFields,

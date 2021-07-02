@@ -191,13 +191,20 @@ export const defaultRelations = [
   "returns.items.reason",
   "gift_cards",
   "gift_card_transactions",
+  "items",
+  "items.variant",
+  "items.variant.product",
   "claims",
   "claims.return_order",
   "claims.shipping_methods",
   "claims.shipping_address",
   "claims.additional_items",
+  "claims.additional_items.variant",
+  "claims.additional_items.variant.product",
   "claims.fulfillments",
   "claims.claim_items",
+  "claims.claim_items.variant",
+  "claims.claim_items.variant.product",
   "claims.claim_items.images",
   // "claims.claim_items.tags",
   "swaps",
@@ -237,6 +244,7 @@ export const defaultFields = [
   "total",
   "paid_total",
   "refundable_amount",
+  "no_notification",
 ]
 
 export const allowedFields = [
@@ -265,6 +273,7 @@ export const allowedFields = [
   "total",
   "paid_total",
   "refundable_amount",
+  "no_notification",
 ]
 
 export const allowedRelations = [

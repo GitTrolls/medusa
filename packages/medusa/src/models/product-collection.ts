@@ -23,7 +23,7 @@ export class ProductCollection {
   @Column()
   title: string
 
-  @Index({ unique: true, where: "deleted_at IS NOT NULL" })
+  @Index({ unique: true })
   @Column({ nullable: true })
   handle: string
 

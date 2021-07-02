@@ -23,7 +23,7 @@ export class Discount {
   @PrimaryColumn()
   id: string
 
-  @Index({ unique: true, where: "deleted_at IS NOT NULL" })
+  @Index({ unique: true })
   @Column()
   code: string
 

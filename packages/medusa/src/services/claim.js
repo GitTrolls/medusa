@@ -101,7 +101,7 @@ class ClaimService extends BaseService {
       const claimRepo = manager.getCustomRepository(this.claimRepository_)
       const claim = await this.retrieve(id, { relations: ["shipping_methods"] })
 
-      const { claim_items, shipping_methods, metadata } = data
+      const { claim_items, shipping_methods, metadata, no_notification } = data
 
       if (metadata) {
         claim.metadata = this.setMetadata_(claim, metadata)
@@ -135,6 +135,11 @@ class ClaimService extends BaseService {
         }
       }
 
+      if( no_notification !== undefined ){
+        claim.no_notification = no_notification
+        await claimRepo.save(claim)
+      }
+
       if (claim_items) {
         for (const i of claim_items) {
           if (i.id) {
@@ -145,10 +150,12 @@ class ClaimService extends BaseService {
         }
       }
 
+
       await this.eventBus_
         .withTransaction(manager)
         .emit(ClaimService.Events.UPDATED, {
           id: claim.id,
+          no_notification: claim.no_notification
         })
 
       return claim
@@ -174,6 +181,7 @@ class ClaimService extends BaseService {
         refund_amount,
         shipping_address,
         shipping_address_id,
+        no_notification,
         ...rest
       } = data
 
@@ -233,6 +241,8 @@ class ClaimService extends BaseService {
         )
       )
 
+      const evaluatedNoNotification = no_notification !== undefined ? no_notification : order.no_notification
+
       const created = claimRepo.create({
         shipping_address_id: addressId,
         payment_status: type === "refund" ? "not_refunded" : "na",
@@ -241,6 +251,7 @@ class ClaimService extends BaseService {
         type,
         additional_items: newItems,
         order_id: order.id,
+        no_notification: evaluatedNoNotification
       })
 
       const result = await claimRepo.save(created)
@@ -288,13 +299,19 @@ class ClaimService extends BaseService {
         .withTransaction(manager)
         .emit(ClaimService.Events.CREATED, {
           id: result.id,
+          no_notification: result.no_notification
         })
 
       return result
     })
   }
 
-  createFulfillment(id, metadata = {}) {
+  createFulfillment(id, config = {
+    metadata: {},
+    noNotification: undefined,
+  }) {
+    const { metadata, noNotification } = config
+
     return this.atomicPhase_(async manager => {
       const claim = await this.retrieve(id, {
         relations: [
@@ -331,6 +348,8 @@ class ClaimService extends BaseService {
         )
       }
 
+      const evaluatedNoNotification = noNotification !== undefined ? noNotification : claim.no_notification
+
       const fulfillments = await this.fulfillmentService_
         .withTransaction(manager)
         .createFulfillment(
@@ -347,6 +366,7 @@ class ClaimService extends BaseService {
             items: claim.additional_items,
             shipping_methods: claim.shipping_methods,
             is_claim: true,
+            no_notification: evaluatedNoNotification,
           },
           claim.additional_items.map(i => ({
             item_id: i.id,
@@ -395,6 +415,7 @@ class ClaimService extends BaseService {
           .emit(ClaimService.Events.FULFILLMENT_CREATED, {
             id: id,
             fulfillment_id: fulfillment.id,
+            no_notification: claim.no_notification
           })
       }
 
@@ -430,21 +451,29 @@ class ClaimService extends BaseService {
         .withTransaction(manager)
         .emit(ClaimService.Events.REFUND_PROCESSED, {
           id,
+          no_notification: result.no_notification
         })
 
       return result
     })
   }
 
-  async createShipment(id, fulfillmentId, trackingLinks, metadata = []) {
+  async createShipment(id, fulfillmentId, trackingLinks, config = {
+    metadata: {},
+    noNotification: undefined,
+  }) {
+    const { metadata, noNotification } = config
+  
     return this.atomicPhase_(async manager => {
       const claim = await this.retrieve(id, {
         relations: ["additional_items"],
       })
 
+      const evaluatedNoNotification = noNotification !== undefined ? noNotification : claim.no_notification
+
       const shipment = await this.fulfillmentService_
         .withTransaction(manager)
-        .createShipment(fulfillmentId, trackingLinks, metadata)
+        .createShipment(fulfillmentId, trackingLinks, {metadata, noNotification: evaluatedNoNotification})
 
       claim.fulfillment_status = "shipped"
 
@@ -474,6 +503,7 @@ class ClaimService extends BaseService {
         .emit(ClaimService.Events.SHIPMENT_CREATED, {
           id,
           fulfillment_id: shipment.id,
+          no_notification: evaluatedNoNotification
         })
 
       return result
@@ -524,6 +554,7 @@ class ClaimService extends BaseService {
         .withTransaction(manager)
         .emit(ClaimService.Events.CANCELED, {
           id: result.id,
+          no_notification: result.no_notification
         })
 
       return result
