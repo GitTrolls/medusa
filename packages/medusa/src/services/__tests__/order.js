@@ -1,5 +1,6 @@
 import { IdMap, MockManager, MockRepository } from "medusa-test-utils"
 import OrderService from "../order"
+import { EventBusServiceMock } from "../__mocks__/event-bus"
 
 describe("OrderService", () => {
   const totalsService = {
@@ -711,6 +712,7 @@ describe("OrderService", () => {
     const order = {
       fulfillments: [],
       shipping_methods: [{ id: "ship" }],
+      no_notification: true,
       items: [
         {
           id: "item_1",
@@ -859,6 +861,31 @@ describe("OrderService", () => {
         fulfillment_status: "partially_fulfilled",
       })
     })
+
+    it.each([
+      [true, true],
+      [false, false],
+      [undefined, true],
+    ])(
+      "emits correct no_notification option with '%s'",
+      async (input, expected) => {
+        await orderService.createFulfillment(
+          "test-order",
+          [
+            {
+              item_id: "item_1",
+              quantity: 1,
+            },
+          ],
+          { noNotification: input }
+        )
+
+        expect(eventBusService.emit).toHaveBeenCalledWith(expect.any(String), {
+          id: expect.any(String),
+          no_notification: expected,
+        })
+      }
+    )
   })
 
   describe("registerReturnReceived", () => {
@@ -975,6 +1002,7 @@ describe("OrderService", () => {
           fulfilled_quantity: 0,
         },
       ],
+      no_notification: true,
     }
 
     const orderRepo = MockRepository({
@@ -996,7 +1024,11 @@ describe("OrderService", () => {
     }
 
     const fulfillmentService = {
-      retrieve: () => Promise.resolve({ order_id: IdMap.getId("test") }),
+      retrieve: () =>
+        Promise.resolve({
+          order_id: IdMap.getId("test"),
+          no_notification: true,
+        }),
       createShipment: jest
         .fn()
         .mockImplementation((shipmentId, tracking, meta) => {
@@ -1036,10 +1068,12 @@ describe("OrderService", () => {
       )
 
       expect(fulfillmentService.createShipment).toHaveBeenCalledTimes(1)
-      expect(fulfillmentService.createShipment).toHaveBeenCalledWith(
+      expect(
+        fulfillmentService.createShipment
+      ).toHaveBeenCalledWith(
         IdMap.getId("fulfillment"),
         [{ tracking_number: "1234" }, { tracking_number: "2345" }],
-        {}
+        { metadata: undefined, noNotification: true }
       )
 
       expect(orderRepo.save).toHaveBeenCalledTimes(1)
@@ -1048,6 +1082,27 @@ describe("OrderService", () => {
         fulfillment_status: "shipped",
       })
     })
+
+    it.each([
+      [true, true],
+      [false, false],
+      [undefined, true],
+    ])(
+      "emits correct no_notification option with '%s'",
+      async (input, expected) => {
+        await orderService.createShipment(
+          IdMap.getId("test"),
+          IdMap.getId("fulfillment"),
+          [{ tracking_number: "1234" }, { tracking_number: "2345" }],
+          { noNotification: input }
+        )
+
+        expect(eventBusService.emit).toHaveBeenCalledWith(expect.any(String), {
+          id: expect.any(String),
+          no_notification: expected,
+        })
+      }
+    )
   })
 
   describe("createRefund", () => {
@@ -1081,6 +1136,7 @@ describe("OrderService", () => {
           paid_total: 100,
           refundable_amount: 100,
           refunded_total: 0,
+          no_notification: true,
         })
       },
     })
@@ -1129,5 +1185,27 @@ describe("OrderService", () => {
         )
       ).rejects.toThrow("Cannot refund more than the original order amount")
     })
+
+    it.each([
+      [false, false],
+      [undefined, true],
+    ])(
+      "emits correct no_notification option with '%s'",
+      async (input, expected) => {
+        await orderService.createRefund(
+          IdMap.getId("order_123"),
+          100,
+          "discount",
+          "note",
+          { noNotification: input }
+        )
+
+        expect(eventBusService.emit).toHaveBeenCalledWith(expect.any(String), {
+          id: expect.any(String),
+          no_notification: expected,
+          refund_id: expect.any(String),
+        })
+      }
+    )
   })
 })
