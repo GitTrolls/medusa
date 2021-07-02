@@ -61,9 +61,6 @@ export class DraftOrder {
   @Column({ type: "timestamptz", nullable: true })
   completed_at: Date
 
-  @Column({ nullable: true})
-  no_notification_order: boolean
-
   @Column({ type: "jsonb", nullable: true })
   metadata: any
 
@@ -118,8 +115,6 @@ export class DraftOrder {
  *   completed_at:
  *     type: string
  *     format: date-time
- *   no_notification_order:
- *     type: boolean
  *   metadata:
  *     type: object
  *   idempotency_key:

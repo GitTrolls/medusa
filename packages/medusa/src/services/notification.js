@@ -28,7 +28,7 @@ class NotificationService extends BaseService {
     this.notificationProviderRepository_ = notificationProviderRepository
 
     this.subscribers_ = {}
-    this.attachmentGenerator_ = null 
+    this.attachmentGenerator_ = null
   }
 
   /**
@@ -163,9 +163,6 @@ class NotificationService extends BaseService {
     const subs = this.subscribers_[eventName]
     if (!subs) {
       return Promise.resolve()
-    }
-    if(data['no_notification'] === true) {
-      return
     }
 
     return Promise.all(
