@@ -78,7 +78,6 @@ export const defaultFields = [
   "created_at",
   "updated_at",
   "metadata",
-  "no_notification_order",
 ]
 
 export const allowedFields = [
@@ -90,7 +89,6 @@ export const allowedFields = [
   "created_at",
   "updated_at",
   "metadata",
-  "no_notification_order",
 ]
 
 export const allowedRelations = ["cart"]

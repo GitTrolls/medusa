@@ -57,7 +57,6 @@ const testOrder = generateOrder(
     currency_code: "dkk",
     region_id: IdMap.getId("region"),
     tax_rate: 0,
-    no_notification: true,
     shipping_address: {
       first_name: "test",
       last_name: "testson",
@@ -165,7 +164,7 @@ describe("SwapService", () => {
       }
 
       const swapRepo = MockRepository({
-        findOne: () => Promise.resolve(existing),
+        findOneWithRelations: () => Promise.resolve(existing),
       })
 
       const lineItemService = {
@@ -187,10 +186,9 @@ describe("SwapService", () => {
       it("finds swap and calls return create cart", async () => {
         await swapService.createCart(IdMap.getId("swap-1"))
 
-        expect(swapRepo.findOne).toHaveBeenCalledTimes(1)
-        expect(swapRepo.findOne).toHaveBeenCalledWith({
-          where: { id: IdMap.getId("swap-1") },
-          relations: [
+        expect(swapRepo.findOneWithRelations).toHaveBeenCalledTimes(1)
+        expect(swapRepo.findOneWithRelations).toHaveBeenCalledWith(
+          [
             "order",
             "order.items",
             "order.swaps",
@@ -201,7 +199,10 @@ describe("SwapService", () => {
             "return_order.items",
             "return_order.shipping_method",
           ],
-        })
+          {
+            where: { id: IdMap.getId("swap-1") },
+          }
+        )
 
         expect(cartService.create).toHaveBeenCalledTimes(1)
         expect(cartService.create).toHaveBeenCalledWith({
@@ -240,7 +241,7 @@ describe("SwapService", () => {
 
       it("fails if cart already created", async () => {
         const swapRepo = MockRepository({
-          findOne: () =>
+          findOneWithRelations: () =>
             Promise.resolve({
               ...existing,
               order_id: IdMap.getId("test"),
@@ -328,7 +329,6 @@ describe("SwapService", () => {
           order_id: IdMap.getId("test"),
           fulfillment_status: "not_fulfilled",
           payment_status: "not_paid",
-          no_notification: true,
           additional_items: [
             {
               unit_price: 100,
@@ -340,30 +340,8 @@ describe("SwapService", () => {
 
         expect(returnService.create).toHaveBeenCalledTimes(1)
       })
-      
-      it.each([
-        [true, true],
-        [false, false],
-        [undefined, true],
-      ])( "passes correct no_notification to eventBus with %s", async (input, expected) => {
-
-        await swapService.create(
-          testOrder,
-          [{ item_id: IdMap.getId("line"), quantity: 1 }],
-          [{ variant_id: IdMap.getId("new-variant"), quantity: 1 }],
-          {
-            id: IdMap.getId("return-shipping"),
-            price: 20,
-          },
-          {noNotification: input}
-        )
-
-        expect(eventBusService.emit).toHaveBeenCalledWith(
-          expect.any(String),
-          {"id": undefined, "no_notification": expected})
-      })
-      })
     })
+  })
 
   describe("receiveReturn", () => {
     beforeEach(() => {
@@ -392,7 +370,7 @@ describe("SwapService", () => {
       }
 
       const swapRepo = MockRepository({
-        findOne: () => Promise.resolve(existing),
+        findOneWithRelations: () => Promise.resolve(existing),
       })
       const swapService = new SwapService({
         manager: MockManager,
@@ -435,7 +413,7 @@ describe("SwapService", () => {
       }
 
       const swapRepo = MockRepository({
-        findOne: q =>
+        findOneWithRelations: (rels, q) =>
           Promise.resolve(q.where.id === IdMap.getId("empty") ? {} : existing),
       })
       const swapService = new SwapService({
@@ -511,7 +489,7 @@ describe("SwapService", () => {
       }
 
       const swapRepo = MockRepository({
-        findOne: () => Promise.resolve({ ...existing }),
+        findOneWithRelations: () => Promise.resolve({ ...existing }),
       })
       const swapService = new SwapService({
         manager: MockManager,
@@ -631,7 +609,7 @@ describe("SwapService", () => {
       }
 
       const swapRepo = MockRepository({
-        findOne: () => Promise.resolve(existing),
+        findOneWithRelations: () => Promise.resolve(existing),
       })
 
       const swapService = new SwapService({
@@ -728,7 +706,7 @@ describe("SwapService", () => {
       }
 
       const swapRepo = MockRepository({
-        findOne: () => Promise.resolve(existing),
+        findOneWithRelations: () => Promise.resolve(existing),
       })
 
       const swapService = new SwapService({
@@ -793,7 +771,7 @@ describe("SwapService", () => {
       })
 
       const swapRepo = MockRepository({
-        findOne: q => {
+        findOneWithRelations: (rels, q) => {
           switch (q.where.id) {
             case "refund":
               return Promise.resolve(existing(-1, false))
@@ -904,7 +882,7 @@ describe("SwapService", () => {
       }
 
       const swapRepo = MockRepository({
-        findOne: q => {
+        findOneWithRelations: (rels, q) => {
           switch (q.where.id) {
             case "requested":
               return Promise.resolve({

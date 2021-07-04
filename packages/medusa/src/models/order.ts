@@ -245,9 +245,6 @@ export class Order {
   @Column({ type: "jsonb", nullable: true })
   metadata: any
 
-  @Column({ type: "boolean", nullable: true})
-  no_notification: Boolean
-
   @Column({ nullable: true })
   idempotency_key: string
 
@@ -417,7 +414,4 @@ export class Order {
  *     type: integer
  *   paid_total:
  *     type: integer
- *   no_notification:
- *     description: "Flag for describing whether or not notifications related to this should be send."
- *     type: boolean
  */
