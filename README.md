@@ -91,6 +91,6 @@ The Medusa repository is a mono-repository managed using Lerna. Lerna allows us 
 
 ## Licensed
 
-Licensed under the [MIT License](https://github.com/medusajs/medusa/blob/master/LICENSE)
+Licended under the [MIT License](https://github.com/medusajs/medusa/blob/master/LICENSE)
 
 ## Thank you!
