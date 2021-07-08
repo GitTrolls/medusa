@@ -104,7 +104,10 @@ class SwapService extends BaseService {
 
     const query = this.buildQuery_({ id: validatedId }, config)
 
-    const swap = await swapRepo.findOne(query)
+    const rels = query.relations
+    delete query.relations
+    const swap = await swapRepo.findOneWithRelations(rels, query)
+
     if (!swap) {
       throw new MedusaError(MedusaError.Types.NOT_FOUND, "Swap was not found")
     }
@@ -144,7 +147,10 @@ class SwapService extends BaseService {
   ) {
     const swapRepo = this.manager_.getCustomRepository(this.swapRepository_)
     const query = this.buildQuery_(selector, config)
-    return swapRepo.find(query)
+
+    let rels = query.relations
+    delete query.relations
+    return swapRepo.findWithRelations(rels, query)
   }
 
   /**
