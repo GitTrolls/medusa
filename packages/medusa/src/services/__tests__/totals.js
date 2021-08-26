@@ -330,7 +330,6 @@ describe("TotalsService", () => {
         {
           id: "line2",
           unit_price: 100,
-          allow_discounts: true,
           variant: {
             id: "variant",
             product_id: "product2",
@@ -350,7 +349,6 @@ describe("TotalsService", () => {
         {
           id: "line2",
           unit_price: 100,
-          allow_discounts: true,
           variant: {
             id: "variant",
             product_id: "product2",
@@ -370,7 +368,6 @@ describe("TotalsService", () => {
         {
           id: "line",
           unit_price: 100,
-          allow_discounts: true,
           variant: {
             id: "variant",
             product_id: "product",
@@ -389,7 +386,6 @@ describe("TotalsService", () => {
         {
           id: "line2",
           unit_price: 100,
-          allow_discounts: true,
           variant: {
             id: "variant",
             product_id: "testp2",
@@ -408,7 +404,6 @@ describe("TotalsService", () => {
         {
           id: "line2",
           unit_price: 100,
-          allow_discounts: true,
           variant: {
             id: "variant",
             product_id: "testp2",
@@ -427,7 +422,6 @@ describe("TotalsService", () => {
           {
             id: "notInOrder",
             unit_price: 123,
-            allow_discounts: true,
             variant: {
               id: "variant",
               product_id: "pid",

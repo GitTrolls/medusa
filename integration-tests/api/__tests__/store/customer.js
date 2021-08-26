@@ -33,6 +33,7 @@ describe("/store/customers", () => {
   describe("POST /store/customers", () => {
     beforeEach(async () => {
       const manager = dbConnection.manager;
+
       await manager.insert(Customer, {
         id: "test_customer",
         first_name: "John",
