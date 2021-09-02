@@ -63,9 +63,6 @@ export class ProductVariant {
   @Index({ unique: true, where: "deleted_at IS NOT NULL" })
   upc: string
 
-  @Column()
-  rank: number
-
   @Column({ type: "int" })
   inventory_quantity: number
 

@@ -45,12 +45,8 @@ const replaceUrl = (item) => {
 }
 
 function Hit({ hit, children }) {
-  if (hit.url.includes("/api/store") || hit.url.includes("/api/admin")) {
-    let url = replaceUrl(hit)
-    return <a href={url}>{children}</a>
-  }
-
-  return <Link to={hit.url}>{children}</Link>
+  let url = replaceUrl(hit)
+  return <Link to={url}>{children}</Link>
 }
 
 function ResultsFooter({ state, onClose }) {
