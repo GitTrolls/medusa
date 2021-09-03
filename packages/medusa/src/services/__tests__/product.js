@@ -11,9 +11,24 @@ const eventBusService = {
 describe("ProductService", () => {
   describe("retrieve", () => {
     const productRepo = MockRepository({
-      findOneWithRelations: () =>
-        Promise.resolve({ id: IdMap.getId("ironman") }),
+      findOneWithRelations: (rels, query) => {
+        if (query.where.id === "test id with variants")
+          return {
+            id: "test id with variants",
+            variants: [
+              { id: "test_321", title: "Green", rank: 1 },
+              { id: "test_123", title: "Blue", rank: 0 },
+            ],
+          }
+        if (query.where.id === "test id one variant")
+          return {
+            id: "test id one variant",
+            variants: [{ id: "test_123", title: "Blue", rank: 0 }],
+          }
+        return Promise.resolve({ id: IdMap.getId("ironman") })
+      },
     })
+
     const productService = new ProductService({
       manager: MockManager,
       productRepository: productRepo,
@@ -21,6 +36,30 @@ describe("ProductService", () => {
 
     beforeEach(async () => {
       jest.clearAllMocks()
+    })
+
+    it("Orders variants according to rank when retrieving a product", async () => {
+      const result = await productService.retrieve("test id with variants", {
+        relations: ["Variants"],
+      })
+
+      expect(productRepo.findOneWithRelations).toHaveBeenCalledTimes(1)
+      expect(productRepo.findOneWithRelations).toHaveBeenCalledWith(
+        ["Variants"],
+        {
+          where: { id: "test id with variants" },
+        }
+      )
+
+      const expected = {
+        id: "test id with variants",
+        variants: [
+          { id: "test_123", title: "Blue", rank: 0 },
+          { id: "test_321", title: "Green", rank: 1 },
+        ],
+      }
+
+      expect(result).toEqual(expected)
     })
 
     it("successfully retrieves a product", async () => {
@@ -37,11 +76,12 @@ describe("ProductService", () => {
 
   describe("create", () => {
     const productRepository = MockRepository({
-      create: () => ({
+      create: product => ({
         id: IdMap.getId("ironman"),
         title: "Suit",
         options: [],
         collection: { id: IdMap.getId("cat"), title: "Suits" },
+        variants: product.variants,
       }),
       findOneWithRelations: () => ({
         id: IdMap.getId("ironman"),
@@ -97,6 +137,10 @@ describe("ProductService", () => {
         options: [],
         tags: [{ value: "title" }, { value: "title2" }],
         type: "type-1",
+        variants: [
+          { id: "test1", title: "green", rank: 0 },
+          { id: "test2", title: "blue", rank: 0 },
+        ],
       })
 
       expect(eventBusService.emit).toHaveBeenCalledTimes(1)
@@ -108,6 +152,10 @@ describe("ProductService", () => {
       expect(productRepository.create).toHaveBeenCalledTimes(1)
       expect(productRepository.create).toHaveBeenCalledWith({
         title: "Suit",
+        variants: [
+          { id: "test1", title: "green", rank: 0 },
+          { id: "test2", title: "blue", rank: 1 },
+        ],
       })
 
       expect(productTagRepository.findOne).toHaveBeenCalledTimes(2)
@@ -132,6 +180,10 @@ describe("ProductService", () => {
           id: IdMap.getId("cat"),
           title: "Suits",
         },
+        variants: [
+          { id: "test1", title: "green", rank: 0 },
+          { id: "test2", title: "blue", rank: 1 },
+        ],
       })
     })
   })
@@ -147,6 +199,15 @@ describe("ProductService", () => {
         }
         if (query.where.id === "123") {
           return undefined
+        }
+        if (query.where.id === "ranking test") {
+          return Promise.resolve({
+            id: "ranking test",
+            variants: [
+              { id: "test_321", title: "Greener", rank: 1 },
+              { id: "test_123", title: "Blueer", rank: 0 },
+            ],
+          })
         }
         return Promise.resolve({ id: IdMap.getId("ironman") })
       },
@@ -165,7 +226,12 @@ describe("ProductService", () => {
       withTransaction: function() {
         return this
       },
-      update: () => Promise.resolve(),
+      update: (variant, update) => {
+        if (variant.id) {
+          return update
+        }
+        return Promise.resolve()
+      },
     }
 
     const productTagRepository = MockRepository({
@@ -245,6 +311,30 @@ describe("ProductService", () => {
           id: IdMap.getId("test"),
           value: "test",
         },
+      })
+    })
+
+    it("successfully updates variant ranking", async () => {
+      await productService.update("ranking test", {
+        variants: [
+          { id: "test_321", title: "Greener", rank: 1 },
+          { id: "test_123", title: "Blueer", rank: 0 },
+        ],
+      })
+
+      expect(eventBusService.emit).toHaveBeenCalledTimes(1)
+      expect(eventBusService.emit).toHaveBeenCalledWith(
+        "product.updated",
+        expect.any(Object)
+      )
+
+      expect(productRepository.save).toHaveBeenCalledTimes(1)
+      expect(productRepository.save).toHaveBeenCalledWith({
+        id: "ranking test",
+        variants: [
+          { id: "test_321", title: "Greener", rank: 0 },
+          { id: "test_123", title: "Blueer", rank: 1 },
+        ],
       })
     })
 
