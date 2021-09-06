@@ -43,7 +43,7 @@ export class ProductVariant {
   @OneToMany(
     () => MoneyAmount,
     ma => ma.variant,
-    { cascade: true, onDelete: "CASCADE" }
+    { cascade: true }
   )
   prices: MoneyAmount[]
 
@@ -62,9 +62,6 @@ export class ProductVariant {
   @Column({ nullable: true })
   @Index({ unique: true, where: "deleted_at IS NOT NULL" })
   upc: string
-
-  @Column()
-  rank: number
 
   @Column({ type: "int" })
   inventory_quantity: number
