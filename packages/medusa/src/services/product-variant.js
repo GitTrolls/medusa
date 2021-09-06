@@ -174,6 +174,8 @@ class ProductVariantService extends BaseService {
         )
       }
 
+      if (!rest.variant_rank) rest.variant_rank = 0
+
       const toCreate = {
         ...rest,
         product_id: product.id,

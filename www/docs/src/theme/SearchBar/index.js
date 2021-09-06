@@ -132,9 +132,7 @@ function DocSearch({ contextualSearch, ...props }) {
   const navigator = useRef({
     navigate({ item }) {
       let url = replaceUrl(item)
-      //Need to type out the entire URL to prevent it from attempting to open the page
-      //as part of the docusaurus project. Which will fail.
-      window.location = `https://docs.medusa-commerce.com${url}`
+      history.push(url)
     },
     navigateNewTab({ item }) {
       let url = replaceUrl(item)
