@@ -5,6 +5,7 @@ const { useApi } = require("../../../helpers/use-api");
 const { initDb, useDb } = require("../../../helpers/use-db");
 
 const draftOrderSeeder = require("../../helpers/draft-order-seeder");
+const { create } = require("domain");
 
 jest.setTimeout(30000);
 

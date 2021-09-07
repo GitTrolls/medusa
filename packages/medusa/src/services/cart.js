@@ -290,13 +290,6 @@ class CartService extends BaseService {
 
       const regCountries = region.countries.map(({ iso_2 }) => iso_2)
 
-      if (data.email) {
-        const customer = await this.createOrFetchUserFromEmail_(data.email)
-        data.customer = customer
-        data.customer_id = customer.id
-        data.email = customer.email
-      }
-
       if (data.shipping_address_id) {
         const addr = await addressRepo.findOne(data.shipping_address_id)
         data.shipping_address = addr
@@ -618,10 +611,7 @@ class CartService extends BaseService {
         await this.updateCustomerId_(cart, update.customer_id)
       } else {
         if ("email" in update) {
-          const customer = await this.createOrFetchUserFromEmail_(update.email)
-          cart.customer = customer
-          cart.customer_id = customer.id
-          cart.email = customer.email
+          await this.updateEmail_(cart, update.email)
         }
       }
 
@@ -715,11 +705,12 @@ class CartService extends BaseService {
   }
 
   /**
-   * Creates or fetches a user based on an email.
-   * @param {string} email - the email to use
-   * @return {Promise} the resultign customer object
+   * Sets the email of a cart
+   * @param {string} cartId - the id of the cart to add email to
+   * @param {string} email - the email to add to cart
+   * @return {Promise} the result of the update operation
    */
-  async createOrFetchUserFromEmail_(email) {
+  async updateEmail_(cart, email) {
     const schema = Validator.string()
       .email()
       .required()
@@ -739,10 +730,12 @@ class CartService extends BaseService {
     if (!customer) {
       customer = await this.customerService_
         .withTransaction(this.transactionManager_)
-        .create({ email: value })
+        .create({ email })
     }
 
-    return customer
+    cart.email = value
+    cart.customer = customer
+    cart.customer_id = customer.id
   }
 
   /**
