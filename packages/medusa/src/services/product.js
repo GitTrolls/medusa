@@ -185,6 +185,12 @@ class ProductService extends BaseService {
       )
     }
 
+    if (product.variants) {
+      product.variants.sort(
+        (variant1, variant2) => variant1.variant_rank - variant2.variant_rank
+      )
+    }
+
     return product
   }
 
@@ -292,6 +298,10 @@ class ProductService extends BaseService {
       if (rest.is_giftcard) {
         rest.discountable = false
       }
+
+      if (rest.variants)
+        for (const [i, variant] of rest.variants.entries())
+          variant.variant_rank = i
 
       let product = productRepo.create(rest)
 
@@ -410,7 +420,9 @@ class ProductService extends BaseService {
         }
 
         const newVariants = []
-        for (const newVariant of variants) {
+        for (const [i, newVariant] of variants.entries()) {
+          newVariant.variant_rank = i
+
           if (newVariant.id) {
             const variant = product.variants.find(v => v.id === newVariant.id)
 
