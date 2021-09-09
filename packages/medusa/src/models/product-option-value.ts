@@ -41,8 +41,7 @@ export class ProductOptionValue {
 
   @ManyToOne(
     () => ProductVariant,
-    variant => variant.options,
-    { onDelete: "cascade" }
+    variant => variant.options
   )
   @JoinColumn({ name: "variant_id" })
   variant: ProductVariant
