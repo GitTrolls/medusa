@@ -83,11 +83,12 @@ module.exports = {
           items: [
             {
               label: "Stack Overflow",
-              href: "https://stackoverflow.com/questions/tagged/medusa-commerce",
+              href:
+                "https://stackoverflow.com/questions/tagged/medusa-commerce",
             },
             {
               label: "Discord",
-              href: "https://discord.gg/H6naACAK",
+              href: "https://discordapp.com/invite/medusajs",
             },
             {
               label: "Twitter",
