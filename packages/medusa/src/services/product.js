@@ -11,7 +11,6 @@ class ProductService extends BaseService {
   static Events = {
     UPDATED: "product.updated",
     CREATED: "product.created",
-    DELETED: "product.deleted",
   }
 
   constructor({
@@ -411,7 +410,9 @@ class ProductService extends BaseService {
         }
 
         const newVariants = []
-        for (const newVariant of variants) {
+        for (const [i, newVariant] of variants.entries()) {
+          newVariant.variant_rank = i
+
           if (newVariant.id) {
             const variant = product.variants.find(v => v.id === newVariant.id)
 
@@ -473,12 +474,6 @@ class ProductService extends BaseService {
       if (!product) return Promise.resolve()
 
       await productRepo.softRemove(product)
-
-      await this.eventBus_
-        .withTransaction(manager)
-        .emit(ProductService.Events.DELETED, {
-          id: productId,
-        })
 
       return Promise.resolve()
     })
