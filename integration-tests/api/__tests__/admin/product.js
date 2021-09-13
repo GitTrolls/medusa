@@ -1,269 +1,52 @@
-const path = require("path")
+const path = require("path");
 
-const setupServer = require("../../../helpers/setup-server")
-const { useApi } = require("../../../helpers/use-api")
-const { initDb, useDb } = require("../../../helpers/use-db")
+const setupServer = require("../../../helpers/setup-server");
+const { useApi } = require("../../../helpers/use-api");
+const { initDb, useDb } = require("../../../helpers/use-db");
 
-const adminSeeder = require("../../helpers/admin-seeder")
-const productSeeder = require("../../helpers/product-seeder")
+const adminSeeder = require("../../helpers/admin-seeder");
+const productSeeder = require("../../helpers/product-seeder");
 
-jest.setTimeout(50000)
+jest.setTimeout(30000);
 
 describe("/admin/products", () => {
-  let medusaProcess
-  let dbConnection
+  let medusaProcess;
+  let dbConnection;
 
   beforeAll(async () => {
-    const cwd = path.resolve(path.join(__dirname, "..", ".."))
-    dbConnection = await initDb({ cwd })
-    medusaProcess = await setupServer({ cwd })
-  })
+    const cwd = path.resolve(path.join(__dirname, "..", ".."));
+    dbConnection = await initDb({ cwd });
+    medusaProcess = await setupServer({ cwd });
+  });
 
   afterAll(async () => {
-    const db = useDb()
-    await db.shutdown()
+    const db = useDb();
+    await db.shutdown();
 
-    medusaProcess.kill()
-  })
-
-  describe("GET /admin/products", () => {
-    beforeEach(async () => {
-      try {
-        await productSeeder(dbConnection)
-        await adminSeeder(dbConnection)
-      } catch (err) {
-        console.log(err)
-        throw err
-      }
-    })
-
-    afterEach(async () => {
-      const db = useDb()
-      await db.teardown()
-    })
-
-    it("returns a list of products with child entities", async () => {
-      const api = useApi()
-
-      const response = await api
-        .get("/admin/products", {
-          headers: {
-            Authorization: "Bearer test_token",
-          },
-        })
-        .catch((err) => {
-          console.log(err)
-        })
-
-      expect(response.data.products).toMatchSnapshot([
-        {
-          id: expect.stringMatching(/^test-*/),
-          created_at: expect.any(String),
-          options: [
-            {
-              id: expect.stringMatching(/^test-*/),
-              product_id: expect.stringMatching(/^test-*/),
-              created_at: expect.any(String),
-              updated_at: expect.any(String),
-            },
-          ],
-          images: [
-            {
-              id: expect.stringMatching(/^test-*/),
-              created_at: expect.any(String),
-              updated_at: expect.any(String),
-            },
-          ],
-          variants: [
-            {
-              id: "test-variant", //expect.stringMatching(/^test-variant*/),
-              created_at: expect.any(String),
-              updated_at: expect.any(String),
-              product_id: expect.stringMatching(/^test-*/),
-              prices: [
-                {
-                  id: expect.stringMatching(/^test-price*/),
-                  variant_id: expect.stringMatching(/^test-variant*/),
-                  created_at: expect.any(String),
-                  updated_at: expect.any(String),
-                },
-              ],
-              options: [
-                {
-                  id: expect.stringMatching(/^test-variant-option*/),
-                  variant_id: expect.stringMatching(/^test-variant*/),
-                  option_id: expect.stringMatching(/^test-opt*/),
-                  created_at: expect.any(String),
-                  updated_at: expect.any(String),
-                },
-              ],
-            },
-            {
-              id: "test-variant_2", //expect.stringMatching(/^test-variant*/),
-              created_at: expect.any(String),
-              updated_at: expect.any(String),
-              product_id: expect.stringMatching(/^test-*/),
-              prices: [
-                {
-                  id: expect.stringMatching(/^test-price*/),
-                  variant_id: expect.stringMatching(/^test-variant*/),
-                  created_at: expect.any(String),
-                  updated_at: expect.any(String),
-                },
-              ],
-              options: [
-                {
-                  id: expect.stringMatching(/^test-variant-option*/),
-                  variant_id: expect.stringMatching(/^test-variant*/),
-                  option_id: expect.stringMatching(/^test-opt*/),
-                  created_at: expect.any(String),
-                  updated_at: expect.any(String),
-                },
-              ],
-            },
-            {
-              id: "test-variant_1", // expect.stringMatching(/^test-variant*/),
-              created_at: expect.any(String),
-              updated_at: expect.any(String),
-              product_id: expect.stringMatching(/^test-*/),
-              prices: [
-                {
-                  id: expect.stringMatching(/^test-price*/),
-                  variant_id: expect.stringMatching(/^test-variant*/),
-                  created_at: expect.any(String),
-                  updated_at: expect.any(String),
-                },
-              ],
-              options: [
-                {
-                  id: expect.stringMatching(/^test-variant-option*/),
-                  variant_id: expect.stringMatching(/^test-variant*/),
-                  option_id: expect.stringMatching(/^test-opt*/),
-                  created_at: expect.any(String),
-                  updated_at: expect.any(String),
-                },
-              ],
-            },
-          ],
-          tags: [
-            {
-              id: expect.stringMatching(/^tag*/),
-              created_at: expect.any(String),
-              updated_at: expect.any(String),
-            },
-          ],
-          type: {
-            id: expect.stringMatching(/^test-*/),
-            created_at: expect.any(String),
-            updated_at: expect.any(String),
-          },
-          collection: {
-            id: expect.stringMatching(/^test-*/),
-            created_at: expect.any(String),
-            updated_at: expect.any(String),
-          },
-          profile_id: expect.stringMatching(/^sp_*/),
-          created_at: expect.any(String),
-          updated_at: expect.any(String),
-        },
-        {
-          id: expect.stringMatching(/^test-*/),
-          created_at: expect.any(String),
-          options: [],
-          variants: [
-            {
-              id: "test-variant_4", //expect.stringMatching(/^test-variant*/),
-              created_at: expect.any(String),
-              updated_at: expect.any(String),
-              product_id: expect.stringMatching(/^test-*/),
-              prices: [
-                {
-                  id: expect.stringMatching(/^test-price*/),
-                  variant_id: expect.stringMatching(/^test-variant*/),
-                  created_at: expect.any(String),
-                  updated_at: expect.any(String),
-                },
-              ],
-              options: [
-                {
-                  id: expect.stringMatching(/^test-variant-option*/),
-                  variant_id: expect.stringMatching(/^test-variant*/),
-                  option_id: expect.stringMatching(/^test-opt*/),
-                  created_at: expect.any(String),
-                  updated_at: expect.any(String),
-                },
-              ],
-            },
-            {
-              id: "test-variant_3", //expect.stringMatching(/^test-variant*/),
-              created_at: expect.any(String),
-              updated_at: expect.any(String),
-              product_id: expect.stringMatching(/^test-*/),
-              prices: [
-                {
-                  id: expect.stringMatching(/^test-price*/),
-                  variant_id: expect.stringMatching(/^test-variant*/),
-                  created_at: expect.any(String),
-                  updated_at: expect.any(String),
-                },
-              ],
-              options: [
-                {
-                  id: expect.stringMatching(/^test-variant-option*/),
-                  variant_id: expect.stringMatching(/^test-variant*/),
-                  option_id: expect.stringMatching(/^test-opt*/),
-                  created_at: expect.any(String),
-                  updated_at: expect.any(String),
-                },
-              ],
-            },
-          ],
-          tags: [
-            {
-              id: expect.stringMatching(/^tag*/),
-              created_at: expect.any(String),
-              updated_at: expect.any(String),
-            },
-          ],
-          type: {
-            id: expect.stringMatching(/^test-*/),
-            created_at: expect.any(String),
-            updated_at: expect.any(String),
-          },
-          collection: {
-            id: expect.stringMatching(/^test-*/),
-            created_at: expect.any(String),
-            updated_at: expect.any(String),
-          },
-          profile_id: expect.stringMatching(/^sp_*/),
-          created_at: expect.any(String),
-          updated_at: expect.any(String),
-        },
-      ])
-    })
-  })
+    medusaProcess.kill();
+  });
 
   describe("POST /admin/products", () => {
     beforeEach(async () => {
       try {
-        await productSeeder(dbConnection)
-        await adminSeeder(dbConnection)
+        await productSeeder(dbConnection);
+        await adminSeeder(dbConnection);
       } catch (err) {
-        console.log(err)
-        throw err
+        console.log(err);
+        throw err;
       }
-    })
+    });
 
     afterEach(async () => {
-      const db = useDb()
-      await db.teardown()
-    })
+      const db = useDb();
+      await db.teardown();
+    });
 
     it("creates a product", async () => {
-      const api = useApi()
+      const api = useApi();
 
       const payload = {
-        title: "Test",
+        title: "Test product",
         description: "test-product-description",
         type: { value: "test-type" },
         images: ["test-image.png", "test-image-2.png"],
@@ -278,7 +61,7 @@ describe("/admin/products", () => {
             options: [{ value: "large" }, { value: "green" }],
           },
         ],
-      }
+      };
 
       const response = await api
         .post("/admin/products", payload, {
@@ -287,16 +70,17 @@ describe("/admin/products", () => {
           },
         })
         .catch((err) => {
-          console.log(err)
-        })
+          console.log(err);
+        });
 
-      expect(response.status).toEqual(200)
+      expect(response.status).toEqual(200);
+
       expect(response.data.product).toEqual(
         expect.objectContaining({
-          title: "Test",
+          title: "Test product",
           discountable: true,
           is_giftcard: false,
-          handle: "test",
+          handle: "test-product",
           images: expect.arrayContaining([
             expect.objectContaining({
               url: "test-image.png",
@@ -349,77 +133,11 @@ describe("/admin/products", () => {
             }),
           ],
         })
-      )
-    })
-
-    it("Sets variant ranks when creating a product", async () => {
-      const api = useApi()
-
-      const payload = {
-        title: "Test product - 1",
-        description: "test-product-description 1",
-        type: { value: "test-type 1" },
-        images: ["test-image.png", "test-image-2.png"],
-        collection_id: "test-collection",
-        tags: [{ value: "123" }, { value: "456" }],
-        options: [{ title: "size" }, { title: "color" }],
-        variants: [
-          {
-            title: "Test variant 1",
-            inventory_quantity: 10,
-            prices: [{ currency_code: "usd", amount: 100 }],
-            options: [{ value: "large" }, { value: "green" }],
-          },
-          {
-            title: "Test variant 2",
-            inventory_quantity: 10,
-            prices: [{ currency_code: "usd", amount: 100 }],
-            options: [{ value: "large" }, { value: "green" }],
-          },
-        ],
-      }
-
-      const creationResponse = await api
-        .post("/admin/products", payload, {
-          headers: {
-            Authorization: "Bearer test_token",
-          },
-        })
-        .catch((err) => {
-          console.log(err)
-        })
-
-      expect(creationResponse.status).toEqual(200)
-
-      const productId = creationResponse.data.product.id
-
-      const response = await api
-        .get(`/admin/products/${productId}`, {
-          headers: {
-            Authorization: "Bearer test_token",
-          },
-        })
-        .catch((err) => {
-          console.log(err)
-        })
-
-      expect(response.data.product).toEqual(
-        expect.objectContaining({
-          title: "Test product - 1",
-          variants: [
-            expect.objectContaining({
-              title: "Test variant 1",
-            }),
-            expect.objectContaining({
-              title: "Test variant 2",
-            }),
-          ],
-        })
-      )
-    })
+      );
+    });
 
     it("creates a giftcard", async () => {
-      const api = useApi()
+      const api = useApi();
 
       const payload = {
         title: "Test Giftcard",
@@ -433,7 +151,7 @@ describe("/admin/products", () => {
             options: [{ value: "100" }],
           },
         ],
-      }
+      };
 
       const response = await api
         .post("/admin/products", payload, {
@@ -442,21 +160,21 @@ describe("/admin/products", () => {
           },
         })
         .catch((err) => {
-          console.log(err)
-        })
+          console.log(err);
+        });
 
-      expect(response.status).toEqual(200)
+      expect(response.status).toEqual(200);
 
       expect(response.data.product).toEqual(
         expect.objectContaining({
           title: "Test Giftcard",
           discountable: false,
         })
-      )
-    })
+      );
+    });
 
     it("updates a product (update prices, tags, delete collection, delete type, replaces images)", async () => {
-      const api = useApi()
+      const api = useApi();
 
       const payload = {
         collection_id: null,
@@ -464,19 +182,13 @@ describe("/admin/products", () => {
         variants: [
           {
             id: "test-variant",
-            prices: [
-              {
-                currency_code: "usd",
-                amount: 100,
-                sale_amount: 75,
-              },
-            ],
+            prices: [{ currency_code: "usd", amount: 100, sale_amount: 75 }],
           },
         ],
         tags: [{ value: "123" }],
         images: ["test-image-2.png"],
         type: { value: "test-type-2" },
-      }
+      };
 
       const response = await api
         .post("/admin/products/test-product", payload, {
@@ -485,10 +197,10 @@ describe("/admin/products", () => {
           },
         })
         .catch((err) => {
-          console.log(err)
-        })
+          console.log(err);
+        });
 
-      expect(response.status).toEqual(200)
+      expect(response.status).toEqual(200);
 
       expect(response.data.product).toEqual(
         expect.objectContaining({
@@ -519,69 +231,15 @@ describe("/admin/products", () => {
             value: "test-type-2",
           }),
         })
-      )
-    })
-
-    it("updates a product (variant ordering)", async () => {
-      const api = useApi()
-
-      const payload = {
-        collection_id: null,
-        type: null,
-        variants: [
-          {
-            id: "test-variant",
-          },
-          {
-            id: "test-variant_1",
-          },
-          {
-            id: "test-variant_2",
-          },
-        ],
-      }
-
-      const response = await api
-        .post("/admin/products/test-product", payload, {
-          headers: {
-            Authorization: "Bearer test_token",
-          },
-        })
-        .catch((err) => {
-          console.log(err)
-        })
-
-      expect(response.status).toEqual(200)
-
-      expect(response.data.product).toEqual(
-        expect.objectContaining({
-          title: "Test product",
-          variants: [
-            expect.objectContaining({
-              id: "test-variant",
-              title: "Test variant",
-            }),
-            expect.objectContaining({
-              id: "test-variant_1",
-              title: "Test variant rank (1)",
-            }),
-            expect.objectContaining({
-              id: "test-variant_2",
-              title: "Test variant rank (2)",
-            }),
-          ],
-          type: null,
-          collection: null,
-        })
-      )
-    })
+      );
+    });
 
     it("add option", async () => {
-      const api = useApi()
+      const api = useApi();
 
       const payload = {
         title: "should_add",
-      }
+      };
 
       const response = await api
         .post("/admin/products/test-product/options", payload, {
@@ -590,41 +248,41 @@ describe("/admin/products", () => {
           },
         })
         .catch((err) => {
-          console.log(err)
-        })
+          console.log(err);
+        });
 
-      expect(response.status).toEqual(200)
+      expect(response.status).toEqual(200);
 
       expect(response.data.product).toEqual(
         expect.objectContaining({
-          options: expect.arrayContaining([
+          options: [
             expect.objectContaining({
               title: "should_add",
               product_id: "test-product",
             }),
-          ]),
+          ],
         })
-      )
-    })
-  })
+      );
+    });
+  });
   describe("testing for soft-deletion + uniqueness on handles, collection and variant properties", () => {
     beforeEach(async () => {
       try {
-        await productSeeder(dbConnection)
-        await adminSeeder(dbConnection)
+        await productSeeder(dbConnection);
+        await adminSeeder(dbConnection);
       } catch (err) {
-        console.log(err)
-        throw err
+        console.log(err);
+        throw err;
       }
-    })
+    });
 
     afterEach(async () => {
-      const db = useDb()
-      await db.teardown()
-    })
+      const db = useDb();
+      await db.teardown();
+    });
 
     it("successfully deletes a product", async () => {
-      const api = useApi()
+      const api = useApi();
 
       const response = await api
         .delete("/admin/products/test-product", {
@@ -633,21 +291,21 @@ describe("/admin/products", () => {
           },
         })
         .catch((err) => {
-          console.log(err)
-        })
+          console.log(err);
+        });
 
-      expect(response.status).toEqual(200)
+      expect(response.status).toEqual(200);
 
       expect(response.data).toEqual(
         expect.objectContaining({
           id: "test-product",
           deleted: true,
         })
-      )
-    })
+      );
+    });
 
-    it("successfully creates product with soft-deleted product handle and deletes it again", async () => {
-      const api = useApi()
+    it("successfully creates product with soft-deleted product handle", async () => {
+      const api = useApi();
 
       // First we soft-delete the product
       const response = await api
@@ -657,11 +315,11 @@ describe("/admin/products", () => {
           },
         })
         .catch((err) => {
-          console.log(err)
-        })
+          console.log(err);
+        });
 
-      expect(response.status).toEqual(200)
-      expect(response.data.id).toEqual("test-product")
+      expect(response.status).toEqual(200);
+      expect(response.data.id).toEqual("test-product");
 
       // Lets try to create a product with same handle as deleted one
       const payload = {
@@ -681,70 +339,20 @@ describe("/admin/products", () => {
             options: [{ value: "large" }, { value: "green" }],
           },
         ],
-      }
+      };
 
       const res = await api.post("/admin/products", payload, {
         headers: {
           Authorization: "Bearer test_token",
         },
-      })
+      });
 
-      expect(res.status).toEqual(200)
-      expect(res.data.product.handle).toEqual("test-product")
-
-      // Delete product again to ensure uniqueness is enforced in all cases
-      const response2 = await api
-        .delete("/admin/products/test-product", {
-          headers: {
-            Authorization: "Bearer test_token",
-          },
-        })
-        .catch((err) => {
-          console.log(err)
-        })
-
-      expect(response2.status).toEqual(200)
-      expect(response2.data.id).toEqual("test-product")
-    })
-
-    it("should fail when creating a product with a handle that already exists", async () => {
-      const api = useApi()
-
-      // Lets try to create a product with same handle as deleted one
-      const payload = {
-        title: "Test product",
-        handle: "test-product",
-        description: "test-product-description",
-        type: { value: "test-type" },
-        images: ["test-image.png", "test-image-2.png"],
-        collection_id: "test-collection",
-        tags: [{ value: "123" }, { value: "456" }],
-        options: [{ title: "size" }, { title: "color" }],
-        variants: [
-          {
-            title: "Test variant",
-            inventory_quantity: 10,
-            prices: [{ currency_code: "usd", amount: 100 }],
-            options: [{ value: "large" }, { value: "green" }],
-          },
-        ],
-      }
-
-      try {
-        await api.post("/admin/products", payload, {
-          headers: {
-            Authorization: "Bearer test_token",
-          },
-        })
-      } catch (error) {
-        expect(error.response.data.message).toMatch(
-          /duplicate key value violates unique constraint/i
-        )
-      }
-    })
+      expect(res.status).toEqual(200);
+      expect(res.data.product.handle).toEqual("test-product");
+    });
 
     it("successfully deletes product collection", async () => {
-      const api = useApi()
+      const api = useApi();
 
       // First we soft-delete the product collection
       const response = await api
@@ -754,15 +362,15 @@ describe("/admin/products", () => {
           },
         })
         .catch((err) => {
-          console.log(err)
-        })
+          console.log(err);
+        });
 
-      expect(response.status).toEqual(200)
-      expect(response.data.id).toEqual("test-collection")
-    })
+      expect(response.status).toEqual(200);
+      expect(response.data.id).toEqual("test-collection");
+    });
 
     it("successfully creates soft-deleted product collection", async () => {
-      const api = useApi()
+      const api = useApi();
 
       const response = await api
         .delete("/admin/collections/test-collection", {
@@ -771,62 +379,30 @@ describe("/admin/products", () => {
           },
         })
         .catch((err) => {
-          console.log(err)
-        })
+          console.log(err);
+        });
 
-      expect(response.status).toEqual(200)
-      expect(response.data.id).toEqual("test-collection")
+      expect(response.status).toEqual(200);
+      expect(response.data.id).toEqual("test-collection");
 
       // Lets try to create a product collection with same handle as deleted one
       const payload = {
         title: "Another test collection",
         handle: "test-collection",
-      }
+      };
 
       const res = await api.post("/admin/collections", payload, {
         headers: {
           Authorization: "Bearer test_token",
         },
-      })
+      });
 
-      expect(res.status).toEqual(200)
-      expect(res.data.collection.handle).toEqual("test-collection")
-    })
-
-    it("should fail when creating a collection with a handle that already exists", async () => {
-      const api = useApi()
-
-      // Lets try to create a collection with same handle as deleted one
-      const payload = {
-        title: "Another test collection",
-        handle: "test-collection",
-      }
-
-      try {
-        await api.post("/admin/collections", payload, {
-          headers: {
-            Authorization: "Bearer test_token",
-          },
-        })
-      } catch (error) {
-        expect(error.response.data.message).toMatch(
-          /duplicate key value violates unique constraint/i
-        )
-      }
-    })
+      expect(res.status).toEqual(200);
+      expect(res.data.collection.handle).toEqual("test-collection");
+    });
 
     it("successfully creates soft-deleted product variant", async () => {
-      const api = useApi()
-
-      const product = await api
-        .get("/admin/products/test-product", {
-          headers: {
-            Authorization: "bearer test_token",
-          },
-        })
-        .catch((err) => {
-          console.log(err)
-        })
+      const api = useApi();
 
       const response = await api
         .delete("/admin/products/test-product/variants/test-variant", {
@@ -835,12 +411,13 @@ describe("/admin/products", () => {
           },
         })
         .catch((err) => {
-          console.log(err)
-        })
+          console.log(err);
+        });
 
-      expect(response.status).toEqual(200)
-      expect(response.data.variant_id).toEqual("test-variant")
+      expect(response.status).toEqual(200);
+      expect(response.data.variant_id).toEqual("test-variant");
 
+      // Lets try to create a product collection with same handle as deleted one
       const payload = {
         title: "Second variant",
         sku: "test-sku",
@@ -853,18 +430,19 @@ describe("/admin/products", () => {
             amount: 100,
           },
         ],
-        options: [{ option_id: "test-option", value: "inserted value" }],
-      }
+      };
 
-      const res = await api
-        .post("/admin/products/test-product/variants", payload, {
+      const res = await api.post(
+        "/admin/products/test-product/variants",
+        payload,
+        {
           headers: {
             Authorization: "Bearer test_token",
           },
-        })
-        .catch((err) => console.log(err))
+        }
+      );
 
-      expect(res.status).toEqual(200)
+      expect(res.status).toEqual(200);
       expect(res.data.product.variants).toEqual(
         expect.arrayContaining([
           expect.objectContaining({
@@ -875,7 +453,7 @@ describe("/admin/products", () => {
             barcode: "test-barcode",
           }),
         ])
-      )
-    })
-  })
-})
+      );
+    });
+  });
+});
