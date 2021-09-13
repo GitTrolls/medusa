@@ -77,15 +77,5 @@ module.exports = {
         },
       ],
     },
-    {
-      type: "category",
-      label: "Guides",
-      items: [
-        {
-          type: "doc",
-          id: "guides/fulfillment-api",
-        },
-      ],
-    },
   ],
 }
