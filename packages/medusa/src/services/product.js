@@ -2,15 +2,19 @@ import _ from "lodash"
 import { MedusaError } from "medusa-core-utils"
 import { BaseService } from "medusa-interfaces"
 import { Brackets } from "typeorm"
+import { flattenField } from "../utils/flatten-field"
+import { INDEX_NS } from "../utils/index-ns"
 
 /**
  * Provides layer to manipulate products.
  * @implements BaseService
  */
 class ProductService extends BaseService {
+  static IndexName = `${INDEX_NS}_products`
   static Events = {
     UPDATED: "product.updated",
     CREATED: "product.created",
+    DELETED: "product.deleted",
   }
 
   constructor({
@@ -24,6 +28,7 @@ class ProductService extends BaseService {
     productTypeRepository,
     productTagRepository,
     imageRepository,
+    searchService,
   }) {
     super()
 
@@ -56,6 +61,9 @@ class ProductService extends BaseService {
 
     /** @private @const {ImageRepository} */
     this.imageRepository_ = imageRepository
+
+    /** @private @const {SearchService} */
+    this.searchService_ = searchService
   }
 
   withTransaction(transactionManager) {
@@ -410,9 +418,7 @@ class ProductService extends BaseService {
         }
 
         const newVariants = []
-        for (const [i, newVariant] of variants.entries()) {
-          newVariant.variant_rank = i
-
+        for (const newVariant of variants) {
           if (newVariant.id) {
             const variant = product.variants.find(v => v.id === newVariant.id)
 
@@ -474,6 +480,12 @@ class ProductService extends BaseService {
       if (!product) return Promise.resolve()
 
       await productRepo.softRemove(product)
+
+      await this.eventBus_
+        .withTransaction(manager)
+        .emit(ProductService.Events.DELETED, {
+          id: productId,
+        })
 
       return Promise.resolve()
     })
@@ -735,6 +747,61 @@ class ProductService extends BaseService {
 
     // const final = await this.runDecorators_(decorated)
     return product
+  }
+
+  /**
+   * Loads all products into the search engine
+   */
+
+  async loadIntoSearchEngine() {
+    if (this.searchService_.isDefault) return
+
+    const TAKE = 20
+    const totalCount = await this.count()
+    let iterCount = 0,
+      lastSeenId = ""
+
+    while (iterCount < totalCount) {
+      console.log({ lastSeenId })
+      const products = await this.list(
+        { id: { gte: lastSeenId } },
+        {
+          select: [
+            "id",
+            "title",
+            "subtitle",
+            "description",
+            "handle",
+            "is_giftcard",
+            "discountable",
+            "thumbnail",
+            "profile_id",
+            "collection_id",
+            "type_id",
+            "origin_country",
+            "created_at",
+            "updated_at",
+          ],
+          relations: ["variants", "tags", "type", "collection"],
+          take: TAKE,
+          order: { id: "ASC" },
+        }
+      )
+      const flattenSkus = product => {
+        product.sku = flattenField(product.variants, "sku").filter(Boolean)
+        return product
+      }
+
+      const productsWithSkus = products.map(product => flattenSkus(product))
+
+      await this.searchService_.addDocuments(
+        ProductService.IndexName,
+        productsWithSkus
+      )
+
+      iterCount += TAKE
+      lastSeenId = products.at(-1).id
+    }
   }
 }
 

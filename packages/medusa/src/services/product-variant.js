@@ -11,6 +11,7 @@ class ProductVariantService extends BaseService {
   static Events = {
     UPDATED: "product-variant.updated",
     CREATED: "product-variant.created",
+    DELETED: "product-variant.deleted",
   }
 
   /** @param { productVariantModel: (ProductVariantModel) } */
@@ -174,10 +175,6 @@ class ProductVariantService extends BaseService {
         )
       }
 
-      if (!rest.variant_rank) {
-        rest.variant_rank = product.variants.length
-      }
-
       const toCreate = {
         ...rest,
         product_id: product.id,
@@ -206,6 +203,7 @@ class ProductVariantService extends BaseService {
         .withTransaction(manager)
         .emit(ProductVariantService.Events.CREATED, {
           id: result.id,
+          product_id: result.product_id,
         })
 
       return result
@@ -233,6 +231,7 @@ class ProductVariantService extends BaseService {
         .withTransaction(manager)
         .emit(ProductVariantService.Events.UPDATED, {
           id: result.id,
+          product_id: result.product_id,
         })
 
       return result
@@ -309,6 +308,7 @@ class ProductVariantService extends BaseService {
         .withTransaction(manager)
         .emit(ProductVariantService.Events.UPDATED, {
           id: result.id,
+          product_id: result.product_id,
           fields: Object.keys(update),
         })
       return result
@@ -590,6 +590,11 @@ class ProductVariantService extends BaseService {
       if (!variant) return Promise.resolve()
 
       await variantRepo.softRemove(variant)
+
+      await this.eventBus_.emit(ProductVariantService.Events.DELETED, {
+        id: variant.id,
+        product_id: variant.product_id,
+      })
 
       return Promise.resolve()
     })

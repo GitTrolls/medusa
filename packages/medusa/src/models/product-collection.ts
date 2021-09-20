@@ -24,7 +24,7 @@ export class ProductCollection {
   @Column()
   title: string
 
-  @Index({ unique: true, where: "deleted_at IS NULL" })
+  @Index({ unique: true, where: "deleted_at IS NOT NULL" })
   @Column({ nullable: true })
   handle: string
 

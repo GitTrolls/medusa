@@ -28,7 +28,6 @@ export enum ReturnStatus {
   REQUESTED = "requested",
   RECEIVED = "received",
   REQUIRES_ACTION = "requires_action",
-  CANCELED = "canceled",
 }
 
 @Entity()
@@ -86,7 +85,7 @@ export class Return {
   @OneToOne(
     () => ShippingMethod,
     method => method.return_order,
-    { cascade: true }
+    { eager: true, cascade: true }
   )
   shipping_method: ShippingMethod
 
