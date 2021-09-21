@@ -1,5 +1,6 @@
 import { BaseService } from "medusa-interfaces"
 import { MedusaError } from "medusa-core-utils"
+const fs = require("fs")
 
 class InventoryService extends BaseService {
   constructor({ manager, productVariantService }) {

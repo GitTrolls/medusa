@@ -1,5 +1,4 @@
 import _ from "lodash"
-import { MedusaError, Validator } from "medusa-core-utils"
 import { defaultFields, defaultRelations } from "./"
 
 /**
@@ -55,20 +54,6 @@ export default async (req, res) => {
 
     if ("is_giftcard" in req.query) {
       selector.is_giftcard = req.query.is_giftcard === "true"
-    }
-
-    if ("status" in req.query) {
-      const schema = Validator.array()
-        .items(
-          Validator.string().valid("proposed", "draft", "published", "rejected")
-        )
-        .single()
-
-      const { value, error } = schema.validate(req.query.status)
-
-      if (value && !error) {
-        selector.status = value
-      }
     }
 
     const listConfig = {

@@ -38,7 +38,6 @@ export enum PaymentStatus {
   NOT_PAID = "not_paid",
   AWAITING = "awaiting",
   CAPTURED = "captured",
-  CONFIRMED = "confirmed",
   CANCELED = "canceled",
   DIFFERENCE_REFUNDED = "difference_refunded",
   PARTIALLY_REFUNDED = "partially_refunded",
@@ -132,14 +131,8 @@ export class Swap {
   @DeleteDateColumn({ type: resolveDbType("timestamptz") })
   deleted_at: Date
 
-  @Column({ type: resolveDbType("timestamptz"), nullable: true })
-  canceled_at: Date
-
   @Column({ type: "boolean", nullable: true })
   no_notification: Boolean
-
-  @Column({ type: "boolean", default: false })
-  allow_backorder: Boolean
 
   @DbAwareColumn({ type: "jsonb", nullable: true })
   metadata: any
@@ -223,9 +216,6 @@ export class Swap {
  *   cart_id:
  *     description: "The id of the Cart that the Customer will use to confirm the Swap."
  *     type: string
- *   allow_backorder:
- *     description: "If true, swaps can be completed with items out of stock"
- *     type: boolean
  *   confirmed_at:
  *     description: "The date with timezone at which the Swap was confirmed by the Customer."
  *     type: string
@@ -236,10 +226,6 @@ export class Swap {
  *     format: date-time
  *   updated_at:
  *     description: "The date with timezone at which the resource was last updated."
- *     type: string
- *     format: date-time
- *   canceled_at:
- *     description: "The date with timezone at which the Swap was canceled."
  *     type: string
  *     format: date-time
  *   no_notification:

@@ -1,5 +1,3 @@
-import { defaultFields, defaultRelations } from "."
-
 /**
  * @oas [post] /orders/{id}/cancel
  * operationId: "PostOrdersOrderCancel"
@@ -24,11 +22,11 @@ export default async (req, res) => {
 
   try {
     const orderService = req.scope.resolve("orderService")
+
     await orderService.cancel(id)
 
     const order = await orderService.retrieve(id, {
-      select: defaultFields,
-      relations: defaultRelations,
+      relations: ["region", "customer", "swaps"],
     })
 
     res.json({ order })
