@@ -1,5 +1,3 @@
-import { defaultRelations } from "."
-
 /**
  * @oas [get] /variants
  * operationId: GetVariants
@@ -25,14 +23,10 @@ export default async (req, res) => {
   const limit = parseInt(req.query.limit) || 100
   const offset = parseInt(req.query.offset) || 0
 
-  let expandFields = []
-  if ("expand" in req.query) {
-    expandFields = req.query.expand.split(",")
-  }
-
   let selector = {}
+
   const listConfig = {
-    relations: expandFields.length ? expandFields : defaultRelations,
+    relations: [],
     skip: offset,
     take: limit,
   }

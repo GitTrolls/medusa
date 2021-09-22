@@ -1,7 +1,8 @@
-import { MedusaError } from "medusa-core-utils"
-import { BaseService } from "medusa-interfaces"
+import _ from "lodash"
 import randomize from "randomatic"
+import { BaseService } from "medusa-interfaces"
 import { Brackets } from "typeorm"
+import { MedusaError } from "medusa-core-utils"
 
 /**
  * Provides layer to manipulate gift cards.

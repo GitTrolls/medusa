@@ -41,7 +41,7 @@ class NotificationService extends BaseService {
 
   /**
    * Sets the service's manager to a given transaction manager.
-   * @param {EntityManager} transactionManager - the manager to use
+   * @parma {EntityManager} transactionManager - the manager to use
    * return {NotificationService} a cloned notification service
    */
   withTransaction(transactionManager) {

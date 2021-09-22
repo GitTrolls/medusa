@@ -182,11 +182,6 @@ export const OrderServiceMock = {
     }
     return Promise.resolve(undefined)
   }),
-
-  cancelFulfillment: jest.fn().mockImplementation(f => {
-    return Promise.resolve({ f })
-  }),
-
   archive: jest.fn().mockImplementation(order => {
     if (order === IdMap.getId("processed-order")) {
       orders.processedOrder.status = "archived"

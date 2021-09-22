@@ -19,7 +19,6 @@ const defaultRelations = [
   "gift_card_transactions",
   "claims",
   "claims.return_order",
-  "claims.return_order.shipping_method",
   "claims.shipping_methods",
   "claims.shipping_address",
   "claims.additional_items",
