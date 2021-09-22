@@ -8,7 +8,6 @@ import {
   NotificationService,
   FileService,
   OauthService,
-  SearchService,
 } from "medusa-interfaces"
 import { getConfigFile, createRequireFromPath } from "medusa-core-utils"
 import _ from "lodash"
@@ -250,7 +249,7 @@ async function registerServices(pluginDetails, container) {
         )
 
         // Add the service directly to the container in order to make simple
-        // resolution if we already know which fulfillment provider we need to use
+        // resolution if we already know which payment provider we need to use
         container.register({
           [name]: asFunction(
             cradle => new loaded(cradle, pluginDetails.options)
@@ -264,7 +263,7 @@ async function registerServices(pluginDetails, container) {
         )
 
         // Add the service directly to the container in order to make simple
-        // resolution if we already know which notification provider we need to use
+        // resolution if we already know which payment provider we need to use
         container.register({
           [name]: asFunction(
             cradle => new loaded(cradle, pluginDetails.options)
@@ -273,21 +272,12 @@ async function registerServices(pluginDetails, container) {
         })
       } else if (loaded.prototype instanceof FileService) {
         // Add the service directly to the container in order to make simple
-        // resolution if we already know which file storage provider we need to use
+        // resolution if we already know which payment provider we need to use
         container.register({
           [name]: asFunction(
             cradle => new loaded(cradle, pluginDetails.options)
           ),
           [`fileService`]: aliasTo(name),
-        })
-      } else if (loaded.prototype instanceof SearchService) {
-        // Add the service directly to the container in order to make simple
-        // resolution if we already know which search provider we need to use
-        container.register({
-          [name]: asFunction(
-            cradle => new loaded(cradle, pluginDetails.options)
-          ),
-          [`searchService`]: aliasTo(name),
         })
       } else {
         container.register({

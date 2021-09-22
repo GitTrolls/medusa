@@ -2,18 +2,15 @@ import _ from "lodash"
 import { MedusaError } from "medusa-core-utils"
 import { BaseService } from "medusa-interfaces"
 import { Brackets } from "typeorm"
-import { INDEX_NS } from "../utils/index-ns"
 
 /**
  * Provides layer to manipulate products.
  * @implements BaseService
  */
 class ProductService extends BaseService {
-  static IndexName = `${INDEX_NS}_products`
   static Events = {
     UPDATED: "product.updated",
     CREATED: "product.created",
-    DELETED: "product.deleted",
   }
 
   constructor({
@@ -27,7 +24,6 @@ class ProductService extends BaseService {
     productTypeRepository,
     productTagRepository,
     imageRepository,
-    searchService,
   }) {
     super()
 
@@ -60,9 +56,6 @@ class ProductService extends BaseService {
 
     /** @private @const {ImageRepository} */
     this.imageRepository_ = imageRepository
-
-    /** @private @const {SearchService} */
-    this.searchService_ = searchService
   }
 
   withTransaction(transactionManager) {
@@ -417,7 +410,9 @@ class ProductService extends BaseService {
         }
 
         const newVariants = []
-        for (const newVariant of variants) {
+        for (const [i, newVariant] of variants.entries()) {
+          newVariant.variant_rank = i
+
           if (newVariant.id) {
             const variant = product.variants.find(v => v.id === newVariant.id)
 
@@ -479,12 +474,6 @@ class ProductService extends BaseService {
       if (!product) return Promise.resolve()
 
       await productRepo.softRemove(product)
-
-      await this.eventBus_
-        .withTransaction(manager)
-        .emit(ProductService.Events.DELETED, {
-          id: productId,
-        })
 
       return Promise.resolve()
     })
