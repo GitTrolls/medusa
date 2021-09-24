@@ -2,11 +2,12 @@ import { MedusaError, Validator } from "medusa-core-utils"
 import jwt from "jsonwebtoken"
 
 /**
- * @oas [post] /customers/reset-password
- * operationId: PostCustomersResetPassword
+ * @oas [post] /customers/{id}/reset-password
+ * operationId: PostCustomersCustomerResetPassword
  * summary: Resets Customer password
  * description: "Resets a Customer's password using a password token created by a previous /password-token request."
  * parameters:
+ *   - (path) id=* {string} The id of the Customer.
  *   - (body) email=* {string} The Customer's email.
  *   - (body) token=* {string} The password token created by a /password-token request.
  *   - (body) password=* {string} The new password to set for the Customer.
@@ -24,7 +25,9 @@ import jwt from "jsonwebtoken"
  */
 export default async (req, res) => {
   const schema = Validator.object().keys({
-    email: Validator.string().email().required(),
+    email: Validator.string()
+      .email()
+      .required(),
     token: Validator.string().required(),
     password: Validator.string().required(),
   })

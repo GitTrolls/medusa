@@ -321,6 +321,7 @@ class PaymentProviderService extends BaseService {
   async cancelPayment(paymentObj) {
     return this.atomicPhase_(async manager => {
       const payment = await this.retrievePayment(paymentObj.id)
+
       const provider = this.retrieveProvider(payment.provider_id)
       payment.data = await provider.cancelPayment(payment)
 
@@ -328,7 +329,7 @@ class PaymentProviderService extends BaseService {
       payment.canceled_at = now.toISOString()
 
       const paymentRepo = manager.getCustomRepository(this.paymentRepository_)
-      return await paymentRepo.save(payment)
+      return paymentRepo.save(payment)
     })
   }
 

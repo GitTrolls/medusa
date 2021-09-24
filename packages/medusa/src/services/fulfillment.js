@@ -195,7 +195,6 @@ class FulfillmentService extends BaseService {
           })
 
           let result = await fulfillmentRepository.save(ful)
-
           result.data = await this.fulfillmentProviderService_.createFulfillment(
             shipping_method,
             items,
@@ -212,9 +211,7 @@ class FulfillmentService extends BaseService {
   }
 
   /**
-   * Cancels a fulfillment with the fulfillment provider. Will decrement the
-   * fulfillment_quantity on the line items associated with the fulfillment.
-   * Throws if the fulfillment has already been shipped.
+   * Cancels a fulfillment with the fulfillment provider.
    * @param {Fulfillment|string} fulfillmentOrId - the fulfillment object or id.
    * @return {Promise} the result of the save operation
    *
@@ -225,36 +222,17 @@ class FulfillmentService extends BaseService {
       if (typeof fulfillmentOrId === "object") {
         id = fulfillmentOrId.id
       }
-      const fulfillment = await this.retrieve(id, {
-        relations: ["items", "claim_order", "swap"],
-      })
-
-      if (fulfillment.shipped_at) {
-        throw new MedusaError(
-          MedusaError.Types.NOT_ALLOWED,
-          `The fulfillment has already been shipped. Shipped fulfillments cannot be canceled`
-        )
-      }
+      const fulfillment = await this.retrieve(id)
 
       await this.fulfillmentProviderService_.cancelFulfillment(fulfillment)
 
-      fulfillment.canceled_at = new Date()
-
-      const lineItemService = this.lineItemService_.withTransaction(manager)
-
-      for (const fItem of fulfillment.items) {
-        const item = await lineItemService.retrieve(fItem.item_id)
-        const fulfilledQuantity = item.fulfilled_quantity - fItem.quantity
-        await lineItemService.update(item.id, {
-          fulfilled_quantity: fulfilledQuantity,
-        })
-      }
+      fulfillment.status = "canceled"
 
       const fulfillmentRepo = manager.getCustomRepository(
         this.fulfillmentRepository_
       )
-      const canceled = await fulfillmentRepo.save(fulfillment)
-      return canceled
+      const result = await fulfillmentRepo.save(fulfillment)
+      return result
     })
   }
 
@@ -287,13 +265,6 @@ class FulfillmentService extends BaseService {
       const fulfillment = await this.retrieve(fulfillmentId, {
         relations: ["items"],
       })
-
-      if (fulfillment.canceled_at) {
-        throw new MedusaError(
-          MedusaError.Types.NOT_ALLOWED,
-          "Fulfillment has been canceled"
-        )
-      }
 
       const now = new Date()
       fulfillment.shipped_at = now

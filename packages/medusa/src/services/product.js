@@ -8,9 +8,11 @@ import { Brackets } from "typeorm"
  * @implements BaseService
  */
 class ProductService extends BaseService {
+  static IndexName = `products`
   static Events = {
     UPDATED: "product.updated",
     CREATED: "product.created",
+    DELETED: "product.deleted",
   }
 
   constructor({
@@ -24,6 +26,7 @@ class ProductService extends BaseService {
     productTypeRepository,
     productTagRepository,
     imageRepository,
+    searchService,
   }) {
     super()
 
@@ -56,6 +59,9 @@ class ProductService extends BaseService {
 
     /** @private @const {ImageRepository} */
     this.imageRepository_ = imageRepository
+
+    /** @private @const {SearchService} */
+    this.searchService_ = searchService
   }
 
   withTransaction(transactionManager) {
@@ -410,9 +416,7 @@ class ProductService extends BaseService {
         }
 
         const newVariants = []
-        for (const [i, newVariant] of variants.entries()) {
-          newVariant.variant_rank = i
-
+        for (const newVariant of variants) {
           if (newVariant.id) {
             const variant = product.variants.find(v => v.id === newVariant.id)
 
@@ -474,6 +478,12 @@ class ProductService extends BaseService {
       if (!product) return Promise.resolve()
 
       await productRepo.softRemove(product)
+
+      await this.eventBus_
+        .withTransaction(manager)
+        .emit(ProductService.Events.DELETED, {
+          id: productId,
+        })
 
       return Promise.resolve()
     })
