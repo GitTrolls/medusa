@@ -1,6 +1,6 @@
 import _ from "lodash"
 import { BaseService } from "medusa-interfaces"
-import { Brackets, Raw, IsNull } from "typeorm"
+import { Brackets, Raw, IsNull, ILike } from "typeorm"
 import { Validator, MedusaError } from "medusa-core-utils"
 
 /**
@@ -11,7 +11,6 @@ class ProductVariantService extends BaseService {
   static Events = {
     UPDATED: "product-variant.updated",
     CREATED: "product-variant.created",
-    DELETED: "product-variant.deleted",
   }
 
   /** @param { productVariantModel: (ProductVariantModel) } */
@@ -175,6 +174,10 @@ class ProductVariantService extends BaseService {
         )
       }
 
+      if (!rest.variant_rank) {
+        rest.variant_rank = product.variants.length
+      }
+
       const toCreate = {
         ...rest,
         product_id: product.id,
@@ -203,7 +206,6 @@ class ProductVariantService extends BaseService {
         .withTransaction(manager)
         .emit(ProductVariantService.Events.CREATED, {
           id: result.id,
-          product_id: result.product_id,
         })
 
       return result
@@ -231,7 +233,6 @@ class ProductVariantService extends BaseService {
         .withTransaction(manager)
         .emit(ProductVariantService.Events.UPDATED, {
           id: result.id,
-          product_id: result.product_id,
         })
 
       return result
@@ -308,7 +309,6 @@ class ProductVariantService extends BaseService {
         .withTransaction(manager)
         .emit(ProductVariantService.Events.UPDATED, {
           id: result.id,
-          product_id: result.product_id,
           fields: Object.keys(update),
         })
       return result
@@ -558,14 +558,11 @@ class ProductVariantService extends BaseService {
       }
 
       query.where = qb => {
-        qb.where(where).andWhere(
-          new Brackets(qb => {
-            qb.where([
-              { sku: Raw(a => `${a} ILIKE :q`, { q: `%${q}%` }) },
-              { title: Raw(a => `${a} ILIKE :q`, { q: `%${q}%` }) },
-            ]).orWhere(`product.title ILIKE :q`, { q: `%${q}%` })
-          })
-        )
+        qb.where(where).andWhere([
+          { sku: ILike(`%${q}%`) },
+          { title: ILike(`%${q}%`) },
+          { product: { title: ILike(`%${q}%`) } },
+        ])
       }
     }
 
@@ -590,11 +587,6 @@ class ProductVariantService extends BaseService {
       if (!variant) return Promise.resolve()
 
       await variantRepo.softRemove(variant)
-
-      await this.eventBus_.emit(ProductVariantService.Events.DELETED, {
-        id: variant.id,
-        product_id: variant.product_id,
-      })
 
       return Promise.resolve()
     })

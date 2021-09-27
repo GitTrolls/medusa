@@ -1,7 +1,6 @@
 export { countries } from "./countries"
 export { isoCountryLookup } from "./countries"
 export { transformIdableFields } from "./transform-idable-fields"
-export { indexTypes } from "./index-types"
 export { default as Validator } from "./validator"
 export { default as MedusaError } from "./errors"
 export { default as getConfigFile } from "./get-config-file"
