@@ -1,12 +1,13 @@
-import { optional } from "joi"
 import { Validator, MedusaError } from "medusa-core-utils"
 import { defaultRelations, defaultFields } from "./"
 
 /**
- * @oas [post] /customers/me
+ * @oas [post] /customers/{id}
  * operationId: PostCustomersCustomer
  * summary: Update Customer details
  * description: "Updates a Customer's saved details."
+ * parameters:
+ *   - (path) id=* {string} The id of the Customer.
  * requestBody:
  *   content:
  *     application/json:
@@ -28,9 +29,6 @@ import { defaultRelations, defaultFields } from "./"
  *           phone:
  *             description: "The Customer's phone number."
  *             type: string
- *           email:
- *             description: "The email of the customer."
- *             type: string
  *           metadata:
  *             description: "Metadata about the customer."
  *             type: object
@@ -47,7 +45,7 @@ import { defaultRelations, defaultFields } from "./"
  *               $ref: "#/components/schemas/customer"
  */
 export default async (req, res) => {
-  const id = req.user.customer_id
+  const { id } = req.params
 
   const schema = Validator.object().keys({
     billing_address: Validator.address().optional(),
@@ -55,7 +53,6 @@ export default async (req, res) => {
     last_name: Validator.string().optional(),
     password: Validator.string().optional(),
     phone: Validator.string().optional(),
-    email: Validator.string().optional(),
     metadata: Validator.object().optional(),
   })
 
