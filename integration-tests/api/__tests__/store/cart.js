@@ -1,5 +1,11 @@
 const path = require("path")
-const { Region, LineItem, GiftCard } = require("@medusajs/medusa")
+const {
+  Region,
+  LineItem,
+  GiftCard,
+  RMAShippingOption,
+  Cart,
+} = require("@medusajs/medusa")
 
 const setupServer = require("../../../helpers/setup-server")
 const { useApi } = require("../../../helpers/use-api")
@@ -139,6 +145,7 @@ describe("/store/carts", () => {
           discounts: [{ code: "CREATED" }],
         })
       } catch (error) {
+        console.log(error.response)
         expect(error.response.status).toEqual(400)
         expect(error.response.data.message).toEqual(
           "Discount has been used maximum allowed times"
@@ -435,13 +442,34 @@ describe("/store/carts", () => {
   describe("POST /store/carts/:id/shipping-methods", () => {
     beforeEach(async () => {
       await cartSeeder(dbConnection)
+      const manager = dbConnection.manager
+
+      await manager.insert(Cart, {
+        id: "test-cart-rma",
+        customer_id: "some-customer",
+        email: "some-customer@email.com",
+        shipping_address: {
+          id: "test-shipping-address",
+          first_name: "lebron",
+          country_code: "us",
+        },
+        region_id: "test-region",
+        currency_code: "usd",
+        type: "swap",
+      })
+
+      await manager.insert(RMAShippingOption, {
+        id: "test-rmaso",
+        shipping_option_id: "test-option",
+        price: 5,
+      })
     })
 
     afterEach(async () => {
       await doAfterEach()
     })
 
-    it("adds a shipping method to cart", async () => {
+    it("adds a normal shipping method to cart", async () => {
       const api = useApi()
 
       const cartWithShippingMethod = await api.post(
@@ -456,6 +484,27 @@ describe("/store/carts", () => {
         expect.objectContaining({ shipping_option_id: "test-option" })
       )
       expect(cartWithShippingMethod.status).toEqual(200)
+    })
+
+    it("adds a rma shipping method to cart", async () => {
+      const api = useApi()
+
+      const cartWithRMAShippingMethod = await api
+        .post(
+          "/store/carts/test-cart-rma/shipping-methods",
+          {
+            option_id: "test-rmaso",
+          },
+          { withCredentials: true }
+        )
+        .catch((err) => err.response)
+
+      expect(
+        cartWithRMAShippingMethod.data.cart.shipping_methods
+      ).toContainEqual(
+        expect.objectContaining({ shipping_option_id: "test-option", price: 5 })
+      )
+      expect(cartWithRMAShippingMethod.status).toEqual(200)
     })
 
     it("adds a giftcard to cart, but ensures discount only applied to discountable items", async () => {
