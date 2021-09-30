@@ -272,7 +272,11 @@ describe("ShippingOptionService", () => {
         amount: 10,
       })
 
-      expect(shippingOptionRequirementRepository.create).toBeCalledTimes(0)
+      expect(shippingOptionRequirementRepository.create).toBeCalledTimes(1)
+      expect(shippingOptionRequirementRepository.create).toBeCalledWith({
+        type: "max_subtotal",
+        amount: 10,
+      })
 
       expect(shippingOptionRepository.save).toBeCalledTimes(1)
       expect(shippingOptionRepository.save).toBeCalledWith({

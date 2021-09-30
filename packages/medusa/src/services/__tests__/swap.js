@@ -741,13 +741,6 @@ describe("SwapService", () => {
         },
       }
 
-      const cartService = {
-        update: jest.fn(),
-        withTransaction: function() {
-          return this
-        },
-      }
-
       const swapRepo = MockRepository({
         findOneWithRelations: () => Promise.resolve(existing),
       })
@@ -759,7 +752,6 @@ describe("SwapService", () => {
         lineItemService,
         eventBusService,
         fulfillmentService,
-        cartService,
       })
 
       it("creates a shipment", async () => {
@@ -839,23 +831,11 @@ describe("SwapService", () => {
       },
     }
 
-    const cartService = {
-      update: () => {
-        return Promise.resolve()
-      },
-      withTransaction: function() {
-        return this
-      },
-    }
-
     const paymentProviderService = {
       getStatus: jest.fn(() => {
         return Promise.resolve("authorized")
       }),
       updatePayment: jest.fn(() => {
-        return Promise.resolve()
-      }),
-      cancelPayment: jest.fn(() => {
         return Promise.resolve()
       }),
       withTransaction: function() {
@@ -892,7 +872,6 @@ describe("SwapService", () => {
         eventBusService,
         swapRepository: swapRepo,
         totalsService,
-        cartService,
         paymentProviderService,
         eventBusService,
         shippingOptionService,
@@ -954,7 +933,6 @@ describe("SwapService", () => {
         eventBusService,
         swapRepository: swapRepo,
         totalsService,
-        cartService,
         paymentProviderService,
         eventBusService,
         shippingOptionService,

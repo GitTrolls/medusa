@@ -26,13 +26,6 @@ import { ProductVariant } from "./product-variant"
 import { ShippingProfile } from "./shipping-profile"
 import _ from "lodash"
 
-export enum Status {
-  DRAFT = "draft",
-  PROPOSED = "proposed",
-  PUBLISHED = "published",
-  REJECTED = "rejected",
-}
-
 @Entity()
 export class Product {
   @PrimaryColumn()
@@ -53,9 +46,6 @@ export class Product {
 
   @Column({ default: false })
   is_giftcard: boolean
-
-  @DbAwareColumn({ type: "enum", enum: Status, default: "draft" })
-  status: Status
 
   @ManyToMany(() => Image, { cascade: ["insert"] })
   @JoinTable({

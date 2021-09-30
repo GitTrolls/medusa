@@ -42,7 +42,6 @@ export default async (req, res) => {
 
   const schema = Validator.object().keys({
     label: Validator.string().optional(),
-    parent_return_reason_id: Validator.string().optional(),
     description: Validator.string()
       .optional()
       .allow(""),

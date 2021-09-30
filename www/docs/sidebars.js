@@ -99,5 +99,19 @@ module.exports = {
         },
       ],
     },
+    {
+      type: "category",
+      label: "Deploy",
+      items: [
+        {
+          type: "doc",
+          id: "how-to/deploying-on-heroku",
+        },
+        {
+          type: "doc",
+          id: "how-to/deploying-admin-on-netlify",
+        },
+      ],
+    },
   ],
 }
