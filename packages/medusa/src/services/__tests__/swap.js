@@ -324,8 +324,7 @@ describe("SwapService", () => {
           {
             id: IdMap.getId("return-shipping"),
             price: 20,
-          },
-          [{ option_id: IdMap.getId("rmaso-option1"), price: 0 }]
+          }
         )
 
         expect(lineItemService.generate).toHaveBeenCalledTimes(1)
@@ -344,8 +343,7 @@ describe("SwapService", () => {
           {
             id: IdMap.getId("return-shipping"),
             price: 20,
-          },
-          [{ option_id: IdMap.getId("rmaso-option1"), price: 0 }]
+          }
         )
 
         expect(swapRepo.create).toHaveBeenCalledWith({
@@ -359,9 +357,6 @@ describe("SwapService", () => {
               variant_id: IdMap.getId("new-variant"),
               quantity: 1,
             },
-          ],
-          rma_shipping_options: [
-            { shipping_option_id: IdMap.getId("rmaso-option1"), price: 0 },
           ],
         })
 
@@ -383,7 +378,6 @@ describe("SwapService", () => {
               id: IdMap.getId("return-shipping"),
               price: 20,
             },
-            [],
             { no_notification: input }
           )
 
@@ -747,6 +741,13 @@ describe("SwapService", () => {
         },
       }
 
+      const cartService = {
+        update: jest.fn(),
+        withTransaction: function() {
+          return this
+        },
+      }
+
       const swapRepo = MockRepository({
         findOneWithRelations: () => Promise.resolve(existing),
       })
@@ -758,6 +759,7 @@ describe("SwapService", () => {
         lineItemService,
         eventBusService,
         fulfillmentService,
+        cartService,
       })
 
       it("creates a shipment", async () => {
@@ -837,11 +839,23 @@ describe("SwapService", () => {
       },
     }
 
+    const cartService = {
+      update: () => {
+        return Promise.resolve()
+      },
+      withTransaction: function() {
+        return this
+      },
+    }
+
     const paymentProviderService = {
       getStatus: jest.fn(() => {
         return Promise.resolve("authorized")
       }),
       updatePayment: jest.fn(() => {
+        return Promise.resolve()
+      }),
+      cancelPayment: jest.fn(() => {
         return Promise.resolve()
       }),
       withTransaction: function() {
@@ -878,6 +892,7 @@ describe("SwapService", () => {
         eventBusService,
         swapRepository: swapRepo,
         totalsService,
+        cartService,
         paymentProviderService,
         eventBusService,
         shippingOptionService,
@@ -939,6 +954,7 @@ describe("SwapService", () => {
         eventBusService,
         swapRepository: swapRepo,
         totalsService,
+        cartService,
         paymentProviderService,
         eventBusService,
         shippingOptionService,

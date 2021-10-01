@@ -1,5 +1,4 @@
 import { Validator, MedusaError } from "medusa-core-utils"
-import { CartType } from "../../../../models/cart"
 
 /**
  * @oas [get] /shipping-options/{cart_id}
@@ -41,12 +40,7 @@ export default async (req, res) => {
       relations: ["region", "items", "items.variant", "items.variant.product"],
     })
 
-    let options
-    if (cart.type === CartType.SWAP || cart.type === CartType.CLAIM) {
-      options = await shippingProfileService.fetchRMAOptions(cart)
-    } else {
-      options = await shippingProfileService.fetchCartOptions(cart)
-    }
+    const options = await shippingProfileService.fetchCartOptions(cart)
 
     res.status(200).json({ shipping_options: options })
   } catch (err) {

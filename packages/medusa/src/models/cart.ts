@@ -119,7 +119,6 @@ export enum CartType {
   SWAP = "swap",
   DRAFT_ORDER = "draft_order",
   PAYMENT_LINK = "payment_link",
-  CLAIM = "claim",
 }
 
 @Entity()
@@ -230,6 +229,9 @@ export class Cart {
 
   @Column({ type: resolveDbType("timestamptz"), nullable: true })
   completed_at: Date
+
+  @Column({ type: resolveDbType("timestamptz"), nullable: true })
+  payment_authorized_at: Date
 
   @CreateDateColumn({ type: resolveDbType("timestamptz") })
   created_at: Date

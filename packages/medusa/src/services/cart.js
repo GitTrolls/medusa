@@ -24,6 +24,7 @@ class CartService extends BaseService {
     regionService,
     lineItemService,
     shippingOptionService,
+    shippingProfileService,
     customerService,
     discountService,
     giftCardService,
@@ -31,8 +32,6 @@ class CartService extends BaseService {
     addressRepository,
     paymentSessionRepository,
     inventoryService,
-    RMAShippingOptionRepository,
-    swapRepository,
   }) {
     super()
 
@@ -63,6 +62,9 @@ class CartService extends BaseService {
     /** @private @const {PaymentProviderService} */
     this.paymentProviderService_ = paymentProviderService
 
+    /** @private @const {ShippingProfileService} */
+    this.shippingProfileService_ = shippingProfileService
+
     /** @private @const {CustomerService} */
     this.customerService_ = customerService
 
@@ -86,9 +88,6 @@ class CartService extends BaseService {
 
     /** @private @const {InventoryService} */
     this.inventoryService_ = inventoryService
-
-    /** @private @const {RMAShippingOptionRepository} */
-    this.rmaShippingOptionRepository_ = RMAShippingOptionRepository
   }
 
   withTransaction(transactionManager) {
@@ -108,13 +107,13 @@ class CartService extends BaseService {
       regionService: this.regionService_,
       lineItemService: this.lineItemService_,
       shippingOptionService: this.shippingOptionService_,
+      shippingProfileService: this.shippingProfileService_,
       customerService: this.customerService_,
       discountService: this.discountService_,
       totalsService: this.totalsService_,
       addressRepository: this.addressRepository_,
       giftCardService: this.giftCardService_,
       inventoryService: this.inventoryService_,
-      RMAShippingOptionRepository: this.rmaShippingOptionRepository_,
     })
 
     cloned.transactionManager_ = transactionManager
@@ -683,6 +682,14 @@ class CartService extends BaseService {
         }
       }
 
+      if ("completed_at" in update) {
+        cart.completed_at = update.completed_at
+      }
+
+      if ("payment_authorized_at" in update) {
+        cart.payment_authorized_at = update.payment_authorized_at
+      }
+
       const result = await cartRepo.save(cart)
 
       if ("email" in update || "customer_id" in update) {
@@ -880,6 +887,21 @@ class CartService extends BaseService {
         )
     }
 
+    const today = new Date()
+    if (discount.starts_at > today) {
+      throw new MedusaError(
+        MedusaError.Types.NOT_ALLOWED,
+        "Discount is not valid yet"
+      )
+    }
+
+    if (discount.ends_at && discount.ends_at < today) {
+      throw new MedusaError(
+        MedusaError.Types.NOT_ALLOWED,
+        "Discount is expired"
+      )
+    }
+
     let regions = discount.regions
     if (discount.parent_discount_id) {
       const parent = await this.discountService_.retrieve(
@@ -1028,7 +1050,7 @@ class CartService extends BaseService {
 
       // If cart total is 0, we don't perform anything payment related
       if (cart.total <= 0) {
-        cart.completed_at = new Date()
+        cart.payment_authorized_at = new Date()
         return cartRepository.save(cart)
       }
 
@@ -1047,7 +1069,7 @@ class CartService extends BaseService {
           .createPayment(freshCart)
 
         freshCart.payment = payment
-        freshCart.completed_at = new Date()
+        freshCart.payment_authorized_at = new Date()
       }
 
       const updated = await cartRepository.save(freshCart)
@@ -1304,13 +1326,9 @@ class CartService extends BaseService {
       })
       const { shipping_methods } = cart
 
-      const customPrice = data.price ? { price: data.price } : {}
       const newMethod = await this.shippingOptionService_
         .withTransaction(manager)
-        .createShippingMethod(optionId, data, {
-          cart,
-          ...customPrice,
-        })
+        .createShippingMethod(optionId, data, { cart })
 
       const methods = [newMethod]
       if (shipping_methods.length) {
@@ -1351,42 +1369,13 @@ class CartService extends BaseService {
   }
 
   /**
-   * Adds the corresponding shipping method either from a normal or rma shipping option to the list of shipping methods associated with
-   * the cart.
-   * @param {string} cartId - the id of the cart to add shipping method to
-   * @param {string} optionIdOrRmaOptionId - id of the normal or rma shipping option to add as valid method
-   * @param {Object} data - the fulmillment data for the method
-   * @return {Promise} the result of the update operation
-   */
-  async addRMAMethod(cartId, optionIdOrRmaOptionId, data) {
-    return this.atomicPhase_(async manager => {
-      const rmaShippingOptionRepo = manager.getCustomRepository(
-        this.rmaShippingOptionRepository_
-      )
-
-      const rmaOption = await rmaShippingOptionRepo.findOne({
-        where: { id: optionIdOrRmaOptionId },
-      })
-
-      if (rmaOption) {
-        await this.addShippingMethod(cartId, rmaOption.shipping_option_id, {
-          ...data,
-          price: rmaOption.price,
-        })
-      } else {
-        await this.addShippingMethod(cartId, optionIdOrRmaOptionId, data)
-      }
-    })
-  }
-
-  /**
    * Set's the region of a cart.
    * @param {string} cartId - the id of the cart to set region on
    * @param {string} regionId - the id of the region to set the cart to
    * @return {Promise} the result of the update operation
    */
   async setRegion_(cart, regionId, countryCode) {
-    if (cart.completed_at) {
+    if (cart.completed_at || cart.payment_authorized_at) {
       throw new MedusaError(
         MedusaError.Types.NOT_ALLOWED,
         "Cannot change the region of a completed cart"
@@ -1472,7 +1461,7 @@ class CartService extends BaseService {
         }
       }
 
-      await addrRepo.save(updated)
+      await this.updateShippingAddress_(cart, updated, addrRepo)
     }
 
     // Shipping methods are determined by region so the user needs to find a
@@ -1525,6 +1514,13 @@ class CartService extends BaseService {
         throw new MedusaError(
           MedusaError.Types.NOT_ALLOWED,
           "Completed carts cannot be deleted"
+        )
+      }
+
+      if (cart.payment_authorized_at) {
+        throw new MedusaError(
+          MedusaError.Types.NOT_ALLOWED,
+          "Can't delete a cart with an authorized payment"
         )
       }
 

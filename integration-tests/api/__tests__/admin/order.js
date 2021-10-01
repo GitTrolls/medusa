@@ -4,7 +4,6 @@ const {
   Order,
   LineItem,
   ProductVariant,
-  RMAShippingOption,
 } = require("@medusajs/medusa")
 
 const setupServer = require("../../../helpers/setup-server")
@@ -1013,6 +1012,47 @@ describe("/admin/orders", () => {
       ])
     })
 
+    it("list all orders with matching order email", async () => {
+      const api = useApi()
+
+      const response = await api.get(
+        "/admin/orders?fields=id,email&q=test@email",
+        {
+          headers: {
+            authorization: "Bearer test_token",
+          },
+        }
+      )
+
+      expect(response.status).toEqual(200)
+      expect(response.data.count).toEqual(1)
+      expect(response.data.orders).toEqual([
+        expect.objectContaining({
+          id: "test-order",
+          email: "test@email.com",
+        }),
+      ])
+    })
+
+    it("list all orders with matching shipping_address first name", async () => {
+      const api = useApi()
+
+      const response = await api.get("/admin/orders?q=lebron", {
+        headers: {
+          authorization: "Bearer test_token",
+        },
+      })
+
+      expect(response.status).toEqual(200)
+      expect(response.data.count).toEqual(1)
+      expect(response.data.orders).toEqual([
+        expect.objectContaining({
+          id: "test-order",
+          shipping_address: expect.objectContaining({ first_name: "lebron" }),
+        }),
+      ])
+    })
+
     it("successfully lists orders with greater than", async () => {
       const api = useApi()
 
@@ -1234,45 +1274,6 @@ describe("/admin/orders", () => {
         }
       )
       expect(response.status).toEqual(200)
-    })
-
-    it("creates a swap with rma shipping options", async () => {
-      const api = useApi()
-
-      const response = await api.post(
-        "/admin/orders/test-order/swaps",
-        {
-          return_items: [
-            {
-              item_id: "test-item",
-              quantity: 1,
-            },
-          ],
-          additional_items: [{ variant_id: "test-variant-2", quantity: 1 }],
-          rma_shipping_options: [{ option_id: "test-option", price: 0 }],
-        },
-        {
-          headers: {
-            authorization: "Bearer test_token",
-          },
-        }
-      )
-
-      const swap = response.data.order.swaps[0]
-
-      const manager = dbConnection.manager
-      const rma = await manager.findOne(RMAShippingOption, {
-        shipping_option_id: "test-option",
-        swap_id: swap.id,
-      })
-
-      expect(response.status).toEqual(200)
-      expect(rma).toEqual(
-        expect.objectContaining({
-          shipping_option_id: "test-option",
-          price: 0,
-        })
-      )
     })
 
     it("creates a swap and a return", async () => {

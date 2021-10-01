@@ -288,7 +288,6 @@ class SwapService extends BaseService {
    *  the customer.
    * @param {ReturnShipping?} returnShipping - an optional shipping method for
    *  returning the returnItems.
-   * @param {rmaShippingOptions?} rmaShippingOptions - an optional list of rma shipping options for the swap
    * @param {Object} custom - contains relevant custom information. This object may
    *  include no_notification which will disable sending notification when creating
    *  swap. If set, it overrules the attribute inherited from the order.
@@ -299,7 +298,6 @@ class SwapService extends BaseService {
     returnItems,
     additionalItems,
     returnShipping,
-    rmaShippingOptions = [],
     custom = {
       no_notification: undefined,
     }
@@ -320,6 +318,7 @@ class SwapService extends BaseService {
         const line = await this.lineItemService_.retrieve(item.item_id, {
           relations: ["order", "swap", "claim_order"],
         })
+        console.log(line)
 
         if (
           line.order?.canceled_at ||
@@ -343,11 +342,6 @@ class SwapService extends BaseService {
         })
       )
 
-      const rma_shipping_options = rmaShippingOptions.map(so => ({
-        shipping_option_id: so.option_id,
-        price: so.price,
-      }))
-
       const evaluatedNoNotification =
         no_notification !== undefined ? no_notification : order.no_notification
 
@@ -359,7 +353,6 @@ class SwapService extends BaseService {
         order_id: order.id,
         additional_items: newItems,
         no_notification: evaluatedNoNotification,
-        rma_shipping_options,
       })
 
       const result = await swapRepo.save(created)
@@ -672,20 +665,33 @@ class SwapService extends BaseService {
       }
 
       const cart = swap.cart
+      const { payment } = cart
 
       const items = swap.cart.items
 
-      for (const item of items) {
-        await this.inventoryService_
-          .withTransaction(manager)
-          .confirmInventory(item.variant_id, item.quantity)
+      if (!swap.allow_backorder) {
+        for (const item of items) {
+          try {
+            await this.inventoryService_
+              .withTransaction(manager)
+              .confirmInventory(item.variant_id, item.quantity)
+          } catch (err) {
+            if (payment) {
+              await this.paymentProviderService_
+                .withTransaction(manager)
+                .cancelPayment(payment)
+            }
+            await this.cartService_
+              .withTransaction(manager)
+              .update(cart.id, { payment_authorized_at: null })
+            throw err
+          }
+        }
       }
 
       const total = await this.totalsService_.getTotal(cart)
 
       if (total > 0) {
-        const { payment } = cart
-
         if (!payment) {
           throw new MedusaError(
             MedusaError.Types.INVALID_ARGUMENT,
@@ -724,7 +730,7 @@ class SwapService extends BaseService {
       swap.shipping_address_id = cart.shipping_address_id
       swap.shipping_methods = cart.shipping_methods
       swap.confirmed_at = now.toISOString()
-      swap.payment_status = total === 0 ? "difference_refunded" : "awaiting"
+      swap.payment_status = total === 0 ? "confirmed" : "awaiting"
 
       const swapRepo = manager.getCustomRepository(this.swapRepository_)
       const result = await swapRepo.save(swap)
@@ -743,6 +749,10 @@ class SwapService extends BaseService {
           id: swap.id,
           no_notification: swap.no_notification,
         })
+
+      await this.cartService_
+        .withTransaction(manager)
+        .update(cart.id, { completed_at: new Date() })
 
       return result
     })

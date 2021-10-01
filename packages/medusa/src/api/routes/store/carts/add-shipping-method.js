@@ -1,7 +1,6 @@
 import _ from "lodash"
 import { Validator, MedusaError } from "medusa-core-utils"
 import { defaultFields, defaultRelations } from "./"
-import { CartType } from "../../../../models/cart"
 
 /**
  * @oas [post] /carts/{id}/shipping-methods
@@ -45,9 +44,7 @@ export default async (req, res) => {
 
     await manager.transaction(async m => {
       const txCartService = cartService.withTransaction(m)
-
-      await txCartService.addRMAMethod(id, value.option_id, value.data)
-
+      await txCartService.addShippingMethod(id, value.option_id, value.data)
       const updated = await txCartService.retrieve(id, {
         relations: ["payment_sessions"],
       })
@@ -57,12 +54,12 @@ export default async (req, res) => {
       }
     })
 
-    const updatedCart = await cartService.retrieve(id, {
+    const cart = await cartService.retrieve(id, {
       select: defaultFields,
       relations: defaultRelations,
     })
 
-    res.status(200).json({ cart: updatedCart })
+    res.status(200).json({ cart })
   } catch (err) {
     throw err
   }
