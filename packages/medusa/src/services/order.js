@@ -1,4 +1,5 @@
-import { MedusaError, Validator } from "medusa-core-utils"
+import _ from "lodash"
+import { Validator, MedusaError } from "medusa-core-utils"
 import { BaseService } from "medusa-interfaces"
 import { Brackets } from "typeorm"
 
@@ -236,9 +237,7 @@ class OrderService extends BaseService {
 
         qb.andWhere(
           new Brackets(qb => {
-            qb.where(`shipping_address.first_name ILIKE :qfn`, {
-              qfn: `%${q}%`,
-            })
+            qb.where(`shipping_address.first_name ILIKE :q`, { q: `%${q}%` })
               .orWhere(`order.email ILIKE :q`, { q: `%${q}%` })
               .orWhere(`display_id::varchar(255) ILIKE :dId`, { dId: `${q}` })
           })
@@ -478,9 +477,6 @@ class OrderService extends BaseService {
               .withTransaction(manager)
               .cancelPayment(payment)
           }
-          await this.cartService_
-            .withTransaction(manager)
-            .update(cart.id, { payment_authorized_at: null })
           throw err
         }
       }
@@ -598,10 +594,6 @@ class OrderService extends BaseService {
           id: result.id,
           no_notification: result.no_notification,
         })
-
-      await this.cartService_
-        .withTransaction(manager)
-        .update(cart.id, { completed_at: new Date() })
 
       return result
     })

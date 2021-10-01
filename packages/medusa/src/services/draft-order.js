@@ -1,7 +1,7 @@
 import _ from "lodash"
 import { BaseService } from "medusa-interfaces"
 import { MedusaError } from "medusa-core-utils"
-import { Brackets, ILike } from "typeorm"
+import { Brackets } from "typeorm"
 
 /**
  * Handles draft orders
