@@ -79,6 +79,14 @@ module.exports = {
           type: "doc",
           id: "how-to/create-medusa-app",
         },
+        {
+          type: "doc",
+          id: "how-to/uploading-images-to-spaces",
+        },
+        {
+          type: "doc",
+          id: "how-to/uploading-images-to-s3",
+        },
       ],
     },
     {
@@ -106,10 +114,6 @@ module.exports = {
         {
           type: "doc",
           id: "how-to/deploying-on-heroku",
-        },
-        {
-          type: "doc",
-          id: "how-to/deploying-admin-on-netlify",
         },
       ],
     },
