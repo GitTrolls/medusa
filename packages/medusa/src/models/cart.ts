@@ -119,7 +119,6 @@ export enum CartType {
   SWAP = "swap",
   DRAFT_ORDER = "draft_order",
   PAYMENT_LINK = "payment_link",
-  CLAIM = "claim",
 }
 
 @Entity()

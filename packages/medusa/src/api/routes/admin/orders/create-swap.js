@@ -81,14 +81,6 @@ export default async (req, res) => {
           .optional(),
       })
       .optional(),
-    rma_shipping_options: Validator.array()
-      .items({
-        option_id: Validator.string().optional(),
-        price: Validator.number()
-          .integer()
-          .optional(),
-      })
-      .default([]),
     additional_items: Validator.array().items({
       variant_id: Validator.string().required(),
       quantity: Validator.number().required(),
@@ -150,7 +142,6 @@ export default async (req, res) => {
                   value.return_items,
                   value.additional_items,
                   value.return_shipping,
-                  value.rma_shipping_options,
                   {
                     idempotency_key: idempotencyKey.idempotency_key,
                     no_notification: value.no_notification,
