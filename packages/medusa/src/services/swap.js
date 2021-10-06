@@ -318,7 +318,6 @@ class SwapService extends BaseService {
         const line = await this.lineItemService_.retrieve(item.item_id, {
           relations: ["order", "swap", "claim_order"],
         })
-        console.log(line)
 
         if (
           line.order?.canceled_at ||
@@ -524,7 +523,7 @@ class SwapService extends BaseService {
    * @returns {Promise<Swap>} the swap with its cart_id prop set to the id of
    *   the new cart.
    */
-  async createCart(swapId) {
+  async createCart(swapId, customShippingOptions = []) {
     return this.atomicPhase_(async manager => {
       const swap = await this.retrieve(swapId, {
         relations: [
@@ -569,6 +568,10 @@ class SwapService extends BaseService {
         region_id: order.region_id,
         customer_id: order.customer_id,
         type: "swap",
+        custom_shipping_options: customShippingOptions.map(so => ({
+          price: so.price,
+          shipping_option_id: so.option_id,
+        })),
         metadata: {
           swap_id: swap.id,
           parent_order_id: order.id,

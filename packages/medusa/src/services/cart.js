@@ -24,7 +24,6 @@ class CartService extends BaseService {
     regionService,
     lineItemService,
     shippingOptionService,
-    shippingProfileService,
     customerService,
     discountService,
     giftCardService,
@@ -61,9 +60,6 @@ class CartService extends BaseService {
 
     /** @private @const {PaymentProviderService} */
     this.paymentProviderService_ = paymentProviderService
-
-    /** @private @const {ShippingProfileService} */
-    this.shippingProfileService_ = shippingProfileService
 
     /** @private @const {CustomerService} */
     this.customerService_ = customerService
@@ -107,7 +103,6 @@ class CartService extends BaseService {
       regionService: this.regionService_,
       lineItemService: this.lineItemService_,
       shippingOptionService: this.shippingOptionService_,
-      shippingProfileService: this.shippingProfileService_,
       customerService: this.customerService_,
       discountService: this.discountService_,
       totalsService: this.totalsService_,
@@ -1310,7 +1305,7 @@ class CartService extends BaseService {
    * @param {Object} data - the fulmillment data for the method
    * @return {Promise} the result of the update operation
    */
-  async addShippingMethod(cartId, optionId, data) {
+  async addShippingMethod(cartId, optionIdOrCustomOptionId, data) {
     return this.atomicPhase_(async manager => {
       const cart = await this.retrieve(cartId, {
         select: ["subtotal"],
@@ -1322,13 +1317,23 @@ class CartService extends BaseService {
           "items.variant",
           "payment_sessions",
           "items.variant.product",
+          "custom_shipping_options",
         ],
       })
+
+      let { optionId, customPrice } = this.extractShippingOptionIdAndPrice(
+        cart,
+        optionIdOrCustomOptionId
+      )
+
       const { shipping_methods } = cart
 
       const newMethod = await this.shippingOptionService_
         .withTransaction(manager)
-        .createShippingMethod(optionId, data, { cart })
+        .createShippingMethod(optionId, data, {
+          cart,
+          ...customPrice,
+        })
 
       const methods = [newMethod]
       if (shipping_methods.length) {
@@ -1366,6 +1371,35 @@ class CartService extends BaseService {
         .emit(CartService.Events.UPDATED, result)
       return result
     }, "SERIALIZABLE")
+  }
+
+  /**
+   * Adds the corresponding shipping method either from a normal or custom option to the list of shipping methods associated with
+   * the cart.
+   * @param {Object} cart - the cart object
+   * @param {string} optionIdOrCustomOptionId - id of the normal or custom shipping option to add as valid method
+   * @returns {{ optionId: string; customPrice: { price: number; } | {};}}
+   */
+  extractShippingOptionIdAndPrice(cart, optionIdOrCustomOptionId) {
+    if (
+      cart.custom_shipping_options &&
+      cart.custom_shipping_options.length > 0
+    ) {
+      const customOption = cart.custom_shipping_options.find(
+        cso => cso.id === optionIdOrCustomOptionId
+      )
+      if (customOption) {
+        return {
+          optionId: customOption.shipping_option_id,
+          customPrice: { price: customOption.price },
+        }
+      }
+    }
+
+    return {
+      optionId: optionIdOrCustomOptionId,
+      customPrice: {},
+    }
   }
 
   /**

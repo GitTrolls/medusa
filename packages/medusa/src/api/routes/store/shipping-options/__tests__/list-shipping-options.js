@@ -29,6 +29,7 @@ describe("GET /store/shipping-options", () => {
             "items",
             "items.variant",
             "items.variant.product",
+            "custom_shipping_options",
           ],
         }
       )
