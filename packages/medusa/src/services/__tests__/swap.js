@@ -188,9 +188,7 @@ describe("SwapService", () => {
       })
 
       it("finds swap and calls return create cart", async () => {
-        await swapService.createCart(IdMap.getId("swap-1"), [
-          { option_id: "test-option", price: 10 },
-        ])
+        await swapService.createCart(IdMap.getId("swap-1"))
 
         expect(swapRepo.findOneWithRelations).toHaveBeenCalledTimes(1)
         expect(swapRepo.findOneWithRelations).toHaveBeenCalledWith(
@@ -216,9 +214,6 @@ describe("SwapService", () => {
           discounts: testOrder.discounts,
           region_id: testOrder.region_id,
           customer_id: testOrder.customer_id,
-          custom_shipping_options: [
-            { shipping_option_id: "test-option", price: 10 },
-          ],
           type: "swap",
           metadata: {
             swap_id: IdMap.getId("test-swap"),
@@ -329,8 +324,7 @@ describe("SwapService", () => {
           {
             id: IdMap.getId("return-shipping"),
             price: 20,
-          },
-          [{ option_id: IdMap.getId("rmaso-option1"), price: 0 }]
+          }
         )
 
         expect(lineItemService.generate).toHaveBeenCalledTimes(1)

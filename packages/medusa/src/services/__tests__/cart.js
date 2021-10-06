@@ -1308,68 +1308,6 @@ describe("CartService", () => {
     })
   })
 
-  describe("extractShippingOptionIdAndPrice", () => {
-    beforeEach(() => {
-      jest.clearAllMocks()
-    })
-
-    let cartService = new CartService({})
-
-    it("given a cart with custom shipping options and a custom shipping option id, then it should return a normal shipping option id corresponding to the custom shipping option id and a customPrice", async () => {
-      const cart = {
-        id: "cart-with-so",
-        custom_shipping_options: [
-          { id: "cso-test", shipping_option_id: "test-so", price: 20 },
-        ],
-      }
-      const result = cartService.extractShippingOptionIdAndPrice(
-        cart,
-        "cso-test"
-      )
-
-      expect(result).toEqual({
-        optionId: "test-so",
-        customPrice: { price: 20 },
-      })
-    })
-
-    it("given a cart with custom shipping options and a normal shipping option id, then it should return a normal shipping option id and empty customPrice", async () => {
-      const cart = {
-        id: "cart-with-so",
-        custom_shipping_options: [
-          { id: "cso-test", shipping_option_id: "test-so", price: 20 },
-        ],
-      }
-      const result = cartService.extractShippingOptionIdAndPrice(
-        cart,
-        "test-so"
-      )
-
-      expect(result).toEqual({
-        optionId: "test-so",
-        customPrice: {},
-      })
-    })
-
-    it("given a cart with custom shipping options and a custom shipping option id that does not belong to the cart, then it should return the custom shipping option id and empty customPrice", async () => {
-      const cart = {
-        id: "cart-with-so",
-        custom_shipping_options: [
-          { id: "cso-test", shipping_option_id: "test-so", price: 20 },
-        ],
-      }
-      const result = cartService.extractShippingOptionIdAndPrice(
-        cart,
-        "cso-test-2"
-      )
-
-      expect(result).toEqual({
-        optionId: "cso-test-2",
-        customPrice: {},
-      })
-    })
-  })
-
   describe("addShippingMethod", () => {
     const buildCart = (id, config = {}) => {
       return {
@@ -1388,13 +1326,6 @@ describe("CartService", () => {
             profile_id: IdMap.getId(m.profile),
           },
         })),
-        custom_shipping_options: (config.custom_shipping_options || []).map(
-          cso => ({
-            ...cso,
-            id: IdMap.getId(cso.id),
-            shipping_option_id: IdMap.getId(cso.shipping_option_id),
-          })
-        ),
         discounts: [],
       }
     }
@@ -1406,11 +1337,6 @@ describe("CartService", () => {
     const cart3 = buildCart("lines", {
       items: [{ id: "line", profile: "profile1" }],
     })
-    const cartWithCustomSO = buildCart("cart-with-custom-so", {
-      custom_shipping_options: [
-        { id: "cso-test", shipping_option_id: "test-so" },
-      ],
-    })
 
     const cartRepository = MockRepository({
       findOneWithRelations: (rels, q) => {
@@ -1419,8 +1345,6 @@ describe("CartService", () => {
             return Promise.resolve(cart3)
           case IdMap.getId("existing"):
             return Promise.resolve(cart2)
-          case IdMap.getId("cart-with-custom-so"):
-            return Promise.resolve(cartWithCustomSO)
           default:
             return Promise.resolve(cart1)
         }
@@ -1543,39 +1467,6 @@ describe("CartService", () => {
       expect(lineItemService.update).toHaveBeenCalledWith(IdMap.getId("line"), {
         has_shipping: true,
       })
-    })
-
-    it("adds a shipping method from a custom shipping option and custom price", async () => {
-      const data = {
-        id: "test",
-        extra: "yes",
-      }
-
-      cartService.extractShippingOptionIdAndPrice = jest
-        .fn()
-        .mockImplementation((cart, optionId) => {
-          if (cart.id === IdMap.getId("cart-with-custom-so")) {
-            return {
-              optionId: IdMap.getId("test-so"),
-              customPrice: { price: 0 },
-            }
-          }
-          return { optionId, customPrice: {} }
-        })
-
-      await cartService.addShippingMethod(
-        IdMap.getId("cart-with-custom-so"),
-        IdMap.getId("cso-test"),
-        data
-      )
-      expect(shippingOptionService.createShippingMethod).toHaveBeenCalledWith(
-        IdMap.getId("test-so"),
-        data,
-        {
-          cart: cartWithCustomSO,
-          price: 0,
-        }
-      )
     })
   })
 

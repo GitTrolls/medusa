@@ -413,11 +413,6 @@ class ShippingProfileService extends BaseService {
    * @return {[ShippingOptions]} a list of the available shipping options
    */
   async fetchCartOptions(cart) {
-    const customShippingOptions = cart.custom_shipping_options
-
-    if (customShippingOptions && customShippingOptions.length > 0)
-      return customShippingOptions
-
     const profileIds = this.getProfilesInCart_(cart)
 
     const rawOpts = await this.shippingOptionService_.list(

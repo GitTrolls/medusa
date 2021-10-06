@@ -1,11 +1,5 @@
 const path = require("path")
-const {
-  Region,
-  LineItem,
-  GiftCard,
-  Cart,
-  CustomShippingOption,
-} = require("@medusajs/medusa")
+const { Region, LineItem, GiftCard } = require("@medusajs/medusa")
 
 const setupServer = require("../../../helpers/setup-server")
 const { useApi } = require("../../../helpers/use-api")
@@ -141,8 +135,8 @@ describe("/store/carts", () => {
       const api = useApi()
 
       try {
-        await api.post("/store/carts/test-cart", {
-          discounts: [{ code: "CREATED" }],
+        const { data } = await api.post("/store/carts/test-cart", {
+          discounts: [{ code: "LIMIT_REACHED" }],
         })
       } catch (error) {
         expect(error.response.status).toEqual(400)
@@ -439,48 +433,15 @@ describe("/store/carts", () => {
   })
 
   describe("POST /store/carts/:id/shipping-methods", () => {
-    let cartWithCustomSo
     beforeEach(async () => {
-      try {
-        await cartSeeder(dbConnection)
-        const manager = dbConnection.manager
-
-        const _cart = await manager.create(Cart, {
-          id: "test-cart-with-cso",
-          customer_id: "some-customer",
-          email: "some-customer@email.com",
-          shipping_address: {
-            id: "test-shipping-address",
-            first_name: "lebron",
-            country_code: "us",
-          },
-          custom_shipping_options: [
-            {
-              shipping_option_id: "test-option",
-              price: 5,
-            },
-          ],
-          region_id: "test-region",
-          currency_code: "usd",
-          type: "swap",
-        })
-
-        cartWithCustomSo = await manager.save(_cart)
-
-        await manager.insert(CustomShippingOption, {
-          id: "orphan-cso",
-          price: 0,
-        })
-      } catch (err) {
-        console.log(err)
-      }
+      await cartSeeder(dbConnection)
     })
 
     afterEach(async () => {
       await doAfterEach()
     })
 
-    it("adds a normal shipping method to cart", async () => {
+    it("adds a shipping method to cart", async () => {
       const api = useApi()
 
       const cartWithShippingMethod = await api.post(
@@ -495,48 +456,6 @@ describe("/store/carts", () => {
         expect.objectContaining({ shipping_option_id: "test-option" })
       )
       expect(cartWithShippingMethod.status).toEqual(200)
-    })
-
-    it("given a cart with custom options and a custom option id already belonging to said cart, then it should add a shipping method based on the given custom shipping option", async () => {
-      const customOptionId = cartWithCustomSo.custom_shipping_options[0].id
-
-      const api = useApi()
-
-      const cartWithCustomShippingMethod = await api
-        .post(
-          "/store/carts/test-cart-with-cso/shipping-methods",
-          {
-            option_id: customOptionId,
-          },
-          { withCredentials: true }
-        )
-        .catch((err) => err.response)
-
-      expect(
-        cartWithCustomShippingMethod.data.cart.shipping_methods
-      ).toContainEqual(
-        expect.objectContaining({ shipping_option_id: "test-option", price: 5 })
-      )
-      expect(cartWithCustomShippingMethod.status).toEqual(200)
-    })
-
-    it("given a cart with custom options and a custom option id not belonging to said cart, then it should throw a shipping option not found error", async () => {
-      const api = useApi()
-
-      try {
-        await api.post(
-          "/store/carts/test-cart-with-cso/shipping-methods",
-          {
-            option_id: "orphan-cso",
-          },
-          { withCredentials: true }
-        )
-      } catch (err) {
-        expect(err.response.status).toEqual(404)
-        expect(err.response.data.message).toEqual(
-          "Shipping Option with orphan-cso was not found"
-        )
-      }
     })
 
     it("adds a giftcard to cart, but ensures discount only applied to discountable items", async () => {
@@ -728,5 +647,42 @@ describe("/store/carts", () => {
       expect(response.data.cart.customer_id).toEqual(customer.data.customer.id)
       expect(response.status).toEqual(200)
     })
+  })
+
+  describe("shipping address + region updates", () => {
+    beforeEach(async () => {
+      try {
+        await cartSeeder(dbConnection)
+      } catch (err) {
+        console.log(err)
+        throw err
+      }
+    })
+
+    afterEach(async () => {
+      await doAfterEach()
+    })
+
+    it("updates region only - single to multipe countries", async () => {
+      const api = useApi()
+
+      const { data, status } = await api
+        .post(`/store/carts/test-cart`, {
+          region_id: `test-region-multiple`,
+        })
+        .catch((err) => {
+          console.log(err)
+          throw err
+        })
+
+      expect(status).toEqual(200)
+      expect(data.cart.region_id).toEqual("test-region-multiple")
+      expect(data.cart.shipping_address).toMatchSnapshot({
+        id: expect.any(String),
+        country_code: null,
+      })
+    })
+
+    // it("updates cart.customer_id on cart retrieval if cart.customer_id differ from session customer", async () => {})
   })
 })

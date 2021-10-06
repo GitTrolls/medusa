@@ -202,23 +202,7 @@ describe("ShippingProfileService", () => {
       jest.clearAllMocks()
     })
 
-    it("given a swap cart with custom shipping options, should return correct custom shipping options ", async () => {
-      const cart = {
-        id: "swap-cart",
-        type: "swap",
-        custom_shipping_options: [
-          { option_id: "test-option1", id: "cso-option1", price: 10 },
-          { option_id: "test-option2", id: "cso-option2", price: 0 },
-        ],
-      }
-
-      await expect(profileService.fetchCartOptions(cart)).resolves.toEqual([
-        expect.objectContaining({ id: "cso-option1" }),
-        expect.objectContaining({ id: "cso-option2" }),
-      ])
-    })
-
-    it("given correct options when cart has no custom shipping options, should return normal shipping options", async () => {
+    it("fetches correct options", async () => {
       const cart = {
         items: [
           {
