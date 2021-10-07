@@ -1,12 +1,5 @@
 const path = require("path")
-const {
-  Region,
-  LineItem,
-  GiftCard,
-  Cart,
-  CustomShippingOption,
-  ShippingOption,
-} = require("@medusajs/medusa")
+const { Region, LineItem, GiftCard } = require("@medusajs/medusa")
 
 const setupServer = require("../../../helpers/setup-server")
 const { useApi } = require("../../../helpers/use-api")
@@ -440,43 +433,15 @@ describe("/store/carts", () => {
   })
 
   describe("POST /store/carts/:id/shipping-methods", () => {
-    let cartWithCustomSo
     beforeEach(async () => {
-      try {
-        await cartSeeder(dbConnection)
-        const manager = dbConnection.manager
-
-        const _cart = await manager.create(Cart, {
-          id: "test-cart-with-cso",
-          customer_id: "some-customer",
-          email: "some-customer@email.com",
-          shipping_address: {
-            id: "test-shipping-address",
-            first_name: "lebron",
-            country_code: "us",
-          },
-          custom_shipping_options: [
-            {
-              shipping_option_id: "test-option",
-              price: 5,
-            },
-          ],
-          region_id: "test-region",
-          currency_code: "usd",
-          type: "swap",
-        })
-
-        cartWithCustomSo = await manager.save(_cart)
-      } catch (err) {
-        console.log(err)
-      }
+      await cartSeeder(dbConnection)
     })
 
     afterEach(async () => {
       await doAfterEach()
     })
 
-    it("adds a normal shipping method to cart", async () => {
+    it("adds a shipping method to cart", async () => {
       const api = useApi()
 
       const cartWithShippingMethod = await api.post(
@@ -491,50 +456,6 @@ describe("/store/carts", () => {
         expect.objectContaining({ shipping_option_id: "test-option" })
       )
       expect(cartWithShippingMethod.status).toEqual(200)
-    })
-
-    it("given a cart with custom options and a shipping option already belonging to said cart, then it should add a shipping method based on the given custom shipping option", async () => {
-      const shippingOptionId =
-        cartWithCustomSo.custom_shipping_options[0].shipping_option_id
-
-      const api = useApi()
-
-      const cartWithCustomShippingMethod = await api
-        .post(
-          "/store/carts/test-cart-with-cso/shipping-methods",
-          {
-            option_id: shippingOptionId,
-          },
-          { withCredentials: true }
-        )
-        .catch((err) => err.response)
-
-      expect(
-        cartWithCustomShippingMethod.data.cart.shipping_methods
-      ).toContainEqual(
-        expect.objectContaining({
-          shipping_option_id: shippingOptionId,
-          price: 5,
-        })
-      )
-      expect(cartWithCustomShippingMethod.status).toEqual(200)
-    })
-
-    it("given a cart with custom options and an option id not corresponding to any custom shipping option, then it should throw an invalid error", async () => {
-      const api = useApi()
-
-      try {
-        await api.post(
-          "/store/carts/test-cart-with-cso/shipping-methods",
-          {
-            option_id: "orphan-so",
-          },
-          { withCredentials: true }
-        )
-      } catch (err) {
-        expect(err.response.status).toEqual(400)
-        expect(err.response.data.message).toEqual("Wrong shipping option")
-      }
     })
 
     it("adds a giftcard to cart, but ensures discount only applied to discountable items", async () => {
