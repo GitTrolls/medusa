@@ -24,7 +24,6 @@ class CartService extends BaseService {
     regionService,
     lineItemService,
     shippingOptionService,
-    shippingProfileService,
     customerService,
     discountService,
     giftCardService,
@@ -61,9 +60,6 @@ class CartService extends BaseService {
 
     /** @private @const {PaymentProviderService} */
     this.paymentProviderService_ = paymentProviderService
-
-    /** @private @const {ShippingProfileService} */
-    this.shippingProfileService_ = shippingProfileService
 
     /** @private @const {CustomerService} */
     this.customerService_ = customerService
@@ -107,7 +103,6 @@ class CartService extends BaseService {
       regionService: this.regionService_,
       lineItemService: this.lineItemService_,
       shippingOptionService: this.shippingOptionService_,
-      shippingProfileService: this.shippingProfileService_,
       customerService: this.customerService_,
       discountService: this.discountService_,
       totalsService: this.totalsService_,
@@ -1322,13 +1317,23 @@ class CartService extends BaseService {
           "items.variant",
           "payment_sessions",
           "items.variant.product",
+          "custom_shipping_options",
         ],
       })
+
+      let customShippingOption = this.findCustomShippingOption(cart, optionId)
+
       const { shipping_methods } = cart
+
+      const shippingMethodConfig = customShippingOption
+        ? { cart, price: customShippingOption.price }
+        : {
+            cart,
+          }
 
       const newMethod = await this.shippingOptionService_
         .withTransaction(manager)
-        .createShippingMethod(optionId, data, { cart })
+        .createShippingMethod(optionId, data, shippingMethodConfig)
 
       const methods = [newMethod]
       if (shipping_methods.length) {
@@ -1366,6 +1371,29 @@ class CartService extends BaseService {
         .emit(CartService.Events.UPDATED, result)
       return result
     }, "SERIALIZABLE")
+  }
+
+  /**
+   * Finds the cart's custom shipping option based on the passed option id.
+   * throws if custom options is not empty and no shipping option corresponds to optionId
+   * @param {Object} cart - the cart object
+   * @param {string} option - id of the normal or custom shipping option to add as valid method
+   * @returns {CustomShippingOption | undefined}
+   */
+  findCustomShippingOption(cart, optionId) {
+    let customOption = cart.custom_shipping_options?.find(
+      cso => cso.shipping_option_id === optionId
+    )
+    const hasCustomOptions = cart.custom_shipping_options?.length
+
+    if (hasCustomOptions && !customOption) {
+      throw new MedusaError(
+        MedusaError.Types.INVALID_DATA,
+        "Wrong shipping option"
+      )
+    }
+
+    return customOption
   }
 
   /**

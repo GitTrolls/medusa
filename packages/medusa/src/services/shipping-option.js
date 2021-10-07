@@ -450,9 +450,7 @@ class ShippingOptionService extends BaseService {
    */
   async update(optionId, update) {
     return this.atomicPhase_(async manager => {
-      const option = await this.retrieve(optionId, {
-        relations: ["requirements"],
-      })
+      const option = await this.retrieve(optionId)
 
       if ("metadata" in update) {
         option.metadata = await this.setMetadata_(option, update.metadata)
@@ -500,20 +498,6 @@ class ShippingOptionService extends BaseService {
 
           acc.push(validated)
         }
-
-        if (option.requirements) {
-          const accReqs = acc.map(a => a.id)
-          const toRemove = option.requirements.filter(
-            r => !accReqs.includes(r.id)
-          )
-          await Promise.all(
-            toRemove.map(async req => {
-              await this.removeRequirement(req.id)
-            })
-          )
-        }
-
-        option.requirements = acc
       }
 
       if ("price_type" in update) {
@@ -601,24 +585,28 @@ class ShippingOptionService extends BaseService {
 
   /**
    * Removes a requirement from a shipping option
+   * @param {string} optionId - the shipping option to remove from
    * @param {string} requirementId - the id of the requirement to remove
    * @return {Promise} the result of update
    */
-  async removeRequirement(requirementId) {
+  async removeRequirement(optionId, requirementId) {
     return this.atomicPhase_(async manager => {
-      try {
-        const reqRepo = manager.getCustomRepository(this.requirementRepository_)
-        const requirement = await reqRepo.findOne({
-          where: { id: requirementId },
-        })
+      const option = await this.retrieve(optionId, {
+        relations: "requirements",
+      })
+      const newReqs = option.requirements.map(r => {
+        if (r.id === requirementId) {
+          return null
+        } else {
+          return r
+        }
+      })
 
-        const result = await reqRepo.softRemove(requirement)
+      option.requirements = newReqs.filter(Boolean)
 
-        return result
-      } catch (error) {
-        // Delete is idempotent, but we return a promise to allow then-chaining
-        return Promise.resolve()
-      }
+      const optionRepo = manager.getCustomRepository(this.optionRepository_)
+      const result = await optionRepo.save(option)
+      return result
     })
   }
 

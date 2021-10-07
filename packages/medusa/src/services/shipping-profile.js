@@ -410,9 +410,16 @@ class ShippingProfileService extends BaseService {
    * Finds all the shipping profiles that cover the products in a cart, and
    * validates all options that are available for the cart.
    * @param {Cart} cart - the cart object to find shipping options for
-   * @return {[ShippingOptions]} a list of the available shipping options
+   * @return {[ShippingOption]} a list of the available shipping options
    */
   async fetchCartOptions(cart) {
+    if (cart.custom_shipping_options?.length) {
+      return cart.custom_shipping_options.map(cso => ({
+        ...cso.shipping_option,
+        amount: cso.price,
+      }))
+    }
+
     const profileIds = this.getProfilesInCart_(cart)
 
     const rawOpts = await this.shippingOptionService_.list(
