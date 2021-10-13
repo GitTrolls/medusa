@@ -106,13 +106,7 @@ class WebshipperFulfillmentService extends FulfillmentService {
 
     const fromOrder = await this.orderService_.retrieve(orderId, {
       select: ["total"],
-      relations: [
-        "discounts",
-        "discounts.rule",
-        "discounts.rule.valid_for",
-        "shipping_address",
-        "returns",
-      ],
+      relations: ["discounts", "shipping_address", "returns"],
     })
 
     const methodData = returnOrder.shipping_method.data
@@ -292,11 +286,10 @@ class WebshipperFulfillmentService extends FulfillmentService {
             )) &&
           this.invoiceGenerator_.createCertificateOfOrigin
         ) {
-          const base64Coo =
-            await this.invoiceGenerator_.createCertificateOfOrigin(
-              fromOrder,
-              fulfillmentItems
-            )
+          const base64Coo = await this.invoiceGenerator_.createCertificateOfOrigin(
+            fromOrder,
+            fulfillmentItems
+          )
 
           certificateOfOrigin = await this.client_.documents
             .create({
@@ -426,8 +419,9 @@ class WebshipperFulfillmentService extends FulfillmentService {
         url: l.url,
         tracking_number: l.number,
       }))
-      const [orderId, fulfillmentIndex] =
-        wsOrder.data.attributes.ext_ref.split(".")
+      const [orderId, fulfillmentIndex] = wsOrder.data.attributes.ext_ref.split(
+        "."
+      )
 
       if (orderId.charAt(0).toLowerCase() === "s") {
         if (fulfillmentIndex.startsWith("ful")) {

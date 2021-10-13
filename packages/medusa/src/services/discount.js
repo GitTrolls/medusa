@@ -180,16 +180,12 @@ class DiscountService extends BaseService {
       const discountRepo = manager.getCustomRepository(this.discountRepository_)
       const ruleRepo = manager.getCustomRepository(this.discountRuleRepository_)
 
-      if (discount.rule?.valid_for) {
-        discount.rule.valid_for = discount.rule.valid_for.map(id => ({ id }))
-      }
-
       const validatedRule = this.validateDiscountRule_(discount.rule)
 
       if (discount.regions) {
         discount.regions = await Promise.all(
           discount.regions.map(regionId =>
-            this.regionService_.withTransaction(manager).retrieve(regionId)
+            this.regionService_.retrieve(regionId)
           )
         )
       }
@@ -297,9 +293,6 @@ class DiscountService extends BaseService {
 
       if (rule) {
         discount.rule = this.validateDiscountRule_(rule)
-        if (rule.valid_for) {
-          discount.rule.valid_for = discount.rule.valid_for.map(id => ({ id }))
-        }
       }
 
       for (const [key, value] of Object.entries(rest)) {

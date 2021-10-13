@@ -3,7 +3,7 @@ import { BaseService } from "medusa-interfaces"
 
 /**
  * Can authenticate a user based on email password combination
- * @extends BaseService
+ * @implements BaseService
  */
 class AuthService extends BaseService {
   constructor({ userService, customerService }) {
@@ -47,9 +47,7 @@ class AuthService extends BaseService {
           success: true,
           user,
         }
-      } catch (error) {
-        // ignore
-      }
+      } catch (error) {}
     }
 
     try {
