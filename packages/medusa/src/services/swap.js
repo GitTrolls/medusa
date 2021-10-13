@@ -533,7 +533,6 @@ class SwapService extends BaseService {
           "order.swaps",
           "order.swaps.additional_items",
           "order.discounts",
-          "order.discounts.rule",
           "additional_items",
           "return_order",
           "return_order.items",

@@ -57,7 +57,6 @@ export const defaultCartRelations = [
   "payment_sessions",
   "shipping_methods.shipping_option",
   "discounts",
-  "discounts.rule",
 ]
 
 export const defaultCartFields = [

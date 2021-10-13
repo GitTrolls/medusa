@@ -1,5 +1,4 @@
 import { MedusaError, Validator } from "medusa-core-utils"
-import { defaultRelations } from "."
 
 /**
  * @oas [post] /discounts
@@ -97,10 +96,11 @@ export default async (req, res) => {
     const discountService = req.scope.resolve("discountService")
 
     const created = await discountService.create(value)
-    const discount = await discountService.retrieve(
-      created.id,
-      defaultRelations
-    )
+    const discount = await discountService.retrieve(created.id, [
+      "rule",
+      "rule.valid_for",
+      "regions",
+    ])
 
     res.status(200).json({ discount })
   } catch (err) {

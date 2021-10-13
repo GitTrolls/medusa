@@ -116,6 +116,4 @@ export const defaultRelations = [
   "payment_sessions",
   "shipping_methods.shipping_option",
   "discounts",
-  "discounts.rule",
-  "discounts.rule.valid_for",
 ]
