@@ -82,14 +82,6 @@ export default async (req, res) => {
       if (!value.region_id) {
         const regionService = req.scope.resolve("regionService")
         const regions = await regionService.withTransaction(manager).list({})
-
-        if (!regions?.length) {
-          throw new MedusaError(
-            MedusaError.Types.INVALID_DATA,
-            `A region is required to create a cart`
-          )
-        }
-
         regionId = regions[0].id
       }
 

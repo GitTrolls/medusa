@@ -43,14 +43,7 @@ export default async (req, res) => {
         .withTransaction(manager)
         .retrieve(draftOrder.cart_id, {
           select: ["total"],
-          relations: [
-            "discounts",
-            "discounts.rule",
-            "discounts.rule.valid_for",
-            "shipping_methods",
-            "region",
-            "items",
-          ],
+          relations: ["discounts", "shipping_methods", "region", "items"],
         })
 
       await paymentProviderService

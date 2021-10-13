@@ -1,10 +1,11 @@
-import { MedusaError } from "medusa-core-utils"
+import _ from "lodash"
+import { Validator, MedusaError } from "medusa-core-utils"
 import { BaseService } from "medusa-interfaces"
 import { countries } from "../utils/countries"
 
 /**
  * Provides layer to manipulate regions.
- * @extends BaseService
+ * @implements BaseService
  */
 class RegionService extends BaseService {
   static Events = {
@@ -82,11 +83,11 @@ class RegionService extends BaseService {
 
   /**
    * Creates a region.
-   * @param {Region} regionObject - the unvalidated region
+   * @param {Region} rawRegion - the unvalidated region
    * @return {Region} the newly created region
    */
   async create(regionObject) {
-    return this.atomicPhase_(async (manager) => {
+    return this.atomicPhase_(async manager => {
       const regionRepository = manager.getCustomRepository(
         this.regionRepository_
       )
@@ -117,7 +118,7 @@ class RegionService extends BaseService {
       }
 
       if (metadata) {
-        regionObject.metadata = this.setMetadata_(regionObject, metadata)
+        regionObject.metadata = this.setMetadata_(region, metadata)
       }
 
       for (const [key, value] of Object.entries(validated)) {
@@ -144,7 +145,7 @@ class RegionService extends BaseService {
    * @return {Promise} the result of the update operation
    */
   async update(regionId, update) {
-    return this.atomicPhase_(async (manager) => {
+    return this.atomicPhase_(async manager => {
       const regionRepository = manager.getCustomRepository(
         this.regionRepository_
       )
@@ -217,17 +218,17 @@ class RegionService extends BaseService {
 
     if (region.countries) {
       region.countries = await Promise.all(
-        region.countries.map((countryCode) =>
+        region.countries.map(countryCode =>
           this.validateCountry_(countryCode, id)
         )
-      ).catch((err) => {
+      ).catch(err => {
         throw err
       })
     }
 
     if (region.payment_providers) {
       region.payment_providers = await Promise.all(
-        region.payment_providers.map(async (pId) => {
+        region.payment_providers.map(async pId => {
           const pp = await ppRepository.findOne({ where: { id: pId } })
           if (!pp) {
             throw new MedusaError(
@@ -243,7 +244,7 @@ class RegionService extends BaseService {
 
     if (region.fulfillment_providers) {
       region.fulfillment_providers = await Promise.all(
-        region.fulfillment_providers.map(async (fId) => {
+        region.fulfillment_providers.map(async fId => {
           const fp = await fpRepository.findOne({ where: { id: fId } })
           if (!fp) {
             throw new MedusaError(
@@ -282,7 +283,7 @@ class RegionService extends BaseService {
       .withTransaction(this.transactionManager_)
       .retrieve(["currencies"])
 
-    const storeCurrencies = store.currencies.map((curr) => curr.code)
+    const storeCurrencies = store.currencies.map(curr => curr.code)
 
     if (!storeCurrencies.includes(currencyCode.toLowerCase())) {
       throw new MedusaError(
@@ -304,7 +305,7 @@ class RegionService extends BaseService {
     )
 
     const countryCode = code.toUpperCase()
-    const validCountry = countries.find((c) => c.alpha2 === countryCode)
+    const validCountry = countries.find(c => c.alpha2 === countryCode)
     if (!validCountry) {
       throw new MedusaError(
         MedusaError.Types.INVALID_DATA,
@@ -338,7 +339,6 @@ class RegionService extends BaseService {
   /**
    * Retrieves a region by its id.
    * @param {string} regionId - the id of the region to retrieve
-   * @param {object} config - configuration settings
    * @return {Region} the region
    */
   async retrieve(regionId, config = {}) {
@@ -361,8 +361,7 @@ class RegionService extends BaseService {
 
   /**
    * Lists all regions based on a query
-   * @param {object} selector - query object for find
-   * @param {object} config - configuration settings
+   * @param {object} listOptions - query object for find
    * @return {Promise} result of the find operation
    */
   async list(selector = {}, config = { relations: [], skip: 0, take: 10 }) {
@@ -378,14 +377,12 @@ class RegionService extends BaseService {
    * @return {Promise} the result of the delete operation
    */
   async delete(regionId) {
-    return this.atomicPhase_(async (manager) => {
+    return this.atomicPhase_(async manager => {
       const regionRepo = manager.getCustomRepository(this.regionRepository_)
 
       const region = await regionRepo.findOne({ where: { id: regionId } })
 
-      if (!region) {
-        return Promise.resolve()
-      }
+      if (!region) return Promise.resolve()
 
       await regionRepo.softRemove(region)
 
@@ -400,7 +397,7 @@ class RegionService extends BaseService {
    * @return {Promise} the result of the update operation
    */
   async addCountry(regionId, code) {
-    return this.atomicPhase_(async (manager) => {
+    return this.atomicPhase_(async manager => {
       const regionRepo = manager.getCustomRepository(this.regionRepository_)
 
       const country = await this.validateCountry_(code, regionId)
@@ -410,7 +407,7 @@ class RegionService extends BaseService {
       // Check if region already has country
       if (
         region.countries &&
-        region.countries.map((c) => c.iso_2).includes(country.iso_2)
+        region.countries.map(c => c.iso_2).includes(country.iso_2)
       ) {
         return region
       }
@@ -437,7 +434,7 @@ class RegionService extends BaseService {
    * @return {Promise} the result of the update operation
    */
   async removeCountry(regionId, code) {
-    return this.atomicPhase_(async (manager) => {
+    return this.atomicPhase_(async manager => {
       const regionRepo = manager.getCustomRepository(this.regionRepository_)
 
       const region = await this.retrieve(regionId, { relations: ["countries"] })
@@ -445,13 +442,13 @@ class RegionService extends BaseService {
       // Check if region contains country. If not, we simpy resolve
       if (
         region.countries &&
-        !region.countries.map((c) => c.iso_2).includes(code)
+        !region.countries.map(c => c.iso_2).includes(code)
       ) {
         return region
       }
 
       region.countries = region.countries.filter(
-        (country) => country.iso_2 !== code
+        country => country.iso_2 !== code
       )
 
       const updated = await regionRepo.save(region)
@@ -473,7 +470,7 @@ class RegionService extends BaseService {
    * @return {Promise} the result of the update operation
    */
   async addPaymentProvider(regionId, providerId) {
-    return this.atomicPhase_(async (manager) => {
+    return this.atomicPhase_(async manager => {
       const regionRepo = manager.getCustomRepository(this.regionRepository_)
       const ppRepo = manager.getCustomRepository(
         this.paymentProviderRepository_
@@ -520,7 +517,7 @@ class RegionService extends BaseService {
    * @return {Promise} the result of the update operation
    */
   async addFulfillmentProvider(regionId, providerId) {
-    return this.atomicPhase_(async (manager) => {
+    return this.atomicPhase_(async manager => {
       const regionRepo = manager.getCustomRepository(this.regionRepository_)
       const fpRepo = manager.getCustomRepository(
         this.fulfillmentProviderRepository_
@@ -564,7 +561,7 @@ class RegionService extends BaseService {
    * @return {Promise} the result of the update operation
    */
   async removePaymentProvider(regionId, providerId) {
-    return this.atomicPhase_(async (manager) => {
+    return this.atomicPhase_(async manager => {
       const regionRepo = manager.getCustomRepository(this.regionRepository_)
 
       const region = await this.retrieve(regionId, {
@@ -598,7 +595,7 @@ class RegionService extends BaseService {
    * @return {Promise} the result of the update operation
    */
   async removeFulfillmentProvider(regionId, providerId) {
-    return this.atomicPhase_(async (manager) => {
+    return this.atomicPhase_(async manager => {
       const regionRepo = manager.getCustomRepository(this.regionRepository_)
 
       const region = await this.retrieve(regionId, {
