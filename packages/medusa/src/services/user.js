@@ -6,7 +6,7 @@ import { BaseService } from "medusa-interfaces"
 
 /**
  * Provides layer to manipulate users.
- * @extends BaseService
+ * @implements BaseService
  */
 class UserService extends BaseService {
   static Events = {
@@ -48,7 +48,9 @@ class UserService extends BaseService {
    * @return {string} the validated email
    */
   validateEmail_(email) {
-    const schema = Validator.string().email().required()
+    const schema = Validator.string()
+      .email()
+      .required()
     const { value, error } = schema.validate(email)
     if (error) {
       throw new MedusaError(
@@ -73,7 +75,6 @@ class UserService extends BaseService {
    * Gets a user by id.
    * Throws in case of DB Error and if user was not found.
    * @param {string} userId - the id of the user to get.
-   * @param {Object} config - query configs
    * @return {Promise<User>} the user document.
    */
   async retrieve(userId, config = {}) {
@@ -98,7 +99,6 @@ class UserService extends BaseService {
    * Gets a user by api token.
    * Throws in case of DB Error and if user was not found.
    * @param {string} apiToken - the token of the user to get.
-   * @param {string[]} relations - relations to include with the user
    * @return {Promise<User>} the user document.
    */
   async retrieveByApiToken(apiToken, relations = []) {
@@ -123,7 +123,6 @@ class UserService extends BaseService {
    * Gets a user by email.
    * Throws in case of DB Error and if user was not found.
    * @param {string} email - the email of the user to get.
-   * @param {Object} config - query config
    * @return {Promise<User>} the user document.
    */
   async retrieveByEmail(email, config = {}) {
@@ -145,7 +144,7 @@ class UserService extends BaseService {
   /**
    * Hashes a password
    * @param {string} password - the value to hash
-   * @return {string} hashed password
+   * @return hashed password
    */
   async hashPassword_(password) {
     const buf = await Scrypt.kdf(password, { logN: 1, r: 1, p: 1 })
@@ -156,11 +155,10 @@ class UserService extends BaseService {
    * Creates a user with username being validated.
    * Fails if email is not a valid format.
    * @param {object} user - the user to create
-   * @param {string} password - user's password to hash
    * @return {Promise} the result of create
    */
   async create(user, password) {
-    return this.atomicPhase_(async (manager) => {
+    return this.atomicPhase_(async manager => {
       const userRepo = manager.getCustomRepository(this.userRepository_)
 
       const validatedEmail = this.validateEmail_(user.email)
@@ -179,12 +177,11 @@ class UserService extends BaseService {
 
   /**
    * Updates a user.
-   * @param {object} userId - id of the user to update
-   * @param {object} update - the values to be updated on the user
+   * @param {object} user - the user to create
    * @return {Promise} the result of create
    */
   async update(userId, update) {
-    return this.atomicPhase_(async (manager) => {
+    return this.atomicPhase_(async manager => {
       const userRepo = manager.getCustomRepository(this.userRepository_)
       const validatedId = this.validateId_(userId)
 
@@ -225,15 +222,13 @@ class UserService extends BaseService {
    * @return {Promise} the result of the delete operation.
    */
   async delete(userId) {
-    return this.atomicPhase_(async (manager) => {
+    return this.atomicPhase_(async manager => {
       const userRepo = manager.getCustomRepository(this.userRepository_)
 
       // Should not fail, if user does not exist, since delete is idempotent
       const user = await userRepo.findOne({ where: { id: userId } })
 
-      if (!user) {
-        return Promise.resolve()
-      }
+      if (!user) return Promise.resolve()
 
       await userRepo.softRemove(user)
 
@@ -247,10 +242,10 @@ class UserService extends BaseService {
    * password does not work.
    * @param {string} userId - the userId to set password for
    * @param {string} password - the old password to set
-   * @return {Promise} the result of the update operation
+   * @returns {Promise} the result of the update operation
    */
   async setPassword_(userId, password) {
-    return this.atomicPhase_(async (manager) => {
+    return this.atomicPhase_(async manager => {
       const userRepo = manager.getCustomRepository(this.userRepository_)
 
       const user = await this.retrieve(userId)
@@ -275,8 +270,8 @@ class UserService extends BaseService {
    * The token will be signed with the users current password hash as a secret
    * a long side a payload with userId and the expiry time for the token, which
    * is always 15 minutes.
-   * @param {string} userId - the id of the user to reset password for
-   * @return {string} the generated JSON web token
+   * @param {User} user - the user to reset password for
+   * @returns {string} the generated JSON web token
    */
   async generateResetPasswordToken(userId) {
     const user = await this.retrieve(userId)

@@ -69,10 +69,6 @@ module.exports = {
               type: "doc",
               id: "how-to/headless-ecommerce-store-with-gatsby-contentful-medusa",
             },
-            {
-              type: "doc",
-              id: "how-to/making-your-store-more-powerful-with-contentful",
-            },
           ],
         },
         {
@@ -82,14 +78,6 @@ module.exports = {
         {
           type: "doc",
           id: "how-to/create-medusa-app",
-        },
-        {
-          type: "doc",
-          id: "how-to/uploading-images-to-spaces",
-        },
-        {
-          type: "doc",
-          id: "how-to/uploading-images-to-s3",
         },
       ],
     },
@@ -108,20 +96,6 @@ module.exports = {
         {
           type: "doc",
           id: "guides/carts-in-medusa",
-        },
-      ],
-    },
-    {
-      type: "category",
-      label: "Deploy",
-      items: [
-        {
-          type: "doc",
-          id: "how-to/deploying-on-heroku",
-        },
-        {
-          type: "doc",
-          id: "how-to/deploying-admin-on-netlify",
         },
       ],
     },

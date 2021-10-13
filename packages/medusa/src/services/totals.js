@@ -4,7 +4,7 @@ import { MedusaError } from "medusa-core-utils"
 
 /**
  * A service that calculates total and subtotals for orders, carts etc..
- * @implements {BaseService}
+ * @implements BaseService
  */
 class TotalsService extends BaseService {
   constructor() {
@@ -48,8 +48,7 @@ class TotalsService extends BaseService {
 
   /**
    * Calculates subtotal of a given cart or order.
-   * @param {(Cart|Order)} object - cart or order to calculate subtotal for
-   * @param {Object} opts - options
+   * @param {Cart || Order} object - cart or order to calculate subtotal for
    * @return {int} the calculated subtotal
    */
   getSubtotal(object, opts = {}) {
@@ -58,7 +57,7 @@ class TotalsService extends BaseService {
       return subtotal
     }
 
-    object.items.map((item) => {
+    object.items.map(item => {
       if (opts.excludeNonDiscounts) {
         if (item.allow_discounts) {
           subtotal += item.unit_price * item.quantity
@@ -129,7 +128,7 @@ class TotalsService extends BaseService {
 
     const lineDiscounts = this.getLineDiscounts(object, discount)
     const discountedLine = lineDiscounts.find(
-      (line) => line.item.id === lineItem.id
+      line => line.item.id === lineItem.id
     )
 
     const discountAmount =
@@ -149,17 +148,17 @@ class TotalsService extends BaseService {
    * @return {int} the calculated subtotal
    */
   getRefundTotal(order, lineItems) {
-    let itemIds = order.items.map((i) => i.id)
+    let itemIds = order.items.map(i => i.id)
 
     // in case we swap a swap, we need to include swap items
     if (order.swaps && order.swaps.length) {
       for (const s of order.swaps) {
-        const swapItemIds = s.additional_items.map((el) => el.id)
+        const swapItemIds = s.additional_items.map(el => el.id)
         itemIds = [...itemIds, ...swapItemIds]
       }
     }
 
-    const refunds = lineItems.map((i) => {
+    const refunds = lineItems.map(i => {
       if (!itemIds.includes(i.id)) {
         throw new MedusaError(
           MedusaError.Types.INVALID_DATA,
@@ -178,7 +177,7 @@ class TotalsService extends BaseService {
    * @param {string} lineItem - id of line item
    * @param {string} variant - id of variant in line item
    * @param {int} variantPrice - price of the variant based on region
-   * @param {int} value - discount value
+   * @param {int} valye - discount value
    * @param {string} discountType - the type of discount (fixed or percentage)
    * @return {{ string, string, int }} triples of lineitem, variant and
    *    applied discount
@@ -266,7 +265,7 @@ class TotalsService extends BaseService {
         percentage = nominator / subtotal
       }
 
-      return merged.map((item) => {
+      return merged.map(item => {
         const lineTotal = item.unit_price * item.quantity
 
         return {
@@ -280,18 +279,18 @@ class TotalsService extends BaseService {
         cart,
         type
       )
-      return merged.map((item) => {
+      return merged.map(item => {
         const discounted = allocationDiscounts.find(
-          (a) => a.lineItem.id === item.id
+          a => a.lineItem.id === item.id
         )
         return {
           item,
-          amount: discounted ? discounted.amount : 0,
+          amount: !!discounted ? discounted.amount : 0,
         }
       })
     }
 
-    return merged.map((i) => ({ item: i, amount: 0 }))
+    return merged.map(i => ({ item: i, amount: 0 }))
   }
 
   getGiftCardTotal(cart) {
@@ -318,11 +317,11 @@ class TotalsService extends BaseService {
   /**
    * Calculates the total discount amount for each of the different supported
    * discount types. If discounts aren't present or invalid returns 0.
-   * @param {Cart} cart - the cart to calculate discounts for
+   * @param {Cart} Cart - the cart to calculate discounts for
    * @return {int} the total discounts amount
    */
   getDiscountTotal(cart) {
-    const subtotal = this.getSubtotal(cart, { excludeNonDiscounts: true })
+    let subtotal = this.getSubtotal(cart, { excludeNonDiscounts: true })
 
     if (!cart.discounts || !cart.discounts.length) {
       return 0
@@ -349,7 +348,7 @@ class TotalsService extends BaseService {
         cart,
         "percentage"
       )
-      toReturn = _.sumBy(itemPercentageDiscounts, (d) => d.amount)
+      toReturn = _.sumBy(itemPercentageDiscounts, d => d.amount)
     } else if (type === "fixed" && allocation === "total") {
       toReturn = value
     } else if (type === "fixed" && allocation === "item") {
@@ -358,7 +357,7 @@ class TotalsService extends BaseService {
         cart,
         "fixed"
       )
-      toReturn = _.sumBy(itemFixedDiscounts, (d) => d.amount)
+      toReturn = _.sumBy(itemFixedDiscounts, d => d.amount)
     }
 
     if (subtotal < 0) {

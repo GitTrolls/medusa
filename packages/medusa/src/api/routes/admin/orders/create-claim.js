@@ -202,12 +202,7 @@ export default async (req, res) => {
               const order = await orderService
                 .withTransaction(manager)
                 .retrieve(id, {
-                  relations: [
-                    "items",
-                    "cart",
-                    "cart.discounts",
-                    "cart.discounts.rule",
-                  ],
+                  relations: ["items", "discounts"],
                 })
 
               await claimService.withTransaction(manager).create({

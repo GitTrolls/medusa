@@ -24,7 +24,6 @@ class CartService extends BaseService {
     regionService,
     lineItemService,
     shippingOptionService,
-    shippingProfileService,
     customerService,
     discountService,
     giftCardService,
@@ -32,6 +31,7 @@ class CartService extends BaseService {
     addressRepository,
     paymentSessionRepository,
     inventoryService,
+    customShippingOptionService,
   }) {
     super()
 
@@ -62,9 +62,6 @@ class CartService extends BaseService {
     /** @private @const {PaymentProviderService} */
     this.paymentProviderService_ = paymentProviderService
 
-    /** @private @const {ShippingProfileService} */
-    this.shippingProfileService_ = shippingProfileService
-
     /** @private @const {CustomerService} */
     this.customerService_ = customerService
 
@@ -88,6 +85,9 @@ class CartService extends BaseService {
 
     /** @private @const {InventoryService} */
     this.inventoryService_ = inventoryService
+
+    /** @private @const {CustomShippingOptionService} */
+    this.customShippingOptionService_ = customShippingOptionService
   }
 
   withTransaction(transactionManager) {
@@ -107,13 +107,13 @@ class CartService extends BaseService {
       regionService: this.regionService_,
       lineItemService: this.lineItemService_,
       shippingOptionService: this.shippingOptionService_,
-      shippingProfileService: this.shippingProfileService_,
       customerService: this.customerService_,
       discountService: this.discountService_,
       totalsService: this.totalsService_,
       addressRepository: this.addressRepository_,
       giftCardService: this.giftCardService_,
       inventoryService: this.inventoryService_,
+      customShippingOptionService: this.customShippingOptionService_,
     })
 
     cloned.transactionManager_ = transactionManager
@@ -166,8 +166,6 @@ class CartService extends BaseService {
       relationSet.add("items")
       relationSet.add("gift_cards")
       relationSet.add("discounts")
-      relationSet.add("discounts.rule")
-      relationSet.add("discounts.rule.valid_for")
       //relationSet.add("discounts.parent_discount")
       //relationSet.add("discounts.parent_discount.rule")
       //relationSet.add("discounts.parent_discount.regions")
@@ -602,21 +600,18 @@ class CartService extends BaseService {
           "shipping_address",
           "billing_address",
           "gift_cards",
+          "discounts",
           "customer",
           "region",
           "payment_sessions",
           "region.countries",
-          "discounts",
           "discounts.rule",
-          "discounts.rule.valid_for",
           "discounts.regions",
         ],
       })
 
       if ("region_id" in update) {
-        const countryCode =
-          update.country_code || update.shipping_address?.country_code
-        await this.setRegion_(cart, update.region_id, countryCode)
+        await this.setRegion_(cart, update.region_id, update.country_code)
       }
 
       if ("customer_id" in update) {
@@ -876,7 +871,6 @@ class CartService extends BaseService {
   async applyDiscount(cart, discountCode) {
     const discount = await this.discountService_.retrieveByCode(discountCode, [
       "rule",
-      "rule.valid_for",
       "regions",
     ])
 
@@ -974,13 +968,7 @@ class CartService extends BaseService {
   async removeDiscount(cartId, discountCode) {
     return this.atomicPhase_(async manager => {
       const cart = await this.retrieve(cartId, {
-        relations: [
-          "discounts",
-          "discounts.rule",
-          "discounts.rule.valid_for",
-          "payment_sessions",
-          "shipping_methods",
-        ],
+        relations: ["discounts", "payment_sessions", "shipping_methods"],
       })
 
       if (cart.discounts.some(({ rule }) => rule.type === "free_shipping")) {
@@ -1177,8 +1165,6 @@ class CartService extends BaseService {
         relations: [
           "items",
           "discounts",
-          "discounts.rule",
-          "discounts.rule.valid_for",
           "gift_cards",
           "billing_address",
           "shipping_address",
@@ -1331,8 +1317,6 @@ class CartService extends BaseService {
         relations: [
           "shipping_methods",
           "discounts",
-          "discounts.rule",
-          "discounts.rule.valid_for",
           "shipping_methods.shipping_option",
           "items",
           "items.variant",
@@ -1340,11 +1324,27 @@ class CartService extends BaseService {
           "items.variant.product",
         ],
       })
+
+      let cartCustomShippingOptions = await this.customShippingOptionService_.list(
+        { cart_id: cart.id }
+      )
+
+      let customShippingOption = this.findCustomShippingOption(
+        cartCustomShippingOptions,
+        optionId
+      )
+
       const { shipping_methods } = cart
+
+      const shippingMethodConfig = customShippingOption
+        ? { cart, price: customShippingOption.price }
+        : {
+            cart,
+          }
 
       const newMethod = await this.shippingOptionService_
         .withTransaction(manager)
-        .createShippingMethod(optionId, data, { cart })
+        .createShippingMethod(optionId, data, shippingMethodConfig)
 
       const methods = [newMethod]
       if (shipping_methods.length) {
@@ -1369,12 +1369,7 @@ class CartService extends BaseService {
       }
 
       const result = await this.retrieve(cartId, {
-        relations: [
-          "discounts",
-          "discounts.rule",
-          "discounts.rule.valid_for",
-          "shipping_methods",
-        ],
+        relations: ["discounts", "shipping_methods"],
       })
 
       // if cart has freeshipping, adjust price
@@ -1387,6 +1382,29 @@ class CartService extends BaseService {
         .emit(CartService.Events.UPDATED, result)
       return result
     }, "SERIALIZABLE")
+  }
+
+  /**
+   * Finds the cart's custom shipping options based on the passed option id.
+   * throws if custom options is not empty and no shipping option corresponds to optionId
+   * @param {Object} cartCustomShippingOptions - the cart's custom shipping options
+   * @param {string} option - id of the normal or custom shipping option to find in the cartCustomShippingOptions
+   * @returns {CustomShippingOption | undefined}
+   */
+  findCustomShippingOption(cartCustomShippingOptions, optionId) {
+    let customOption = cartCustomShippingOptions?.find(
+      cso => cso.shipping_option_id === optionId
+    )
+    const hasCustomOptions = cartCustomShippingOptions?.length
+
+    if (hasCustomOptions && !customOption) {
+      throw new MedusaError(
+        MedusaError.Types.INVALID_DATA,
+        "Wrong shipping option"
+      )
+    }
+
+    return customOption
   }
 
   /**
@@ -1528,13 +1546,7 @@ class CartService extends BaseService {
   async delete(cartId) {
     return this.atomicPhase_(async manager => {
       const cart = await this.retrieve(cartId, {
-        relations: [
-          "items",
-          "discounts",
-          "discounts.rule",
-          "discounts.rule.valid_for",
-          "payment_sessions",
-        ],
+        relations: ["items", "discounts", "payment_sessions"],
       })
 
       if (cart.completed_at) {
