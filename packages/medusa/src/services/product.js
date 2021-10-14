@@ -11,7 +11,6 @@ class ProductService extends BaseService {
   static Events = {
     UPDATED: "product.updated",
     CREATED: "product.created",
-    DELETED: "product.deleted",
   }
 
   constructor({
@@ -296,7 +295,7 @@ class ProductService extends BaseService {
 
       let product = productRepo.create(rest)
 
-      if (images) {
+      if (images && images.length) {
         product.images = await this.upsertImages_(images)
       }
 
@@ -381,11 +380,11 @@ class ProductService extends BaseService {
         ...rest
       } = update
 
-      if (!product.thumbnail && !update.thumbnail && images?.length) {
+      if (!product.thumbnail && !update.thumbnail && images && images.length) {
         product.thumbnail = images[0]
       }
 
-      if (images) {
+      if (images && images.length) {
         product.images = await this.upsertImages_(images)
       }
 
@@ -475,12 +474,6 @@ class ProductService extends BaseService {
       if (!product) return Promise.resolve()
 
       await productRepo.softRemove(product)
-
-      await this.eventBus_
-        .withTransaction(manager)
-        .emit(ProductService.Events.DELETED, {
-          id: productId,
-        })
 
       return Promise.resolve()
     })
