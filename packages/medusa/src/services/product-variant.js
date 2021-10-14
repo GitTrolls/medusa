@@ -11,7 +11,6 @@ class ProductVariantService extends BaseService {
   static Events = {
     UPDATED: "product-variant.updated",
     CREATED: "product-variant.created",
-    DELETED: "product-variant.deleted",
   }
 
   /** @param { productVariantModel: (ProductVariantModel) } */
@@ -588,12 +587,6 @@ class ProductVariantService extends BaseService {
       if (!variant) return Promise.resolve()
 
       await variantRepo.softRemove(variant)
-
-      await this.eventBus_
-        .withTransaction(manager)
-        .emit(ProductVariantService.Events.DELETED, {
-          id: variantId,
-        })
 
       return Promise.resolve()
     })
