@@ -170,14 +170,6 @@ describe("SwapService", () => {
         findOneWithRelations: () => Promise.resolve(existing),
       })
 
-      const customShippingOptionService = {
-        create: jest.fn().mockReturnValue(Promise.resolve({ id: "cso-test" })),
-        update: jest.fn().mockReturnValue(Promise.resolve()),
-        withTransaction: function() {
-          return this
-        },
-      }
-
       const lineItemService = {
         create: jest.fn().mockImplementation(d => Promise.resolve(d)),
         update: jest.fn().mockImplementation(d => Promise.resolve(d)),
@@ -193,13 +185,10 @@ describe("SwapService", () => {
         swapRepository: swapRepo,
         cartService,
         lineItemService,
-        customShippingOptionService,
       })
 
       it("finds swap and calls return create cart", async () => {
-        await swapService.createCart(IdMap.getId("swap-1"), [
-          { option_id: "test-option", price: 10 },
-        ])
+        await swapService.createCart(IdMap.getId("swap-1"))
 
         expect(swapRepo.findOneWithRelations).toHaveBeenCalledTimes(1)
         expect(swapRepo.findOneWithRelations).toHaveBeenCalledWith(
@@ -209,6 +198,7 @@ describe("SwapService", () => {
             "order.swaps",
             "order.swaps.additional_items",
             "order.discounts",
+            "order.discounts.rule",
             "additional_items",
             "return_order",
             "return_order.items",
@@ -335,8 +325,7 @@ describe("SwapService", () => {
           {
             id: IdMap.getId("return-shipping"),
             price: 20,
-          },
-          [{ option_id: IdMap.getId("rmaso-option1"), price: 0 }]
+          }
         )
 
         expect(lineItemService.generate).toHaveBeenCalledTimes(1)
