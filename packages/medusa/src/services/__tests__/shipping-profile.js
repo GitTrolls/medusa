@@ -192,17 +192,53 @@ describe("ShippingProfileService", () => {
       },
     }
 
+    const customShippingOptionService = {
+      list: jest.fn().mockImplementation(({ cart_id }, config) => {
+        if (cart_id === "cso-cart") {
+          return Promise.resolve([
+            {
+              id: "cso_1",
+              cart_id: "cso-cart",
+              shipping_option: {
+                id: "test-option",
+                amount: 200,
+                name: "Test option",
+              },
+              price: 0,
+            },
+          ])
+        }
+        return Promise.resolve([])
+      }),
+    }
+
     const profileService = new ShippingProfileService({
       manager: MockManager,
       shippingProfileRepository: profRepo,
       shippingOptionService,
+      customShippingOptionService,
     })
 
     beforeEach(() => {
       jest.clearAllMocks()
     })
 
-    it("fetches correct options", async () => {
+    it("given a cart with custom shipping options, should return correct custom shipping options ", async () => {
+      const cart = {
+        id: "cso-cart",
+        type: "swap",
+      }
+
+      await expect(profileService.fetchCartOptions(cart)).resolves.toEqual([
+        expect.objectContaining({
+          id: "test-option",
+          amount: 0,
+          name: "Test option",
+        }),
+      ])
+    })
+
+    it("given a cart with no custom shipping options, should return normal shipping options", async () => {
       const cart = {
         items: [
           {

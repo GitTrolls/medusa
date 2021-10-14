@@ -18,16 +18,8 @@ class ContentfulSubscriber {
       await this.contentfulService_.updateRegionInContentful(data)
     })
 
-    this.eventBus_.subscribe("region.deleted", async (data) => {
-      await this.contentfulService_.updateRegionInContentful(data)
-    })
-
     this.eventBus_.subscribe("product-variant.updated", async (data) => {
       await this.contentfulService_.updateProductVariantInContentful(data)
-    })
-
-    this.eventBus_.subscribe("product-variant.deleted", async (data) => {
-      await this.contentfulService_.archiveProductVariantInContentful(data)
     })
 
     this.eventBus_.subscribe("product.updated", async (data) => {
@@ -36,10 +28,6 @@ class ContentfulSubscriber {
 
     this.eventBus_.subscribe("product.created", async (data) => {
       await this.contentfulService_.createProductInContentful(data)
-    })
-
-    this.eventBus_.subscribe("product.deleted", async (data) => {
-      await this.contentfulService_.archiveProductInContentful(data)
     })
   }
 }
