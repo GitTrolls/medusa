@@ -24,6 +24,7 @@ class CartService extends BaseService {
     regionService,
     lineItemService,
     shippingOptionService,
+    shippingProfileService,
     customerService,
     discountService,
     giftCardService,
@@ -31,7 +32,6 @@ class CartService extends BaseService {
     addressRepository,
     paymentSessionRepository,
     inventoryService,
-    customShippingOptionService,
   }) {
     super()
 
@@ -62,6 +62,9 @@ class CartService extends BaseService {
     /** @private @const {PaymentProviderService} */
     this.paymentProviderService_ = paymentProviderService
 
+    /** @private @const {ShippingProfileService} */
+    this.shippingProfileService_ = shippingProfileService
+
     /** @private @const {CustomerService} */
     this.customerService_ = customerService
 
@@ -85,9 +88,6 @@ class CartService extends BaseService {
 
     /** @private @const {InventoryService} */
     this.inventoryService_ = inventoryService
-
-    /** @private @const {CustomShippingOptionService} */
-    this.customShippingOptionService_ = customShippingOptionService
   }
 
   withTransaction(transactionManager) {
@@ -107,13 +107,13 @@ class CartService extends BaseService {
       regionService: this.regionService_,
       lineItemService: this.lineItemService_,
       shippingOptionService: this.shippingOptionService_,
+      shippingProfileService: this.shippingProfileService_,
       customerService: this.customerService_,
       discountService: this.discountService_,
       totalsService: this.totalsService_,
       addressRepository: this.addressRepository_,
       giftCardService: this.giftCardService_,
       inventoryService: this.inventoryService_,
-      customShippingOptionService: this.customShippingOptionService_,
     })
 
     cloned.transactionManager_ = transactionManager
@@ -1340,27 +1340,11 @@ class CartService extends BaseService {
           "items.variant.product",
         ],
       })
-
-      let cartCustomShippingOptions = await this.customShippingOptionService_.list(
-        { cart_id: cart.id }
-      )
-
-      let customShippingOption = this.findCustomShippingOption(
-        cartCustomShippingOptions,
-        optionId
-      )
-
       const { shipping_methods } = cart
-
-      const shippingMethodConfig = customShippingOption
-        ? { cart, price: customShippingOption.price }
-        : {
-            cart,
-          }
 
       const newMethod = await this.shippingOptionService_
         .withTransaction(manager)
-        .createShippingMethod(optionId, data, shippingMethodConfig)
+        .createShippingMethod(optionId, data, { cart })
 
       const methods = [newMethod]
       if (shipping_methods.length) {
@@ -1403,29 +1387,6 @@ class CartService extends BaseService {
         .emit(CartService.Events.UPDATED, result)
       return result
     }, "SERIALIZABLE")
-  }
-
-  /**
-   * Finds the cart's custom shipping options based on the passed option id.
-   * throws if custom options is not empty and no shipping option corresponds to optionId
-   * @param {Object} cartCustomShippingOptions - the cart's custom shipping options
-   * @param {string} option - id of the normal or custom shipping option to find in the cartCustomShippingOptions
-   * @returns {CustomShippingOption | undefined}
-   */
-  findCustomShippingOption(cartCustomShippingOptions, optionId) {
-    let customOption = cartCustomShippingOptions?.find(
-      cso => cso.shipping_option_id === optionId
-    )
-    const hasCustomOptions = cartCustomShippingOptions?.length
-
-    if (hasCustomOptions && !customOption) {
-      throw new MedusaError(
-        MedusaError.Types.INVALID_DATA,
-        "Wrong shipping option"
-      )
-    }
-
-    return customOption
   }
 
   /**
