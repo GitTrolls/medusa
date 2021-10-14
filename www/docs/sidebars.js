@@ -69,10 +69,6 @@ module.exports = {
               type: "doc",
               id: "how-to/headless-ecommerce-store-with-gatsby-contentful-medusa",
             },
-            {
-              type: "doc",
-              id: "how-to/making-your-store-more-powerful-with-contentful",
-            },
           ],
         },
         {
@@ -121,19 +117,7 @@ module.exports = {
         },
         {
           type: "doc",
-          id: "how-to/deploying-on-qovery",
-        },
-        {
-          type: "doc",
-          id: "how-to/deploying-on-digital-ocean",
-        },
-        {
-          type: "doc",
           id: "how-to/deploying-admin-on-netlify",
-        },
-        {
-          type: "doc",
-          id: "how-to/deploying-gatsby-on-netlify",
         },
       ],
     },
