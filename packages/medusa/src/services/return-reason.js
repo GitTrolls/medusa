@@ -1,5 +1,6 @@
-import { MedusaError } from "medusa-core-utils"
+import { Validator, MedusaError } from "medusa-core-utils"
 import { BaseService } from "medusa-interfaces"
+import { In } from "typeorm"
 
 class ReturnReasonService extends BaseService {
   constructor({ manager, returnReasonRepository }) {
@@ -28,7 +29,7 @@ class ReturnReasonService extends BaseService {
   }
 
   create(data) {
-    return this.atomicPhase_(async (manager) => {
+    return this.atomicPhase_(async manager => {
       const rrRepo = manager.getCustomRepository(this.retReasonRepo_)
 
       if (data.parent_return_reason_id && data.parent_return_reason_id !== "") {
@@ -50,7 +51,7 @@ class ReturnReasonService extends BaseService {
   }
 
   update(id, data) {
-    return this.atomicPhase_(async (manager) => {
+    return this.atomicPhase_(async manager => {
       const rrRepo = manager.getCustomRepository(this.retReasonRepo_)
       const reason = await this.retrieve(id)
 
@@ -76,7 +77,6 @@ class ReturnReasonService extends BaseService {
 
   /**
    * @param {Object} selector - the query object for find
-   * @param {Object} config - config object
    * @return {Promise} the result of the find operation
    */
   async list(
@@ -90,8 +90,7 @@ class ReturnReasonService extends BaseService {
 
   /**
    * Gets an order by id.
-   * @param {string} id - id of order to retrieve
-   * @param {Object} config - config object
+   * @param {string} orderId - id of order to retrieve
    * @return {Promise<Order>} the order document
    */
   async retrieve(id, config = {}) {
@@ -112,7 +111,7 @@ class ReturnReasonService extends BaseService {
   }
 
   async delete(returnReasonId) {
-    return this.atomicPhase_(async (manager) => {
+    return this.atomicPhase_(async manager => {
       const rrRepo = manager.getCustomRepository(this.retReasonRepo_)
 
       // We include the relation 'return_reason_children' to enable cascading deletes of return reasons if a parent is removed

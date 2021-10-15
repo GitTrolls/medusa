@@ -1,9 +1,11 @@
+import _ from "lodash"
 import { MedusaError } from "medusa-core-utils"
 import { BaseService } from "medusa-interfaces"
+import { In } from "typeorm"
 
 /**
  * Provides layer to manipulate profiles.
- * @extends BaseService
+ * @implements BaseService
  */
 class ShippingOptionService extends BaseService {
   constructor({
@@ -62,7 +64,6 @@ class ShippingOptionService extends BaseService {
   /**
    * Validates a requirement
    * @param {ShippingRequirement} requirement - the requirement to validate
-   * @param {string} optionId - the id to validate the requirement
    * @return {ShippingRequirement} a validated shipping requirement
    */
   async validateRequirement_(requirement, optionId) {
@@ -122,7 +123,6 @@ class ShippingOptionService extends BaseService {
 
   /**
    * @param {Object} selector - the query object for find
-   * @param {object} config - config object
    * @return {Promise} the result of the find operation
    */
   async list(selector, config = { skip: 0, take: 50 }) {
@@ -136,7 +136,6 @@ class ShippingOptionService extends BaseService {
    * Gets a profile by id.
    * Throws in case of DB Error and if profile was not found.
    * @param {string} optionId - the id of the profile to get.
-   * @param {object} options - the options to get a profile
    * @return {Promise<Product>} the profile document.
    */
   async retrieve(optionId, options = {}) {
@@ -172,7 +171,7 @@ class ShippingOptionService extends BaseService {
    * and its methods should be copied to an order/swap entity.
    * @param {string} id - the id of the shipping method to update
    * @param {object} update - the values to update the method with
-   * @return {Promise<ShippingMethod>} the resulting shipping method
+   * @returns {Promise<ShippingMethod>} the resulting shipping method
    */
   async updateShippingMethod(id, update) {
     return this.atomicPhase_(async manager => {
@@ -201,7 +200,7 @@ class ShippingOptionService extends BaseService {
 
   /**
    * Removes a given shipping method
-   * @param {string} sm - the shipping method to remove
+   * @param {string} id - the id of the option to use for the method.
    */
   async deleteShippingMethod(sm) {
     return this.atomicPhase_(async manager => {
@@ -215,7 +214,7 @@ class ShippingOptionService extends BaseService {
    * @param {string} optionId - the id of the option to use for the method.
    * @param {object} data - the optional provider data to use.
    * @param {object} config - the cart to create the shipping method for.
-   * @return {ShippingMethod} the resulting shipping method.
+   * @returns {ShippingMethod} the resulting shipping method.
    */
   async createShippingMethod(optionId, data, config) {
     return this.atomicPhase_(async manager => {
@@ -287,7 +286,7 @@ class ShippingOptionService extends BaseService {
    * Checks if a given option id is a valid option for a cart. If it is the
    * option is returned with the correct price. Throws when region_ids do not
    * match, or when the shipping option requirements are not satisfied.
-   * @param {object} option - the option object to check
+   * @param {string} optionId - the id of the option to check
    * @param {Cart} cart - the cart object to check against
    * @return {ShippingOption} the validated shipping option
    */
@@ -329,7 +328,7 @@ class ShippingOptionService extends BaseService {
    * Creates a new shipping option. Used both for outbound and inbound shipping
    * options. The difference is registered by the `is_return` field which
    * defaults to false.
-   * @param {ShippingOption} data - the data to create shipping options
+   * @param {ShippingOption} option - the shipping option to create
    * @return {Promise<ShippingOption>} the result of the create operation
    */
   async create(data) {
@@ -409,7 +408,7 @@ class ShippingOptionService extends BaseService {
 
   /**
    * Validates a shipping option price
-   * @param {ShippingOptionPrice} priceType - the price to validate
+   * @param {ShippingOptionPrice} price - the price to validate
    * @param {ShippingOption} option - the option to validate against
    * @return {Promise<ShippingOptionPrice>} the validated price
    */
@@ -553,7 +552,7 @@ class ShippingOptionService extends BaseService {
    */
   async delete(optionId) {
     try {
-      const option = await this.retrieve(optionId)
+      let option = await this.retrieve(optionId)
 
       const optionRepo = this.manager_.getCustomRepository(
         this.optionRepository_
@@ -625,7 +624,7 @@ class ShippingOptionService extends BaseService {
 
   /**
    * Decorates a shipping option.
-   * @param {ShippingOption} optionId - the shipping option to decorate using optionId.
+   * @param {ShippingOption} shippingOption - the shipping option to decorate.
    * @param {string[]} fields - the fields to include.
    * @param {string[]} expandFields - fields to expand.
    * @return {ShippingOption} the decorated ShippingOption.
@@ -645,8 +644,9 @@ class ShippingOptionService extends BaseService {
 
   /**
    * Dedicated method to set metadata for a shipping option.
-   * @param {object} option - the option to set metadata for.
-   * @param {object} metadata - object for metadata field
+   * @param {string} optionId - the option to set metadata for.
+   * @param {string} key - key for metadata field
+   * @param {string} value - value for metadata field.
    * @return {Promise} resolves to the updated result.
    */
   async setMetadata_(option, metadata) {
@@ -677,10 +677,9 @@ class ShippingOptionService extends BaseService {
    * price type "calculated".
    * @param {ShippingOption} option - the shipping option to retrieve the price
    *   for.
-   * @param {ShippingData} data - the shipping data to retrieve the price.
-   * @param {Cart | Order} cart - the context in which the price should be
+   * @param {Cart || Order} cart - the context in which the price should be
    *   retrieved.
-   * @return {Promise<Number>} the price of the shipping option.
+   * @returns {Promise<Number>} the price of the shipping option.
    */
   async getPrice_(option, data, cart) {
     if (option.price_type === "calculated") {
