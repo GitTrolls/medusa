@@ -113,14 +113,12 @@ import { PaymentSession } from "./payment-session"
 import { Payment } from "./payment"
 import { GiftCard } from "./gift-card"
 import { ShippingMethod } from "./shipping-method"
-import { CustomShippingOption } from "./custom-shipping-option"
 
 export enum CartType {
   DEFAULT = "default",
   SWAP = "swap",
   DRAFT_ORDER = "draft_order",
   PAYMENT_LINK = "payment_link",
-  CLAIM = "claim",
 }
 
 @Entity()
