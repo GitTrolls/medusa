@@ -75,6 +75,7 @@
 /packages/medusa-plugin-economic
 /packages/medusa-plugin-ip-lookup
 /packages/medusa-plugin-mailchimp
+/packages/medusa-plugin-meilisearch
 /packages/medusa-plugin-permissions
 /packages/medusa-plugin-restock-notification
 /packages/medusa-plugin-segment
