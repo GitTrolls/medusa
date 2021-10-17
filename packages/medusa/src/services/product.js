@@ -8,7 +8,6 @@ import { Brackets } from "typeorm"
  * @implements BaseService
  */
 class ProductService extends BaseService {
-  static IndexName = `products`
   static Events = {
     UPDATED: "product.updated",
     CREATED: "product.created",
@@ -26,7 +25,6 @@ class ProductService extends BaseService {
     productTypeRepository,
     productTagRepository,
     imageRepository,
-    searchService,
   }) {
     super()
 
@@ -59,9 +57,6 @@ class ProductService extends BaseService {
 
     /** @private @const {ImageRepository} */
     this.imageRepository_ = imageRepository
-
-    /** @private @const {SearchService} */
-    this.searchService_ = searchService
   }
 
   withTransaction(transactionManager) {

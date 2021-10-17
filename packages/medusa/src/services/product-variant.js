@@ -119,7 +119,7 @@ class ProductVariantService extends BaseService {
    * @return {Promise} resolves to the creation result.
    */
   async create(productOrProductId, variant) {
-    return this.atomicPhase_(async (manager) => {
+    return this.atomicPhase_(async manager => {
       const productRepo = manager.getCustomRepository(this.productRepository_)
       const variantRepo = manager.getCustomRepository(
         this.productVariantRepository_
@@ -148,8 +148,8 @@ class ProductVariantService extends BaseService {
         )
       }
 
-      product.options.forEach((option) => {
-        if (!variant.options.find((vo) => option.id === vo.option_id)) {
+      product.options.forEach(option => {
+        if (!variant.options.find(vo => option.id === vo.option_id)) {
           throw new MedusaError(
             MedusaError.Types.INVALID_DATA,
             `Variant options do not contain value for ${option.title}`
@@ -158,10 +158,10 @@ class ProductVariantService extends BaseService {
       })
 
       let variantExists = undefined
-      variantExists = product.variants.find((v) => {
-        return v.options.every((option) => {
+      variantExists = product.variants.find(v => {
+        return v.options.every(option => {
           const variantOption = variant.options.find(
-            (o) => option.option_id === o.option_id
+            o => option.option_id === o.option_id
           )
 
           return option.value === variantOption.value
@@ -207,7 +207,6 @@ class ProductVariantService extends BaseService {
         .withTransaction(manager)
         .emit(ProductVariantService.Events.CREATED, {
           id: result.id,
-          product_id: result.product_id,
         })
 
       return result
@@ -220,7 +219,7 @@ class ProductVariantService extends BaseService {
    * @return {Promise}
    */
   async publish(variantId) {
-    return this.atomicPhase_(async (manager) => {
+    return this.atomicPhase_(async manager => {
       const variantRepo = manager.getCustomRepository(
         this.productVariantRepository_
       )
@@ -235,7 +234,6 @@ class ProductVariantService extends BaseService {
         .withTransaction(manager)
         .emit(ProductVariantService.Events.UPDATED, {
           id: result.id,
-          product_id: result.product_id,
         })
 
       return result
@@ -252,7 +250,7 @@ class ProductVariantService extends BaseService {
    * @return {Promise} resolves to the update result.
    */
   async update(variantOrVariantId, update) {
-    return this.atomicPhase_(async (manager) => {
+    return this.atomicPhase_(async manager => {
       const variantRepo = manager.getCustomRepository(
         this.productVariantRepository_
       )
@@ -312,7 +310,6 @@ class ProductVariantService extends BaseService {
         .withTransaction(manager)
         .emit(ProductVariantService.Events.UPDATED, {
           id: result.id,
-          product_id: result.product_id,
           fields: Object.keys(update),
         })
       return result
@@ -328,7 +325,7 @@ class ProductVariantService extends BaseService {
    * @return {Promise} the result of the update operation
    */
   async setCurrencyPrice(variantId, price) {
-    return this.atomicPhase_(async (manager) => {
+    return this.atomicPhase_(async manager => {
       const moneyAmountRepo = manager.getCustomRepository(
         this.moneyAmountRepository_
       )
@@ -367,7 +364,7 @@ class ProductVariantService extends BaseService {
    * @return {number} the price specific to the region
    */
   async getRegionPrice(variantId, regionId) {
-    return this.atomicPhase_(async (manager) => {
+    return this.atomicPhase_(async manager => {
       const moneyAmountRepo = manager.getCustomRepository(
         this.moneyAmountRepository_
       )
@@ -415,7 +412,7 @@ class ProductVariantService extends BaseService {
    * @return {Promise} the result of the update operation
    */
   async setRegionPrice(variantId, price) {
-    return this.atomicPhase_(async (manager) => {
+    return this.atomicPhase_(async manager => {
       const moneyAmountRepo = manager.getCustomRepository(
         this.moneyAmountRepository_
       )
@@ -452,7 +449,7 @@ class ProductVariantService extends BaseService {
    * @return {Promise} the result of the update operation.
    */
   async updateOptionValue(variantId, optionId, optionValue) {
-    return this.atomicPhase_(async (manager) => {
+    return this.atomicPhase_(async manager => {
       const productOptionValueRepo = manager.getCustomRepository(
         this.productOptionValueRepository_
       )
@@ -487,7 +484,7 @@ class ProductVariantService extends BaseService {
    * @return {Promise} the result of the update operation.
    */
   async addOptionValue(variantId, optionId, optionValue) {
-    return this.atomicPhase_(async (manager) => {
+    return this.atomicPhase_(async manager => {
       const productOptionValueRepo = manager.getCustomRepository(
         this.productOptionValueRepository_
       )
@@ -511,7 +508,7 @@ class ProductVariantService extends BaseService {
    * @return {Promise} empty promise
    */
   async deleteOptionValue(variantId, optionId) {
-    return this.atomicPhase_(async (manager) => {
+    return this.atomicPhase_(async manager => {
       const productOptionValueRepo = manager.getCustomRepository(
         this.productOptionValueRepository_
       )
@@ -561,7 +558,7 @@ class ProductVariantService extends BaseService {
         },
       }
 
-      query.where = (qb) => {
+      query.where = qb => {
         qb.where(where).andWhere([
           { sku: ILike(`%${q}%`) },
           { title: ILike(`%${q}%`) },
@@ -581,7 +578,7 @@ class ProductVariantService extends BaseService {
    * @return {Promise} empty promise
    */
   async delete(variantId) {
-    return this.atomicPhase_(async (manager) => {
+    return this.atomicPhase_(async manager => {
       const variantRepo = manager.getCustomRepository(
         this.productVariantRepository_
       )
@@ -595,8 +592,7 @@ class ProductVariantService extends BaseService {
       await this.eventBus_
         .withTransaction(manager)
         .emit(ProductVariantService.Events.DELETED, {
-          id: variant.id,
-          product_id: variant.product_id,
+          id: variantId,
         })
 
       return Promise.resolve()

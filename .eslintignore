@@ -7,7 +7,6 @@
 /packages/medusa/src/services/idempotency-key.js
 /packages/medusa/src/services/inventory.js
 /packages/medusa/src/services/middleware.js
-/packages/medusa/src/services/note.js
 /packages/medusa/src/services/oauth.js
 /packages/medusa/src/services/payment-provider.js
 /packages/medusa/src/services/product-collection.js
@@ -75,7 +74,6 @@
 /packages/medusa-plugin-economic
 /packages/medusa-plugin-ip-lookup
 /packages/medusa-plugin-mailchimp
-/packages/medusa-plugin-meilisearch
 /packages/medusa-plugin-permissions
 /packages/medusa-plugin-restock-notification
 /packages/medusa-plugin-segment
