@@ -3,7 +3,7 @@ import { BaseService } from "medusa-interfaces"
 class SystemProviderService extends BaseService {
   static identifier = "system"
 
-  constructor(_) {
+  constructor({}) {
     super()
   }
 
