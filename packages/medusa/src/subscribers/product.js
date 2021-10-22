@@ -6,7 +6,6 @@ const searchFields = [
   "id",
   "title",
   "subtitle",
-  "status",
   "description",
   "handle",
   "is_giftcard",

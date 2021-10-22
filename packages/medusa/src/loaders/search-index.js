@@ -17,7 +17,6 @@ async function loadProductsIntoSearchEngine(container) {
         select: [
           "id",
           "title",
-          "status",
           "subtitle",
           "description",
           "handle",
