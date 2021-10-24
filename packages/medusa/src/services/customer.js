@@ -94,16 +94,7 @@ class CustomerService extends BaseService {
    * @return {string} the generated JSON web token
    */
   async generateResetPasswordToken(customerId) {
-    const customer = await this.retrieve(customerId, {
-      select: [
-        "id",
-        "has_account",
-        "password_hash",
-        "email",
-        "first_name",
-        "last_name",
-      ],
-    })
+    const customer = await this.retrieve(customerId)
 
     if (!customer.has_account) {
       throw new MedusaError(
