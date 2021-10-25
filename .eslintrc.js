@@ -29,11 +29,5 @@ module.exports = {
       plugins: [`@typescript-eslint/eslint-plugin`],
       extends: [`plugin:@typescript-eslint/recommended`],
     },
-    {
-      files: ["**/api/**/*.js"],
-      rules: {
-        "valid-jsdoc": ["off"],
-      },
-    },
   ],
 }

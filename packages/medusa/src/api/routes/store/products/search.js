@@ -4,7 +4,9 @@ import ProductService from "../../../../services/product"
 export default async (req, res) => {
   const schema = Validator.object()
     .keys({
-      q: Validator.string().required(),
+      q: Validator.string()
+        .required()
+        .allow(""),
       offset: Validator.number().optional(),
       limit: Validator.number().optional(),
       filter: Validator.any(),
@@ -16,16 +18,20 @@ export default async (req, res) => {
     throw new MedusaError(MedusaError.Types.INVALID_DATA, error.details)
   }
 
-  const { q, offset, limit, filter, ...options } = value
-  const paginationOptions = { offset, limit }
+  try {
+    const { q, offset, limit, filter, ...options } = value
+    const paginationOptions = { offset, limit }
 
-  const searchService = req.scope.resolve("searchService")
+    const searchService = req.scope.resolve("searchService")
 
-  const results = await searchService.search(ProductService.IndexName, q, {
-    paginationOptions,
-    filter,
-    additionalOptions: options,
-  })
+    const results = await searchService.search(ProductService.IndexName, q, {
+      paginationOptions,
+      filter,
+      additionalOptions: options,
+    })
 
-  res.status(200).send(results)
+    res.status(200).send(results)
+  } catch (error) {
+    throw error
+  }
 }

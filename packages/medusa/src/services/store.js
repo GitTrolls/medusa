@@ -1,11 +1,12 @@
-import { MedusaError } from "medusa-core-utils"
+import _ from "lodash"
+import { Validator, MedusaError } from "medusa-core-utils"
 import { BaseService } from "medusa-interfaces"
 
 import { currencies } from "../utils/currencies"
 
 /**
  * Provides layer to manipulate store settings.
- * @extends BaseService
+ * @implements BaseService
  */
 class StoreService extends BaseService {
   constructor({
@@ -51,7 +52,7 @@ class StoreService extends BaseService {
    * @return {Promise<Store>} the store.
    */
   async create() {
-    return this.atomicPhase_(async (manager) => {
+    return this.atomicPhase_(async manager => {
       const storeRepository = manager.getCustomRepository(this.storeRepository_)
 
       let store = await this.retrieve()
@@ -67,7 +68,6 @@ class StoreService extends BaseService {
 
   /**
    * Retrieve the store settings. There is always a maximum of one store.
-   * @param {string[]} relations - relations to fetch with store
    * @return {Promise<Store>} the store
    */
   async retrieve(relations = []) {
@@ -90,12 +90,16 @@ class StoreService extends BaseService {
   }
 
   /**
-   * Updates a store
+   * Updates a customer. Metadata updates and address updates should
+   * use dedicated methods, e.g. `setMetadata`, etc. The function
+   * will throw errors if metadata updates and address updates are attempted.
+   * @param {string} variantId - the id of the variant. Must be a string that
+   *   can be casted to an ObjectId
    * @param {object} update - an object with the update values.
    * @return {Promise} resolves to the update result.
    */
   async update(update) {
-    return this.atomicPhase_(async (manager) => {
+    return this.atomicPhase_(async manager => {
       const storeRepository = manager.getCustomRepository(this.storeRepository_)
       const currencyRepository = manager.getCustomRepository(
         this.currencyRepository_
@@ -105,6 +109,7 @@ class StoreService extends BaseService {
 
       const {
         metadata,
+        default_currency,
         default_currency_code,
         currencies: storeCurrencies,
         ...rest
@@ -132,7 +137,7 @@ class StoreService extends BaseService {
 
       if (storeCurrencies) {
         store.currencies = await Promise.all(
-          storeCurrencies.map(async (curr) => {
+          storeCurrencies.map(async curr => {
             const currency = await currencyRepository.findOne({
               where: { code: curr.toLowerCase() },
             })
@@ -164,7 +169,7 @@ class StoreService extends BaseService {
    * @return {Promise} result after update
    */
   async addCurrency(code) {
-    return this.atomicPhase_(async (manager) => {
+    return this.atomicPhase_(async manager => {
       const storeRepo = manager.getCustomRepository(this.storeRepository_)
       const currencyRepository = manager.getCustomRepository(
         this.currencyRepository_
@@ -182,9 +187,7 @@ class StoreService extends BaseService {
         )
       }
 
-      if (
-        store.currencies.map((c) => c.code).includes(curr.code.toLowerCase())
-      ) {
+      if (store.currencies.map(c => c.code).includes(curr.code.toLowerCase())) {
         throw new MedusaError(
           MedusaError.Types.DUPLICATE_ERROR,
           `Currency already added`
@@ -203,17 +206,17 @@ class StoreService extends BaseService {
    * @return {Promise} result after update
    */
   async removeCurrency(code) {
-    return this.atomicPhase_(async (manager) => {
+    return this.atomicPhase_(async manager => {
       const storeRepo = manager.getCustomRepository(this.storeRepository_)
       const store = await this.retrieve(["currencies"])
 
-      const exists = store.currencies.find((c) => c.code === code.toLowerCase())
+      const exists = store.currencies.find(c => c.code === code.toLowerCase())
       // If currency does not exist, return early
       if (!exists) {
         return store
       }
 
-      store.currencies = store.currencies.filter((c) => c.code !== code)
+      store.currencies = store.currencies.filter(c => c.code !== code)
       const updated = await storeRepo.save(store)
       return updated
     })
