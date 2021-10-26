@@ -1,3 +1,4 @@
+import { MedusaError, Validator } from "medusa-core-utils"
 import { defaultRelations } from "."
 
 /**
@@ -29,26 +30,30 @@ import { defaultRelations } from "."
  *                 $ref: "#/components/schemas/product"
  */
 export default async (req, res) => {
-  const productService = req.scope.resolve("productService")
+  try {
+    const productService = req.scope.resolve("productService")
 
-  const limit = parseInt(req.query.limit) || 100
-  const offset = parseInt(req.query.offset) || 0
+    const limit = parseInt(req.query.limit) || 100
+    const offset = parseInt(req.query.offset) || 0
 
-  const selector = {}
+    const selector = {}
 
-  if ("is_giftcard" in req.query && req.query.is_giftcard === "true") {
-    selector.is_giftcard = req.query.is_giftcard === "true"
+    if ("is_giftcard" in req.query && req.query.is_giftcard === "true") {
+      selector.is_giftcard = req.query.is_giftcard === "true"
+    }
+
+    selector.status = ["published"]
+
+    const listConfig = {
+      relations: defaultRelations,
+      skip: offset,
+      take: limit,
+    }
+
+    const products = await productService.list(selector, listConfig)
+
+    res.json({ products, count: products.length, offset, limit })
+  } catch (error) {
+    throw error
   }
-
-  selector.status = ["published"]
-
-  const listConfig = {
-    relations: defaultRelations,
-    skip: offset,
-    take: limit,
-  }
-
-  const products = await productService.list(selector, listConfig)
-
-  res.json({ products, count: products.length, offset, limit })
 }
