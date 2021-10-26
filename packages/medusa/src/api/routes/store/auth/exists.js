@@ -1,3 +1,5 @@
+import { Validator, MedusaError } from "medusa-core-utils"
+
 /**
  * @oas [get] /auth/{email}
  * operationId: "GetAuthEmail"
