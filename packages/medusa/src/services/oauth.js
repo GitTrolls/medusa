@@ -1,4 +1,5 @@
-import { MedusaError } from "medusa-core-utils"
+import _ from "lodash"
+import { Validator, MedusaError } from "medusa-core-utils"
 import { OauthService } from "medusa-interfaces"
 
 class Oauth extends OauthService {
@@ -84,7 +85,7 @@ class Oauth extends OauthService {
 
     return this.update(app.id, {
       data: authData,
-    }).then((result) => {
+    }).then(result => {
       this.eventBus_.emit(
         `${Oauth.Events.TOKEN_GENERATED}.${appName}`,
         authData
@@ -108,7 +109,7 @@ class Oauth extends OauthService {
 
     return this.update(app.id, {
       data: authData,
-    }).then((result) => {
+    }).then(result => {
       this.eventBus_.emit(
         `${Oauth.Events.TOKEN_REFRESHED}.${appName}`,
         authData

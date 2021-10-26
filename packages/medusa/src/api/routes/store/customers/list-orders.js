@@ -32,7 +32,7 @@ export default async (req, res) => {
   try {
     const orderService = req.scope.resolve("orderService")
 
-    const selector = {
+    let selector = {
       customer_id: id,
     }
 

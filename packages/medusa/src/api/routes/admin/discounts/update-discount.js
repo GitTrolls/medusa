@@ -70,12 +70,20 @@ export default async (req, res) => {
     starts_at: Validator.date().optional(),
     ends_at: Validator.when("starts_at", {
       not: undefined,
-      then: Validator.date().greater(Validator.ref("starts_at")).optional(),
+      then: Validator.date()
+        .greater(Validator.ref("starts_at"))
+        .optional(),
       otherwise: Validator.date().optional(),
     }),
-    valid_duration: Validator.string().isoDuration().allow(null).optional(),
-    usage_limit: Validator.number().positive().optional(),
-    regions: Validator.array().items(Validator.string()).optional(),
+    valid_duration: Validator.string()
+      .isoDuration().allow(null)
+      .optional(),
+    usage_limit: Validator.number()
+      .positive()
+      .optional(),
+    regions: Validator.array()
+      .items(Validator.string())
+      .optional(),
   })
 
   const { value, error } = schema.validate(req.body)
@@ -84,13 +92,18 @@ export default async (req, res) => {
     throw new MedusaError(MedusaError.Types.INVALID_DATA, error.details)
   }
 
-  const discountService = req.scope.resolve("discountService")
-  await discountService.update(discount_id, value)
+  try {
+    const discountService = req.scope.resolve("discountService")
 
-  const discount = await discountService.retrieve(discount_id, {
-    select: defaultFields,
-    relations: defaultRelations,
-  })
+    await discountService.update(discount_id, value)
 
-  res.status(200).json({ discount })
+    const discount = await discountService.retrieve(discount_id, {
+      select: defaultFields,
+      relations: defaultRelations,
+    })
+
+    res.status(200).json({ discount })
+  } catch (err) {
+    throw err
+  }
 }
