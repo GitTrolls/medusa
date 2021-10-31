@@ -19,10 +19,14 @@
  */
 export default async (req, res) => {
   const { id } = req.params
-  const customerService = req.scope.resolve("customerService")
-  const customer = await customerService.retrieve(id, {
-    relations: ["orders", "shipping_addresses"],
-  })
+  try {
+    const customerService = req.scope.resolve("customerService")
+    const customer = await customerService.retrieve(id, {
+      relations: ["orders", "shipping_addresses"],
+    })
 
-  res.json({ customer })
+    res.json({ customer })
+  } catch (err) {
+    throw err
+  }
 }

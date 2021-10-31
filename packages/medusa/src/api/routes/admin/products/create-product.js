@@ -188,7 +188,9 @@ export default async (req, res) => {
     description: Validator.string().allow(""),
     is_giftcard: Validator.boolean().default(false),
     discountable: Validator.boolean().default(true),
-    images: Validator.array().items(Validator.string()).optional(),
+    images: Validator.array()
+      .items(Validator.string())
+      .optional(),
     thumbnail: Validator.string().optional(),
     handle: Validator.string().optional(),
     status: Validator.string()
@@ -201,7 +203,9 @@ export default async (req, res) => {
       })
       .allow(null)
       .optional(),
-    collection_id: Validator.string().allow(null).optional(),
+    collection_id: Validator.string()
+      .allow(null)
+      .optional(),
     tags: Validator.array()
       .items({
         id: Validator.string().optional(),
@@ -221,13 +225,30 @@ export default async (req, res) => {
       inventory_quantity: Validator.number().default(0),
       allow_backorder: Validator.boolean().optional(),
       manage_inventory: Validator.boolean().optional(),
-      weight: Validator.number().allow(null).optional(),
-      length: Validator.number().allow(null).optional(),
-      height: Validator.number().allow(null).optional(),
-      width: Validator.number().allow(null).optional(),
-      origin_country: Validator.string().optional().allow("").allow(null),
-      mid_code: Validator.string().optional().allow("").allow(null),
-      material: Validator.string().optional().allow("").allow(null),
+      weight: Validator.number()
+        .allow(null)
+        .optional(),
+      length: Validator.number()
+        .allow(null)
+        .optional(),
+      height: Validator.number()
+        .allow(null)
+        .optional(),
+      width: Validator.number()
+        .allow(null)
+        .optional(),
+      origin_country: Validator.string()
+        .optional()
+        .allow("")
+        .allow(null),
+      mid_code: Validator.string()
+        .optional()
+        .allow("")
+        .allow(null),
+      material: Validator.string()
+        .optional()
+        .allow("")
+        .allow(null),
       metadata: Validator.object().optional(),
       prices: Validator.array()
         .items(
@@ -235,7 +256,9 @@ export default async (req, res) => {
             .keys({
               region_id: Validator.string(),
               currency_code: Validator.string(),
-              amount: Validator.number().integer().required(),
+              amount: Validator.number()
+                .integer()
+                .required(),
               sale_amount: Validator.number().optional(),
             })
             .xor("region_id", "currency_code")
@@ -247,14 +270,30 @@ export default async (req, res) => {
         })
         .default([]),
     }),
-    weight: Validator.number().allow(null).optional(),
-    length: Validator.number().allow(null).optional(),
-    height: Validator.number().allow(null).optional(),
-    width: Validator.number().allow(null).optional(),
-    hs_code: Validator.string().optional().allow(""),
-    origin_country: Validator.string().optional().allow(""),
-    mid_code: Validator.string().optional().allow(""),
-    material: Validator.string().optional().allow(""),
+    weight: Validator.number()
+      .allow(null)
+      .optional(),
+    length: Validator.number()
+      .allow(null)
+      .optional(),
+    height: Validator.number()
+      .allow(null)
+      .optional(),
+    width: Validator.number()
+      .allow(null)
+      .optional(),
+    hs_code: Validator.string()
+      .optional()
+      .allow(""),
+    origin_country: Validator.string()
+      .optional()
+      .allow(""),
+    mid_code: Validator.string()
+      .optional()
+      .allow(""),
+    material: Validator.string()
+      .optional()
+      .allow(""),
     metadata: Validator.object().optional(),
   })
 
@@ -263,64 +302,66 @@ export default async (req, res) => {
     throw new MedusaError(MedusaError.Types.INVALID_DATA, error.details)
   }
 
-  const productService = req.scope.resolve("productService")
-  const productVariantService = req.scope.resolve("productVariantService")
-  const shippingProfileService = req.scope.resolve("shippingProfileService")
+  try {
+    const productService = req.scope.resolve("productService")
+    const productVariantService = req.scope.resolve("productVariantService")
+    const shippingProfileService = req.scope.resolve("shippingProfileService")
 
-  const entityManager = req.scope.resolve("manager")
+    const entityManager = req.scope.resolve("manager")
 
-  let newProduct
-  await entityManager.transaction(async (manager) => {
-    const { variants } = value
-    delete value.variants
+    let newProduct
+    await entityManager.transaction(async manager => {
+      const { variants } = value
+      delete value.variants
 
-    if (!value.thumbnail && value.images && value.images.length) {
-      value.thumbnail = value.images[0]
-    }
-
-    let shippingProfile
-    // Get default shipping profile
-    if (value.is_giftcard) {
-      shippingProfile = await shippingProfileService.retrieveGiftCardDefault()
-    } else {
-      shippingProfile = await shippingProfileService.retrieveDefault()
-    }
-
-    newProduct = await productService
-      .withTransaction(manager)
-      .create({ ...value, profile_id: shippingProfile.id })
-
-    if (variants) {
-      for (const [i, variant] of variants.entries()) {
-        variant.variant_rank = i
+      if (!value.thumbnail && value.images && value.images.length) {
+        value.thumbnail = value.images[0]
       }
 
-      const optionIds = value.options.map(
-        (o) => newProduct.options.find((newO) => newO.title === o.title).id
-      )
+      let shippingProfile
+      // Get default shipping profile
+      if (value.is_giftcard) {
+        shippingProfile = await shippingProfileService.retrieveGiftCardDefault()
+      } else {
+        shippingProfile = await shippingProfileService.retrieveDefault()
+      }
 
-      await Promise.all(
-        variants.map(async (v) => {
-          const variant = {
-            ...v,
-            options: v.options.map((o, index) => ({
-              ...o,
-              option_id: optionIds[index],
-            })),
-          }
+      newProduct = await productService
+        .withTransaction(manager)
+        .create({ ...value, profile_id: shippingProfile.id })
 
-          await productVariantService
-            .withTransaction(manager)
-            .create(newProduct.id, variant)
-        })
-      )
-    }
-  })
+      if (variants) {
+        for (const [i, variant] of variants.entries()) variant.variant_rank = i
 
-  const product = await productService.retrieve(newProduct.id, {
-    select: defaultFields,
-    relations: defaultRelations,
-  })
+        const optionIds = value.options.map(
+          o => newProduct.options.find(newO => newO.title === o.title).id
+        )
 
-  res.json({ product })
+        await Promise.all(
+          variants.map(async v => {
+            const variant = {
+              ...v,
+              options: v.options.map((o, index) => ({
+                ...o,
+                option_id: optionIds[index],
+              })),
+            }
+
+            await productVariantService
+              .withTransaction(manager)
+              .create(newProduct.id, variant)
+          })
+        )
+      }
+    })
+
+    const product = await productService.retrieve(newProduct.id, {
+      select: defaultFields,
+      relations: defaultRelations,
+    })
+
+    res.json({ product })
+  } catch (err) {
+    throw err
+  }
 }

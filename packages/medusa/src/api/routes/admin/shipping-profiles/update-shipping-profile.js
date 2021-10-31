@@ -39,10 +39,14 @@ export default async (req, res) => {
     throw new MedusaError(MedusaError.Types.INVALID_DATA, error.details)
   }
 
-  const profileService = req.scope.resolve("shippingProfileService")
+  try {
+    const profileService = req.scope.resolve("shippingProfileService")
 
-  await profileService.update(profile_id, value)
+    await profileService.update(profile_id, value)
 
-  const data = await profileService.retrieve(profile_id)
-  res.status(200).json({ shipping_profile: data })
+    const data = await profileService.retrieve(profile_id)
+    res.status(200).json({ shipping_profile: data })
+  } catch (err) {
+    throw err
+  }
 }

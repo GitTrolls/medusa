@@ -18,7 +18,11 @@
  *                 $ref: "#/components/schemas/store"
  */
 export default async (req, res) => {
-  const paymentProviderService = req.scope.resolve("paymentProviderService")
-  const paymentProviders = await paymentProviderService.list()
-  res.status(200).json({ payment_providers: paymentProviders })
+  try {
+    const paymentProviderService = container.resolve("paymentProviderService")
+    const paymentProviders = await paymentProviderService.list()
+    res.status(200).json({ payment_providers: paymentProviders })
+  } catch (err) {
+    throw err
+  }
 }

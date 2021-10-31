@@ -76,12 +76,16 @@ export default async (req, res) => {
     return_shipping: Validator.object()
       .keys({
         option_id: Validator.string().optional(),
-        price: Validator.number().integer().optional(),
+        price: Validator.number()
+          .integer()
+          .optional(),
       })
       .optional(),
     receive_now: Validator.boolean().default(false),
     no_notification: Validator.boolean().optional(),
-    refund: Validator.number().integer().optional(),
+    refund: Validator.number()
+      .integer()
+      .optional(),
   })
 
   const { value, error } = schema.validate(req.body)
@@ -122,7 +126,7 @@ export default async (req, res) => {
         case "started": {
           const { key, error } = await idempotencyKeyService.workStage(
             idempotencyKey.idempotency_key,
-            async (manager) => {
+            async manager => {
               const returnObj = {
                 order_id: id,
                 idempotency_key: idempotencyKey.idempotency_key,
@@ -141,7 +145,7 @@ export default async (req, res) => {
                 }
               }
 
-              const order = await orderService
+              let order = await orderService
                 .withTransaction(manager)
                 .retrieve(id)
 
@@ -187,7 +191,7 @@ export default async (req, res) => {
         case "return_requested": {
           const { key, error } = await idempotencyKeyService.workStage(
             idempotencyKey.idempotency_key,
-            async (manager) => {
+            async manager => {
               let order = await orderService
                 .withTransaction(manager)
                 .retrieve(id, { relations: ["returns"] })

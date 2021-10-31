@@ -1,3 +1,4 @@
+import _ from "lodash"
 import { MedusaError, Validator } from "medusa-core-utils"
 import { defaultFields, defaultRelations, filterableFields } from "./"
 
@@ -41,48 +42,52 @@ export default async (req, res) => {
     )
   }
 
-  const productService = req.scope.resolve("productService")
+  try {
+    const productService = req.scope.resolve("productService")
 
-  const limit = parseInt(req.query.limit) || 50
-  const offset = parseInt(req.query.offset) || 0
+    const limit = parseInt(req.query.limit) || 50
+    const offset = parseInt(req.query.offset) || 0
 
-  const selector = {}
+    const selector = {}
 
-  if ("q" in req.query) {
-    selector.q = req.query.q
-  }
-
-  let includeFields = []
-  if ("fields" in req.query) {
-    includeFields = req.query.fields.split(",")
-  }
-
-  let expandFields = []
-  if ("expand" in req.query) {
-    expandFields = req.query.expand.split(",")
-  }
-
-  for (const k of filterableFields) {
-    if (k in value) {
-      selector[k] = value[k]
+    if ("q" in req.query) {
+      selector.q = req.query.q
     }
-  }
 
-  if (selector.status?.indexOf("null") > -1) {
-    selector.status.splice(selector.status.indexOf("null"), 1)
-    if (selector.status.length === 0) {
-      delete selector.status
+    let includeFields = []
+    if ("fields" in req.query) {
+      includeFields = req.query.fields.split(",")
     }
+
+    let expandFields = []
+    if ("expand" in req.query) {
+      expandFields = req.query.expand.split(",")
+    }
+
+    for (const k of filterableFields) {
+      if (k in value) {
+        selector[k] = value[k]
+      }
+    }
+
+    if (selector.status?.indexOf("null") > -1) {
+      selector.status.splice(selector.status.indexOf("null"), 1)
+      if (selector.status.length === 0) {
+        delete selector.status
+      }
+    }
+
+    const listConfig = {
+      select: includeFields.length ? includeFields : defaultFields,
+      relations: expandFields.length ? expandFields : defaultRelations,
+      skip: offset,
+      take: limit,
+    }
+
+    let products = await productService.list(selector, listConfig)
+
+    res.json({ products, count: products.length, offset, limit })
+  } catch (error) {
+    throw error
   }
-
-  const listConfig = {
-    select: includeFields.length ? includeFields : defaultFields,
-    relations: expandFields.length ? expandFields : defaultRelations,
-    skip: offset,
-    take: limit,
-  }
-
-  const products = await productService.list(selector, listConfig)
-
-  res.json({ products, count: products.length, offset, limit })
 }

@@ -1,5 +1,5 @@
 import { MedusaError, Validator } from "medusa-core-utils"
-import { defaultCartFields, defaultCartRelations } from "."
+import { defaultCartFields, defaultCartRelations, defaultFields } from "."
 
 /**
  * @oas [post] /admin/draft-orders/{id}
@@ -60,7 +60,9 @@ export default async (req, res) => {
   const schema = Validator.object().keys({
     region_id: Validator.string().optional(),
     country_code: Validator.string().optional(),
-    email: Validator.string().email().optional(),
+    email: Validator.string()
+      .email()
+      .optional(),
     billing_address: Validator.object().optional(),
     shipping_address: Validator.object().optional(),
     discounts: Validator.array()
@@ -77,31 +79,35 @@ export default async (req, res) => {
     throw new MedusaError(MedusaError.Types.INVALID_DATA, error.details)
   }
 
-  const draftOrderService = req.scope.resolve("draftOrderService")
-  const cartService = req.scope.resolve("cartService")
+  try {
+    const draftOrderService = req.scope.resolve("draftOrderService")
+    const cartService = req.scope.resolve("cartService")
 
-  const draftOrder = await draftOrderService.retrieve(id)
+    const draftOrder = await draftOrderService.retrieve(id)
 
-  if (draftOrder.status === "completed") {
-    throw new MedusaError(
-      MedusaError.Types.NOT_ALLOWED,
-      "You are only allowed to update open draft orders"
-    )
-  }
+    if (draftOrder.status === "completed") {
+      throw new MedusaError(
+        MedusaError.Types.NOT_ALLOWED,
+        "You are only allowed to update open draft orders"
+      )
+    }
 
-  if ("no_notification_order" in value) {
-    await draftOrderService.update(draftOrder.id, {
-      no_notification_order: value.no_notification_order,
+    if ("no_notification_order" in value) {
+      await draftOrderService.update(draftOrder.id, {
+        no_notification_order: value.no_notification_order,
+      })
+      delete value.no_notification_order
+    }
+
+    await cartService.update(draftOrder.cart_id, value)
+
+    draftOrder.cart = await cartService.retrieve(draftOrder.cart_id, {
+      relations: defaultCartRelations,
+      select: defaultCartFields,
     })
-    delete value.no_notification_order
+
+    res.status(200).json({ draft_order: draftOrder })
+  } catch (err) {
+    throw err
   }
-
-  await cartService.update(draftOrder.cart_id, value)
-
-  draftOrder.cart = await cartService.retrieve(draftOrder.cart_id, {
-    relations: defaultCartRelations,
-    select: defaultCartFields,
-  })
-
-  res.status(200).json({ draft_order: draftOrder })
 }

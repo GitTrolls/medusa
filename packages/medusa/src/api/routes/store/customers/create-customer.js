@@ -28,7 +28,9 @@ import { defaultRelations, defaultFields } from "./"
  */
 export default async (req, res) => {
   const schema = Validator.object().keys({
-    email: Validator.string().email().required(),
+    email: Validator.string()
+      .email()
+      .required(),
     first_name: Validator.string().required(),
     last_name: Validator.string().required(),
     password: Validator.string().required(),
@@ -40,18 +42,22 @@ export default async (req, res) => {
     throw new MedusaError(MedusaError.Types.INVALID_DATA, error.details)
   }
 
-  const customerService = req.scope.resolve("customerService")
-  let customer = await customerService.create(value)
+  try {
+    const customerService = req.scope.resolve("customerService")
+    let customer = await customerService.create(value)
 
-  // Add JWT to cookie
-  req.session.jwt = jwt.sign({ customer_id: customer.id }, config.jwtSecret, {
-    expiresIn: "30d",
-  })
+    // Add JWT to cookie
+    req.session.jwt = jwt.sign({ customer_id: customer.id }, config.jwtSecret, {
+      expiresIn: "30d",
+    })
 
-  customer = await customerService.retrieve(customer.id, {
-    relations: defaultRelations,
-    select: defaultFields,
-  })
+    customer = await customerService.retrieve(customer.id, {
+      relations: defaultRelations,
+      select: defaultFields,
+    })
 
-  res.status(200).json({ customer })
+    res.status(200).json({ customer })
+  } catch (err) {
+    throw err
+  }
 }

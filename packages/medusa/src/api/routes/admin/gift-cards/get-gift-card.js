@@ -22,11 +22,15 @@ import { defaultFields, defaultRelations } from "./"
 export default async (req, res) => {
   const { id } = req.params
 
-  const giftCardService = req.scope.resolve("giftCardService")
-  const giftCard = await giftCardService.retrieve(id, {
-    select: defaultFields,
-    relations: defaultRelations,
-  })
+  try {
+    const giftCardService = req.scope.resolve("giftCardService")
+    const giftCard = await giftCardService.retrieve(id, {
+      select: defaultFields,
+      relations: defaultRelations,
+    })
 
-  res.status(200).json({ gift_card: giftCard })
+    res.status(200).json({ gift_card: giftCard })
+  } catch (err) {
+    throw err
+  }
 }

@@ -45,7 +45,11 @@ export default async (req, res) => {
     throw new MedusaError(MedusaError.Types.INVALID_DATA, error.details)
   }
 
-  const storeService = req.scope.resolve("storeService")
-  const store = await storeService.update(value)
-  res.status(200).json({ store })
+  try {
+    const storeService = req.scope.resolve("storeService")
+    const store = await storeService.update(value)
+    res.status(200).json({ store })
+  } catch (err) {
+    throw err
+  }
 }

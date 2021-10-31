@@ -95,125 +95,131 @@ export default async (req, res) => {
   res.setHeader("Access-Control-Expose-Headers", "Idempotency-Key")
   res.setHeader("Idempotency-Key", idempotencyKey.idempotency_key)
 
-  const orderService = req.scope.resolve("orderService")
-  const swapService = req.scope.resolve("swapService")
-  const returnService = req.scope.resolve("returnService")
+  try {
+    const orderService = req.scope.resolve("orderService")
+    const swapService = req.scope.resolve("swapService")
+    const returnService = req.scope.resolve("returnService")
 
-  let inProgress = true
-  let err = false
+    let inProgress = true
+    let err = false
 
-  while (inProgress) {
-    switch (idempotencyKey.recovery_point) {
-      case "started": {
-        const { key, error } = await idempotencyKeyService.workStage(
-          idempotencyKey.idempotency_key,
-          async (manager) => {
-            const order = await orderService
-              .withTransaction(manager)
-              .retrieve(value.order_id, {
-                select: ["refunded_total", "total"],
-                relations: ["items", "swaps", "swaps.additional_items"],
-              })
+    while (inProgress) {
+      switch (idempotencyKey.recovery_point) {
+        case "started": {
+          const { key, error } = await idempotencyKeyService.workStage(
+            idempotencyKey.idempotency_key,
+            async manager => {
+              const order = await orderService
+                .withTransaction(manager)
+                .retrieve(value.order_id, {
+                  select: ["refunded_total", "total"],
+                  relations: ["items", "swaps", "swaps.additional_items"],
+                })
 
-            let returnShipping
-            if (value.return_shipping_option) {
-              returnShipping = {
-                option_id: value.return_shipping_option,
+              let returnShipping
+              if (value.return_shipping_option) {
+                returnShipping = {
+                  option_id: value.return_shipping_option,
+                }
+              }
+
+              const swap = await swapService
+                .withTransaction(manager)
+                .create(
+                  order,
+                  value.return_items,
+                  value.additional_items,
+                  returnShipping,
+                  {
+                    idempotency_key: idempotencyKey.idempotency_key,
+                    no_notification: true,
+                  }
+                )
+
+              await swapService.withTransaction(manager).createCart(swap.id)
+              const returnOrder = await returnService
+                .withTransaction(manager)
+                .retrieveBySwap(swap.id)
+
+              await returnService
+                .withTransaction(manager)
+                .fulfill(returnOrder.id)
+
+              return {
+                recovery_point: "swap_created",
               }
             }
+          )
 
-            const swap = await swapService
-              .withTransaction(manager)
-              .create(
-                order,
-                value.return_items,
-                value.additional_items,
-                returnShipping,
-                {
-                  idempotency_key: idempotencyKey.idempotency_key,
-                  no_notification: true,
-                }
-              )
-
-            await swapService.withTransaction(manager).createCart(swap.id)
-            const returnOrder = await returnService
-              .withTransaction(manager)
-              .retrieveBySwap(swap.id)
-
-            await returnService.withTransaction(manager).fulfill(returnOrder.id)
-
-            return {
-              recovery_point: "swap_created",
-            }
+          if (error) {
+            inProgress = false
+            err = error
+          } else {
+            idempotencyKey = key
           }
-        )
-
-        if (error) {
-          inProgress = false
-          err = error
-        } else {
-          idempotencyKey = key
+          break
         }
-        break
-      }
 
-      case "swap_created": {
-        const { key, error } = await idempotencyKeyService.workStage(
-          idempotencyKey.idempotency_key,
-          async (manager) => {
-            const swaps = await swapService.list({
-              idempotency_key: idempotencyKey.idempotency_key,
-            })
+        case "swap_created": {
+          const { key, error } = await idempotencyKeyService.workStage(
+            idempotencyKey.idempotency_key,
+            async manager => {
+              const swaps = await swapService.list({
+                idempotency_key: idempotencyKey.idempotency_key,
+              })
 
-            if (!swaps.length) {
-              throw new MedusaError(
-                MedusaError.Types.INVALID_DATA,
-                "Swap not found"
-              )
+              if (!swaps.length) {
+                throw new MedusaError(
+                  MedusaError.Types.INVALID_DATA,
+                  "Swap not found"
+                )
+              }
+
+              const swap = await swapService.retrieve(swaps[0].id, {
+                select: defaultFields,
+                relations: defaultRelations,
+              })
+
+              return {
+                response_code: 200,
+                response_body: { swap },
+              }
             }
+          )
 
-            const swap = await swapService.retrieve(swaps[0].id, {
-              select: defaultFields,
-              relations: defaultRelations,
-            })
-
-            return {
-              response_code: 200,
-              response_body: { swap },
-            }
+          if (error) {
+            inProgress = false
+            err = error
+          } else {
+            idempotencyKey = key
           }
-        )
-
-        if (error) {
-          inProgress = false
-          err = error
-        } else {
-          idempotencyKey = key
+          break
         }
-        break
-      }
 
-      case "finished": {
-        inProgress = false
-        break
-      }
+        case "finished": {
+          inProgress = false
+          break
+        }
 
-      default:
-        idempotencyKey = await idempotencyKeyService.update(
-          idempotencyKey.idempotency_key,
-          {
-            recovery_point: "finished",
-            response_code: 500,
-            response_body: { message: "Unknown recovery point" },
-          }
-        )
-        break
+        default:
+          idempotencyKey = await idempotencyKeyService.update(
+            idempotencyKey.idempotency_key,
+            {
+              recovery_point: "finished",
+              response_code: 500,
+              response_body: { message: "Unknown recovery point" },
+            }
+          )
+          break
+      }
     }
-  }
 
-  if (err) {
-    throw err
-  }
+    if (err) {
+      throw err
+    }
 
-  res.status(idempotencyKey.response_code).json(idempotencyKey.response_body)
+    res.status(idempotencyKey.response_code).json(idempotencyKey.response_body)
+  } catch (error) {
+    throw error
+  }
 }
