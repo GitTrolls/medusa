@@ -24,24 +24,28 @@ import { defaultRelations, defaultFields } from "."
 export default async (req, res) => {
   const { id, fulfillment_id } = req.params
 
-  const fulfillmentService = req.scope.resolve("fulfillmentService")
-  const orderService = req.scope.resolve("orderService")
+  try {
+    const fulfillmentService = req.scope.resolve("fulfillmentService")
+    const orderService = req.scope.resolve("orderService")
 
-  const fulfillment = await fulfillmentService.retrieve(fulfillment_id)
+    const fulfillment = await fulfillmentService.retrieve(fulfillment_id)
 
-  if (fulfillment.order_id !== id) {
-    throw new MedusaError(
-      MedusaError.Types.NOT_FOUND,
-      `no fulfillment was found with the id: ${fulfillment_id} related to order: ${id}`
-    )
+    if (fulfillment.order_id !== id) {
+      throw new MedusaError(
+        MedusaError.Types.NOT_FOUND,
+        `no fulfillment was found with the id: ${fulfillment_id} related to order: ${id}`
+      )
+    }
+
+    await orderService.cancelFulfillment(fulfillment_id)
+
+    const order = await orderService.retrieve(id, {
+      select: defaultFields,
+      relations: defaultRelations,
+    })
+
+    res.json({ order })
+  } catch (error) {
+    throw error
   }
-
-  await orderService.cancelFulfillment(fulfillment_id)
-
-  const order = await orderService.retrieve(id, {
-    select: defaultFields,
-    relations: defaultRelations,
-  })
-
-  res.json({ order })
 }

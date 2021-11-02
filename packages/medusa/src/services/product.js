@@ -1,10 +1,11 @@
+import _ from "lodash"
 import { MedusaError } from "medusa-core-utils"
 import { BaseService } from "medusa-interfaces"
 import { Brackets } from "typeorm"
 
 /**
  * Provides layer to manipulate products.
- * @extends BaseService
+ * @implements BaseService
  */
 class ProductService extends BaseService {
   static IndexName = `products`
@@ -87,8 +88,7 @@ class ProductService extends BaseService {
   }
 
   /**
-   * @param {object} selector - selector for query
-   * @param {Object} config - config for query object for find
+   * @param {Object} listOptions - the query object for find
    * @return {Promise} the result of the find operation
    */
   async list(selector = {}, config = { relations: [], skip: 0, take: 20 }) {
@@ -112,7 +112,7 @@ class ProductService extends BaseService {
       query.select = config.select
     }
 
-    const rels = query.relations
+    let rels = query.relations
     delete query.relations
 
     if (q) {
@@ -162,7 +162,6 @@ class ProductService extends BaseService {
    * Gets a product by id.
    * Throws in case of DB Error and if product was not found.
    * @param {string} productId - id of the product to get.
-   * @param {object} config - config of the product to get.
    * @return {Promise<Product>} the result of the find one operation.
    */
   async retrieve(productId, config = {}) {
@@ -259,7 +258,7 @@ class ProductService extends BaseService {
       this.productTagRepository_
     )
 
-    const newTags = []
+    let newTags = []
     for (const tag of tags) {
       const existing = await productTagRepository.findOne({
         where: { value: tag.value },
@@ -340,7 +339,7 @@ class ProductService extends BaseService {
       this.imageRepository_
     )
 
-    const productImages = []
+    let productImages = []
     for (const img of images) {
       const existing = await imageRepository.findOne({
         where: { url: img },
@@ -377,7 +376,8 @@ class ProductService extends BaseService {
         relations: ["variants", "tags", "images"],
       })
 
-      const { variants, metadata, images, tags, type, ...rest } = update
+      const { variants, metadata, options, images, tags, type, ...rest } =
+        update
 
       if (!product.thumbnail && !update.thumbnail && images?.length) {
         product.thumbnail = images[0]
@@ -468,14 +468,9 @@ class ProductService extends BaseService {
       const productRepo = manager.getCustomRepository(this.productRepository_)
 
       // Should not fail, if product does not exist, since delete is idempotent
-      const product = await productRepo.findOne(
-        { id: productId },
-        { relations: ["variants"] }
-      )
+      const product = await productRepo.findOne({ where: { id: productId } })
 
-      if (!product) {
-        return Promise.resolve()
-      }
+      if (!product) return Promise.resolve()
 
       await productRepo.softRemove(product)
 
@@ -576,7 +571,7 @@ class ProductService extends BaseService {
    * optionOrder and the length of the product's options are different. Will
    * throw optionOrder contains an id not associated with the product.
    * @param {string} productId - the product whose options we are reordering
-   * @param {string[]} optionOrder - the ids of the product's options in the
+   * @param {[ObjectId]} optionId - the ids of the product's options in the
    *    new order
    * @return {Promise} the result of the update operation
    */
@@ -729,7 +724,7 @@ class ProductService extends BaseService {
 
   /**
    * Decorates a product with product variants.
-   * @param {string} productId - the productId to decorate.
+   * @param {Product} product - the product to decorate.
    * @param {string[]} fields - the fields to include.
    * @param {string[]} expandFields - fields to expand.
    * @return {Product} return the decorated product.

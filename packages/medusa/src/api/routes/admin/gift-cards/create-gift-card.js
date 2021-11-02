@@ -43,7 +43,9 @@ import { defaultFields, defaultRelations } from "./"
  */
 export default async (req, res) => {
   const schema = Validator.object().keys({
-    value: Validator.number().integer().optional(),
+    value: Validator.number()
+      .integer()
+      .optional(),
     ends_at: Validator.date().optional(),
     is_disabled: Validator.boolean().optional(),
     region_id: Validator.string().optional(),
@@ -55,17 +57,21 @@ export default async (req, res) => {
     throw new MedusaError(MedusaError.Types.INVALID_DATA, error.details)
   }
 
-  const giftCardService = req.scope.resolve("giftCardService")
+  try {
+    const giftCardService = req.scope.resolve("giftCardService")
 
-  const newly = await giftCardService.create({
-    ...value,
-    balance: value.value,
-  })
+    const newly = await giftCardService.create({
+      ...value,
+      balance: value.value,
+    })
 
-  const giftCard = await giftCardService.retrieve(newly.id, {
-    select: defaultFields,
-    relations: defaultRelations,
-  })
+    const giftCard = await giftCardService.retrieve(newly.id, {
+      select: defaultFields,
+      relations: defaultRelations,
+    })
 
-  res.status(200).json({ gift_card: giftCard })
+    res.status(200).json({ gift_card: giftCard })
+  } catch (err) {
+    throw err
+  }
 }

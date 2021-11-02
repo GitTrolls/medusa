@@ -176,13 +176,6 @@ class DiscountService extends BaseService {
 
       const validatedRule = this.validateDiscountRule_(discount.rule)
 
-      if (discount.regions?.length > 1 && discount.rule.type === "fixed") {
-        throw new MedusaError(
-          MedusaError.Types.INVALID_DATA,
-          "Fixed discounts can have one region"
-        )
-      }
-
       if (discount.regions) {
         discount.regions = await Promise.all(
           discount.regions.map((regionId) =>
@@ -271,9 +264,7 @@ class DiscountService extends BaseService {
     return this.atomicPhase_(async (manager) => {
       const discountRepo = manager.getCustomRepository(this.discountRepository_)
 
-      const discount = await this.retrieve(discountId, {
-        relations: ["rule"],
-      })
+      const discount = await this.retrieve(discountId)
 
       const { rule, metadata, regions, ...rest } = update
 
@@ -284,13 +275,6 @@ class DiscountService extends BaseService {
             `"ends_at" must be greater than "starts_at"`
           )
         }
-      }
-
-      if (regions?.length > 1 && discount.rule.type === "fixed") {
-        throw new MedusaError(
-          MedusaError.Types.INVALID_DATA,
-          "Fixed discounts can have one region"
-        )
       }
 
       if (regions) {
@@ -315,8 +299,6 @@ class DiscountService extends BaseService {
       for (const [key, value] of Object.entries(rest)) {
         discount[key] = value
       }
-
-      discount.code = discount.code.toUpperCase()
 
       const updated = await discountRepo.save(discount)
       return updated
@@ -470,20 +452,13 @@ class DiscountService extends BaseService {
       const discountRepo = manager.getCustomRepository(this.discountRepository_)
 
       const discount = await this.retrieve(discountId, {
-        relations: ["regions", "rule"],
+        relations: ["regions"],
       })
 
       const exists = discount.regions.find((r) => r.id === regionId)
       // If region is already present, we return early
       if (exists) {
         return discount
-      }
-
-      if (discount.regions?.length === 1 && discount.rule.type === "fixed") {
-        throw new MedusaError(
-          MedusaError.Types.INVALID_DATA,
-          "Fixed discounts can have one region"
-        )
       }
 
       const region = await this.regionService_.retrieve(regionId)
