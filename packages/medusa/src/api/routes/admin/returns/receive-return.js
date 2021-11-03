@@ -48,7 +48,9 @@ export default async (req, res) => {
         quantity: Validator.number().required(),
       })
       .required(),
-    refund: Validator.number().integer().optional(),
+    refund: Validator.number()
+      .integer()
+      .optional(),
   })
 
   const { value, error } = schema.validate(req.body)
@@ -57,41 +59,45 @@ export default async (req, res) => {
     throw new MedusaError(MedusaError.Types.INVALID_DATA, error.details)
   }
 
-  const returnService = req.scope.resolve("returnService")
-  const orderService = req.scope.resolve("orderService")
-  const swapService = req.scope.resolve("swapService")
-  const entityManager = req.scope.resolve("manager")
+  try {
+    const returnService = req.scope.resolve("returnService")
+    const orderService = req.scope.resolve("orderService")
+    const swapService = req.scope.resolve("swapService")
+    const entityManager = req.scope.resolve("manager")
 
-  let receivedReturn
-  await entityManager.transaction(async (manager) => {
-    let refundAmount = value.refund
+    let receivedReturn
+    await entityManager.transaction(async manager => {
+      let refundAmount = value.refund
 
-    if (typeof value.refund !== "undefined" && value.refund < 0) {
-      refundAmount = 0
-    }
+      if (typeof value.refund !== "undefined" && value.refund < 0) {
+        refundAmount = 0
+      }
 
-    receivedReturn = await returnService
-      .withTransaction(manager)
-      .receive(id, value.items, refundAmount, true)
-
-    if (receivedReturn.order_id) {
-      await orderService
+      receivedReturn = await returnService
         .withTransaction(manager)
-        .registerReturnReceived(
-          receivedReturn.order_id,
-          receivedReturn,
-          refundAmount
-        )
-    }
+        .receive(id, value.items, refundAmount, true)
 
-    if (receivedReturn.swap_id) {
-      await swapService
-        .withTransaction(manager)
-        .registerReceived(receivedReturn.swap_id)
-    }
-  })
+      if (receivedReturn.order_id) {
+        await orderService
+          .withTransaction(manager)
+          .registerReturnReceived(
+            receivedReturn.order_id,
+            receivedReturn,
+            refundAmount
+          )
+      }
 
-  receivedReturn = await returnService.retrieve(id, { relations: ["swap"] })
+      if (receivedReturn.swap_id) {
+        await swapService
+          .withTransaction(manager)
+          .registerReceived(receivedReturn.swap_id)
+      }
+    })
 
-  res.status(200).json({ return: receivedReturn })
+    receivedReturn = await returnService.retrieve(id, { relations: ["swap"] })
+
+    res.status(200).json({ return: receivedReturn })
+  } catch (err) {
+    throw err
+  }
 }

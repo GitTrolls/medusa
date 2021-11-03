@@ -14,15 +14,19 @@ export default async (req, res) => {
     throw new MedusaError(MedusaError.Types.INVALID_DATA, error.details)
   }
 
-  const productService = req.scope.resolve("productService")
-  await productService.update(id, {
-    metadata: { [value.key]: value.value },
-  })
+  try {
+    const productService = req.scope.resolve("productService")
+    await productService.update(id, {
+      metadata: { [value.key]: value.value },
+    })
 
-  const product = await productService.retrieve(id, {
-    select: defaultFields,
-    relations: defaultRelations,
-  })
+    const product = await productService.retrieve(id, {
+      select: defaultFields,
+      relations: defaultRelations,
+    })
 
-  res.status(200).json({ product })
+    res.status(200).json({ product })
+  } catch (err) {
+    throw err
+  }
 }

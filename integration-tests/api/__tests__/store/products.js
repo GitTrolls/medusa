@@ -68,12 +68,6 @@ describe("/store/products", () => {
               product_id: "test-product",
               created_at: expect.any(String),
               updated_at: expect.any(String),
-              options: [
-                {
-                  created_at: expect.any(String),
-                  updated_at: expect.any(String),
-                },
-              ],
               prices: [
                 {
                   id: "test-money-amount",
@@ -111,12 +105,6 @@ describe("/store/products", () => {
               product_id: "test-product",
               created_at: expect.any(String),
               updated_at: expect.any(String),
-              options: [
-                {
-                  created_at: expect.any(String),
-                  updated_at: expect.any(String),
-                },
-              ],
               prices: [
                 {
                   id: "test-money-amount",
@@ -129,6 +117,7 @@ describe("/store/products", () => {
                   id: "test-price2",
                   region_id: null,
                   sale_amount: null,
+                  updated_at: expect.any(String),
                   variant_id: "test-variant_2",
                 },
               ],
@@ -153,12 +142,6 @@ describe("/store/products", () => {
               product_id: "test-product",
               created_at: expect.any(String),
               updated_at: expect.any(String),
-              options: [
-                {
-                  created_at: expect.any(String),
-                  updated_at: expect.any(String),
-                },
-              ],
               prices: [
                 {
                   id: "test-money-amount",
@@ -269,6 +252,16 @@ describe("/store/products", () => {
           updated_at: expect.any(String),
         },
       })
+    })
+
+    it("Fetching variant options without additional relation fails", async () => {
+      const api = useApi()
+
+      const response = await api.get("/store/products/test-product")
+
+      const product = response.data.product
+
+      expect(product.variants.some((variant) => variant.options)).toEqual(false)
     })
 
     it("lists all published products", async () => {

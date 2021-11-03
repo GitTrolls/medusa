@@ -18,9 +18,13 @@
  *                 $ref: "#/components/schemas/product_type"
  */
 export default async (req, res) => {
-  const productService = req.scope.resolve("productService")
+  try {
+    const productService = req.scope.resolve("productService")
 
-  const types = await productService.listTypes()
+    const types = await productService.listTypes()
 
-  res.json({ types })
+    res.json({ types })
+  } catch (error) {
+    throw error
+  }
 }

@@ -28,7 +28,9 @@ export default async (req, res) => {
 
   const schema = Validator.object().keys({
     option_id: Validator.string().required(),
-    data: Validator.object().optional().default({}),
+    data: Validator.object()
+      .optional()
+      .default({}),
   })
 
   const { value, error } = schema.validate(req.body)
@@ -40,7 +42,7 @@ export default async (req, res) => {
     const manager = req.scope.resolve("manager")
     const cartService = req.scope.resolve("cartService")
 
-    await manager.transaction(async (m) => {
+    await manager.transaction(async m => {
       const txCartService = cartService.withTransaction(m)
 
       await txCartService.addShippingMethod(id, value.option_id, value.data)
