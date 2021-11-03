@@ -365,7 +365,6 @@ class ClaimService extends BaseService {
           "order",
           "order.billing_address",
           "order.discounts",
-          "order.discounts.rule",
           "order.payments",
         ],
       })
