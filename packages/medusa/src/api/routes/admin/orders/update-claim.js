@@ -104,7 +104,9 @@ export default async (req, res) => {
       .items({
         id: Validator.string().optional(),
         option_id: Validator.string().optional(),
-        price: Validator.number().integer().optional(),
+        price: Validator.number()
+          .integer()
+          .optional(),
       })
       .optional(),
     no_notification: Validator.boolean().optional(),
@@ -116,15 +118,19 @@ export default async (req, res) => {
     throw new MedusaError(MedusaError.Types.INVALID_DATA, error.details)
   }
 
-  const orderService = req.scope.resolve("orderService")
-  const claimService = req.scope.resolve("claimService")
+  try {
+    const orderService = req.scope.resolve("orderService")
+    const claimService = req.scope.resolve("claimService")
 
-  await claimService.update(claim_id, value)
+    await claimService.update(claim_id, value)
 
-  const data = await orderService.retrieve(id, {
-    select: defaultFields,
-    relations: defaultRelations,
-  })
+    const data = await orderService.retrieve(id, {
+      select: defaultFields,
+      relations: defaultRelations,
+    })
 
-  res.json({ order: data })
+    res.json({ order: data })
+  } catch (error) {
+    throw error
+  }
 }

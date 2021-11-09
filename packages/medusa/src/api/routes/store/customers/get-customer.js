@@ -19,10 +19,14 @@ import { defaultRelations, defaultFields } from "./"
  */
 export default async (req, res) => {
   const id = req.user.customer_id
-  const customerService = req.scope.resolve("customerService")
-  const customer = await customerService.retrieve(id, {
-    relations: defaultRelations,
-    select: defaultFields,
-  })
-  res.json({ customer })
+  try {
+    const customerService = req.scope.resolve("customerService")
+    const customer = await customerService.retrieve(id, {
+      relations: defaultRelations,
+      select: defaultFields,
+    })
+    res.json({ customer })
+  } catch (err) {
+    throw err
+  }
 }

@@ -112,7 +112,9 @@ import { defaultRelations, defaultFields } from "./"
 export default async (req, res) => {
   const { id } = req.params
   const schema = Validator.object().keys({
-    type: Validator.string().valid("replace", "refund").required(),
+    type: Validator.string()
+      .valid("replace", "refund")
+      .required(),
     claim_items: Validator.array()
       .items({
         item_id: Validator.string().required(),
@@ -131,7 +133,9 @@ export default async (req, res) => {
     return_shipping: Validator.object()
       .keys({
         option_id: Validator.string().optional(),
-        price: Validator.number().integer().optional(),
+        price: Validator.number()
+          .integer()
+          .optional(),
       })
       .optional(),
     additional_items: Validator.array()
@@ -144,10 +148,14 @@ export default async (req, res) => {
       .items({
         id: Validator.string().optional(),
         option_id: Validator.string().optional(),
-        price: Validator.number().integer().optional(),
+        price: Validator.number()
+          .integer()
+          .optional(),
       })
       .optional(),
-    refund_amount: Validator.number().integer().optional(),
+    refund_amount: Validator.number()
+      .integer()
+      .optional(),
     shipping_address: Validator.object().optional(),
     no_notification: Validator.boolean().optional(),
     metadata: Validator.object().optional(),
@@ -177,172 +185,176 @@ export default async (req, res) => {
   res.setHeader("Access-Control-Expose-Headers", "Idempotency-Key")
   res.setHeader("Idempotency-Key", idempotencyKey.idempotency_key)
 
-  const orderService = req.scope.resolve("orderService")
-  const claimService = req.scope.resolve("claimService")
-  const returnService = req.scope.resolve("returnService")
+  try {
+    const orderService = req.scope.resolve("orderService")
+    const claimService = req.scope.resolve("claimService")
+    const returnService = req.scope.resolve("returnService")
 
-  let inProgress = true
-  let err = false
+    let inProgress = true
+    let err = false
 
-  while (inProgress) {
-    switch (idempotencyKey.recovery_point) {
-      case "started": {
-        const { key, error } = await idempotencyKeyService.workStage(
-          idempotencyKey.idempotency_key,
-          async (manager) => {
-            const order = await orderService
-              .withTransaction(manager)
-              .retrieve(id, {
-                relations: [
-                  "items",
-                  "cart",
-                  "cart.discounts",
-                  "cart.discounts.rule",
-                ],
-              })
-
-            await claimService.withTransaction(manager).create({
-              idempotency_key: idempotencyKey.idempotency_key,
-              order,
-              type: value.type,
-              shipping_address: value.shipping_address,
-              claim_items: value.claim_items,
-              return_shipping: value.return_shipping,
-              additional_items: value.additional_items,
-              shipping_methods: value.shipping_methods,
-              no_notification: value.no_notification,
-              metadata: value.metadata,
-            })
-
-            return {
-              recovery_point: "claim_created",
-            }
-          }
-        )
-
-        if (error) {
-          inProgress = false
-          err = error
-        } else {
-          idempotencyKey = key
-        }
-        break
-      }
-
-      case "claim_created": {
-        const { key, error } = await idempotencyKeyService.workStage(
-          idempotencyKey.idempotency_key,
-          async (manager) => {
-            let claim = await claimService.withTransaction(manager).list({
-              idempotency_key: idempotencyKey.idempotency_key,
-            })
-
-            if (!claim.length) {
-              throw new MedusaError(
-                MedusaError.Types.INVALID_DATA,
-                `Claim not found`
-              )
-            }
-
-            claim = claim[0]
-
-            if (claim.type === "refund") {
-              await claimService
+    while (inProgress) {
+      switch (idempotencyKey.recovery_point) {
+        case "started": {
+          const { key, error } = await idempotencyKeyService.workStage(
+            idempotencyKey.idempotency_key,
+            async manager => {
+              const order = await orderService
                 .withTransaction(manager)
-                .processRefund(claim.id)
-            }
+                .retrieve(id, {
+                  relations: [
+                    "items",
+                    "cart",
+                    "cart.discounts",
+                    "cart.discounts.rule",
+                  ],
+                })
 
-            return {
-              recovery_point: "refund_handled",
-            }
-          }
-        )
-
-        if (error) {
-          inProgress = false
-          err = error
-        } else {
-          idempotencyKey = key
-        }
-        break
-      }
-
-      case "refund_handled": {
-        const { key, error } = await idempotencyKeyService.workStage(
-          idempotencyKey.idempotency_key,
-          async (manager) => {
-            let order = await orderService
-              .withTransaction(manager)
-              .retrieve(id, {
-                relations: ["items", "discounts"],
-              })
-
-            let claim = await claimService.withTransaction(manager).list(
-              {
+              await claimService.withTransaction(manager).create({
                 idempotency_key: idempotencyKey.idempotency_key,
-              },
-              {
-                relations: ["return_order"],
+                order,
+                type: value.type,
+                shipping_address: value.shipping_address,
+                claim_items: value.claim_items,
+                return_shipping: value.return_shipping,
+                additional_items: value.additional_items,
+                shipping_methods: value.shipping_methods,
+                no_notification: value.no_notification,
+                metadata: value.metadata,
+              })
+
+              return {
+                recovery_point: "claim_created",
               }
-            )
-
-            if (!claim.length) {
-              throw new MedusaError(
-                MedusaError.Types.INVALID_DATA,
-                `Claim not found`
-              )
             }
+          )
 
-            claim = claim[0]
-
-            if (claim.return_order) {
-              await returnService
-                .withTransaction(manager)
-                .fulfill(claim.return_order.id)
-            }
-
-            order = await orderService.withTransaction(manager).retrieve(id, {
-              select: defaultFields,
-              relations: defaultRelations,
-            })
-
-            return {
-              response_code: 200,
-              response_body: { order },
-            }
+          if (error) {
+            inProgress = false
+            err = error
+          } else {
+            idempotencyKey = key
           }
-        )
-
-        if (error) {
-          inProgress = false
-          err = error
-        } else {
-          idempotencyKey = key
+          break
         }
-        break
-      }
 
-      case "finished": {
-        inProgress = false
-        break
-      }
+        case "claim_created": {
+          const { key, error } = await idempotencyKeyService.workStage(
+            idempotencyKey.idempotency_key,
+            async manager => {
+              let claim = await claimService.withTransaction(manager).list({
+                idempotency_key: idempotencyKey.idempotency_key,
+              })
 
-      default:
-        idempotencyKey = await idempotencyKeyService.update(
-          idempotencyKey.idempotency_key,
-          {
-            recovery_point: "finished",
-            response_code: 500,
-            response_body: { message: "Unknown recovery point" },
+              if (!claim.length) {
+                throw new MedusaError(
+                  MedusaError.Types.INVALID_DATA,
+                  `Claim not found`
+                )
+              }
+
+              claim = claim[0]
+
+              if (claim.type === "refund") {
+                await claimService
+                  .withTransaction(manager)
+                  .processRefund(claim.id)
+              }
+
+              return {
+                recovery_point: "refund_handled",
+              }
+            }
+          )
+
+          if (error) {
+            inProgress = false
+            err = error
+          } else {
+            idempotencyKey = key
           }
-        )
-        break
+          break
+        }
+
+        case "refund_handled": {
+          const { key, error } = await idempotencyKeyService.workStage(
+            idempotencyKey.idempotency_key,
+            async manager => {
+              let order = await orderService
+                .withTransaction(manager)
+                .retrieve(id, {
+                  relations: ["items", "discounts"],
+                })
+
+              let claim = await claimService.withTransaction(manager).list(
+                {
+                  idempotency_key: idempotencyKey.idempotency_key,
+                },
+                {
+                  relations: ["return_order"],
+                }
+              )
+
+              if (!claim.length) {
+                throw new MedusaError(
+                  MedusaError.Types.INVALID_DATA,
+                  `Claim not found`
+                )
+              }
+
+              claim = claim[0]
+
+              if (claim.return_order) {
+                await returnService
+                  .withTransaction(manager)
+                  .fulfill(claim.return_order.id)
+              }
+
+              order = await orderService.withTransaction(manager).retrieve(id, {
+                select: defaultFields,
+                relations: defaultRelations,
+              })
+
+              return {
+                response_code: 200,
+                response_body: { order },
+              }
+            }
+          )
+
+          if (error) {
+            inProgress = false
+            err = error
+          } else {
+            idempotencyKey = key
+          }
+          break
+        }
+
+        case "finished": {
+          inProgress = false
+          break
+        }
+
+        default:
+          idempotencyKey = await idempotencyKeyService.update(
+            idempotencyKey.idempotency_key,
+            {
+              recovery_point: "finished",
+              response_code: 500,
+              response_body: { message: "Unknown recovery point" },
+            }
+          )
+          break
+      }
     }
-  }
 
-  if (err) {
-    throw err
-  }
+    if (err) {
+      throw err
+    }
 
-  res.status(idempotencyKey.response_code).json(idempotencyKey.response_body)
+    res.status(idempotencyKey.response_code).json(idempotencyKey.response_body)
+  } catch (error) {
+    throw error
+  }
 }

@@ -16,8 +16,8 @@ describe("GET /store/products", () => {
     })
 
     it("calls get product from productSerice", () => {
-      expect(ProductServiceMock.listAndCount).toHaveBeenCalledTimes(1)
-      expect(ProductServiceMock.listAndCount).toHaveBeenCalledWith(
+      expect(ProductServiceMock.list).toHaveBeenCalledTimes(1)
+      expect(ProductServiceMock.list).toHaveBeenCalledWith(
         { status: ["published"] },
         { relations: defaultRelations, skip: 0, take: 100 }
       )
@@ -41,8 +41,8 @@ describe("GET /store/products", () => {
     })
 
     it("calls list from productSerice", () => {
-      expect(ProductServiceMock.listAndCount).toHaveBeenCalledTimes(1)
-      expect(ProductServiceMock.listAndCount).toHaveBeenCalledWith(
+      expect(ProductServiceMock.list).toHaveBeenCalledTimes(1)
+      expect(ProductServiceMock.list).toHaveBeenCalledWith(
         { is_giftcard: true, status: ["published"] },
         { relations: defaultRelations, skip: 0, take: 100 }
       )

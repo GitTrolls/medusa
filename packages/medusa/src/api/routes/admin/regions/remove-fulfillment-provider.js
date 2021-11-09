@@ -1,3 +1,4 @@
+import { MedusaError, Validator } from "medusa-core-utils"
 import { defaultRelations, defaultFields } from "./"
 
 /**
@@ -22,14 +23,18 @@ import { defaultRelations, defaultFields } from "./"
  */
 export default async (req, res) => {
   const { region_id, provider_id } = req.params
-  const regionService = req.scope.resolve("regionService")
+  try {
+    const regionService = req.scope.resolve("regionService")
 
-  await regionService.removeFulfillmentProvider(region_id, provider_id)
+    await regionService.removeFulfillmentProvider(region_id, provider_id)
 
-  const region = await regionService.retrieve(region_id, {
-    select: defaultFields,
-    relations: defaultRelations,
-  })
+    const region = await regionService.retrieve(region_id, {
+      select: defaultFields,
+      relations: defaultRelations,
+    })
 
-  res.json({ region })
+    res.json({ region })
+  } catch (err) {
+    throw err
+  }
 }
