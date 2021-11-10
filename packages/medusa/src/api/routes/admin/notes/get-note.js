@@ -20,8 +20,12 @@
 export default async (req, res) => {
   const { id } = req.params
 
-  const noteService = req.scope.resolve("noteService")
-  const note = await noteService.retrieve(id, { relations: ["author"] })
+  try {
+    const noteService = req.scope.resolve("noteService")
+    const note = await noteService.retrieve(id, { relations: ["author"] })
 
-  res.status(200).json({ note })
+    res.status(200).json({ note })
+  } catch (err) {
+    throw err
+  }
 }

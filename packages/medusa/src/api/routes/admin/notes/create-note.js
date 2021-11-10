@@ -46,14 +46,18 @@ export default async (req, res) => {
     throw new MedusaError(MedusaError.Types.INVALID_DATA, error.details)
   }
 
-  const noteService = req.scope.resolve("noteService")
+  try {
+    const noteService = req.scope.resolve("noteService")
 
-  const result = await noteService.create({
-    resource_id: value.resource_id,
-    resource_type: value.resource_type,
-    value: value.value,
-    author_id: userId,
-  })
+    const result = await noteService.create({
+      resource_id: value.resource_id,
+      resource_type: value.resource_type,
+      value: value.value,
+      author_id: userId,
+    })
 
-  res.status(200).json({ note: result })
+    res.status(200).json({ note: result })
+  } catch (err) {
+    throw err
+  }
 }

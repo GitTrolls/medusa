@@ -1,10 +1,11 @@
+import _ from "lodash"
 import { MedusaError } from "medusa-core-utils"
 import { BaseService } from "medusa-interfaces"
 import { Brackets } from "typeorm"
 
 /**
  * Provides layer to manipulate products.
- * @extends BaseService
+ * @implements BaseService
  */
 class ProductService extends BaseService {
   static IndexName = `products`
@@ -87,86 +88,80 @@ class ProductService extends BaseService {
   }
 
   /**
-   * Lists products based on the provided parameters.
-   * @param {object} selector - an object that defines rules to filter products
-   *   by
-   * @param {object} config - object that defines the scope for what should be
-   *   returned
-   * @return {Promise<Product[]>} the result of the find operation
+   * @param {Object} listOptions - the query object for find
+   * @return {Promise} the result of the find operation
    */
   async list(selector = {}, config = { relations: [], skip: 0, take: 20 }) {
     const productRepo = this.manager_.getCustomRepository(
       this.productRepository_
     )
 
-    const { q, query, relations } = this.prepareListQuery_(selector, config)
+    let q
+    if ("q" in selector) {
+      q = selector.q
+      delete selector.q
+    }
+
+    const query = this.buildQuery_(selector, config)
+
+    if (config.relations && config.relations.length > 0) {
+      query.relations = config.relations
+    }
+
+    if (config.select && config.select.length > 0) {
+      query.select = config.select
+    }
+
+    let rels = query.relations
+    delete query.relations
 
     if (q) {
-      const qb = this.getFreeTextQueryBuilder_(productRepo, query, q)
-      const raw = await qb.getMany()
+      const where = query.where
+
+      delete where.description
+      delete where.title
+
+      const raw = await productRepo
+        .createQueryBuilder("product")
+        .leftJoinAndSelect("product.variants", "variant")
+        .leftJoinAndSelect("product.collection", "collection")
+        .select(["product.id"])
+        .where(where)
+        .andWhere(
+          new Brackets((qb) => {
+            qb.where(`product.description ILIKE :q`, { q: `%${q}%` })
+              .orWhere(`product.title ILIKE :q`, { q: `%${q}%` })
+              .orWhere(`variant.title ILIKE :q`, { q: `%${q}%` })
+              .orWhere(`variant.sku ILIKE :q`, { q: `%${q}%` })
+              .orWhere(`collection.title ILIKE :q`, { q: `%${q}%` })
+          })
+        )
+        .getMany()
+
       return productRepo.findWithRelations(
-        relations,
+        rels,
         raw.map((i) => i.id)
       )
     }
 
-    return productRepo.findWithRelations(relations, query)
-  }
-
-  /**
-   * Lists products based on the provided parameters and includes the count of
-   * products that match the query.
-   * @param {object} selector - an object that defines rules to filter products
-   *   by
-   * @param {object} config - object that defines the scope for what should be
-   *   returned
-   * @return {[Promise<Product[]>, number]} an array containing the products as
-   *   the first element and the total count of products that matches the query
-   *   as the second element.
-   */
-  async listAndCount(
-    selector = {},
-    config = { relations: [], skip: 0, take: 20 }
-  ) {
-    const productRepo = this.manager_.getCustomRepository(
-      this.productRepository_
-    )
-
-    const { q, query, relations } = this.prepareListQuery_(selector, config)
-
-    if (q) {
-      const qb = this.getFreeTextQueryBuilder_(productRepo, query, q)
-      const [raw, count] = await qb.getManyAndCount()
-
-      const products = await productRepo.findWithRelations(
-        relations,
-        raw.map((i) => i.id)
-      )
-      return [products, count]
-    }
-
-    return await productRepo.findWithRelationsAndCount(relations, query)
+    return productRepo.findWithRelations(rels, query)
   }
 
   /**
    * Return the total number of documents in database
-   * @param {object} selector - the selector to choose products by
    * @return {Promise} the result of the count operation
    */
-  count(selector = {}) {
+  count() {
     const productRepo = this.manager_.getCustomRepository(
       this.productRepository_
     )
-    const query = this.buildQuery_(selector)
-    return productRepo.count(query)
+    return productRepo.count()
   }
 
   /**
    * Gets a product by id.
    * Throws in case of DB Error and if product was not found.
    * @param {string} productId - id of the product to get.
-   * @param {object} config - object that defines what should be included in the
-   *   query response
    * @return {Promise<Product>} the result of the find one operation.
    */
   async retrieve(productId, config = {}) {
@@ -263,7 +258,7 @@ class ProductService extends BaseService {
       this.productTagRepository_
     )
 
-    const newTags = []
+    let newTags = []
     for (const tag of tags) {
       const existing = await productTagRepository.findOne({
         where: { value: tag.value },
@@ -344,7 +339,7 @@ class ProductService extends BaseService {
       this.imageRepository_
     )
 
-    const productImages = []
+    let productImages = []
     for (const img of images) {
       const existing = await imageRepository.findOne({
         where: { url: img },
@@ -381,7 +376,8 @@ class ProductService extends BaseService {
         relations: ["variants", "tags", "images"],
       })
 
-      const { variants, metadata, images, tags, type, ...rest } = update
+      const { variants, metadata, options, images, tags, type, ...rest } =
+        update
 
       if (!product.thumbnail && !update.thumbnail && images?.length) {
         product.thumbnail = images[0]
@@ -472,14 +468,9 @@ class ProductService extends BaseService {
       const productRepo = manager.getCustomRepository(this.productRepository_)
 
       // Should not fail, if product does not exist, since delete is idempotent
-      const product = await productRepo.findOne(
-        { id: productId },
-        { relations: ["variants"] }
-      )
+      const product = await productRepo.findOne({ where: { id: productId } })
 
-      if (!product) {
-        return Promise.resolve()
-      }
+      if (!product) return Promise.resolve()
 
       await productRepo.softRemove(product)
 
@@ -580,7 +571,7 @@ class ProductService extends BaseService {
    * optionOrder and the length of the product's options are different. Will
    * throw optionOrder contains an id not associated with the product.
    * @param {string} productId - the product whose options we are reordering
-   * @param {string[]} optionOrder - the ids of the product's options in the
+   * @param {[ObjectId]} optionId - the ids of the product's options in the
    *    new order
    * @return {Promise} the result of the update operation
    */
@@ -733,7 +724,7 @@ class ProductService extends BaseService {
 
   /**
    * Decorates a product with product variants.
-   * @param {string} productId - the productId to decorate.
+   * @param {Product} product - the product to decorate.
    * @param {string[]} fields - the fields to include.
    * @param {string[]} expandFields - fields to expand.
    * @return {Product} return the decorated product.
@@ -750,70 +741,6 @@ class ProductService extends BaseService {
 
     // const final = await this.runDecorators_(decorated)
     return product
-  }
-
-  /**
-   * Creates a query object to be used for list queries.
-   * @param {object} selector - the selector to create the query from
-   * @param {object} config - the config to use for the query
-   * @return {object} an object containing the query, relations and free-text
-   *   search param.
-   */
-  prepareListQuery_(selector, config) {
-    let q
-    if ("q" in selector) {
-      q = selector.q
-      delete selector.q
-    }
-
-    const query = this.buildQuery_(selector, config)
-
-    if (config.relations && config.relations.length > 0) {
-      query.relations = config.relations
-    }
-
-    if (config.select && config.select.length > 0) {
-      query.select = config.select
-    }
-
-    const rels = query.relations
-    delete query.relations
-
-    return {
-      query,
-      relations: rels,
-      q,
-    }
-  }
-
-  /**
-   * Creates a QueryBuilder that can fetch products based on free text.
-   * @param {ProductRepository} productRepo - an instance of a ProductRepositry
-   * @param {FindOptions<Product>} query - the query to get products by
-   * @param {string} q - the text to perform free text search from
-   * @return {QueryBuilder<Product>} a query builder that can fetch products
-   */
-  getFreeTextQueryBuilder_(productRepo, query, q) {
-    const where = query.where
-
-    delete where.description
-    delete where.title
-
-    return productRepo
-      .createQueryBuilder("product")
-      .leftJoinAndSelect("product.variants", "variant")
-      .leftJoinAndSelect("product.collection", "collection")
-      .select(["product.id"])
-      .where(where)
-      .andWhere(
-        new Brackets((qb) => {
-          qb.where(`product.description ILIKE :q`, { q: `%${q}%` })
-            .orWhere(`product.title ILIKE :q`, { q: `%${q}%` })
-            .orWhere(`variant.title ILIKE :q`, { q: `%${q}%` })
-            .orWhere(`variant.sku ILIKE :q`, { q: `%${q}%` })
-            .orWhere(`collection.title ILIKE :q`, { q: `%${q}%` })
-        })
-      )
   }
 }
 

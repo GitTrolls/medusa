@@ -41,13 +41,17 @@ export default async (req, res) => {
     throw new MedusaError(MedusaError.Types.INVALID_DATA, error.details)
   }
 
-  const customerService = req.scope.resolve("customerService")
+  try {
+    const customerService = req.scope.resolve("customerService")
 
-  let customer = await customerService.addAddress(id, value.address)
-  customer = await customerService.retrieve(id, {
-    relations: defaultRelations,
-    select: defaultFields,
-  })
+    let customer = await customerService.addAddress(id, value.address)
+    customer = await customerService.retrieve(id, {
+      relations: defaultRelations,
+      select: defaultFields,
+    })
 
-  res.status(200).json({ customer })
+    res.status(200).json({ customer })
+  } catch (err) {
+    throw err
+  }
 }

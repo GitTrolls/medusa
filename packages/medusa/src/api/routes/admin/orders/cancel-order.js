@@ -22,13 +22,17 @@ import { defaultFields, defaultRelations } from "."
 export default async (req, res) => {
   const { id } = req.params
 
-  const orderService = req.scope.resolve("orderService")
-  await orderService.cancel(id)
+  try {
+    const orderService = req.scope.resolve("orderService")
+    await orderService.cancel(id)
 
-  const order = await orderService.retrieve(id, {
-    select: defaultFields,
-    relations: defaultRelations,
-  })
+    const order = await orderService.retrieve(id, {
+      select: defaultFields,
+      relations: defaultRelations,
+    })
 
-  res.json({ order })
+    res.json({ order })
+  } catch (error) {
+    throw error
+  }
 }

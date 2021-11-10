@@ -1,3 +1,4 @@
+import _ from "lodash"
 import { MedusaError, Validator } from "medusa-core-utils"
 import { defaultFields, defaultRelations } from "./"
 
@@ -115,7 +116,9 @@ export default async (req, res) => {
         .keys({
           region_id: Validator.string().empty(null),
           currency_code: Validator.string(),
-          amount: Validator.number().integer().required(),
+          amount: Validator.number()
+            .integer()
+            .required(),
           sale_amount: Validator.number().optional(),
         })
         .xor("region_id", "currency_code")
@@ -130,14 +133,30 @@ export default async (req, res) => {
     inventory_quantity: Validator.number().optional(),
     allow_backorder: Validator.boolean().optional(),
     manage_inventory: Validator.boolean().optional(),
-    weight: Validator.number().allow(null).optional(),
-    length: Validator.number().allow(null).optional(),
-    height: Validator.number().allow(null).optional(),
-    width: Validator.number().allow(null).optional(),
-    hs_code: Validator.string().optional().allow(null, ""),
-    origin_country: Validator.string().optional().allow(null, ""),
-    mid_code: Validator.string().optional().allow(null, ""),
-    material: Validator.string().optional().allow(null, ""),
+    weight: Validator.number()
+      .allow(null)
+      .optional(),
+    length: Validator.number()
+      .allow(null)
+      .optional(),
+    height: Validator.number()
+      .allow(null)
+      .optional(),
+    width: Validator.number()
+      .allow(null)
+      .optional(),
+    hs_code: Validator.string()
+      .optional()
+      .allow(null, ""),
+    origin_country: Validator.string()
+      .optional()
+      .allow(null, ""),
+    mid_code: Validator.string()
+      .optional()
+      .allow(null, ""),
+    material: Validator.string()
+      .optional()
+      .allow(null, ""),
     metadata: Validator.object().optional(),
   })
 
@@ -146,15 +165,18 @@ export default async (req, res) => {
     throw new MedusaError(MedusaError.Types.INVALID_DATA, error.details)
   }
 
-  const productService = req.scope.resolve("productService")
-  const productVariantService = req.scope.resolve("productVariantService")
+  try {
+    const productService = req.scope.resolve("productService")
+    const productVariantService = req.scope.resolve("productVariantService")
 
-  await productVariantService.update(variant_id, value)
+    await productVariantService.update(variant_id, value)
 
-  const product = await productService.retrieve(id, {
-    select: defaultFields,
-    relations: defaultRelations,
-  })
-
-  res.json({ product })
+    const product = await productService.retrieve(id, {
+      select: defaultFields,
+      relations: defaultRelations,
+    })
+    res.json({ product })
+  } catch (err) {
+    throw err
+  }
 }
