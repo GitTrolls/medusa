@@ -60,7 +60,7 @@ class PaymentProviderService extends BaseService {
     }
 
     if (relations.length) {
-      query.relations = relations
+      query.relations = options.relations
     }
 
     const payment = await paymentRepo.findOne(query)
@@ -95,7 +95,7 @@ class PaymentProviderService extends BaseService {
     }
 
     if (relations.length) {
-      query.relations = relations
+      query.relations = options.relations
     }
 
     const session = await sessionRepo.findOne(query)
@@ -117,7 +117,7 @@ class PaymentProviderService extends BaseService {
    * @return {Promise} the payment session
    */
   async createSession(providerId, cart) {
-    return this.atomicPhase_(async (manager) => {
+    return this.atomicPhase_(async manager => {
       const provider = this.retrieveProvider(providerId)
       const sessionData = await provider.createPayment(cart)
 
@@ -142,13 +142,12 @@ class PaymentProviderService extends BaseService {
   /**
    * Refreshes a payment session with the given provider.
    * This means, that we delete the current one and create a new.
-   * @param {PaymentSession} paymentSession - the payment session object to
-   *    update
+   * @param {string} providerId - the id of the provider to refresh payment for
    * @param {Cart} cart - a cart object used to calculate the amount, etc. from
    * @return {Promise} the payment session
    */
   async refreshSession(paymentSession, cart) {
-    return this.atomicPhase_(async (manager) => {
+    return this.atomicPhase_(async manager => {
       const session = await this.retrieveSession(paymentSession.id)
 
       const provider = this.retrieveProvider(paymentSession.provider_id)
@@ -184,7 +183,7 @@ class PaymentProviderService extends BaseService {
    * @return {Promise} the updated payment session
    */
   updateSession(paymentSession, cart) {
-    return this.atomicPhase_(async (manager) => {
+    return this.atomicPhase_(async manager => {
       const session = await this.retrieveSession(paymentSession.id)
 
       const provider = this.retrieveProvider(paymentSession.provider_id)
@@ -198,9 +197,9 @@ class PaymentProviderService extends BaseService {
   }
 
   deleteSession(paymentSession) {
-    return this.atomicPhase_(async (manager) => {
+    return this.atomicPhase_(async manager => {
       const session = await this.retrieveSession(paymentSession.id).catch(
-        (_) => undefined
+        _ => undefined
       )
 
       if (!session) {
@@ -221,7 +220,7 @@ class PaymentProviderService extends BaseService {
   /**
    * Finds a provider given an id
    * @param {string} providerId - the id of the provider to get
-   * @return {PaymentService} the payment provider
+   * @returns {PaymentService} the payment provider
    */
   retrieveProvider(providerId) {
     try {
@@ -242,7 +241,7 @@ class PaymentProviderService extends BaseService {
   }
 
   async createPayment(cart) {
-    return this.atomicPhase_(async (manager) => {
+    return this.atomicPhase_(async manager => {
       const { payment_session: paymentSession, region, total } = cart
       const provider = this.retrieveProvider(paymentSession.provider_id)
       const paymentData = await provider.getPaymentData(paymentSession)
@@ -262,7 +261,7 @@ class PaymentProviderService extends BaseService {
   }
 
   async updatePayment(paymentId, update) {
-    return this.atomicPhase_(async (manager) => {
+    return this.atomicPhase_(async manager => {
       const payment = await this.retrievePayment(paymentId)
 
       if ("order_id" in update) {
@@ -279,9 +278,9 @@ class PaymentProviderService extends BaseService {
   }
 
   async authorizePayment(paymentSession, context) {
-    return this.atomicPhase_(async (manager) => {
+    return this.atomicPhase_(async manager => {
       const session = await this.retrieveSession(paymentSession.id).catch(
-        (_) => undefined
+        _ => undefined
       )
 
       if (!session) {
@@ -304,7 +303,7 @@ class PaymentProviderService extends BaseService {
   }
 
   async updateSessionData(paySession, update) {
-    return this.atomicPhase_(async (manager) => {
+    return this.atomicPhase_(async manager => {
       const session = await this.retrieveSession(paySession.id)
 
       const provider = this.retrieveProvider(paySession.provider_id)
@@ -320,7 +319,7 @@ class PaymentProviderService extends BaseService {
   }
 
   async cancelPayment(paymentObj) {
-    return this.atomicPhase_(async (manager) => {
+    return this.atomicPhase_(async manager => {
       const payment = await this.retrievePayment(paymentObj.id)
       const provider = this.retrieveProvider(payment.provider_id)
       payment.data = await provider.cancelPayment(payment)
@@ -339,7 +338,7 @@ class PaymentProviderService extends BaseService {
   }
 
   async capturePayment(paymentObj) {
-    return this.atomicPhase_(async (manager) => {
+    return this.atomicPhase_(async manager => {
       const payment = await this.retrievePayment(paymentObj.id)
 
       const provider = this.retrieveProvider(payment.provider_id)
@@ -354,8 +353,8 @@ class PaymentProviderService extends BaseService {
   }
 
   async refundPayment(payObjs, amount, reason, note) {
-    return this.atomicPhase_(async (manager) => {
-      const payments = await this.listPayments({ id: payObjs.map((p) => p.id) })
+    return this.atomicPhase_(async manager => {
+      const payments = await this.listPayments({ id: payObjs.map(p => p.id) })
 
       let order_id
       const refundable = payments.reduce((acc, next) => {
@@ -379,7 +378,7 @@ class PaymentProviderService extends BaseService {
       const used = []
 
       const paymentRepo = manager.getCustomRepository(this.paymentRepository_)
-      let toRefund = payments.find((p) => p.amount - p.amount_refunded > 0)
+      let toRefund = payments.find(p => p.amount - p.amount_refunded > 0)
       while (toRefund) {
         const currentRefundable = toRefund.amount - toRefund.amount_refunded
 
@@ -396,7 +395,7 @@ class PaymentProviderService extends BaseService {
 
         if (balance > 0) {
           toRefund = payments.find(
-            (p) => p.amount - p.amount_refunded > 0 && !used.includes(p.id)
+            p => p.amount - p.amount_refunded > 0 && !used.includes(p.id)
           )
         } else {
           toRefund = null

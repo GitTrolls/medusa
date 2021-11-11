@@ -45,7 +45,7 @@ import { defaultFields, defaultRelations } from "./"
  *                 quantity:
  *                   description: The quantity of the Product Variant to ship.
  *                   type: integer
- *           custom_shipping_options:
+ *          custom_shipping_options:
  *             description: The custom shipping options to potentially create a Shipping Method from.
  *             type: array
  *             items:
@@ -87,7 +87,9 @@ export default async (req, res) => {
     return_shipping: Validator.object()
       .keys({
         option_id: Validator.string().optional(),
-        price: Validator.number().integer().optional(),
+        price: Validator.number()
+          .integer()
+          .optional(),
       })
       .optional(),
     additional_items: Validator.array().items({
@@ -129,121 +131,127 @@ export default async (req, res) => {
   res.setHeader("Access-Control-Expose-Headers", "Idempotency-Key")
   res.setHeader("Idempotency-Key", idempotencyKey.idempotency_key)
 
-  const orderService = req.scope.resolve("orderService")
-  const swapService = req.scope.resolve("swapService")
-  const returnService = req.scope.resolve("returnService")
+  try {
+    const orderService = req.scope.resolve("orderService")
+    const swapService = req.scope.resolve("swapService")
+    const returnService = req.scope.resolve("returnService")
 
-  let inProgress = true
-  let err = false
+    let inProgress = true
+    let err = false
 
-  while (inProgress) {
-    switch (idempotencyKey.recovery_point) {
-      case "started": {
-        const { key, error } = await idempotencyKeyService.workStage(
-          idempotencyKey.idempotency_key,
-          async (manager) => {
-            const order = await orderService
-              .withTransaction(manager)
-              .retrieve(id, {
-                select: ["refunded_total", "total"],
-                relations: ["items", "swaps", "swaps.additional_items"],
+    while (inProgress) {
+      switch (idempotencyKey.recovery_point) {
+        case "started": {
+          const { key, error } = await idempotencyKeyService.workStage(
+            idempotencyKey.idempotency_key,
+            async manager => {
+              const order = await orderService
+                .withTransaction(manager)
+                .retrieve(id, {
+                  select: ["refunded_total", "total"],
+                  relations: ["items", "swaps", "swaps.additional_items"],
+                })
+
+              const swap = await swapService
+                .withTransaction(manager)
+                .create(
+                  order,
+                  value.return_items,
+                  value.additional_items,
+                  value.return_shipping,
+                  {
+                    idempotency_key: idempotencyKey.idempotency_key,
+                    no_notification: value.no_notification,
+                    allow_backorder: value.allow_backorder,
+                  }
+                )
+
+              await swapService
+                .withTransaction(manager)
+                .createCart(swap.id, value.custom_shipping_options)
+              const returnOrder = await returnService
+                .withTransaction(manager)
+                .retrieveBySwap(swap.id)
+
+              await returnService
+                .withTransaction(manager)
+                .fulfill(returnOrder.id)
+
+              return {
+                recovery_point: "swap_created",
+              }
+            }
+          )
+
+          if (error) {
+            inProgress = false
+            err = error
+          } else {
+            idempotencyKey = key
+          }
+          break
+        }
+
+        case "swap_created": {
+          const { key, error } = await idempotencyKeyService.workStage(
+            idempotencyKey.idempotency_key,
+            async manager => {
+              const swaps = await swapService.list({
+                idempotency_key: idempotencyKey.idempotency_key,
               })
 
-            const swap = await swapService
-              .withTransaction(manager)
-              .create(
-                order,
-                value.return_items,
-                value.additional_items,
-                value.return_shipping,
-                {
-                  idempotency_key: idempotencyKey.idempotency_key,
-                  no_notification: value.no_notification,
-                  allow_backorder: value.allow_backorder,
-                }
-              )
+              if (!swaps.length) {
+                throw new MedusaError(
+                  MedusaError.Types.INVALID_DATA,
+                  "Swap not found"
+                )
+              }
 
-            await swapService
-              .withTransaction(manager)
-              .createCart(swap.id, value.custom_shipping_options)
-            const returnOrder = await returnService
-              .withTransaction(manager)
-              .retrieveBySwap(swap.id)
+              const order = await orderService.retrieve(id, {
+                select: defaultFields,
+                relations: defaultRelations,
+              })
 
-            await returnService.withTransaction(manager).fulfill(returnOrder.id)
-
-            return {
-              recovery_point: "swap_created",
+              return {
+                response_code: 200,
+                response_body: { order },
+              }
             }
-          }
-        )
+          )
 
-        if (error) {
-          inProgress = false
-          err = error
-        } else {
-          idempotencyKey = key
+          if (error) {
+            inProgress = false
+            err = error
+          } else {
+            idempotencyKey = key
+          }
+          break
         }
-        break
-      }
 
-      case "swap_created": {
-        const { key, error } = await idempotencyKeyService.workStage(
-          idempotencyKey.idempotency_key,
-          async (manager) => {
-            const swaps = await swapService.list({
-              idempotency_key: idempotencyKey.idempotency_key,
-            })
-
-            if (!swaps.length) {
-              throw new MedusaError(
-                MedusaError.Types.INVALID_DATA,
-                "Swap not found"
-              )
-            }
-
-            const order = await orderService.retrieve(id, {
-              select: defaultFields,
-              relations: defaultRelations,
-            })
-
-            return {
-              response_code: 200,
-              response_body: { order },
-            }
-          }
-        )
-
-        if (error) {
+        case "finished": {
           inProgress = false
-          err = error
-        } else {
-          idempotencyKey = key
+          break
         }
-        break
-      }
 
-      case "finished": {
-        inProgress = false
-        break
+        default:
+          idempotencyKey = await idempotencyKeyService.update(
+            idempotencyKey.idempotency_key,
+            {
+              recovery_point: "finished",
+              response_code: 500,
+              response_body: { message: "Unknown recovery point" },
+            }
+          )
+          break
       }
-
-      default:
-        idempotencyKey = await idempotencyKeyService.update(
-          idempotencyKey.idempotency_key,
-          {
-            recovery_point: "finished",
-            response_code: 500,
-            response_body: { message: "Unknown recovery point" },
-          }
-        )
-        break
     }
-  }
 
-  if (err) {
-    throw err
-  }
+    if (err) {
+      throw err
+    }
 
-  res.status(idempotencyKey.response_code).json(idempotencyKey.response_body)
+    res.status(idempotencyKey.response_code).json(idempotencyKey.response_body)
+  } catch (error) {
+    throw error
+  }
 }

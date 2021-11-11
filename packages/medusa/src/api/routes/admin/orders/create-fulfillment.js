@@ -61,17 +61,21 @@ export default async (req, res) => {
     throw new MedusaError(MedusaError.Types.INVALID_DATA, error.details)
   }
 
-  const orderService = req.scope.resolve("orderService")
+  try {
+    const orderService = req.scope.resolve("orderService")
 
-  await orderService.createFulfillment(id, value.items, {
-    metadata: value.metadata,
-    no_notification: value.no_notification,
-  })
+    await orderService.createFulfillment(id, value.items, {
+      metadata: value.metadata,
+      no_notification: value.no_notification,
+    })
 
-  const order = await orderService.retrieve(id, {
-    select: defaultFields,
-    relations: defaultRelations,
-  })
+    const order = await orderService.retrieve(id, {
+      select: defaultFields,
+      relations: defaultRelations,
+    })
 
-  res.json({ order })
+    res.json({ order })
+  } catch (error) {
+    throw error
+  }
 }

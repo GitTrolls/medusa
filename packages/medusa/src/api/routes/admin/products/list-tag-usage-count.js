@@ -1,7 +1,11 @@
 export default async (req, res) => {
-  const productService = req.scope.resolve("productService")
+  try {
+    const productService = req.scope.resolve("productService")
 
-  const tags = await productService.listTagsByUsage()
+    const tags = await productService.listTagsByUsage()
 
-  res.json({ tags })
+    res.json({ tags })
+  } catch (error) {
+    throw error
+  }
 }

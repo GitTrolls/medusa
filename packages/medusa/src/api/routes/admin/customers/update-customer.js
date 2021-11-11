@@ -52,21 +52,25 @@ export default async (req, res) => {
     throw new MedusaError(MedusaError.Types.INVALID_DATA, error.details)
   }
 
-  const customerService = req.scope.resolve("customerService")
+  try {
+    const customerService = req.scope.resolve("customerService")
 
-  let customer = await customerService.retrieve(id)
+    let customer = await customerService.retrieve(id)
 
-  if (value.email && customer.has_account) {
-    throw new MedusaError(
-      MedusaError.Types.INVALID_DATA,
-      "Email cannot be changed when the user has registered their account"
-    )
+    if (value.email && customer.has_account) {
+      throw new MedusaError(
+        MedusaError.Types.INVALID_DATA,
+        "Email cannot be changed when the user has registered their account"
+      )
+    }
+
+    await customerService.update(id, value)
+
+    customer = await customerService.retrieve(id, {
+      relations: ["orders"],
+    })
+    res.status(200).json({ customer })
+  } catch (err) {
+    throw err
   }
-
-  await customerService.update(id, value)
-
-  customer = await customerService.retrieve(id, {
-    relations: ["orders"],
-  })
-  res.status(200).json({ customer })
 }

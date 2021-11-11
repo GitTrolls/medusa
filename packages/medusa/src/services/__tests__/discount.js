@@ -1,7 +1,5 @@
 import DiscountService from "../discount"
 import { IdMap, MockManager, MockRepository } from "medusa-test-utils"
-import { MedusaError } from "medusa-core-utils"
-import { exportAllDeclaration } from "@babel/types"
 
 describe("DiscountService", () => {
   describe("create", () => {
@@ -15,7 +13,7 @@ describe("DiscountService", () => {
           id: IdMap.getId("france"),
         }
       },
-      withTransaction: function () {
+      withTransaction: function() {
         return this
       },
     }
@@ -29,25 +27,6 @@ describe("DiscountService", () => {
 
     beforeEach(() => {
       jest.clearAllMocks()
-    })
-
-    it("fails to create a fixed discount with multiple regions", async () => {
-      expect.assertions(3)
-      try {
-        await discountService.create({
-          code: "test",
-          rule: {
-            type: "fixed",
-            allocation: "total",
-            value: 20,
-          },
-          regions: [IdMap.getId("france"), IdMap.getId("Italy")],
-        })
-      } catch (err) {
-        expect(err.type).toEqual("invalid_data")
-        expect(err.message).toEqual("Fixed discounts can have one region")
-        expect(discountRepository.create).toHaveBeenCalledTimes(0)
-      }
     })
 
     it("successfully creates discount", async () => {
@@ -151,7 +130,7 @@ describe("DiscountService", () => {
 
   describe("retrieve", () => {
     const discountRepository = MockRepository({
-      findOne: (query) => {
+      findOne: query => {
         if (query.where.id) {
           return Promise.resolve({ id: IdMap.getId("total10") })
         }
@@ -191,7 +170,7 @@ describe("DiscountService", () => {
 
   describe("retrieveByCode", () => {
     const discountRepository = MockRepository({
-      findOne: (query) => {
+      findOne: query => {
         if (query.where.code === "10%OFF") {
           return Promise.resolve({ id: IdMap.getId("total10"), code: "10%OFF" })
         }
@@ -227,11 +206,7 @@ describe("DiscountService", () => {
   describe("update", () => {
     const discountRepository = MockRepository({
       findOne: () =>
-        Promise.resolve({
-          id: IdMap.getId("total10"),
-          code: "10%OFF",
-          rule: { type: "fixed" },
-        }),
+        Promise.resolve({ id: IdMap.getId("total10"), code: "10%OFF" }),
     })
 
     const discountRuleRepository = MockRepository({})
@@ -255,20 +230,6 @@ describe("DiscountService", () => {
       jest.clearAllMocks()
     })
 
-    it("fails to update a fixed discount with multiple regions", async () => {
-      expect.assertions(3)
-      try {
-        await discountService.update(IdMap.getId("total10"), {
-          code: "test",
-          regions: [IdMap.getId("france"), IdMap.getId("Italy")],
-        })
-      } catch (err) {
-        expect(err.type).toEqual("invalid_data")
-        expect(err.message).toEqual("Fixed discounts can have one region")
-        expect(discountRepository.create).toHaveBeenCalledTimes(0)
-      }
-    })
-
     it("successfully updates discount", async () => {
       await discountService.update(IdMap.getId("total10"), {
         code: "test",
@@ -277,8 +238,7 @@ describe("DiscountService", () => {
       expect(discountRepository.save).toHaveBeenCalledTimes(1)
       expect(discountRepository.save).toHaveBeenCalledWith({
         id: IdMap.getId("total10"),
-        code: "TEST",
-        rule: { type: "fixed" },
+        code: "test",
         regions: [{ id: IdMap.getId("france") }],
       })
     })
@@ -302,7 +262,6 @@ describe("DiscountService", () => {
       expect(discountRepository.save).toHaveBeenCalledTimes(1)
       expect(discountRepository.save).toHaveBeenCalledWith({
         id: IdMap.getId("total10"),
-        rule: { type: "fixed" },
         code: "10%OFF",
         metadata: { testKey: "testValue" },
       })
@@ -426,24 +385,11 @@ describe("DiscountService", () => {
 
   describe("addRegion", () => {
     const discountRepository = MockRepository({
-      findOne: (q) => {
-        if (q.where.id === "fixed") {
-          return Promise.resolve({
-            id: IdMap.getId("total10"),
-            regions: [{ id: IdMap.getId("test-region") }],
-            rule: {
-              type: "fixed",
-            },
-          })
-        }
-        return Promise.resolve({
+      findOne: () =>
+        Promise.resolve({
           id: IdMap.getId("total10"),
           regions: [{ id: IdMap.getId("test-region") }],
-          rule: {
-            type: "percentage",
-          },
-        })
-      },
+        }),
     })
 
     const discountRuleRepository = MockRepository({})
@@ -467,17 +413,6 @@ describe("DiscountService", () => {
       jest.clearAllMocks()
     })
 
-    it("fails to add a region to a fixed discount with an existing region", async () => {
-      expect.assertions(3)
-      try {
-        await discountService.addRegion("fixed", IdMap.getId("test-region-2"))
-      } catch (err) {
-        expect(err.type).toEqual("invalid_data")
-        expect(err.message).toEqual("Fixed discounts can have one region")
-        expect(discountRepository.save).toHaveBeenCalledTimes(0)
-      }
-    })
-
     it("successfully adds a region", async () => {
       await discountService.addRegion(
         IdMap.getId("total10"),
@@ -491,9 +426,6 @@ describe("DiscountService", () => {
           { id: IdMap.getId("test-region") },
           { id: IdMap.getId("test-region-2") },
         ],
-        rule: {
-          type: "percentage",
-        },
       })
     })
 
@@ -509,7 +441,7 @@ describe("DiscountService", () => {
 
   describe("createDynamicDiscount", () => {
     const discountRepository = MockRepository({
-      create: (d) => d,
+      create: d => d,
       findOne: () =>
         Promise.resolve({
           id: "parent",

@@ -16,7 +16,6 @@ module.exports = {
     semi: `off`,
     "no-unused-expressions": `off`,
     camelcase: `off`,
-    "no-invalid-this": `off`,
   },
   env: {
     es6: true,
@@ -29,12 +28,6 @@ module.exports = {
       parser: `@typescript-eslint/parser`,
       plugins: [`@typescript-eslint/eslint-plugin`],
       extends: [`plugin:@typescript-eslint/recommended`],
-    },
-    {
-      files: ["**/api/**/*.js"],
-      rules: {
-        "valid-jsdoc": ["off"],
-      },
     },
   ],
 }

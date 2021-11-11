@@ -1,6 +1,5 @@
 import {
-  BeforeInsert,
-  Column,
+  BeforeInsert, Column,
   CreateDateColumn,
   DeleteDateColumn,
   Entity,
@@ -9,15 +8,16 @@ import {
   ManyToOne,
   PrimaryColumn,
   Unique,
-  UpdateDateColumn,
-} from "typeorm"
-import { ulid } from "ulid"
-import { DbAwareColumn, resolveDbType } from "../utils/db-aware-column"
-import { Cart } from "./cart"
-import { ShippingOption } from "./shipping-option"
+  UpdateDateColumn
+} from "typeorm";
+import { ulid } from "ulid";
+import { DbAwareColumn, resolveDbType } from "../utils/db-aware-column";
+import { Cart } from './cart';
+import { ShippingOption } from "./shipping-option";
+
 
 @Entity()
-@Unique(["shipping_option_id", "cart_id"])
+@Unique(['shipping_option_id', 'cart_id'])
 export class CustomShippingOption {
   @PrimaryColumn()
   id: string
@@ -27,8 +27,8 @@ export class CustomShippingOption {
 
   @Index()
   @Column()
-  shipping_option_id: string
-
+  shipping_option_id: string;
+  
   @ManyToOne(() => ShippingOption)
   @JoinColumn({ name: "shipping_option_id" })
   shipping_option: ShippingOption
@@ -62,7 +62,7 @@ export class CustomShippingOption {
 }
 
 /**
- * @schema custom_shipping_option
+ * @schema Custom shipping_option
  * title: "Custom Shipping Option"
  * description: "Custom Shipping Options are 'overriden' Shipping Options. Store managers can attach a Custom Shipping Option to a cart in order to set a custom price for a particular Shipping Option"
  * x-resourceId: custom_shipping_option

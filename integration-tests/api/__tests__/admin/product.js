@@ -6,7 +6,6 @@ const { initDb, useDb } = require("../../../helpers/use-db")
 
 const adminSeeder = require("../../helpers/admin-seeder")
 const productSeeder = require("../../helpers/product-seeder")
-const { ProductVariant } = require("@medusajs/medusa")
 
 jest.setTimeout(50000)
 
@@ -106,7 +105,7 @@ describe("/admin/products", () => {
         status: "proposed",
       }
 
-      // update test-product status to proposed
+      //update test-product status to proposed
       await api
         .post("/admin/products/test-product", payload, {
           headers: {
@@ -144,9 +143,6 @@ describe("/admin/products", () => {
       const notExpected = [
         expect.objectContaining({ status: "draft" }),
         expect.objectContaining({ status: "rejected" }),
-        expect.objectContaining({
-          id: "test-product_filtering_4",
-        }),
       ]
 
       const response = await api
@@ -176,48 +172,6 @@ describe("/admin/products", () => {
           expect.not.arrayContaining([notExpect])
         )
       }
-    })
-
-    it("returns a list of deleted products with free text query", async () => {
-      const api = useApi()
-
-      const response = await api
-        .get("/admin/products?deleted_at[gt]=01-26-1990&q=test", {
-          headers: {
-            Authorization: "Bearer test_token",
-          },
-        })
-        .catch((err) => {
-          console.log(err)
-        })
-
-      expect(response.status).toEqual(200)
-      expect(response.data.products).toEqual([
-        expect.objectContaining({
-          id: "test-product_filtering_4",
-        }),
-      ])
-    })
-
-    it("returns a list of deleted products", async () => {
-      const api = useApi()
-
-      const response = await api
-        .get("/admin/products?deleted_at[gt]=01-26-1990", {
-          headers: {
-            Authorization: "Bearer test_token",
-          },
-        })
-        .catch((err) => {
-          console.log(err)
-        })
-
-      expect(response.status).toEqual(200)
-      expect(response.data.products).toEqual([
-        expect.objectContaining({
-          id: "test-product_filtering_4",
-        }),
-      ])
     })
 
     it("returns a list of products in collection", async () => {
@@ -469,7 +423,7 @@ describe("/admin/products", () => {
           ],
           variants: [
             {
-              id: "test-variant", // expect.stringMatching(/^test-variant*/),
+              id: "test-variant", //expect.stringMatching(/^test-variant*/),
               created_at: expect.any(String),
               updated_at: expect.any(String),
               product_id: expect.stringMatching(/^test-*/),
@@ -492,7 +446,7 @@ describe("/admin/products", () => {
               ],
             },
             {
-              id: "test-variant_2", // expect.stringMatching(/^test-variant*/),
+              id: "test-variant_2", //expect.stringMatching(/^test-variant*/),
               created_at: expect.any(String),
               updated_at: expect.any(String),
               product_id: expect.stringMatching(/^test-*/),
@@ -565,7 +519,7 @@ describe("/admin/products", () => {
           options: [],
           variants: [
             {
-              id: "test-variant_4", // expect.stringMatching(/^test-variant*/),
+              id: "test-variant_4", //expect.stringMatching(/^test-variant*/),
               created_at: expect.any(String),
               updated_at: expect.any(String),
               product_id: expect.stringMatching(/^test-*/),
@@ -588,7 +542,7 @@ describe("/admin/products", () => {
               ],
             },
             {
-              id: "test-variant_3", // expect.stringMatching(/^test-variant*/),
+              id: "test-variant_3", //expect.stringMatching(/^test-variant*/),
               created_at: expect.any(String),
               updated_at: expect.any(String),
               product_id: expect.stringMatching(/^test-*/),
@@ -1118,41 +1072,6 @@ describe("/admin/products", () => {
           deleted: true,
         })
       )
-    })
-
-    it("successfully deletes a product and variants", async () => {
-      const api = useApi()
-
-      const variantPre = await dbConnection.manager.findOne(ProductVariant, {
-        id: "test-variant",
-      })
-
-      expect(variantPre).not.toEqual(undefined)
-
-      const response = await api
-        .delete("/admin/products/test-product", {
-          headers: {
-            Authorization: "Bearer test_token",
-          },
-        })
-        .catch((err) => {
-          console.log(err)
-        })
-
-      expect(response.status).toEqual(200)
-
-      expect(response.data).toEqual(
-        expect.objectContaining({
-          id: "test-product",
-          deleted: true,
-        })
-      )
-
-      const variant = await dbConnection.manager.findOne(ProductVariant, {
-        id: "test-variant",
-      })
-
-      expect(variant).toEqual(undefined)
     })
 
     it("successfully creates product with soft-deleted product handle and deletes it again", async () => {

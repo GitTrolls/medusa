@@ -2,7 +2,8 @@ import _ from "lodash"
 import { Validator, MedusaError } from "medusa-core-utils"
 import { BaseService } from "medusa-interfaces"
 
-/* Provides layer to manipulate carts.
+/**
+ * Provides layer to manipulate carts.
  * @implements BaseService
  */
 class CartService extends BaseService {
@@ -208,7 +209,6 @@ class CartService extends BaseService {
 
   /**
    * @param {Object} selector - the query object for find
-   * @param {Object} config - config object
    * @return {Promise} the result of the find operation
    */
   list(selector, config = {}) {
@@ -232,7 +232,6 @@ class CartService extends BaseService {
   /**
    * Gets a cart by id.
    * @param {string} cartId - the id of the cart to get.
-   * @param {Object} options - the options to get a cart
    * @return {Promise<Cart>} the cart document.
    */
   async retrieve(cartId, options = {}) {
@@ -341,7 +340,7 @@ class CartService extends BaseService {
    * Removes a line item from the cart.
    * @param {string} cartId - the id of the cart that we will remove from
    * @param {LineItem} lineItemId - the line item to remove.
-   * @return {Promise} the result of the update operation
+   * @retur {Promise} the result of the update operation
    */
   async removeLineItem(cartId, lineItemId) {
     return this.atomicPhase_(async (manager) => {
@@ -391,7 +390,7 @@ class CartService extends BaseService {
    * Checks if a given line item has a shipping method that can fulfill it.
    * Returns true if all products in the cart can be fulfilled with the current
    * shipping methods.
-   * @param {ShippingMethod[]} shippingMethods - the set of shipping methods to check from
+   * @param {Cart} cart - the cart
    * @param {LineItem} lineItem - the line item
    * @return {boolean}
    */
@@ -497,8 +496,8 @@ class CartService extends BaseService {
    * Updates a cart's existing line item.
    * @param {string} cartId - the id of the cart to update
    * @param {string} lineItemId - the id of the line item to update.
-   * @param {LineItemUpdate} lineItemUpdate - the line item to update. Must
-   * include an id field.
+   * @param {LineItemUpdate} lineItem - the line item to update. Must include an id
+   *    field.
    * @return {Promise} the result of the update operation
    */
   async updateLineItem(cartId, lineItemId, lineItemUpdate) {
@@ -713,7 +712,7 @@ class CartService extends BaseService {
 
   /**
    * Sets the customer id of a cart
-   * @param {Cart} cart - the cart to add email to
+   * @param {string} cartId - the id of the cart to add email to
    * @param {string} customerId - the customer to add to cart
    * @return {Promise} the result of the update operation
    */
@@ -758,11 +757,8 @@ class CartService extends BaseService {
 
   /**
    * Updates the cart's billing address.
-   * @param {Cart} cart - the cart to update
-   * @param {Address | string} addressOrId - the value to set the billing
-   * address to
-   * @param {AddressRepository} addrRepo - the repository to use for address
-   * updates
+   * @param {string} cartId - the id of the cart to update
+   * @param {object} address - the value to set the billing address to
    * @return {Promise} the result of the update operation
    */
   async updateBillingAddress_(cart, addressOrId, addrRepo) {
@@ -796,11 +792,8 @@ class CartService extends BaseService {
 
   /**
    * Updates the cart's shipping address.
-   * @param {Cart} cart - the cart to update
-   * @param {Address | string} addressOrId - the value to set the shipping
-   * address to
-   * @param {AddressRepository} addrRepo - the repository to use for address
-   * updates
+   * @param {string} cartId - the id of the cart to update
+   * @param {object} address - the value to set the shipping address to
    * @return {Promise} the result of the update operation
    */
   async updateShippingAddress_(cart, addressOrId, addrRepo) {
@@ -879,7 +872,7 @@ class CartService extends BaseService {
    * If discount besides free shipping is already applied, this
    * will be overwritten
    * Throws if discount regions does not include the cart region
-   * @param {Cart} cart - the cart to update
+   * @param {string} cartId - the id of the cart to update
    * @param {string} discountCode - the discount code
    * @return {Promise} the result of the update operation
    */
@@ -979,7 +972,7 @@ class CartService extends BaseService {
   /**
    * Removes a discount based on a discount code.
    * @param {string} cartId - the id of the cart to remove from
-   * @param {string} discountCode - the discount code to remove
+   * @param {string} code - the discount code to remove
    * @return {Promise<Cart>} the resulting cart
    */
   async removeDiscount(cartId, discountCode) {
@@ -1027,8 +1020,6 @@ class CartService extends BaseService {
 
   /**
    * Updates the currently selected payment session.
-   * @param {string} cartId - the id of the cart to update the payment session for
-   * @param {object} update - the data to update the payment session with
    */
   async updatePaymentSession(cartId, update) {
     return this.atomicPhase_(async (manager) => {
@@ -1108,7 +1099,7 @@ class CartService extends BaseService {
   /**
    * Sets a payment method for a cart.
    * @param {string} cartId - the id of the cart to add payment method to
-   * @param {string} providerId - the id of the provider to be set to the cart
+   * @param {PaymentMethod} paymentMethod - the method to be set to the cart
    * @return {Promise} result of update operation
    */
   async setPaymentSession(cartId, providerId) {
@@ -1169,8 +1160,7 @@ class CartService extends BaseService {
    * provider. Additional calls will ensure that payment sessions have correct
    * amounts, currencies, etc. as well as make sure to filter payment sessions
    * that are not available for the cart's region.
-   * @param {Cart | string} cartOrCartId - the id of the cart to set payment
-   * session for
+   * @param {string} cartId - the id of the cart to set payment session for
    * @return {Promise} the result of the update operation.
    */
   async setPaymentSessions(cartOrCartId) {
@@ -1428,7 +1418,7 @@ class CartService extends BaseService {
    * Finds the cart's custom shipping options based on the passed option id.
    * throws if custom options is not empty and no shipping option corresponds to optionId
    * @param {Object} cartCustomShippingOptions - the cart's custom shipping options
-   * @param {string} optionId - id of the normal or custom shipping option to find in the cartCustomShippingOptions
+   * @param {string} option - id of the normal or custom shipping option to find in the cartCustomShippingOptions
    * @return {CustomShippingOption | undefined}
    */
   findCustomShippingOption(cartCustomShippingOptions, optionId) {
@@ -1449,9 +1439,8 @@ class CartService extends BaseService {
 
   /**
    * Set's the region of a cart.
-   * @param {Cart} cart - the cart to set region on
-   * @param {string} regionId - the id of the region to set the region to
-   * @param {string} countryCode - the country code to set the country to
+   * @param {string} cartId - the id of the cart to set region on
+   * @param {string} regionId - the id of the region to set the cart to
    * @return {Promise} the result of the update operation
    */
   async setRegion_(cart, regionId, countryCode) {

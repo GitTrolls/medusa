@@ -77,8 +77,7 @@ export class Note {
  *     type: string
  *   author:
  *     description: "The author of the note."
- *     anyOf:
- *       - $ref: "#/components/schemas/user"
+ *     type: User
  *   created_at:
  *     description: "The date with timezone at which the resource was created."
  *     type: string
