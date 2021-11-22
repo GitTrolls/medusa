@@ -1,3 +1,6 @@
+const lightCodeTheme = require("prism-react-renderer/themes/github")
+const darkCodeTheme = require("prism-react-renderer/themes/dracula")
+
 const path = require("path")
 const docsPath = path.join(__dirname, "../../docs/content")
 
@@ -32,12 +35,6 @@ module.exports = {
       placeholder: "Search docs...",
       appId: algoliaAppId,
     },
-    prism: {
-      defaultLanguage: "js",
-      plugins: ["line-numbers", "show-language"],
-      theme: require("@kiwicopple/prism-react-renderer/themes/vsDark"),
-      darkTheme: require("@kiwicopple/prism-react-renderer/themes/vsDark"),
-    },
     navbar: {
       hideOnScroll: true,
       logo: {
@@ -47,31 +44,30 @@ module.exports = {
       },
       items: [
         {
-          href: "https://docs.medusa-commerce.com",
-          label: "Overview",
+          type: "search",
+          position: "left",
         },
         {
           type: "doc",
           docId: "tutorial/set-up-your-development-environment",
+          position: "right",
           label: "Tutorial",
         },
         {
           href: `https://docs.medusa-commerce.com/api/store`,
           target: "_self",
-          label: "Reference",
-        },
-        {
-          href: "https://github.com/medusajs/medusa",
-          className: "navbar-github-link",
           position: "right",
+          label: "API Reference",
         },
         {
-          type: "search",
+          className: "navbar-github-link",
+          href: "https://github.com/medusajs/medusa/",
           position: "right",
         },
       ],
     },
     footer: {
+      style: "dark",
       links: [
         {
           title: "Docs",
@@ -118,6 +114,9 @@ module.exports = {
         },
       ],
       copyright: `© ${new Date().getFullYear()} Medusa Commerce`,
+    },
+    prism: {
+      theme: darkCodeTheme,
     },
   },
   presets: [

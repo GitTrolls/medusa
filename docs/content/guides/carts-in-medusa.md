@@ -1,8 +1,8 @@
 ---
-title: Carts
+title: Carts in Medusa
 ---
 
-# Carts
+# Carts in Medusa
 
 In Medusa a Cart serves the purpose of collecting the information needed to create an Order, including what products to purchase, what address to send the products to and which payment method the purchase will be processed by.
 
