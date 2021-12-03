@@ -1,18 +1,18 @@
+import { AxiosPromise } from "axios"
 import {
   StoreGetAuthEmailRes,
   StorePostAuthReq,
   StoreAuthRes,
 } from "@medusajs/medusa"
-import { ResponsePromise } from "../typings"
 import BaseResource from "./base"
 
 class AuthResource extends BaseResource {
   /**
    * @description Authenticates a customer using email and password combination
    * @param {StorePostAuthReq} payload authentication payload
-   * @return {ResponsePromise<StoreAuthRes>}
+   * @return {AxiosPromise<StoreAuthRes>}
    */
-  authenticate(payload: StorePostAuthReq): ResponsePromise<StoreAuthRes> {
+  authenticate(payload: StorePostAuthReq): AxiosPromise<StoreAuthRes> {
     const path = `/store/auth`
     return this.client.request("POST", path, payload)
   }
@@ -20,9 +20,9 @@ class AuthResource extends BaseResource {
   /**
    * @description Retrieves an authenticated session
    * Usually used to check if authenticated session is alive.
-   * @return {ResponsePromise<StoreAuthRes>}
+   * @return {AxiosPromise<StoreAuthRes>}
    */
-  getSession(): ResponsePromise<StoreAuthRes> {
+  getSession(): AxiosPromise<StoreAuthRes> {
     const path = `/store/auth`
     return this.client.request("GET", path)
   }
@@ -30,9 +30,9 @@ class AuthResource extends BaseResource {
   /**
    * @description Check if email exists
    * @param {string} email is required
-   * @return {ResponsePromise<StoreGetAuthEmailRes>}
+   * @return {AxiosPromise<StoreGetAuthEmailRes>}
    */
-  exists(email: string): ResponsePromise<StoreGetAuthEmailRes> {
+  exists(email: string): AxiosPromise<StoreGetAuthEmailRes> {
     const path = `/store/auth/${email}`
     return this.client.request("GET", path)
   }
