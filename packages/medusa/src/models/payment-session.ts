@@ -32,7 +32,10 @@ export class PaymentSession {
   @Column()
   cart_id: string
 
-  @ManyToOne(() => Cart, (cart) => cart.payment_sessions)
+  @ManyToOne(
+    () => Cart,
+    cart => cart.payment_sessions
+  )
   @JoinColumn({ name: "cart_id" })
   cart: Cart
 
@@ -40,8 +43,8 @@ export class PaymentSession {
   @Column()
   provider_id: string
 
-  @Column({ type: "boolean", nullable: true })
-  is_selected: boolean | null
+  @Column({ nullable: true })
+  is_selected: boolean
 
   @DbAwareColumn({ type: "enum", enum: PaymentSessionStatus })
   status: string

@@ -1,5 +1,5 @@
 import { Router } from "express"
-import { DraftOrder, Order, Cart } from "../../../.."
+import { DraftOrder, Order } from "../../../.."
 import middlewares from "../../../middlewares"
 import { DeleteResponse, PaginatedResponse } from "../../../../types/common"
 
@@ -62,7 +62,7 @@ export const defaultAdminDraftOrdersCartRelations = [
   "discounts.rule",
 ]
 
-export const defaultAdminDraftOrdersCartFields: (keyof Cart)[] = [
+export const defaultAdminDraftOrdersCartFields = [
   "subtotal",
   "tax_total",
   "shipping_total",

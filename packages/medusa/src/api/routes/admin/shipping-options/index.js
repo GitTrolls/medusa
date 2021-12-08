@@ -1,6 +1,4 @@
 import { Router } from "express"
-import { ShippingOption } from "../../../.."
-import { DeleteResponse } from "../../../../types/common"
 import middlewares from "../../../middlewares"
 
 const route = Router()
@@ -45,19 +43,3 @@ export const defaultFields = [
 ]
 
 export const defaultRelations = ["region", "profile", "requirements"]
-
-export type AdminShippingOptionsListRes = {
-  shipping_options: ShippingOption[]
-}
-
-export type AdminShippingOptionsRes = {
-  shipping_option: ShippingOption
-}
-
-export type AdminShippingOptionsDeleteRes = DeleteResponse
-
-export * from "./create-shipping-option"
-export * from "./delete-shipping-option"
-export * from "./get-shipping-option"
-export * from "./list-shipping-options"
-export * from "./update-shipping-option"

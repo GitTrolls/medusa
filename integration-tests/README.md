@@ -1,6 +1,6 @@
 # Integration-tests
 
-To be able to run the integration tests on your local machine,
+To be able to run the integration tests on your local machine, 
 run the following commands (adapted to your machine)
 
 ```bash

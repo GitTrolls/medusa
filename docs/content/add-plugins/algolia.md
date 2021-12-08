@@ -8,7 +8,7 @@ The purpose of this article is to show you how to install and configure Algolia 
 
 **Installation**
 
-Create an account on Algolia and grab your Application ID and Admin API Key from the settings panel.
+Create an account on Algolia and grab your Application ID and Admin API Key from the settings panel. 
 
 ![algolia-config](https://i.imgur.com/kR6lWhI.png)
 
@@ -34,7 +34,10 @@ const plugins = [
       admin_api_key: "your-admin-api-key",
       settings: {
         products: {
-          searchableAttributes: ["title", "description"],
+          searchableAttributes: [
+            "title",
+            "description",
+          ],
           attributesToRetrieve: [
             "id",
             "title",
@@ -52,18 +55,18 @@ const plugins = [
       },
     },
   },
-]
+];
 ```
 
-In the above config, you've provided the id and key from Algolia alongside a couple of settings, that define the properties you can search for and the values you'll get in return.
+In the above config, you've provided the id and key from Algolia alongside a couple of settings, that define the properties you can search for and the values you'll get in return. 
 
-And that's all! You've now enabled Algolia for your Medusa store engine. The plugin will make sure to synchronize products from Medusa to Algolia upon updating, deleting, or creating new ones. Now all you need to do is to restart your server.
+And that's all! You've now enabled Algolia for your Medusa store engine. The plugin will make sure to synchronize products from Medusa to Algolia upon updating, deleting, or creating new ones. Now all you need to do is to restart your server. 
 
 **Usage**
 
-This article will not go too much into depth about how the search functionality works under the hood when querying the API. We refer to the [previous article on MeiliSearch](https://www.medusa-commerce.com/post/meilisearch-and-medusa) if this is of your interest. In there, you will find a quick showcase using Postman as well as a thorough walkthrough of how you can display the results in your storefront using ReactJS (GatsbyJS).
+This article will not go too much into depth about how the search functionality works under the hood when querying the API. We refer to the [previous article on MeiliSearch](https://www.medusa-commerce.com/post/meilisearch-and-medusa) if this is of your interest. In there, you will find a quick showcase using Postman as well as a thorough walkthrough of how you can display the results in your storefront using ReactJS (GatsbyJS). 
 
-Instead, to illustrate the power of our Search API and search engine plugins, we'll switch out a MeiliSearch plugin with our new Algolia plugin in a store with existing products. Upon restarting the server with the new configuration, your products will automatically be fed into Algolia and the search functionality in your frontend will remain unchanged.
+Instead, to illustrate the power of our Search API and search engine plugins, we'll switch out a MeiliSearch plugin with our new Algolia plugin in a store with existing products. Upon restarting the server with the new configuration, your products will automatically be fed into Algolia and the search functionality in your frontend will remain unchanged. 
 
 ![Imgur](https://i.imgur.com/rIgAh6T.gif)
 

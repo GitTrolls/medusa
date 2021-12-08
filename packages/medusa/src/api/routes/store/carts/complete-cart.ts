@@ -6,8 +6,6 @@ import {
   SwapService,
 } from "../../../../services"
 
-import { Order } from "../../../../models/order"
-
 /**
  * @oas [post] /carts/{id}/complete
  * summary: "Complete a Cart"
@@ -40,10 +38,6 @@ import { Order } from "../../../../models/order"
  *              properties:
  *                cart:
  *                  $ref: "#/components/schemas/cart"
- *            - type: object
- *              properties:
- *                cart:
- *                  $ref: "#/components/schemas/swap"
  */
 export default async (req, res) => {
   const { id } = req.params
@@ -146,7 +140,7 @@ export default async (req, res) => {
                 relations: ["payment", "payment_sessions"],
               })
 
-            let order: Order
+            let order
 
             // If cart is part of swap, we register swap as complete
             switch (cart.type) {
@@ -185,15 +179,6 @@ export default async (req, res) => {
               }
               // case "payment_link":
               default: {
-                if (typeof cart.total === "undefined") {
-                  return {
-                    response_code: 500,
-                    response_body: {
-                      message: "Unexpected state",
-                    },
-                  }
-                }
-
                 if (!cart.payment && cart.total > 0) {
                   throw new MedusaError(
                     MedusaError.Types.INVALID_DATA,

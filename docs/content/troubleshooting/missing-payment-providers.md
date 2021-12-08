@@ -1,7 +1,6 @@
 # Stripe not showing in checkout
 
 You add payment providers to your Medusa instance by adding them as plugins in `medusa-config.js`:
-
 ```jsx
 const plugins = [
   ...
@@ -16,16 +15,14 @@ const plugins = [
   ...
 ];
 ```
-
 And installing them through your favourite package manager:
-
 ```bash
 yarn add medusa-payment-stripe
 # or
 npm install medusa-payment-stripe
 ```
 
-Though, to be able to also show them as part of your checkout flow, you need to add them to your regions.
+Though, to be able to also show them as part of your checkout flow, you need to add them to your regions. 
 
 In Medusa Admin go to Settings -> Regions and select your newly added payment provider:
 

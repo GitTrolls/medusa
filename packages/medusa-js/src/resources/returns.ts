@@ -1,14 +1,14 @@
 import BaseResource from "./base"
-import { ResponsePromise } from "../typings"
+import { AxiosPromise } from "axios"
 import { StoreReturnsRes, StorePostReturnsReq } from "@medusajs/medusa"
 
 class ReturnsResource extends BaseResource {
   /**
    * Creates a return request
    * @param {StorePostReturnsReq} payload details needed to create a return
-   * @return {ResponsePromise<StoreReturnsRes>}
+   * @return {AxiosPromise<StoreReturnsRes>}
    */
-  create(payload: StorePostReturnsReq): ResponsePromise<StoreReturnsRes> {
+  create(payload: StorePostReturnsReq): AxiosPromise<StoreReturnsRes> {
     const path = `/store/returns`
     return this.client.request("POST", path, payload)
   }

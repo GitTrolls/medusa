@@ -8,16 +8,6 @@ export type PartialPick<T, K extends keyof T> = {
   [P in K]?: T[P]
 }
 
-export type TotalField =
-  | "shipping_total"
-  | "discount_total"
-  | "tax_total"
-  | "refunded_total"
-  | "total"
-  | "subtotal"
-  | "refundable_amount"
-  | "gift_card_total"
-
 export interface FindConfig<Entity> {
   select?: (keyof Entity)[]
   skip?: number

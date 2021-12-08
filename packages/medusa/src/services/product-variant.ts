@@ -614,7 +614,6 @@ class ProductVariantService extends BaseService {
         .emit(ProductVariantService.Events.DELETED, {
           id: variant.id,
           product_id: variant.product_id,
-          metadata: variant.metadata,
         })
 
       return Promise.resolve()

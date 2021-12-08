@@ -5,7 +5,7 @@ import {
   StoreProductsListRes,
   StoreProductsRes,
 } from "@medusajs/medusa"
-import { ResponsePromise } from "../typings"
+import { AxiosPromise } from "axios"
 import BaseResource from "./base"
 import ProductVariantsResource from "./product-variants"
 
@@ -15,9 +15,9 @@ class ProductsResource extends BaseResource {
   /**
    * @description Retrieves a single Product
    * @param {string} id is required
-   * @return {ResponsePromise<StoreProductsRes>}
+   * @return {AxiosPromise<StoreProductsRes>}
    */
-  retrieve(id: string): ResponsePromise<StoreProductsRes> {
+  retrieve(id: string): AxiosPromise<StoreProductsRes> {
     const path = `/store/products/${id}`
     return this.client.request("GET", path)
   }
@@ -25,11 +25,9 @@ class ProductsResource extends BaseResource {
   /**
    * @description Searches for products
    * @param {StorePostSearchReq} searchOptions is required
-   * @return {ResponsePromise<StorePostSearchRes>}
+   * @return {AxiosPromise<StorePostSearchRes>}
    */
-  search(
-    searchOptions: StorePostSearchReq
-  ): ResponsePromise<StorePostSearchRes> {
+  search(searchOptions: StorePostSearchReq): AxiosPromise<StorePostSearchRes> {
     const path = `/store/products/search`
     return this.client.request("POST", path, searchOptions)
   }
@@ -37,9 +35,9 @@ class ProductsResource extends BaseResource {
   /**
    * @description Retrieves a list of products
    * @param {StoreGetProductsParams} query is optional. Can contain a limit and offset for the returned list
-   * @return {ResponsePromise<StoreProductsListRes>}
+   * @return {AxiosPromise<StoreProductsListRes>}
    */
-  list(query?: StoreGetProductsParams): ResponsePromise<StoreProductsListRes> {
+  list(query?: StoreGetProductsParams): AxiosPromise<StoreProductsListRes> {
     let path = `/store/products`
 
     if (query) {

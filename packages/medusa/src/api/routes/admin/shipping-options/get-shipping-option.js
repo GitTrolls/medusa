@@ -3,7 +3,6 @@
  * operationId: "GetShippingOptionsOption"
  * summary: "Retrieve a Shipping Option"
  * description: "Retrieves a Shipping Option."
- * x-authenticated: true
  * parameters:
  *   - (path) id=* {string} The id of the Shipping Option.
  * tags:

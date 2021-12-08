@@ -1,6 +1,6 @@
 # Strapi
 
-Use [Medusa](https://github.com/medusajs/medusa) and [Strapi](https://github.com/strapi/strapi) to power your commerce setup for a full open-source headless solution. In recent years, it has become increasingly popular to go with a headless approach when building ecommerce, blogs, portfolios, and the likes. Among many benefits, you get improved performance, more customizability, and support to scale as your business grows.
+Use [Medusa](https://github.com/medusajs/medusa) and [Strapi](https://github.com/strapi/strapi) to power your commerce setup for a full open-source headless solution. In recent years, it has become increasingly popular to go with a headless approach when building ecommerce, blogs, portfolios, and the likes. Among many benefits, you get improved performance, more customizability, and support to scale as your business grows. 
 
 A headless system is essentially a decoupling of presentational layers and backend. It cuts off the traditional proprietary frontend displaying your content (hence the name), and instead gives you Rest APIs, you can consume from whatever system, client, or service you would like.
 
@@ -10,7 +10,7 @@ This article will guide you through setting up a headless ecommerce setup in whi
 
 ## Why Medusa, and why Strapi?
 
-The bottleneck of headless ecommerce systems is most often the amount of resources it requires to both get started and to maintain. You need backend developers to handle your infrastructure and integrations and frontend developers to build the customer experience. This is one of the reasons many existing headless solutions target enterprise businesses. To allow for small to mid-sized businesses to enter the space, one must cater to the developer experience. If the onboarding, setup, and implementation process are all easy to approach, you no longer need a team of ten to build a scalable ecommerce setup.
+The bottleneck of headless ecommerce systems is most often the amount of resources it requires to both get started and to maintain. You need backend developers to handle your infrastructure and integrations and frontend developers to build the customer experience. This is one of the reasons many existing headless solutions target enterprise businesses. To allow for small to mid-sized businesses to enter the space, one must cater to the developer experience. If the onboarding, setup, and implementation process are all easy to approach, you no longer need a team of ten to build a scalable ecommerce setup. 
 
 Strapi and Medusa are two systems built primarily for developers and the combination of the two enables you to build an ecommerce store with a blazingly fast, content-rich frontend and a highly extendable backend.
 
@@ -25,7 +25,7 @@ The following guide for setting up the plugin assumes, that you are familiar wit
 First, create a Medusa project using your favorite package manager. You can go about this in two ways:
 
 **Use `npx`**
-`npx create-medusa-app` will allow you to create a Medusa store engine, a storefront, and Medusa admin in a single command
+`npx create-medusa-app`  will allow you to create a Medusa store engine, a storefront, and Medusa admin in a single command
 
 ```bash
 # using npx
@@ -75,12 +75,12 @@ Additionally, add Strapi to your list of plugins:
 
 ```json
 {
-  "resolve": `medusa-plugin-strapi`,
-  "options": {
-    "strapi_medusa_user": "medusa_user",
-    "strapi_medusa_password": "medusaPassword1",
-    "strapi_url": "127.0.0.1",
-    "strapi_port": "1337"
+  resolve: `medusa-plugin-strapi`,
+  options: {
+    strapi_medusa_user: 'medusa_user',
+    strapi_medusa_password: 'medusaPassword1',
+    strapi_url: '127.0.0.1',
+    strapi_port: '1337'
   }
 }
 ```
@@ -119,9 +119,10 @@ npx create-strapi-app strapi-medusa --template https://github.com/Deathwish98/st
 yarn create strapi-app strapi-medusa --template https://github.com/Deathwish98/strapi-medusa-template.git
 ```
 
-After running the command, you have a full Strapi project configured to synchronize with Medusa. Upon the initial start of the Strapi server, all the required models will be created. They will correlate with models from Medusa to allow for two-way synchronization.
+After running the command, you have a full Strapi project configured to synchronize with Medusa. Upon the initial start of the Strapi server, all the required models will be created. They will correlate with models from Medusa to allow for two-way synchronization. 
 
 > Note: The Strapi template starter uses SQLite as the default database. There is a known bug related to `knex.js` that comes from multiple write connections. Restarting the Strapi server should make the error disappear.
+
 
 **Synchronization**
 
@@ -140,7 +141,7 @@ When products are created in Medusa, the two-way communication ensures that data
 For Postgres to function, you need to create a local database. One way of doing this would be to use your terminal:
 
 ```json
-createdb medusa-store
+createdb medusa-store 
 ```
 
 Depending on what system you are on and how your local Postgres is configured, the above command might fail. In that case, please investigate the correct way to create a local database on your pc.
@@ -159,9 +160,10 @@ projectConfig: {
 
 > Note: the `DATABASE_URL` variable should use the Postgres database created in the previous step
 
+
 ## Summary and next steps
 
-You are now provided with the toolbox for creating amazing digital commerce experiences on top of a highly extendable CMS system and ecommerce platform.
+You are now provided with the toolbox for creating amazing digital commerce experiences on top of a highly extendable CMS system and ecommerce platform. 
 
 To quickly get started, see our starters for:
 
