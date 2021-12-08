@@ -3,15 +3,16 @@
 [View plugin here](https://github.com/medusajs/medusa/tree/master/packages/medusa-payment-stripe)
 
 ### Introduction
-Handling payments is at the core of every commerce system; it allows us to run our businesses. Consequently, a vast landscape of payment providers has developed, each with varying cost models, implementational specifications, and analytical capabilities. 
 
-As a consequence, one might ask, which one(s) should I choose? Medusa makes exchanging enabled payment providers easy through its unified payment API. Here, one may select payment provider plugins already existing ([PayPal](https://docs.medusa-commerce.com/add-plugins/paypal), [Klarna](https://docs.medusa-commerce.com/add-plugins/klarna), and Stripe), or develop new ones. 
+Handling payments is at the core of every commerce system; it allows us to run our businesses. Consequently, a vast landscape of payment providers has developed, each with varying cost models, implementational specifications, and analytical capabilities.
+
+As a consequence, one might ask, which one(s) should I choose? Medusa makes exchanging enabled payment providers easy through its unified payment API. Here, one may select payment provider plugins already existing ([PayPal](https://docs.medusa-commerce.com/add-plugins/paypal), [Klarna](https://docs.medusa-commerce.com/add-plugins/klarna), and Stripe), or develop new ones.
 
 Using the `medusa-payment-stripe` plugin, this guide will show you how to set up your Medusa project with Stripe as a payment provider.
 
 [Stripe](https://stripe.com) is a battle-tested and unified platform for transaction handling. Stripe supplies you with the technical components needed to handle transactions safely and all the analytical features necessary to gain insight into your sales. These features are also available in a safe test environment which allows for a concern free development process.
 
-### Prerequisites 
+### Prerequisites
 
 This guide assumes that you have set up a medusa project (See [this guide](https://docs.medusa-commerce.com/tutorial/creating-your-medusa-server)). Furthermore, this guide will be using the Gatsby starter as our storefront (See [this guide](https://docs.medusa-commerce.com/starters/gatsby-medusa-starter)) and the Admin panel to manage our store (See the github installation guide [here](https://github.com/medusajs/admin)).
 
@@ -46,19 +47,18 @@ module.exports = {
 }
 ```
 
-Now head over to [Stripe](https://stripe.com/) and create your account. You can then click API Keys on your dashboard, and here you will see two keys. We suggest using the test environment during development, and therefore you should make sure that you are seeing the keys to the test environment (These keys start with `pk_test_` and `sk_test_` respectively). 
+Now head over to [Stripe](https://stripe.com/) and create your account. You can then click API Keys on your dashboard, and here you will see two keys. We suggest using the test environment during development, and therefore you should make sure that you are seeing the keys to the test environment (These keys start with `pk_test_` and `sk_test_` respectively).
 
-Now open your `.env` file for the Medusa project and store your *secret key* in the `STRIPE_API_KEY` variable:
+Now open your `.env` file for the Medusa project and store your _secret key_ in the `STRIPE_API_KEY` variable:
 
 ```bash
 # .env
 STRIPE_API_KEY=<your key here>
 ```
 
-
 > Note: For production you should also create a webhook on Stripe (also available on your dashboard) and store its secret in the `STRIPE_WEBHOOK_SECRET` variable. We will go into detail with this in a later guide.
 
-Then navigate to your Gatsby starter project and open the `.env.development` file and store your *publishable key* in the `GATSBY_STRIPE_KEY` variable:
+Then navigate to your Gatsby starter project and open the `.env.development` file and store your _publishable key_ in the `GATSBY_STRIPE_KEY` variable:
 
 ```bash
 # .env
@@ -74,6 +74,7 @@ However, as Medusa allows for different payment providers in different regions (
 <center>
 
 ![Change payment provider](https://i.imgur.com/mVIDYz4.png)
+
 </center>
 
 After doing this, and clicking save, we are ready to accept payments using Stripe. So, navigate to your storefront (`http://localhost:8000`) and go through the checkout process:
@@ -81,12 +82,14 @@ After doing this, and clicking save, we are ready to accept payments using Strip
 <center>
 
 ![Checkout process](https://i.imgur.com/qhanISL.gif)
+
 </center>
 After doing so, you should be able to see an uncaptured payment in  Stripe. Here, you navigate to the payments tab, where you should see the following (depending on your choices during the checkout process):
 
 <center>
 
 ![Uncaptured payment](https://i.imgur.com/LX6UR40.png)
+
 </center>
 
 To then capture the payment, navigate back to the admin panel (`http://localhost:7000/`), and dig into the relevant order, and capture the payment:
@@ -98,12 +101,15 @@ To then capture the payment, navigate back to the admin panel (`http://localhost
 </center>
 
 The capture is then reflected in the payment overview in Stripe as well, giving you access to all of Stripe's analytical capabilities:
+
 <center>
 
 ![Captured payment](https://i.imgur.com/edv84Nq.png)
+
 </center>
 
-### Summary 
+### Summary
 
-In this guide we have setup Stripe as a payment provider giving you  a fully functioning ecommerce experience! Interested in learning more? Check out the other guides and tutorials or head over to our [Discord channel](https://discord.gg/xpCwq3Kfn8) if you have any questions or want to become part of our community!
+In this guide we have setup Stripe as a payment provider giving you a fully functioning ecommerce experience! Interested in learning more? Check out the other guides and tutorials or head over to our [Discord channel](https://discord.gg/xpCwq3Kfn8) if you have any questions or want to become part of our community!
 
+[View plugin here](https://github.com/medusajs/medusa/tree/master/packages/medusa-payment-stripe)

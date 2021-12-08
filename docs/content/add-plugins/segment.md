@@ -2,7 +2,7 @@
 
 Modern e-commerce businesses have to integrate with a wide spectrum of tools from marketing and personalization to analytics and business intelligence. Integrations to these tools quickly become hard to maintain and new integrations become overly complex to implement putting a stretch on an e-commerce organization's resources.
 
-The CDP (Customer Data Platform) [Segment](https://segment.com/) solves this problem by allowing users to instantly integrate with +100 tools through a single unified API. 
+The CDP (Customer Data Platform) [Segment](https://segment.com/) solves this problem by allowing users to instantly integrate with +100 tools through a single unified API.
 
 Medusa has an official plugin `medusa-plugin-segment` that instantly gives you access to all Segment integrations and comes preconfigured with powerful server-side tracking
 
@@ -22,7 +22,6 @@ Common integration use cases that can be implemented with Segment include:
 ## Adding Segment to your Medusa store
 
 > Note: you should create a [Node.js source in Segment](https://segment.com/docs/connections/sources/catalog/libraries/server/node/quickstart/) in order to obtain the write key that will be provided in the plugin options.
-> 
 
 Plugins in Medusa's ecosystem come as separate npm packages, that can be installed from the npm registry.
 
@@ -45,33 +44,33 @@ After the plugin has been configured you will get instant access to +100 service
 
 ## Default tracking
 
-`medusa-plugin-segment` comes with prebuilt tracking for common flows for Orders, Returns, Swaps, and Claims. Where applicable the events follow the [Segment Ecommerce Spec](https://segment.com/docs/connections/spec/ecommerce/v2/). 
+`medusa-plugin-segment` comes with prebuilt tracking for common flows for Orders, Returns, Swaps, and Claims. Where applicable the events follow the [Segment Ecommerce Spec](https://segment.com/docs/connections/spec/ecommerce/v2/).
 
 Below is a list of some of the events that are tracked by default:
 
 - Orders
-    - Order Completed
-    - Order Shipped
-    - Order Refunded ← Without returned products
-    - Order Cancelled
+  - Order Completed
+  - Order Shipped
+  - Order Refunded ← Without returned products
+  - Order Cancelled
 - Returns
-    - Order Refunded ← With returned products
+  - Order Refunded ← With returned products
 - Swaps
-    - Swap Created
-    - Swap Confirmed
-    - Swap Shipped
+  - Swap Created
+  - Swap Confirmed
+  - Swap Shipped
 - Claims
-    - Item Claimed
+  - Item Claimed
 
 The default events serve as a good foundation for e-commerce tracking, allowing you to answer questions regarding product performance, return ratios, claim statistics, and more.
 
-In many cases you will want to track other events that are specific to your store - this is also possible through the Segment plugin, as the plugin registers the `segmentService` in your Medusa project. 
+In many cases you will want to track other events that are specific to your store - this is also possible through the Segment plugin, as the plugin registers the `segmentService` in your Medusa project.
 
 ## Tracking custom events
 
-Building from the custom functionality that can be guided by [the tutorial](https://docs.medusa-commerce.com/tutorial/adding-custom-functionality) in Medusa docs, imagine that you want to track all welcome opt-ins. 
+Building from the custom functionality that can be guided by [the tutorial](https://docs.medusa-commerce.com/tutorial/adding-custom-functionality) in Medusa docs, imagine that you want to track all welcome opt-ins.
 
-The `segmentService` exposes a `track` method that wraps [Segment's Track Spec](https://segment.com/docs/connections/spec/track/), allowing you to send events to the Segment from anywhere in your Medusa project. 
+The `segmentService` exposes a `track` method that wraps [Segment's Track Spec](https://segment.com/docs/connections/spec/track/), allowing you to send events to the Segment from anywhere in your Medusa project.
 
 For example, to add tracking of the opt-ins in the `POST /welcome/:cart_id` endpoint, you could add the following code:
 
@@ -81,8 +80,8 @@ segmentService.track({
   event: "Welcome Opt-In Registered",
   properties: {
     cart_id,
-    optin
-  }
+    optin,
+  },
 })
 ```
 
@@ -95,6 +94,6 @@ The above snippet would send an event to Segment for further processing. The eve
 
 ## What's next?
 
-This article covers the introduction to one of many Medusa plugins and an explanation of how you can enhance your e-commerce stack, which will help you to build a successful e-commerce project. 
+This article covers the introduction to one of many Medusa plugins and an explanation of how you can enhance your e-commerce stack, which will help you to build a successful e-commerce project.
 
 Not sure where to start? We are happy to help and talk to you at our [Discord](https://discord.gg/EA5pd3WG)!

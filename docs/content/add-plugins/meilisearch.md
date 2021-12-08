@@ -4,9 +4,9 @@
 
 Search functionality is one of the most useful and important features in e-commerce platforms. From increasing customer conversion rates to significantly improving the user experience, search engines can enable significant business growth. Medusa brings search functionality to your doorstep by leveraging some of the already existing search engines out there.
 
-We have developed a plugin that will allow you to use the performant, open-source, and feature-rich search engine MeiliSearch. 
+We have developed a plugin that will allow you to use the performant, open-source, and feature-rich search engine MeiliSearch.
 
-MeiliSearch is a super-fast, open-source, search engine built in Rust. It comes with a wide range of features such as typo-tolerance, filtering, sorting, and [much more](https://docs.meilisearch.com/learn/what_is_meilisearch/features.html). MeiliSearch also provides a pleasant developer experience, as it is extremely intuitive and newcomer-friendly - so even if you're new to the search engine "ecosystem", you'll have a great time navigating through their documentation. 
+MeiliSearch is a super-fast, open-source, search engine built in Rust. It comes with a wide range of features such as typo-tolerance, filtering, sorting, and [much more](https://docs.meilisearch.com/learn/what_is_meilisearch/features.html). MeiliSearch also provides a pleasant developer experience, as it is extremely intuitive and newcomer-friendly - so even if you're new to the search engine "ecosystem", you'll have a great time navigating through their documentation.
 
 Through Medusa flexible plugin system, it is possible to enable search functionality into your medusa applications with minimum hassle by including our new plugin `medusa-plugin-meilisearch` to your `medusa-config.js` file.
 
@@ -22,7 +22,7 @@ curl -L https://install.meilisearch.com | sh
 ./meilisearch
 ```
 
-For other installation alternatives, you can head over to Meilisearch's [installation guide](https://docs.meilisearch.com/learn/getting_started/installation.html). 
+For other installation alternatives, you can head over to Meilisearch's [installation guide](https://docs.meilisearch.com/learn/getting_started/installation.html).
 
 In order to add the plugin to your medusa project, you will need to first install the plugin using your favorite package manager:
 
@@ -38,36 +38,36 @@ Then in your `medusa-config.js` file, add the plugin to your `plugins` array. Fo
 
 ```jsx
 module.exports = {
-	// ...other options
-	plugins: [
-		// ...other plugins
-		{
-			resolve: `medusa-plugin-meilisearch`,
-			options: {
-				// config object passed when creating an instance of the MeiliSearch client
-				config: {
-					host: "http://127.0.0.1:7700",
-					apiKey: "your_master_key"
-				},
-				settings: {
-					// index name
-					products: {
-						// MeiliSearch's setting options to be set on a particular index
-						searchableAttributes: ["title", "description", "variant_sku"],
-						displayedAttributes: ["title", "description", "variant_sku"],
-					},
-				},
-			},
-		},
-	],
-};
+  // ...other options
+  plugins: [
+    // ...other plugins
+    {
+      resolve: `medusa-plugin-meilisearch`,
+      options: {
+        // config object passed when creating an instance of the MeiliSearch client
+        config: {
+          host: "http://127.0.0.1:7700",
+          apiKey: "your_master_key",
+        },
+        settings: {
+          // index name
+          products: {
+            // MeiliSearch's setting options to be set on a particular index
+            searchableAttributes: ["title", "description", "variant_sku"],
+            displayedAttributes: ["title", "description", "variant_sku"],
+          },
+        },
+      },
+    },
+  ],
+}
 ```
 
 Et voilà! That's all it takes to make medusa and MeiliSearch work in great harmony. Please note that you can use any other setting from this [list](https://docs.meilisearch.com/reference/features/settings.html#settings) such as `filterableAttributes`, `sortableAttributes`, and `synonyms`. We are working on another blog post that will demonstrate how you can make use of these settings to build a great storefront experience, so stay tuned to that!
 
 ### Simple Usage
 
-Medusa exposes an API layer that can serve as an abstraction over various search providers. We will now be interacting with one of the search routes parts of that layer, namely, the `POST /store/products/search` route. The route will enable you to test out the integration between Medusa and MeiliSearch. The endpoint takes a mandatory `q` property and a set of optional parameters which will be passed to MeiliSearch's `search()` method as a second argument. The list of the parameters which can be provided can be found in MeiliSearch's [docs](https://docs.meilisearch.com/reference/api/search.html#search-in-an-index-with-post-route). 
+Medusa exposes an API layer that can serve as an abstraction over various search providers. We will now be interacting with one of the search routes parts of that layer, namely, the `POST /store/products/search` route. The route will enable you to test out the integration between Medusa and MeiliSearch. The endpoint takes a mandatory `q` property and a set of optional parameters which will be passed to MeiliSearch's `search()` method as a second argument. The list of the parameters which can be provided can be found in MeiliSearch's [docs](https://docs.meilisearch.com/reference/api/search.html#search-in-an-index-with-post-route).
 
 Let's use Postman for this short demo to get some search results:
 
@@ -79,7 +79,7 @@ Postman is not the most exciting client to use to showcase this, so in the next 
 
 ### Highlighting and Pagination in a React Storefront
 
-The Medusa + MeiliSearch integration opens up a lot of capabilities for creating a rich UX for your storefront. The plugin indexes all your products and listens to any updates made on them, so you can then leverage any client-side SDKs developed by the MeiliSearch team to build cool search experiences for storefronts. For example, MeiliSearch exposes a React [adapter](https://github.com/meilisearch/meilisearch-react/) that can be used with React InstantSearch (made by Algolia) which provides features such as highlighting, filtering, and pagination out of the box. 
+The Medusa + MeiliSearch integration opens up a lot of capabilities for creating a rich UX for your storefront. The plugin indexes all your products and listens to any updates made on them, so you can then leverage any client-side SDKs developed by the MeiliSearch team to build cool search experiences for storefronts. For example, MeiliSearch exposes a React [adapter](https://github.com/meilisearch/meilisearch-react/) that can be used with React InstantSearch (made by Algolia) which provides features such as highlighting, filtering, and pagination out of the box.
 
 In order to leverage this functionality, you'll need to install the corresponding packages by running:
 
@@ -93,46 +93,43 @@ yarn add react-instantsearch-dom @meilisearch/instant-meilisearch
 You can then use the MeiliSearch client in your react app:
 
 ```jsx
-import React from 'react';
+import React from "react"
 import {
   InstantSearch,
   Hits,
   SearchBox,
   Pagination,
   Highlight,
-} from "react-instantsearch-dom";
-import { instantMeiliSearch } from '@meilisearch/instant-meilisearch';
+} from "react-instantsearch-dom"
+import { instantMeiliSearch } from "@meilisearch/instant-meilisearch"
 
 const searchClient = instantMeiliSearch(
   "http://127.0.0.1:7700",
   "your_master_key"
-);
+)
 
 const SearchPage = () => (
-  <InstantSearch
-    indexName="products"
-    searchClient={searchClient}
-  >
+  <InstantSearch indexName="products" searchClient={searchClient}>
     <SearchBox />
     <Hits hitComponent={Hit} />
     <Pagination />
   </InstantSearch>
-);
+)
 
 const Hit = ({ hit }) => {
-	return (
-	  <div key={hit.id}>
-	    <div className="hit-name">
-	      <Highlight attribute="name" hit={hit} />
-	    </div>
-	    <img src={hit.image} align="left" alt={hit.name} />
-	    <div className="hit-description">
-	      <Snippet attribute="description" hit={hit} />
-	    </div>
-	    <div className="hit-info">price: {hit.price}</div>
-	    <div className="hit-info">release date: {hit.releaseDate}</div>
-	  </div>
-	)
+  return (
+    <div key={hit.id}>
+      <div className="hit-name">
+        <Highlight attribute="name" hit={hit} />
+      </div>
+      <img src={hit.image} align="left" alt={hit.name} />
+      <div className="hit-description">
+        <Snippet attribute="description" hit={hit} />
+      </div>
+      <div className="hit-info">price: {hit.price}</div>
+      <div className="hit-info">release date: {hit.releaseDate}</div>
+    </div>
+  )
 }
 ```
 
@@ -140,7 +137,7 @@ If you want to play around with the various features provided by React InstantSe
 
 ### Demo: Palmes Storefront
 
-By using the above libraries (React, `react-instantsearch-dom`, and `instant-meilisearch`) in addition to the medusa plugin, we have successfully integrated the MeiliSearch plugin for one of our customers: Palmes. Following is a short GIF demoing the functionality. 
+By using the above libraries (React, `react-instantsearch-dom`, and `instant-meilisearch`) in addition to the medusa plugin, we have successfully integrated the MeiliSearch plugin for one of our customers: Palmes. Following is a short GIF demoing the functionality.
 
 [Palmes Tennis Society.mp4](https://s3-us-west-2.amazonaws.com/secure.notion-static.com/e0b596ab-e146-4151-a8b0-42c94401761f/Palmes_Tennis_Society.mp4)
 
