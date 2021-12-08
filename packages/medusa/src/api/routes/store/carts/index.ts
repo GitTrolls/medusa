@@ -97,7 +97,7 @@ export default (app, container) => {
   return app
 }
 
-export const defaultStoreCartFields: (keyof Cart)[] = [
+export const defaultStoreCartFields = [
   "subtotal",
   "tax_total",
   "shipping_total",

@@ -43,9 +43,8 @@ describe("POST /admin/shipping-options", () => {
         name: "Test option",
         region_id: "testregion",
         provider_id: "test_provider",
-        metadata: undefined,
         data: { id: "test" },
-        profile_id: expect.any(String),
+        profile_id: expect.stringMatching(/.*/),
         price_type: "flat_rate",
         amount: 100,
         requirements: [
@@ -87,9 +86,7 @@ describe("POST /admin/shipping-options", () => {
     })
 
     it("returns error", () => {
-      expect(subject.body.message).toEqual(
-        expect.stringContaining(`name must be a string`)
-      )
+      expect(subject.body.message[0].message).toEqual(`"name" is required`)
     })
   })
 })

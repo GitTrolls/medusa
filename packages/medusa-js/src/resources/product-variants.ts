@@ -3,16 +3,16 @@ import {
   StoreVariantsListRes,
   StoreVariantsRes,
 } from "@medusajs/medusa"
-import { ResponsePromise } from "../typings"
+import { AxiosPromise } from "axios"
 import BaseResource from "./base"
 
 class ProductVariantsResource extends BaseResource {
   /**
    * @description Retrieves a single product variant
    * @param {string} id is required
-   * @return {ResponsePromise<StoreVariantsRes>}
+   * @return {AxiosPromise<StoreVariantsRes>}
    */
-  retrieve(id: string): ResponsePromise<StoreVariantsRes> {
+  retrieve(id: string): AxiosPromise<StoreVariantsRes> {
     const path = `/store/variants/${id}`
     return this.client.request("GET", path)
   }
@@ -20,9 +20,9 @@ class ProductVariantsResource extends BaseResource {
   /**
    * @description Retrieves a list of of Product Variants
    * @param {StoreVariantsListParamsObject} query
-   * @return {ResponsePromise<StoreVariantsListRes>}
+   * @return {AxiosPromise<StoreVariantsListRes>}
    */
-  list(query?: StoreGetVariantsParams): ResponsePromise<StoreVariantsListRes> {
+  list(query?: StoreGetVariantsParams): AxiosPromise<StoreVariantsListRes> {
     const path = `/store/variants`
 
     const search = Object.entries(query || {}).map(([key, value]) => {

@@ -50,46 +50,46 @@ export class Address {
   id: string
 
   @Index()
-  @Column({ type: "text", nullable: true })
-  customer_id: string | null
+  @Column({ nullable: true })
+  customer_id: string
 
   @ManyToOne(() => Customer)
   @JoinColumn({ name: "customer_id" })
-  customer: Customer | null
+  customer: Customer
 
-  @Column({ type: "text", nullable: true })
-  company: string | null
+  @Column({ nullable: true })
+  company: string
 
-  @Column({ type: "text", nullable: true })
-  first_name: string | null
+  @Column({ nullable: true })
+  first_name: string
 
-  @Column({ type: "text", nullable: true })
-  last_name: string | null
+  @Column({ nullable: true })
+  last_name: string
 
-  @Column({ type: "text", nullable: true })
-  address_1: string | null
+  @Column({ nullable: true })
+  address_1: string
 
-  @Column({ type: "text", nullable: true })
-  address_2: string | null
+  @Column({ nullable: true })
+  address_2: string
 
-  @Column({ type: "text", nullable: true })
-  city: string | null
+  @Column({ nullable: true })
+  city: string
 
-  @Column({ type: "text", nullable: true })
-  country_code: string | null
+  @Column({ nullable: true })
+  country_code: string
 
   @ManyToOne(() => Country)
   @JoinColumn({ name: "country_code", referencedColumnName: "iso_2" })
-  country: Country | null
+  country: Country
 
-  @Column({ type: "text", nullable: true })
-  province: string | null
+  @Column({ nullable: true })
+  province: string
 
-  @Column({ type: "text", nullable: true })
-  postal_code: string | null
+  @Column({ nullable: true })
+  postal_code: string
 
-  @Column({ type: "text", nullable: true })
-  phone: string | null
+  @Column({ nullable: true })
+  phone: string
 
   @CreateDateColumn({ type: resolveDbType("timestamptz") })
   created_at: Date
@@ -98,7 +98,7 @@ export class Address {
   updated_at: Date
 
   @DeleteDateColumn({ type: resolveDbType("timestamptz") })
-  deleted_at: Date | null
+  deleted_at: Date
 
   @DbAwareColumn({ type: "jsonb", nullable: true })
   metadata: any

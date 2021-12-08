@@ -35,7 +35,7 @@ export class Region {
   @JoinColumn({ name: "currency_code", referencedColumnName: "code" })
   currency: Currency
 
-  @Column({ type: "real" })
+  @Column({ type: "decimal" })
   tax_rate: number
 
   @Column({ nullable: true })
