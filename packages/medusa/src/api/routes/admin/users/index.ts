@@ -1,10 +1,11 @@
 import { Router } from "express"
+import _ from "lodash"
 import { User } from "../../../.."
 import { DeleteResponse } from "../../../../types/common"
 import middlewares from "../../../middlewares"
+const route = Router()
 
 export const unauthenticatedUserRoutes = (app) => {
-  const route = Router()
   app.use("/users", route)
 
   route.post(
@@ -19,7 +20,6 @@ export const unauthenticatedUserRoutes = (app) => {
 }
 
 export default (app) => {
-  const route = Router()
   app.use("/users", route)
 
   route.get("/:user_id", middlewares.wrap(require("./get-user").default))
