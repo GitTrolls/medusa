@@ -53,9 +53,6 @@ export type AdminNotificationsListRes = {
   notifications: Notification[]
 }
 
-export type AdminNotificationsRes = {
+export type AdminNotificationsRes = PaginatedResponse & {
   notification: Notification
 }
-
-export * from "./list-notifications"
-export * from "./resend-notification"
