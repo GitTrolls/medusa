@@ -1,36 +1,7 @@
-import { IdMap, MockManager, MockRepository } from "medusa-test-utils"
 import StoreService from "../store"
+import { IdMap, MockManager, MockRepository } from "medusa-test-utils"
 
 describe("StoreService", () => {
-  describe("create", () => {
-    const storeRepository = MockRepository({})
-    const currencyRepository = MockRepository({
-      findOne: () => Promise.resolve({ code: "usd" }),
-    })
-
-    const storeService = new StoreService({
-      manager: MockManager,
-      storeRepository,
-      currencyRepository,
-    })
-
-    beforeEach(() => {
-      jest.clearAllMocks()
-    })
-
-    it("successfully creates store with default currency", async () => {
-      await storeService.create()
-
-      expect(storeRepository.create).toHaveBeenCalledTimes(1)
-      expect(storeRepository.save).toHaveBeenCalledTimes(1)
-      expect(currencyRepository.findOne).toHaveBeenCalledTimes(1)
-
-      expect(storeRepository.save).toHaveBeenCalledWith({
-        currencies: [{ code: "usd" }],
-      })
-    })
-  })
-
   describe("retrieve", () => {
     const storeRepository = MockRepository({})
 
@@ -104,7 +75,7 @@ describe("StoreService", () => {
     })
 
     const currencyRepository = MockRepository({
-      findOne: (query) => {
+      findOne: query => {
         if (query.where.code === "sek") {
           return Promise.resolve({ code: "sek" })
         }
@@ -167,7 +138,7 @@ describe("StoreService", () => {
     })
 
     const currencyRepository = MockRepository({
-      findOne: (query) => {
+      findOne: query => {
         if (query.where.code === "sek") {
           return Promise.resolve({ code: "sek" })
         }

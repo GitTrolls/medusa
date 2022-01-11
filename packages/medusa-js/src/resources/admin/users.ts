@@ -1,15 +1,13 @@
 import {
-  AdminDeleteUserRes,
-  AdminResetPasswordRequest,
   AdminResetPasswordTokenRequest,
-  AdminUserRes,
+  AdminResetPasswordRequest,
+  AdminCreateUserRequest,
+  AdminUpdateUserRequest,
   AdminUsersListRes,
+  AdminUserRes,
+  AdminDeleteUserRes,
 } from "@medusajs/medusa"
-import {
-  ResponsePromise,
-  AdminCreateUserPayload,
-  AdminUpdateUserPayload,
-} from "../.."
+import { ResponsePromise } from "../.."
 import BaseResource from "../base"
 
 class AdminUsersResource extends BaseResource {
@@ -52,7 +50,7 @@ class AdminUsersResource extends BaseResource {
    * @param payload user creation request body
    * @returns created user
    */
-  create(payload: AdminCreateUserPayload): ResponsePromise<AdminUserRes> {
+  create(payload: AdminCreateUserRequest): ResponsePromise<AdminUserRes> {
     const path = `/admin/users`
     return this.client.request("POST", path, payload)
   }
@@ -65,7 +63,7 @@ class AdminUsersResource extends BaseResource {
    */
   update(
     id: string,
-    payload: AdminUpdateUserPayload
+    payload: AdminUpdateUserRequest
   ): ResponsePromise<AdminUserRes> {
     const path = `/admin/users/${id}`
     return this.client.request("POST", path, payload)
@@ -90,5 +88,5 @@ class AdminUsersResource extends BaseResource {
     return this.client.request("GET", path)
   }
 }
-
+1
 export default AdminUsersResource

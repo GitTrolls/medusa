@@ -98,9 +98,7 @@ class AdminDiscountsResource extends BaseResource {
   /**
    * @description Lists discounts
    */
-  list(
-    query?: AdminGetDiscountsParams
-  ): ResponsePromise<AdminDiscountsListRes> {
+  list(query: AdminGetDiscountsParams): ResponsePromise<AdminDiscountsListRes> {
     let path = `/admin/discounts`
 
     if (query) {

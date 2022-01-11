@@ -1,19 +1,25 @@
 import {
-  AdminGetProductsParams,
-  AdminPostProductsProductMetadataReq,
-  AdminPostProductsProductOptionsOption,
-  AdminPostProductsProductOptionsReq,
+  AdminGetNotesParams,
+  AdminNotesDeleteRes,
+  AdminNotesListRes,
+  AdminNotesRes,
+  AdminPostNotesNoteReq,
+  AdminPostNotesReq,
   AdminPostProductsProductReq,
+  AdminPostProductsReq,
+  AdminProductsListTypesRes,
+  AdminProductsListTagsRes,
+  AdminProductsRes,
   AdminPostProductsProductVariantsReq,
   AdminPostProductsProductVariantsVariantReq,
-  AdminPostProductsReq,
-  AdminProductsDeleteOptionRes,
-  AdminProductsDeleteRes,
+  AdminPostProductsProductOptionsReq,
+  AdminPostProductsProductOptionsOption,
   AdminProductsDeleteVariantRes,
+  AdminProductsDeleteRes,
+  AdminProductsDeleteOptionRes,
+  AdminPostProductsProductMetadataReq,
+  AdminGetProductsParams,
   AdminProductsListRes,
-  AdminProductsListTagsRes,
-  AdminProductsListTypesRes,
-  AdminProductsRes
 } from "@medusajs/medusa"
 import { ResponsePromise } from "../../typings"
 import BaseResource from "../base"
@@ -42,7 +48,7 @@ class AdminProductsResource extends BaseResource {
     return this.client.request("DELETE", path)
   }
 
-  list(query?: AdminGetProductsParams): ResponsePromise<AdminProductsListRes> {
+  list(query: AdminGetProductsParams): ResponsePromise<AdminProductsListRes> {
     let path = `/admin/products`
 
     if (query) {

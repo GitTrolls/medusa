@@ -2,8 +2,9 @@ import {
   AdminInviteDeleteRes,
   AdminListInvitesRes,
   AdminPostInvitesInviteAcceptReq,
+  AdminPostInvitesReq,
 } from "@medusajs/medusa"
-import { AdminPostInvitesPayload, ResponsePromise } from "../.."
+import { ResponsePromise } from "../.."
 import BaseResource from "../base"
 
 class AdminInvitesResource extends BaseResource {
@@ -12,7 +13,7 @@ class AdminInvitesResource extends BaseResource {
     return this.client.request("POST", path, payload)
   }
 
-  create(payload: AdminPostInvitesPayload): ResponsePromise {
+  create(payload: AdminPostInvitesReq): ResponsePromise {
     const path = `/admin/invites`
     return this.client.request("POST", path, payload)
   }
