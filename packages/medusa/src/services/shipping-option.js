@@ -13,6 +13,7 @@ class ShippingOptionService extends BaseService {
     shippingMethodRepository,
     fulfillmentProviderService,
     regionService,
+    totalsService,
   }) {
     super()
 
@@ -33,6 +34,9 @@ class ShippingOptionService extends BaseService {
 
     /** @private @const {RegionService} */
     this.regionService_ = regionService
+
+    /** @private @const {TotalsService} */
+    this.totalsService_ = totalsService
   }
 
   withTransaction(transactionManager) {
@@ -47,6 +51,7 @@ class ShippingOptionService extends BaseService {
       shippingOptionRequirementRepository: this.requirementRepository_,
       fulfillmentProviderService: this.providerService_,
       regionService: this.regionService_,
+      totalsService: this.totalsService_,
     })
 
     cloned.transactionManager_ = transactionManager
@@ -125,18 +130,6 @@ class ShippingOptionService extends BaseService {
 
     const query = this.buildQuery_(selector, config)
     return optRepo.find(query)
-  }
-
-  /**
-   * @param {Object} selector - the query object for find
-   * @param {object} config - config object
-   * @return {Promise} the result of the find operation
-   */
-  async listAndCount(selector, config = { skip: 0, take: 50 }) {
-    const optRepo = this.manager_.getCustomRepository(this.optionRepository_)
-
-    const query = this.buildQuery_(selector, config)
-    return await optRepo.findAndCount(query)
   }
 
   /**
@@ -243,7 +236,7 @@ class ShippingOptionService extends BaseService {
       )
 
       let methodPrice
-      if (typeof config.price === "number") {
+      if ("price" in config) {
         methodPrice = config.price
       } else {
         methodPrice = await this.getPrice_(option, validatedData, config.cart)

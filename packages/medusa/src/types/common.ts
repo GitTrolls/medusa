@@ -1,7 +1,8 @@
-import { Transform, Type } from "class-transformer"
+import { Transform } from "class-transformer"
+import { transformDate } from "../utils/validators/date-transform"
+import { Type } from "class-transformer"
 import { IsDate, IsNumber, IsOptional, IsString } from "class-validator"
 import "reflect-metadata"
-import { transformDate } from "../utils/validators/date-transform"
 
 export type PartialPick<T, K extends keyof T> = {
   [P in K]?: T[P]
@@ -22,7 +23,7 @@ export interface FindConfig<Entity> {
   skip?: number
   take?: number
   relations?: string[]
-  order?: { [k: symbol]: "ASC" | "DESC" }
+  order?: { [k: string]: "ASC" | "DESC" }
 }
 
 export type PaginatedResponse = { limit: number; offset: number; count: number }
@@ -167,14 +168,4 @@ export class AddressCreatePayload {
   province: string
   @IsString()
   postal_code: string
-}
-
-export class FindParams {
-  @IsString()
-  @IsOptional()
-  expand?: string
-
-  @IsString()
-  @IsOptional()
-  fields?: string
 }

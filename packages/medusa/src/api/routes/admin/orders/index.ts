@@ -144,6 +144,14 @@ export default (app) => {
   )
 
   /**
+   * Receives the inventory to return from a swap
+   */
+  route.post(
+    "/:id/swaps/:swap_id/receive",
+    middlewares.wrap(require("./receive-swap").default)
+  )
+
+  /**
    * Fulfills a swap.
    */
   route.post(
@@ -238,8 +246,6 @@ export const defaultAdminOrdersRelations = [
   "fulfillments.tracking_links",
   "fulfillments.items",
   "returns",
-  "returns.shipping_method",
-  "returns.shipping_method.tax_lines",
   "returns.items",
   "returns.items.reason",
   "gift_cards",
@@ -384,6 +390,7 @@ export * from "./fulfill-swap"
 export * from "./get-order"
 export * from "./list-orders"
 export * from "./process-swap-payment"
+export * from "./receive-swap"
 export * from "./refund-payment"
 export * from "./request-return"
 export * from "./update-claim"

@@ -14,9 +14,9 @@ class AdminGiftCardsResource extends BaseResource {
   /**
    * @description Creates a gift card
    */
-  create(payload: AdminPostGiftCardsReq, customHeaders: Record<string, any> = {}): ResponsePromise<AdminGiftCardsRes> {
+  create(payload: AdminPostGiftCardsReq): ResponsePromise<AdminGiftCardsRes> {
     const path = `/admin/gift-cards`
-    return this.client.request("POST", path, payload, {}, customHeaders)
+    return this.client.request("POST", path, payload)
   }
 
   /**
@@ -24,34 +24,34 @@ class AdminGiftCardsResource extends BaseResource {
    */
   update(
     id: string,
-    payload: AdminPostGiftCardsGiftCardReq,
-    customHeaders: Record<string, any> = {}): ResponsePromise<AdminGiftCardsRes> {
+    payload: AdminPostGiftCardsGiftCardReq
+  ): ResponsePromise<AdminGiftCardsRes> {
     const path = `/admin/gift-cards/${id}`
-    return this.client.request("POST", path, payload, {}, customHeaders)
+    return this.client.request("POST", path, payload)
   }
 
   /**
    * @description Deletes a gift card
    */
-  delete(id: string, customHeaders: Record<string, any> = {}): ResponsePromise<AdminGiftCardsDeleteRes> {
+  delete(id: string): ResponsePromise<AdminGiftCardsDeleteRes> {
     const path = `/admin/gift-cards/${id}`
-    return this.client.request("DELETE", path, {}, {}, customHeaders)
+    return this.client.request("DELETE", path)
   }
 
   /**
    * @description Deletes a gift card
    */
-  retrieve(id: string, customHeaders: Record<string, any> = {}): ResponsePromise<AdminGiftCardsRes> {
+  retrieve(id: string): ResponsePromise<AdminGiftCardsRes> {
     const path = `/admin/gift-cards/${id}`
-    return this.client.request("GET", path, {}, {}, customHeaders)
+    return this.client.request("GET", path)
   }
 
   /**
    * @description Lists gift cards
    */
   list(
-    query?: AdminGetGiftCardsParams,
-    customHeaders: Record<string, any> = {}): ResponsePromise<AdminGiftCardsListRes> {
+    query?: AdminGetGiftCardsParams
+  ): ResponsePromise<AdminGiftCardsListRes> {
     let path = `/admin/gift-cards/`
 
     if (query) {
@@ -59,7 +59,7 @@ class AdminGiftCardsResource extends BaseResource {
       path = `/admin/gift-cards?${queryString}`
     }
 
-    return this.client.request("GET", path, {}, {}, customHeaders)
+    return this.client.request("GET", path)
   }
 }
 

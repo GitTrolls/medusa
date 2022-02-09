@@ -24,9 +24,6 @@ function formatRegistrationName(fn) {
     case "repositories":
       namespace = "repositorys"
       break
-    case "strategies":
-      namespace = "strategys"
-      break
     default:
       break
   }

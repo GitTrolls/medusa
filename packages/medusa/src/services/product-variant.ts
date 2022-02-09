@@ -1,6 +1,12 @@
 import { MedusaError } from "medusa-core-utils"
 import { BaseService } from "medusa-interfaces"
-import { Brackets, EntityManager, ILike, In, SelectQueryBuilder } from "typeorm"
+import {
+  Brackets,
+  EntityManager,
+  ILike,
+  IsNull,
+  SelectQueryBuilder,
+} from "typeorm"
 import { MoneyAmount } from "../models/money-amount"
 import { Product } from "../models/product"
 import { ProductOptionValue } from "../models/product-option-value"
@@ -279,7 +285,17 @@ class ProductVariantService extends BaseService {
       const { prices, options, metadata, inventory_quantity, ...rest } = update
 
       if (prices) {
-        await this.updateVariantPrices(variant.id, prices)
+        for (const price of prices) {
+          if (price.region_id) {
+            await this.setRegionPrice(variant.id, {
+              region_id: price.region_id,
+              amount: price.amount,
+              sale_amount: price.sale_amount || undefined,
+            })
+          } else {
+            await this.setCurrencyPrice(variant.id, price)
+          }
+        }
       }
 
       if (options) {
@@ -317,37 +333,6 @@ class ProductVariantService extends BaseService {
     })
   }
 
-  async updateVariantPrices(
-    variantId: string,
-    prices: ProductVariantPrice[]
-  ): Promise<void> {
-    return this.atomicPhase_(async (manager: EntityManager) => {
-      const moneyAmountRepo = manager.getCustomRepository(
-        this.moneyAmountRepository_
-      )
-
-      // get prices to be deleted
-      const obsoletePrices = await moneyAmountRepo.findVariantPricesNotIn(
-        variantId,
-        prices
-      )
-
-      for (const price of prices) {
-        if (price.region_id) {
-          await this.setRegionPrice(variantId, {
-            region_id: price.region_id,
-            amount: price.amount,
-            sale_amount: price.sale_amount || undefined,
-          })
-        } else {
-          await this.setCurrencyPrice(variantId, price)
-        }
-      }
-
-      await moneyAmountRepo.remove(obsoletePrices)
-    })
-  }
-
   /**
    * Sets the default price for the given currency.
    * @param {string} variantId - the id of the variant to set prices for
@@ -363,7 +348,26 @@ class ProductVariantService extends BaseService {
         this.moneyAmountRepository_
       )
 
-      return await moneyAmountRepo.upsertCurrencyPrice(variantId, price)
+      let moneyAmount = await moneyAmountRepo.findOne({
+        where: {
+          currency_code: price.currency_code?.toLowerCase(),
+          variant_id: variantId,
+          region_id: IsNull(),
+        },
+      })
+
+      if (!moneyAmount) {
+        moneyAmount = moneyAmountRepo.create({
+          ...price,
+          currency_code: price.currency_code?.toLowerCase(),
+          variant_id: variantId,
+        })
+      } else {
+        moneyAmount.amount = price.amount
+        moneyAmount.sale_amount = price.sale_amount
+      }
+
+      return await moneyAmountRepo.save(moneyAmount)
     })
   }
 
@@ -662,7 +666,7 @@ class ProductVariantService extends BaseService {
    * @param {Object} metadata - the metadata to set
    * @return {Object} updated metadata object
    */
-  setMetadata_(variant: ProductVariant, metadata: object): Record<string, any> {
+  setMetadata_(variant: ProductVariant, metadata: object): object {
     const existing = variant.metadata || {}
     const newData = {}
     for (const [key, value] of Object.entries(metadata)) {

@@ -261,7 +261,7 @@ class GiftCardService extends BaseService {
         giftCard.metadata = await this.setMetadata_(giftCard.id, metadata)
       }
 
-      if (typeof balance !== "undefined") {
+      if (balance) {
         if (balance < 0 || giftCard.value < balance) {
           throw new MedusaError(
             MedusaError.Types.INVALID_ARGUMENT,

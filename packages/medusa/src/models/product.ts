@@ -1,21 +1,22 @@
-import _ from "lodash"
 import {
-  BeforeInsert,
-  Column,
-  CreateDateColumn,
-  DeleteDateColumn,
   Entity,
   Index,
+  BeforeInsert,
+  Column,
+  DeleteDateColumn,
+  CreateDateColumn,
+  UpdateDateColumn,
+  PrimaryColumn,
+  OneToOne,
+  OneToMany,
+  ManyToOne,
+  ManyToMany,
   JoinColumn,
   JoinTable,
-  ManyToMany,
-  ManyToOne,
-  OneToMany,
-  PrimaryColumn,
-  UpdateDateColumn,
 } from "typeorm"
 import { ulid } from "ulid"
-import { DbAwareColumn, resolveDbType } from "../utils/db-aware-column"
+import { resolveDbType, DbAwareColumn } from "../utils/db-aware-column"
+
 import { Image } from "./image"
 import { ProductCollection } from "./product-collection"
 import { ProductOption } from "./product-option"
@@ -23,6 +24,7 @@ import { ProductTag } from "./product-tag"
 import { ProductType } from "./product-type"
 import { ProductVariant } from "./product-variant"
 import { ShippingProfile } from "./shipping-profile"
+import _ from "lodash"
 
 export enum Status {
   DRAFT = "draft",
@@ -74,13 +76,13 @@ export class Product {
 
   @OneToMany(
     () => ProductOption,
-    (productOption) => productOption.product
+    productOption => productOption.product
   )
   options: ProductOption[]
 
   @OneToMany(
     () => ProductVariant,
-    (variant) => variant.product,
+    variant => variant.product,
     { cascade: true }
   )
   variants: ProductVariant[]
@@ -118,7 +120,7 @@ export class Product {
   material: string
 
   @Column({ nullable: true })
-  collection_id: string | null
+  collection_id: string
 
   @ManyToOne(() => ProductCollection)
   @JoinColumn({ name: "collection_id" })

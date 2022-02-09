@@ -13,40 +13,63 @@ class ClaimService extends BaseService {
 
   constructor({
     manager,
-    addressRepository,
-    claimItemService,
     claimRepository,
-    eventBusService,
+    addressRepository,
     fulfillmentProviderService,
     fulfillmentService,
-    inventoryService,
     lineItemService,
+    totalsService,
     paymentProviderService,
-    regionService,
     returnService,
     shippingOptionService,
-    taxProviderService,
-    totalsService,
+    claimItemService,
+    regionService,
+    inventoryService,
+    eventBusService,
   }) {
     super()
 
     /** @private @constant {EntityManager} */
     this.manager_ = manager
 
-    this.addressRepo_ = addressRepository
-    this.claimItemService_ = claimItemService
+    /** @private @constant {ClaimRepository} */
     this.claimRepository_ = claimRepository
-    this.eventBus_ = eventBusService
+
+    /** @private @constant {AddressRepository} */
+    this.addressRepo_ = addressRepository
+
+    /** @private @constant {FulfillmentProviderService} */
     this.fulfillmentProviderService_ = fulfillmentProviderService
-    this.fulfillmentService_ = fulfillmentService
-    this.inventoryService_ = inventoryService
-    this.lineItemService_ = lineItemService
+
+    /** @private @constant {PaymentProviderService} */
     this.paymentProviderService_ = paymentProviderService
+
+    /** @private @constant {LineItemService} */
+    this.lineItemService_ = lineItemService
+
+    /** @private @constant {RegionService} */
     this.regionService_ = regionService
+
+    /** @private @constant {ReturnService} */
     this.returnService_ = returnService
-    this.shippingOptionService_ = shippingOptionService
-    this.taxProviderService_ = taxProviderService
+
+    /** @private @constant {FulfillmentService} */
+    this.fulfillmentService_ = fulfillmentService
+
+    /** @private @constant {ClaimItemService} */
+    this.claimItemService_ = claimItemService
+
+    /** @private @constant {TotalsService} */
     this.totalsService_ = totalsService
+
+    /** @private @constant {InventoryService} */
+    this.inventoryService_ = inventoryService
+
+    /** @private @constant {EventBus} */
+    this.eventBus_ = eventBusService
+
+    /** @private @constant {ShippingOptionService} */
+    this.shippingOptionService_ = shippingOptionService
   }
 
   withTransaction(manager) {
@@ -56,20 +79,19 @@ class ClaimService extends BaseService {
 
     const cloned = new ClaimService({
       manager,
-      addressRepository: this.addressRepo_,
-      claimItemService: this.claimItemService_,
       claimRepository: this.claimRepository_,
-      eventBusService: this.eventBus_,
+      addressRepository: this.addressRepo_,
       fulfillmentProviderService: this.fulfillmentProviderService_,
       fulfillmentService: this.fulfillmentService_,
-      inventoryService: this.inventoryService_,
-      lineItemService: this.lineItemService_,
       paymentProviderService: this.paymentProviderService_,
+      lineItemService: this.lineItemService_,
       regionService: this.regionService_,
       returnService: this.returnService_,
-      shippingOptionService: this.shippingOptionService_,
+      claimItemService: this.claimItemService_,
+      eventBusService: this.eventBus_,
       totalsService: this.totalsService_,
-      taxProviderService: this.taxProviderService_,
+      inventoryService: this.inventoryService_,
+      shippingOptionService: this.shippingOptionService_,
     })
 
     cloned.transactionManager_ = manager
@@ -176,7 +198,7 @@ class ClaimService extends BaseService {
 
       for (const item of claim_items) {
         const line = await this.lineItemService_.retrieve(item.item_id, {
-          relations: ["order", "swap", "claim_order", "tax_lines"],
+          relations: ["order", "swap", "claim_order"],
         })
 
         if (
@@ -239,29 +261,25 @@ class ClaimService extends BaseService {
         toRefund = await this.totalsService_.getRefundTotal(order, lines)
       }
 
-      let newItems = []
-      if (typeof additional_items !== "undefined") {
-        for (const item of additional_items) {
-          await this.inventoryService_
-            .withTransaction(manager)
-            .confirmInventory(item.variant_id, item.quantity)
-        }
-
-        newItems = await Promise.all(
-          additional_items.map((i) =>
-            this.lineItemService_
-              .withTransaction(manager)
-              .generate(i.variant_id, order.region_id, i.quantity)
-          )
-        )
-
-        for (const newItem of newItems) {
-          await this.inventoryService_
-            .withTransaction(manager)
-            .adjustInventory(newItem.variant_id, -newItem.quantity)
-        }
+      for (const item of additional_items) {
+        await this.inventoryService_
+          .withTransaction(manager)
+          .confirmInventory(item.variant_id, item.quantity)
       }
 
+      const newItems = await Promise.all(
+        additional_items.map((i) =>
+          this.lineItemService_
+            .withTransaction(manager)
+            .generate(i.variant_id, order.region_id, i.quantity)
+        )
+      )
+
+      for (const newItem of newItems) {
+        await this.inventoryService_
+          .withTransaction(manager)
+          .adjustInventory(newItem.variant_id, -newItem.quantity)
+      }
       const evaluatedNoNotification =
         no_notification !== undefined ? no_notification : order.no_notification
 
@@ -277,18 +295,6 @@ class ClaimService extends BaseService {
       })
 
       const result = await claimRepo.save(created)
-
-      if (result.additional_items && result.additional_items.length) {
-        const calcContext = this.totalsService_.getCalculationContext(order)
-        const lineItems = await this.lineItemService_
-          .withTransaction(manager)
-          .list({
-            id: result.additional_items.map((i) => i.id),
-          })
-        await this.taxProviderService_
-          .withTransaction(manager)
-          .createTaxLines(lineItems, calcContext)
-      }
 
       if (shipping_methods) {
         for (const method of shipping_methods) {
@@ -360,9 +366,7 @@ class ClaimService extends BaseService {
       const claim = await this.retrieve(id, {
         relations: [
           "additional_items",
-          "additional_items.tax_lines",
           "shipping_methods",
-          "shipping_methods.tax_lines",
           "shipping_address",
           "order",
           "order.billing_address",

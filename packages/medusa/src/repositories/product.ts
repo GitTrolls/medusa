@@ -3,7 +3,6 @@ import {
   EntityRepository,
   FindManyOptions,
   FindOperator,
-  In,
   OrderByCondition,
   Repository,
 } from "typeorm"
@@ -77,9 +76,7 @@ export class ProductRepository extends Repository<Product> {
     return [entities, count]
   }
 
-  private getGroupedRelations(
-    relations: Array<keyof Product>
-  ): {
+  private getGroupedRelations(relations: Array<keyof Product>): {
     [toplevel: string]: string[]
   } {
     const groupedRelations: { [toplevel: string]: string[] } = {}
@@ -197,9 +194,8 @@ export class ProductRepository extends Repository<Product> {
     )
 
     const entitiesAndRelations = entitiesIdsWithRelations.concat(entities)
-    const entitiesToReturn = this.mergeEntitiesWithRelations(
-      entitiesAndRelations
-    )
+    const entitiesToReturn =
+      this.mergeEntitiesWithRelations(entitiesAndRelations)
 
     return [entitiesToReturn, count]
   }
@@ -240,9 +236,8 @@ export class ProductRepository extends Repository<Product> {
     )
 
     const entitiesAndRelations = entitiesIdsWithRelations.concat(entities)
-    const entitiesToReturn = this.mergeEntitiesWithRelations(
-      entitiesAndRelations
-    )
+    const entitiesToReturn =
+      this.mergeEntitiesWithRelations(entitiesAndRelations)
 
     return entitiesToReturn
   }
@@ -259,31 +254,5 @@ export class ProductRepository extends Repository<Product> {
       optionsWithoutRelations
     )
     return result[0]
-  }
-
-  public async bulkAddToCollection(
-    productIds: string[],
-    collectionId: string
-  ): Promise<Product[]> {
-    await this.createQueryBuilder()
-      .update(Product)
-      .set({ collection_id: collectionId })
-      .where({ id: In(productIds) })
-      .execute()
-
-    return this.findByIds(productIds)
-  }
-
-  public async bulkRemoveFromCollection(
-    productIds: string[],
-    collectionId: string
-  ): Promise<Product[]> {
-    await this.createQueryBuilder()
-      .update(Product)
-      .set({ collection_id: null })
-      .where({ id: In(productIds), collection_id: collectionId })
-      .execute()
-
-    return this.findByIds(productIds)
   }
 }

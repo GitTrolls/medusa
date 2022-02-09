@@ -128,13 +128,7 @@ export default async (req, res) => {
               .withTransaction(manager)
               .retrieve(swapDto.order_id, {
                 select: ["refunded_total", "total"],
-                relations: [
-                  "items",
-                  "items.tax_lines",
-                  "swaps",
-                  "swaps.additional_items",
-                  "swaps.additional_items.tax_lines",
-                ],
+                relations: ["items", "swaps", "swaps.additional_items"],
               })
 
             let returnShipping

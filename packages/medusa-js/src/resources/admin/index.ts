@@ -8,14 +8,12 @@ import AdminGiftCardsResource from "./gift-cards"
 import AdminInvitesResource from "./invites"
 import AdminNotesResource from "./notes"
 import AdminProductsResource from "./products"
-import AdminProductTypesResource from "./product-types"
 import AdminUsersResource from "./users"
 import AdminReturnsResource from "./returns"
 import AdminOrdersResource from "./orders"
 import AdminReturnReasonsResource from "./return-reasons"
 import AdminVariantsResource from "./variants"
 import AdminSwapsResource from "./swaps"
-import AdminTaxRatesResource from "./tax-rates"
 import AdminShippingProfilesResource from "./shipping-profiles"
 import AdminStoresResource from "./store"
 import AdminShippingOptionsResource from "./shipping-options"
@@ -35,7 +33,6 @@ class Admin extends BaseResource {
   public notes = new AdminNotesResource(this.client)
   public products = new AdminProductsResource(this.client)
   public productTags = new AdminProductTagsResource(this.client)
-  public productTypes = new AdminProductTypesResource(this.client)
   public users = new AdminUsersResource(this.client)
   public returns = new AdminReturnsResource(this.client)
   public orders = new AdminOrdersResource(this.client)
@@ -47,7 +44,6 @@ class Admin extends BaseResource {
   public shippingOptions = new AdminShippingOptionsResource(this.client)
   public regions = new AdminRegionsResource(this.client)
   public notifications = new AdminNotificationsResource(this.client)
-  public taxRates = new AdminTaxRatesResource(this.client)
   public uploads = new AdminUploadsResource(this.client)
 }
 

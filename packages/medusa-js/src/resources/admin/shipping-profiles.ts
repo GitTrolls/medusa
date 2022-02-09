@@ -10,33 +10,33 @@ import BaseResource from "../base"
 
 class AdminShippingProfilesResource extends BaseResource {
   create(
-    payload: AdminPostShippingProfilesReq,
-    customHeaders: Record<string, any> = {}): ResponsePromise<AdminShippingProfilesRes> {
+    payload: AdminPostShippingProfilesReq
+  ): ResponsePromise<AdminShippingProfilesRes> {
     const path = `/admin/shipping-profiles/`
-    return this.client.request("POST", path, payload, {}, customHeaders)
+    return this.client.request("POST", path, payload)
   }
 
   update(
     id: string,
-    payload: AdminPostShippingProfilesProfileReq,
-    customHeaders: Record<string, any> = {}): ResponsePromise<AdminShippingProfilesRes> {
+    payload: AdminPostShippingProfilesProfileReq
+  ): ResponsePromise<AdminShippingProfilesRes> {
     const path = `/admin/shipping-profiles/${id}`
-    return this.client.request("POST", path, payload, {}, customHeaders)
+    return this.client.request("POST", path, payload)
   }
 
-  delete(id: string, customHeaders: Record<string, any> = {}): ResponsePromise<AdminDeleteShippingProfileRes> {
+  delete(id: string): ResponsePromise<AdminDeleteShippingProfileRes> {
     const path = `/admin/shipping-profiles/${id}`
-    return this.client.request("DELETE", path, {}, {}, customHeaders)
+    return this.client.request("DELETE", path)
   }
 
-  retrieve(id: string, customHeaders: Record<string, any> = {}): ResponsePromise<AdminShippingProfilesRes> {
+  retrieve(id: string): ResponsePromise<AdminShippingProfilesRes> {
     const path = `/admin/shipping-profiles/${id}`
-    return this.client.request("GET", path, {}, {}, customHeaders)
+    return this.client.request("GET", path)
   }
 
-  list(customHeaders: Record<string, any> = {}): ResponsePromise<AdminShippingProfilesListRes> {
+  list(): ResponsePromise<AdminShippingProfilesListRes> {
     const path = `/admin/shipping-profiles/`
-    return this.client.request("GET", path, {}, {}, customHeaders)
+    return this.client.request("GET", path)
   }
 }
 

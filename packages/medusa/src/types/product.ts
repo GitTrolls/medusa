@@ -24,19 +24,3 @@ export class FilterableProductTagProps {
   @IsType([DateComparisonOperator])
   updated_at?: DateComparisonOperator
 }
-
-export class FilterableProductTypeProps {
-  @ValidateNested()
-  @IsType([String, [String], StringComparisonOperator])
-  id?: string | string[] | StringComparisonOperator
-
-  @ValidateNested()
-  @IsType([String, [String], StringComparisonOperator])
-  value?: string | string[] | StringComparisonOperator
-
-  @IsType([DateComparisonOperator])
-  created_at?: DateComparisonOperator
-
-  @IsType([DateComparisonOperator])
-  updated_at?: DateComparisonOperator
-}

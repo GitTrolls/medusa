@@ -35,11 +35,9 @@ export * from "./routes/admin/return-reasons"
 export * from "./routes/admin/swaps"
 export * from "./routes/admin/uploads"
 export * from "./routes/admin/returns"
-export * from "./routes/admin/tax-rates"
 export * from "./routes/admin/shipping-options"
 export * from "./routes/admin/regions"
 export * from "./routes/admin/product-tags"
-export * from "./routes/admin/product-types"
 
 // Store
 export * from "./routes/store/auth"
