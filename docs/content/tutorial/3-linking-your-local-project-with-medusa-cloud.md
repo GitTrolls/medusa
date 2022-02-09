@@ -1,5 +1,5 @@
 ---
-title: Linking your local project with Medusa Cloud
+title: 3. Linking your local project with Medusa Cloud
 ---
 
 # Linking your local project with Medusa Cloud

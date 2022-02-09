@@ -1,5 +1,5 @@
 ---
-title: Set up your development environment
+title: 0. Set up your development environment
 ---
 
 # Set up your development environment
