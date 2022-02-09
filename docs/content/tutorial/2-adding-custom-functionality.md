@@ -1,5 +1,5 @@
 ---
-title: Adding custom functionality
+title: 2. Adding custom functionality
 ---
 
 # Adding custom functionality

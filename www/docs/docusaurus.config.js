@@ -48,12 +48,17 @@ module.exports = {
       items: [
         {
           href: "https://docs.medusajs.com",
-          label: "Introduction",
+          label: "Overview",
+        },
+        {
+          type: "doc",
+          docId: "tutorial/set-up-your-development-environment",
+          label: "Tutorial",
         },
         {
           href: `https://docs.medusajs.com/api/store`,
           target: "_self",
-          label: "API Reference",
+          label: "Reference",
         },
         {
           href: "https://github.com/medusajs/medusa",
