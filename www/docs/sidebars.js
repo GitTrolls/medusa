@@ -106,18 +106,6 @@ module.exports = {
           collapsed: true,
           items: [
             {
-              type: "category",
-              label: 'Endpoints',
-              collapsed: true,
-              items: [
-                {
-                  type: "doc",
-                  id: "advanced/backend/endpoints/add-storefront",
-                  label: "Add Endpoint for Storefront"
-                },
-              ]
-            },
-            {
               type: "doc",
               id: "tutorial/adding-custom-functionality",
               label: "Add Custom Functionality"
