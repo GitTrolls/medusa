@@ -1,6 +1,5 @@
 import {
   AdminGetReturnsParams,
-  AdminPostReturnsReturnReceiveReq,
   AdminReturnsCancelRes,
   AdminReturnsListRes,
   AdminReturnsRes,
@@ -23,15 +22,11 @@ class AdminReturnsResource extends BaseResource {
   /**
    * @description receive a return
    * @param id id of the return to receive.
-   * @param payload items to receive and an optional refund amount
    * @returns the return
    */
-  receive(
-    id: string,
-    payload: AdminPostReturnsReturnReceiveReq
-  ): ResponsePromise<AdminReturnsRes> {
+  receive(id: string): ResponsePromise<AdminReturnsRes> {
     const path = `/admin/returns/${id}/receive`
-    return this.client.request("POST", path, payload)
+    return this.client.request("POST", path)
   }
 
   /**

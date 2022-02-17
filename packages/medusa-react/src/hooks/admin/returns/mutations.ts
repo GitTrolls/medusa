@@ -1,8 +1,4 @@
-import {
-  AdminPostReturnsReturnReceiveReq,
-  AdminReturnsCancelRes,
-  AdminReturnsRes,
-} from "@medusajs/medusa"
+import { AdminReturnsCancelRes, AdminReturnsRes } from "@medusajs/medusa"
 import { Response } from "@medusajs/medusa-js"
 import { useMutation, UseMutationOptions, useQueryClient } from "react-query"
 import { useMedusa } from "../../../contexts/medusa"
@@ -11,17 +7,13 @@ import { adminReturnKeys } from "./queries"
 
 export const useAdminReceiveReturn = (
   id: string,
-  options?: UseMutationOptions<
-    Response<AdminReturnsRes>,
-    Error,
-    AdminPostReturnsReturnReceiveReq
-  >
+  options?: UseMutationOptions<Response<AdminReturnsRes>, Error, void>
 ) => {
   const { client } = useMedusa()
   const queryClient = useQueryClient()
 
   return useMutation(
-    payload => client.admin.returns.receive(id, payload),
+    () => client.admin.returns.receive(id),
     buildOptions(
       queryClient,
       [adminReturnKeys.detail(id), adminReturnKeys.list()],
