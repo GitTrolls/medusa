@@ -234,7 +234,6 @@ class CustomerService extends BaseService {
     const customerRepo = this.manager_.getCustomRepository(
       this.customerRepository_
     )
-
     const validatedId = this.validateId_(customerId)
     const query = this.buildQuery_({ id: validatedId }, config)
 

@@ -10,34 +10,31 @@ class AuthResource extends BaseResource {
   /**
    * @description Authenticates a customer using email and password combination
    * @param {StorePostAuthReq} payload authentication payload
-   * @param customHeaders
    * @return {ResponsePromise<StoreAuthRes>}
    */
-  authenticate(payload: StorePostAuthReq, customHeaders: Record<string, any> = {}): ResponsePromise<StoreAuthRes> {
+  authenticate(payload: StorePostAuthReq): ResponsePromise<StoreAuthRes> {
     const path = `/store/auth`
-    return this.client.request("POST", path, payload, {}, customHeaders)
+    return this.client.request("POST", path, payload)
   }
 
   /**
    * @description Retrieves an authenticated session
    * Usually used to check if authenticated session is alive.
-   * @param customHeaders
    * @return {ResponsePromise<StoreAuthRes>}
    */
-  getSession(customHeaders: Record<string, any> = {}): ResponsePromise<StoreAuthRes> {
+  getSession(): ResponsePromise<StoreAuthRes> {
     const path = `/store/auth`
-    return this.client.request("GET", path, {}, {}, customHeaders)
+    return this.client.request("GET", path)
   }
 
   /**
    * @description Check if email exists
    * @param {string} email is required
-   * @param customHeaders
    * @return {ResponsePromise<StoreGetAuthEmailRes>}
    */
-  exists(email: string, customHeaders: Record<string, any> = {}): ResponsePromise<StoreGetAuthEmailRes> {
+  exists(email: string): ResponsePromise<StoreGetAuthEmailRes> {
     const path = `/store/auth/${email}`
-    return this.client.request("GET", path, {}, {}, customHeaders)
+    return this.client.request("GET", path)
   }
 }
 
