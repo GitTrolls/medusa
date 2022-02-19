@@ -890,8 +890,6 @@ class ProductService extends BaseService {
             .orWhere(`collection.title ILIKE :q`, { q: `%${q}%` })
         })
       )
-      .skip(query.skip)
-      .take(query.take)
 
     if (query.withDeleted) {
       qb = qb.withDeleted()

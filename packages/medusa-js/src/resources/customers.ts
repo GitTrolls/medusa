@@ -19,46 +19,42 @@ class CustomerResource extends BaseResource {
   /**
    * Creates a customer
    * @param {StorePostCustomersReq} payload information of customer
-   * @param customHeaders
    * @return { ResponsePromise<StoreCustomersRes>}
    */
-  create(payload: StorePostCustomersReq, customHeaders: Record<string, any> = {}): ResponsePromise<StoreCustomersRes> {
+  create(payload: StorePostCustomersReq): ResponsePromise<StoreCustomersRes> {
     const path = `/store/customers`
-    return this.client.request("POST", path, payload, {}, customHeaders)
+    return this.client.request("POST", path, payload)
   }
 
   /**
    * Retrieves the customer that is currently logged
-   * @param customHeaders
    * @return {ResponsePromise<StoreCustomersRes>}
    */
-  retrieve(customHeaders: Record<string, any> = {}): ResponsePromise<StoreCustomersRes> {
+  retrieve(): ResponsePromise<StoreCustomersRes> {
     const path = `/store/customers/me`
-    return this.client.request("GET", path, {}, {}, customHeaders)
+    return this.client.request("GET", path)
   }
 
   /**
    * Updates a customer
    * @param {StorePostCustomersCustomerReq} payload information to update customer with
-   * @param customHeaders
    * @return {ResponsePromise<StoreCustomersRes>}
    */
   update(
-    payload: StorePostCustomersCustomerReq,
-    customHeaders: Record<string, any> = {}): ResponsePromise<StoreCustomersRes> {
+    payload: StorePostCustomersCustomerReq
+  ): ResponsePromise<StoreCustomersRes> {
     const path = `/store/customers/me`
-    return this.client.request("POST", path, payload, {}, customHeaders)
+    return this.client.request("POST", path, payload)
   }
 
   /**
    * Retrieve customer orders
    * @param {StoreGetCustomersCustomerOrdersParams} params optional params to retrieve orders
-   * @param customHeaders
    * @return {ResponsePromise<StoreCustomersListOrdersRes>}
    */
   listOrders(
-    params?: StoreGetCustomersCustomerOrdersParams,
-    customHeaders: Record<string, any> = {}): ResponsePromise<StoreCustomersListOrdersRes> {
+    params?: StoreGetCustomersCustomerOrdersParams
+  ): ResponsePromise<StoreCustomersListOrdersRes> {
     let path = `/store/customers/me/orders`
     if (params) {
       const query = qs.stringify(params)
@@ -66,35 +62,32 @@ class CustomerResource extends BaseResource {
         path += `?${query}`
       }
     }
-    return this.client.request("GET", path, {}, {}, customHeaders)
+    return this.client.request("GET", path)
   }
 
   /**
    * Resets customer password
    * @param {StorePostCustomersCustomerPasswordTokenReq} payload info used to reset customer password
-   * @param customHeaders
    * @return {ResponsePromise<StoreCustomersRes>}
    */
   resetPassword(
-    payload: StorePostCustomersCustomerPasswordTokenReq,
-    customHeaders: Record<string, any> = {}): ResponsePromise<StoreCustomersRes> {
+    payload: StorePostCustomersCustomerPasswordTokenReq
+  ): ResponsePromise<StoreCustomersRes> {
     const path = `/store/customers/password-reset`
-    return this.client.request("POST", path, payload, {}, customHeaders)
+    return this.client.request("POST", path, payload)
   }
 
   /**
    * Generates a reset password token, which can be used to reset the password.
    * The token is not returned but should be sent out to the customer in an email.
    * @param {StorePostCustomersCustomerPasswordTokenReq} payload info used to generate token
-   * @param customHeaders
    * @return {ResponsePromise}
    */
   generatePasswordToken(
-    payload: StorePostCustomersCustomerPasswordTokenReq,
-    customHeaders: Record<string, any> = {}
+    payload: StorePostCustomersCustomerPasswordTokenReq
   ): ResponsePromise {
     const path = `/store/customers/password-token`
-    return this.client.request("POST", path, payload, {}, customHeaders)
+    return this.client.request("POST", path, payload)
   }
 }
 

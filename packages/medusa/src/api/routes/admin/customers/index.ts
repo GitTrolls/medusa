@@ -26,8 +26,6 @@ export type AdminCustomersListRes = PaginatedResponse & {
   customers: Customer[]
 }
 
-export const defaultAdminCustomersRelations = ["orders", "shipping_addresses"]
-
 export * from "./create-customer"
 export * from "./get-customer"
 export * from "./list-customers"
