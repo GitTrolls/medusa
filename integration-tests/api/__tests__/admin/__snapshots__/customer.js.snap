@@ -62,7 +62,6 @@ Object {
   "deleted_at": null,
   "email": "test1@email.com",
   "first_name": null,
-  "groups": Array [],
   "has_account": false,
   "id": "test-customer-1",
   "last_name": null,

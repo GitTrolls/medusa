@@ -21,7 +21,6 @@ class CustomerService extends BaseService {
     customerRepository,
     eventBusService,
     addressRepository,
-    customerGroupService,
   }) {
     super()
 
@@ -36,8 +35,6 @@ class CustomerService extends BaseService {
 
     /** @private @const {AddressRepository} */
     this.addressRepository_ = addressRepository
-
-    this.customerGroupService_ = customerGroupService
   }
 
   withTransaction(transactionManager) {
@@ -63,9 +60,7 @@ class CustomerService extends BaseService {
    * @return {string} the validated email
    */
   validateEmail_(email) {
-    const schema = Validator.string()
-      .email()
-      .required()
+    const schema = Validator.string().email().required()
     const { value, error } = schema.validate(email)
     if (error) {
       throw new MedusaError(
@@ -396,7 +391,6 @@ class CustomerService extends BaseService {
         metadata,
         billing_address,
         billing_address_id,
-        groups,
         ...rest
       } = update
 
@@ -421,11 +415,6 @@ class CustomerService extends BaseService {
 
       if (password) {
         customer.password_hash = await this.hashPassword_(password)
-      }
-
-      if (groups) {
-        const id = groups.map((g) => g.id)
-        customer.groups = await this.customerGroupService_.list({ id })
       }
 
       const updated = await customerRepository.save(customer)
