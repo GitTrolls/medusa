@@ -7,29 +7,29 @@ import { AdminPostInvitesPayload, ResponsePromise } from "../.."
 import BaseResource from "../base"
 
 class AdminInvitesResource extends BaseResource {
-  accept(payload: AdminPostInvitesInviteAcceptReq, customHeaders: Record<string, any> = {}): ResponsePromise {
+  accept(payload: AdminPostInvitesInviteAcceptReq): ResponsePromise {
     const path = `/admin/invites/accept`
-    return this.client.request("POST", path, payload, {}, customHeaders)
+    return this.client.request("POST", path, payload)
   }
 
-  create(payload: AdminPostInvitesPayload, customHeaders: Record<string, any> = {}): ResponsePromise {
+  create(payload: AdminPostInvitesPayload): ResponsePromise {
     const path = `/admin/invites`
-    return this.client.request("POST", path, payload, {}, customHeaders)
+    return this.client.request("POST", path, payload)
   }
 
-  delete(id: string, customHeaders: Record<string, any> = {}): ResponsePromise<AdminInviteDeleteRes> {
+  delete(id: string): ResponsePromise<AdminInviteDeleteRes> {
     const path = `/admin/invites/${id}`
-    return this.client.request("DELETE", path, {}, {}, customHeaders)
+    return this.client.request("DELETE", path)
   }
 
-  list(customHeaders: Record<string, any> = {}): ResponsePromise<AdminListInvitesRes> {
+  list(): ResponsePromise<AdminListInvitesRes> {
     const path = `/admin/invites`
-    return this.client.request("GET", path, {}, {}, customHeaders)
+    return this.client.request("GET", path)
   }
 
-  resend(id: string, customHeaders: Record<string, any> = {}): ResponsePromise {
+  resend(id: string): ResponsePromise {
     const path = `/admin/invites/${id}`
-    return this.client.request("POST", path, {}, {}, customHeaders)
+    return this.client.request("POST", path, {})
   }
 }
 

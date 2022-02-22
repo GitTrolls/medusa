@@ -6,12 +6,11 @@ class GiftCardsResource extends BaseResource {
   /**
    * @description Retrieves a single GiftCard
    * @param {string} code code of the gift card
-   * @param customHeaders
    * @return {ResponsePromise<StoreGiftCardsRes>}
    */
-  retrieve(code: string, customHeaders: Record<string, any> = {}): ResponsePromise<StoreGiftCardsRes> {
+  retrieve(code: string): ResponsePromise<StoreGiftCardsRes> {
     const path = `/store/gift-cards/${code}`
-    return this.client.request("GET", path, {}, {}, customHeaders)
+    return this.client.request("GET", path)
   }
 }
 
