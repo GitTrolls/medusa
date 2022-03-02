@@ -1,9 +1,7 @@
 // API
 
 module.exports = {
-  name: "api",
   testEnvironment: `node`,
-  rootDir: "./",
   testPathIgnorePatterns: [
     `/examples/`,
     `/www/`,
@@ -13,7 +11,6 @@ module.exports = {
     `__testfixtures__`,
     `.cache`,
   ],
-  transformIgnorePatterns: [`/dist`],
   transform: { "^.+\\.[jt]s$": `../../jest-transformer.js` },
   setupFilesAfterEnv: ["../setup.js"],
   globalSetup: "../globalSetup.js",

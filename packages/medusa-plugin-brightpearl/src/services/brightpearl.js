@@ -322,8 +322,15 @@ class BrightpearlService extends BaseService {
             name: `${fromRefund.reason}: ${fromRefund.note}`,
             quantity: 1,
             taxCode: region.tax_code,
-            net: this.bpnum_(fromRefund.amount, fromOrder.currency_code),
-            tax: 0,
+            net: this.bpnum_(
+              fromRefund.amount,
+              fromOrder.currency_code,
+              10000 / (100 + fromOrder.tax_rate)
+            ),
+            tax: this.bpnum_(
+              fromRefund.amount * (1 - 100 / (100 + fromOrder.tax_rate)),
+              fromOrder.currency_code
+            ),
             nominalCode: accountingCode,
           },
         ],
@@ -403,29 +410,6 @@ class BrightpearlService extends BaseService {
         }),
       }
 
-      if (fromReturn.shipping_method) {
-        const totals = await this.totalsService_.getShippingMethodTotals(
-          fromReturn.shipping_method,
-          fromOrder,
-          {
-            include_tax: true,
-            use_tax_lines: true,
-          }
-        )
-
-        order.rows.push({
-          net: this.bpnum_(
-            -1 * (totals.total - totals.tax_total),
-            fromOrder.currency_code
-          ),
-          tax: this.bpnum_(-1 * totals.tax_total, fromOrder.currency_code),
-          name: "Return shipping",
-          taxCode: region.tax_code,
-          nominalCode: this.options.shipping_account_code || "4040",
-          quantity: 1,
-        })
-      }
-
       const total = order.rows.reduce((acc, next) => {
         return acc + next.net + next.tax
       }, 0)
@@ -437,8 +421,15 @@ class BrightpearlService extends BaseService {
           name: "Difference",
           quantity: 1,
           taxCode: region.tax_code,
-          net: this.bpround_(difference),
-          tax: 0,
+          net: this.bpnum_(
+            difference,
+            fromOrder.currency_code,
+            10000 / (100 + fromOrder.tax_rate)
+          ),
+          tax: this.bpnum_(
+            difference * (1 - 100 / (100 + fromOrder.tax_rate)),
+            fromOrder.currency_code
+          ),
           nominalCode: this.options.sales_account_code || "4000",
         })
       }
@@ -820,24 +811,14 @@ class BrightpearlService extends BaseService {
         fromSwap.return_order.shipping_method &&
         fromSwap.return_order.shipping_method.price
       ) {
-        const shippingTotals =
-          await this.totalsService_.getShippingMethodTotals(
-            fromSwap.return_order.shipping_method,
-            fromOrder,
-            {
-              include_tax: true,
-              use_tax_lines: true,
-            }
-          )
         order.rows.push({
           name: "Return Shipping",
           quantity: 1,
           taxCode: region.tax_code,
-          net: this.bpnum_(1 * shippingTotals.price, fromOrder.currency_code),
-          tax: this.bpnum_(
-            1 * shippingTotals.tax_total,
-            fromOrder.currency_code
-          ),
+          net: (-1 * fromSwap.return_order.shipping_method.price) / 100,
+          tax:
+            ((-1 * fromSwap.return_order.shipping_method.price) / 100) *
+            (fromOrder.tax_rate / 100),
           nominalCode: this.options.shipping_account_code || "4040",
         })
       }
@@ -901,19 +882,21 @@ class BrightpearlService extends BaseService {
     config = { include_price: true, is_claim: false }
   ) {
     const { region } = fromOrder
+    const discount = fromOrder.discounts.find(
+      ({ rule }) => rule.type !== "free_shipping"
+    )
+    let lineDiscounts = []
+    if (discount) {
+      lineDiscounts = this.totalsService_.getLineDiscounts(fromOrder, discount)
+    }
 
     const lines = await Promise.all(
       fromOrder.items.map(async (item) => {
         const bpProduct = await this.retrieveProductBySKU(item.variant.sku)
 
-        const lineTotals = await this.totalsService_.getLineItemTotals(
-          item,
-          fromOrder,
-          {
-            include_tax: true,
-            use_tax_lines: true,
-          }
-        )
+        const ld = lineDiscounts.find((l) => item.id === l.item.id) || {
+          amount: 0,
+        }
 
         const row = {}
         if (bpProduct) {
@@ -924,20 +907,23 @@ class BrightpearlService extends BaseService {
 
         if (config.include_price) {
           row.net = this.bpnum_(
-            lineTotals.subtotal - lineTotals.discount_total,
+            item.unit_price * item.quantity - ld.amount,
             fromOrder.currency_code
           )
-          row.tax = this.bpnum_(lineTotals.tax_total, fromOrder.currency_code)
+          row.tax = this.bpnum_(
+            item.unit_price * item.quantity - ld.amount,
+            fromOrder.currency_code,
+            fromOrder.tax_rate
+          )
         } else if (config.is_claim) {
           row.net = await this.retrieveProductPrice(
             bpProduct.productId,
             this.options.cost_price_list || `1`
           )
-
           row.tax = this.bpnum_(
             row.net * 100,
             fromOrder.currency_code,
-            lineTotals.tax_lines.reduce((acc, next) => acc + next.rate, 0)
+            fromOrder.tax_rate
           )
         }
 
@@ -962,48 +948,34 @@ class BrightpearlService extends BaseService {
     // purchased.
     const gcTotal = fromOrder.gift_card_total
     if (gcTotal) {
-      let tax = 0
-      if (fromOrder.region.gift_cards_taxable) {
-        tax = this.bpnum_(
-          -1 * gcTotal,
-          fromOrder.currency_code,
-          fromOrder.region.tax_rate
-        )
-      }
-
       lines.push({
         name: `Gift Card`,
         net: this.bpnum_(-1 * gcTotal, fromOrder.currency_code),
-        tax,
+        tax: this.bpnum_(
+          -1 * gcTotal,
+          fromOrder.currency_code,
+          fromOrder.tax_rate
+        ),
         quantity: 1,
         taxCode: region.tax_code,
         nominalCode: this.options.gift_card_account_code || "4000",
       })
     }
 
+    const shippingTotal =
+      fromOrder.shipping_total ||
+      this.totalsService_.getShippingTotal(fromOrder)
     const shippingMethods = fromOrder.shipping_methods
     if (shippingMethods.length > 0) {
-      const shippingTotal = await shippingMethods.reduce(async (acc, next) => {
-        const accum = await acc
-        const totals = await this.totalsService_.getShippingMethodTotals(
-          next,
-          fromOrder,
-          {
-            include_tax: true,
-            use_tax_lines: true,
-          }
-        )
-        return {
-          price: accum.price + totals.price,
-          tax: accum.tax + totals.tax_total,
-        }
-      }, Promise.resolve({ price: 0, tax: 0 }))
-
       lines.push({
         name: `Shipping: ${shippingMethods.map((m) => m.name).join(" + ")}`,
         quantity: 1,
-        net: this.bpnum_(shippingTotal.price, fromOrder.currency_code),
-        tax: this.bpnum_(shippingTotal.tax, fromOrder.currency_code),
+        net: this.bpnum_(shippingTotal, fromOrder.currency_code),
+        tax: this.bpnum_(
+          shippingTotal,
+          fromOrder.currency_code,
+          fromOrder.tax_rate
+        ),
         taxCode: region.tax_code,
         nominalCode: this.options.shipping_account_code || "4040",
       })

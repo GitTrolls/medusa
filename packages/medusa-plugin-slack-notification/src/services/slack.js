@@ -61,6 +61,8 @@ class SlackService extends BaseService {
     const { subtotal, tax_total, discount_total, shipping_total, total } = order
 
     const currencyCode = order.currency_code.toUpperCase()
+    const taxRate = order.tax_rate / 100
+
     const getDisplayAmount = (amount) => {
       const humanAmount = humanizeAmount(amount, currencyCode)
       if (zeroDecimalCurrencies.includes(currencyCode.toLowerCase())) {
@@ -139,20 +141,13 @@ class SlackService extends BaseService {
       type: "divider",
     })
 
-    for (const lineItem of order.items) {
-      const totals = await this.totalsService_.getLineItemTotals(
-        lineItem,
-        order,
-        {
-          include_tax: true,
-        }
-      )
+    order.items.forEach((lineItem) => {
       let line = {
         type: "section",
         text: {
           type: "mrkdwn",
           text: `*${lineItem.title}*\n${lineItem.quantity} x ${getDisplayAmount(
-            totals.original_total
+            lineItem.unit_price * (1 + taxRate)
           )} ${currencyCode}`,
         },
       }
@@ -175,7 +170,7 @@ class SlackService extends BaseService {
       blocks.push({
         type: "divider",
       })
-    }
+    })
 
     return axios.post(this.options_.slack_url, {
       text: `Order ${order.display_id} was processed`,

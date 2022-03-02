@@ -5,10 +5,9 @@ class UserSubscriber {
     this.eventBus_ = eventBusService
 
     this.eventBus_.subscribe("user.password_reset", async (data) => {
-      await this.sendgridService_.sendNotification(
+      await this.sendgridService_.transactionalEmail(
         "user.password_reset",
-        data,
-        null
+        data
       )
     })
   }

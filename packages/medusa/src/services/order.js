@@ -201,9 +201,7 @@ class OrderService extends BaseService {
 
     const raw = await orderRepo.find(query)
 
-    return await Promise.all(
-      raw.map(async (r) => await this.decorateTotals_(r, totalsToSelect))
-    )
+    return raw.map((r) => this.decorateTotals_(r, totalsToSelect))
   }
 
   async listAndCount(
@@ -260,9 +258,7 @@ class OrderService extends BaseService {
 
     const raw = await orderRepo.findWithRelations(rels, query)
     const count = await orderRepo.count(query)
-    const orders = await Promise.all(
-      raw.map(async (r) => await this.decorateTotals_(r, totalsToSelect))
-    )
+    const orders = raw.map((r) => this.decorateTotals_(r, totalsToSelect))
 
     return [orders, count]
   }
@@ -297,13 +293,10 @@ class OrderService extends BaseService {
     if (totalsToSelect.length > 0) {
       const relationSet = new Set(relations)
       relationSet.add("items")
-      relationSet.add("items.tax_lines")
       relationSet.add("swaps")
       relationSet.add("swaps.additional_items")
-      relationSet.add("swaps.additional_items.tax_lines")
       relationSet.add("claims")
       relationSet.add("claims.additional_items")
-      relationSet.add("claims.additional_items.tax_lines")
       relationSet.add("discounts")
       relationSet.add("discounts.rule")
       relationSet.add("discounts.rule.valid_for")
@@ -311,21 +304,15 @@ class OrderService extends BaseService {
       relationSet.add("gift_card_transactions")
       relationSet.add("refunds")
       relationSet.add("shipping_methods")
-      relationSet.add("shipping_methods.tax_lines")
       relationSet.add("region")
       relations = [...relationSet]
 
       select = select.filter((v) => !totalFields.includes(v))
     }
 
-    const toSelect = [...select]
-    if (toSelect.length > 0 && toSelect.indexOf("tax_rate") === -1) {
-      toSelect.push("tax_rate")
-    }
-
     return {
       relations,
-      select: toSelect,
+      select,
       totalsToSelect,
     }
   }
@@ -365,7 +352,8 @@ class OrderService extends BaseService {
       )
     }
 
-    return await this.decorateTotals_(raw, totalsToSelect)
+    const order = this.decorateTotals_(raw, totalsToSelect)
+    return order
   }
 
   /**
@@ -401,7 +389,7 @@ class OrderService extends BaseService {
       )
     }
 
-    const order = await this.decorateTotals_(raw, totalsToSelect)
+    const order = this.decorateTotals_(raw, totalsToSelect)
     return order
   }
 
@@ -439,7 +427,7 @@ class OrderService extends BaseService {
       )
     }
 
-    const order = await this.decorateTotals_(raw, totalsToSelect)
+    const order = this.decorateTotals_(raw, totalsToSelect)
     return order
   }
 
@@ -586,6 +574,7 @@ class OrderService extends BaseService {
         email: cart.email,
         customer_id: cart.customer_id,
         cart_id: cart.id,
+        tax_rate: region.tax_rate,
         currency_code: region.currency_code,
         metadata: cart.metadata || {},
       }
@@ -1033,7 +1022,6 @@ class OrderService extends BaseService {
       order.status = "canceled"
       order.fulfillment_status = "canceled"
       order.payment_status = "canceled"
-      order.canceled_at = new Date()
 
       const orderRepo = manager.getCustomRepository(this.orderRepository_)
       const result = await orderRepo.save(order)
@@ -1410,86 +1398,79 @@ class OrderService extends BaseService {
     })
   }
 
-  async decorateTotals_(order, totalsFields = []) {
-    for (const totalField of totalsFields) {
-      switch (totalField) {
-        case "shipping_total": {
-          order.shipping_total = this.totalsService_.getShippingTotal(order)
-          break
-        }
-        case "gift_card_total": {
-          order.gift_card_total = this.totalsService_.getGiftCardTotal(order)
-          break
-        }
-        case "discount_total": {
-          order.discount_total = this.totalsService_.getDiscountTotal(order)
-          break
-        }
-        case "tax_total": {
-          order.tax_total = await this.totalsService_.getTaxTotal(order)
-          break
-        }
-        case "subtotal": {
-          order.subtotal = this.totalsService_.getSubtotal(order)
-          break
-        }
-        case "total": {
-          order.total = await this.totalsService_.getTotal(order)
-          break
-        }
-        case "refunded_total": {
-          order.refunded_total = this.totalsService_.getRefundedTotal(order)
-          break
-        }
-        case "paid_total": {
-          order.paid_total = this.totalsService_.getPaidTotal(order)
-          break
-        }
-        case "refundable_amount": {
-          const paid_total = this.totalsService_.getPaidTotal(order)
-          const refunded_total = this.totalsService_.getRefundedTotal(order)
-          order.refundable_amount = paid_total - refunded_total
-          break
-        }
-        case "items.refundable": {
-          order.items = order.items.map((i) => ({
+  decorateTotals_(order, totalsFields = []) {
+    if (totalsFields.includes("shipping_total")) {
+      order.shipping_total = this.totalsService_.getShippingTotal(order)
+    }
+    if (totalsFields.includes("gift_card_total")) {
+      order.gift_card_total = this.totalsService_.getGiftCardTotal(order)
+    }
+    if (totalsFields.includes("discount_total")) {
+      order.discount_total = this.totalsService_.getDiscountTotal(order)
+    }
+    if (totalsFields.includes("tax_total")) {
+      order.tax_total = this.totalsService_.getTaxTotal(order)
+    }
+    if (totalsFields.includes("subtotal")) {
+      order.subtotal = this.totalsService_.getSubtotal(order)
+    }
+    if (totalsFields.includes("total")) {
+      order.total = this.totalsService_.getTotal(order)
+    }
+    if (totalsFields.includes("refunded_total")) {
+      order.refunded_total = this.totalsService_.getRefundedTotal(order)
+    }
+    if (totalsFields.includes("paid_total")) {
+      order.paid_total = this.totalsService_.getPaidTotal(order)
+    }
+    if (totalsFields.includes("refundable_amount")) {
+      const paid_total = this.totalsService_.getPaidTotal(order)
+      const refunded_total = this.totalsService_.getRefundedTotal(order)
+      order.refundable_amount = paid_total - refunded_total
+    }
+
+    if (totalsFields.includes("items.refundable")) {
+      order.items = order.items.map((i) => ({
+        ...i,
+        refundable: this.totalsService_.getLineItemRefund(order, {
+          ...i,
+          quantity: i.quantity - (i.returned_quantity || 0),
+        }),
+      }))
+    }
+
+    if (
+      totalsFields.includes("swaps.additional_items.refundable") &&
+      order.swaps &&
+      order.swaps.length
+    ) {
+      for (const s of order.swaps) {
+        s.additional_items = s.additional_items.map((i) => ({
+          ...i,
+          refundable: this.totalsService_.getLineItemRefund(order, {
             ...i,
-            refundable: this.totalsService_.getLineItemRefund(order, {
-              ...i,
-              quantity: i.quantity - (i.returned_quantity || 0),
-            }),
-          }))
-          break
-        }
-        case "swaps.additional_items.refundable": {
-          for (const s of order.swaps) {
-            s.additional_items = s.additional_items.map((i) => ({
-              ...i,
-              refundable: this.totalsService_.getLineItemRefund(order, {
-                ...i,
-                quantity: i.quantity - (i.returned_quantity || 0),
-              }),
-            }))
-          }
-          break
-        }
-        case "claims.additional_items.refundable": {
-          for (const c of order.claims) {
-            c.additional_items = c.additional_items.map((i) => ({
-              ...i,
-              refundable: this.totalsService_.getLineItemRefund(order, {
-                ...i,
-                quantity: i.quantity - (i.returned_quantity || 0),
-              }),
-            }))
-          }
-          break
-        }
-        default: {
-          break
-        }
+            quantity: i.quantity - (i.returned_quantity || 0),
+          }),
+        }))
       }
     }
+
+    if (
+      totalsFields.includes("claims.additional_items.refundable") &&
+      order.claims &&
+      order.claims.length
+    ) {
+      for (const c of order.claims) {
+        c.additional_items = c.additional_items.map((i) => ({
+          ...i,
+          refundable: this.totalsService_.getLineItemRefund(order, {
+            ...i,
+            quantity: i.quantity - (i.returned_quantity || 0),
+          }),
+        }))
+      }
+    }
+
     return order
   }
 

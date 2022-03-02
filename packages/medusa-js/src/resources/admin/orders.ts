@@ -1,56 +1,47 @@
 import {
+  AdminPostOrdersOrderReq,
+  AdminOrdersRes,
   AdminGetOrdersParams,
   AdminOrdersListRes,
-  AdminOrdersRes,
-  AdminPostOrdersOrderClaimsClaimFulfillmentsReq,
-  AdminPostOrdersOrderClaimsClaimReq,
-  AdminPostOrdersOrderClaimsClaimShipmentsReq,
-  AdminPostOrdersOrderClaimsReq,
-  AdminPostOrdersOrderFulfillmentsReq,
+  AdminPostOrdersReq,
   AdminPostOrdersOrderRefundsReq,
-  AdminPostOrdersOrderReq,
-  AdminPostOrdersOrderReturnsReq,
+  AdminPostOrdersOrderFulfillmentsReq,
   AdminPostOrdersOrderShipmentReq,
+  AdminPostOrdersOrderReturnsReq,
   AdminPostOrdersOrderShippingMethodsReq,
   AdminPostOrdersOrderSwapsReq,
+  AdminPostOrdersOrderSwapsSwapReceiveReq,
   AdminPostOrdersOrderSwapsSwapFulfillmentsReq,
   AdminPostOrdersOrderSwapsSwapShipmentsReq,
-  AdminPostOrdersReq,
+  AdminPostOrdersOrderClaimsReq,
+  AdminPostOrdersOrderClaimsClaimFulfillmentsReq,
+  AdminPostOrdersOrderClaimsClaimShipmentsReq,
+  AdminPostOrdersOrderClaimsClaimReq,
 } from "@medusajs/medusa"
 import qs from "qs"
 import { ResponsePromise } from "../../typings"
 import BaseResource from "../base"
 
 class AdminOrdersResource extends BaseResource {
-  create(
-    payload: AdminPostOrdersReq,
-    customHeaders: Record<string, any> = {}
-  ): ResponsePromise<AdminOrdersRes> {
+  create(payload: AdminPostOrdersReq): ResponsePromise<AdminOrdersRes> {
     const path = `/admin/orders`
-    return this.client.request("POST", path, payload, {}, customHeaders)
+    return this.client.request("POST", path, payload)
   }
 
   update(
     id: string,
-    payload: AdminPostOrdersOrderReq,
-    customHeaders: Record<string, any> = {}
+    payload: AdminPostOrdersOrderReq
   ): ResponsePromise<AdminOrdersRes> {
     const path = `/admin/orders/${id}`
-    return this.client.request("POST", path, payload, {}, customHeaders)
+    return this.client.request("POST", path, payload)
   }
 
-  retrieve(
-    id: string,
-    customHeaders: Record<string, any> = {}
-  ): ResponsePromise<AdminOrdersRes> {
+  retrieve(id: string): ResponsePromise<AdminOrdersRes> {
     const path = `/admin/orders/${id}`
-    return this.client.request("GET", path, {}, {}, customHeaders)
+    return this.client.request("GET", path)
   }
 
-  list(
-    query?: AdminGetOrdersParams,
-    customHeaders: Record<string, any> = {}
-  ): ResponsePromise<AdminOrdersListRes> {
+  list(query?: AdminGetOrdersParams): ResponsePromise<AdminOrdersListRes> {
     let path = `/admin/orders`
 
     if (query) {
@@ -58,217 +49,186 @@ class AdminOrdersResource extends BaseResource {
       path = `/admin/orders?${queryString}`
     }
 
-    return this.client.request("GET", path, {}, {}, customHeaders)
+    return this.client.request("GET", path)
   }
 
-  complete(
-    id: string,
-    customHeaders: Record<string, any> = {}
-  ): ResponsePromise<AdminOrdersRes> {
+  complete(id: string): ResponsePromise<AdminOrdersRes> {
     const path = `/admin/orders/${id}/complete`
-    return this.client.request("POST", path, {}, {}, customHeaders)
+    return this.client.request("POST", path)
   }
 
-  capturePayment(
-    id: string,
-    customHeaders: Record<string, any> = {}
-  ): ResponsePromise<AdminOrdersRes> {
+  capturePayment(id: string): ResponsePromise<AdminOrdersRes> {
     const path = `/admin/orders/${id}/capture`
-    return this.client.request("POST", path, {}, {}, customHeaders)
+    return this.client.request("POST", path)
   }
 
   refundPayment(
     id: string,
-    payload: AdminPostOrdersOrderRefundsReq,
-    customHeaders: Record<string, any> = {}
+    payload: AdminPostOrdersOrderRefundsReq
   ): ResponsePromise<AdminOrdersRes> {
     const path = `/admin/orders/${id}/refund`
-    return this.client.request("POST", path, payload, {}, customHeaders)
+    return this.client.request("POST", path, payload)
   }
 
   createFulfillment(
     id: string,
-    payload: AdminPostOrdersOrderFulfillmentsReq,
-    customHeaders: Record<string, any> = {}
+    payload: AdminPostOrdersOrderFulfillmentsReq
   ): ResponsePromise<AdminOrdersRes> {
     const path = `/admin/orders/${id}/fulfillment`
-    return this.client.request("POST", path, payload, {}, customHeaders)
+    return this.client.request("POST", path, payload)
   }
 
   cancelFulfillment(
     id: string,
-    fulfillmentId: string,
-    customHeaders: Record<string, any> = {}
+    fulfillmentId: string
   ): ResponsePromise<AdminOrdersRes> {
     const path = `/admin/orders/${id}/fulfillments/${fulfillmentId}/cancel`
-    return this.client.request("POST", path, {}, {}, customHeaders)
+    return this.client.request("POST", path)
   }
 
   cancelSwapFulfillment(
     id: string,
     swapId: string,
-    fulfillmentId: string,
-    customHeaders: Record<string, any> = {}
+    fulfillmentId: string
   ): ResponsePromise<AdminOrdersRes> {
     const path = `/admin/orders/${id}/swaps/${swapId}/fulfillments/${fulfillmentId}/cancel`
-    return this.client.request("POST", path, {}, {}, customHeaders)
+    return this.client.request("POST", path)
   }
 
   cancelClaimFulfillment(
     id: string,
     claimId: string,
-    fulfillmentId: string,
-    customHeaders: Record<string, any> = {}
+    fulfillmentId: string
   ): ResponsePromise<AdminOrdersRes> {
     const path = `/admin/orders/${id}/claims/${claimId}/fulfillments/${fulfillmentId}/cancel`
-    return this.client.request("POST", path, {}, {}, customHeaders)
+    return this.client.request("POST", path)
   }
 
   createShipment(
     id: string,
-    payload: AdminPostOrdersOrderShipmentReq,
-    customHeaders: Record<string, any> = {}
+    payload: AdminPostOrdersOrderShipmentReq
   ): ResponsePromise<AdminOrdersRes> {
     const path = `/admin/orders/${id}/shipment`
-    return this.client.request("POST", path, payload, {}, customHeaders)
+    return this.client.request("POST", path, payload)
   }
 
   requestReturn(
     id: string,
-    payload: AdminPostOrdersOrderReturnsReq,
-    customHeaders: Record<string, any> = {}
+    payload: AdminPostOrdersOrderReturnsReq
   ): ResponsePromise<AdminOrdersRes> {
     const path = `/admin/orders/${id}/return`
-    return this.client.request("POST", path, payload, {}, customHeaders)
+    return this.client.request("POST", path, payload)
   }
 
-  cancel(
-    id: string,
-    customHeaders: Record<string, any> = {}
-  ): ResponsePromise<AdminOrdersRes> {
+  cancel(id: string): ResponsePromise<AdminOrdersRes> {
     const path = `/admin/orders/${id}/cancel`
-    return this.client.request("POST", path, {}, {}, customHeaders)
+    return this.client.request("POST", path)
   }
 
   addShippingMethod(
     id: string,
-    payload: AdminPostOrdersOrderShippingMethodsReq,
-    customHeaders: Record<string, any> = {}
+    payload: AdminPostOrdersOrderShippingMethodsReq
   ): ResponsePromise<AdminOrdersRes> {
     const path = `/admin/orders/${id}/shipping-methods`
-    return this.client.request("POST", path, payload, {}, customHeaders)
+    return this.client.request("POST", path, payload)
   }
 
-  archive(
-    id: string,
-    customHeaders: Record<string, any> = {}
-  ): ResponsePromise<AdminOrdersRes> {
+  archive(id: string): ResponsePromise<AdminOrdersRes> {
     const path = `/admin/orders/${id}/archive`
-    return this.client.request("POST", path, {}, {}, customHeaders)
+    return this.client.request("POST", path)
   }
 
   createSwap(
     id: string,
-    payload: AdminPostOrdersOrderSwapsReq,
-    customHeaders: Record<string, any> = {}
+    payload: AdminPostOrdersOrderSwapsReq
   ): ResponsePromise<AdminOrdersRes> {
     const path = `/admin/orders/${id}/swaps`
-    return this.client.request("POST", path, payload, {}, customHeaders)
+    return this.client.request("POST", path, payload)
   }
 
-  cancelSwap(
+  cancelSwap(id: string, swapId: string): ResponsePromise<AdminOrdersRes> {
+    const path = `/admin/orders/${id}/swaps/${swapId}/cancel`
+    return this.client.request("POST", path)
+  }
+
+  receiveSwap(
     id: string,
     swapId: string,
-    customHeaders: Record<string, any> = {}
+    payload: AdminPostOrdersOrderSwapsSwapReceiveReq
   ): ResponsePromise<AdminOrdersRes> {
-    const path = `/admin/orders/${id}/swaps/${swapId}/cancel`
-    return this.client.request("POST", path, {}, {}, customHeaders)
+    const path = `/admin/orders/${id}/swaps/${swapId}/receive`
+    return this.client.request("POST", path, payload)
   }
 
   fulfillSwap(
     id: string,
     swapId: string,
-    payload: AdminPostOrdersOrderSwapsSwapFulfillmentsReq,
-    customHeaders: Record<string, any> = {}
+    payload: AdminPostOrdersOrderSwapsSwapFulfillmentsReq
   ): ResponsePromise<AdminOrdersRes> {
     const path = `/admin/orders/${id}/swaps/${swapId}/fulfillments`
-    return this.client.request("POST", path, payload, {}, customHeaders)
+    return this.client.request("POST", path, payload)
   }
 
   createSwapShipment(
     id: string,
     swapId: string,
-    payload: AdminPostOrdersOrderSwapsSwapShipmentsReq,
-    customHeaders: Record<string, any> = {}
+    payload: AdminPostOrdersOrderSwapsSwapShipmentsReq
   ): ResponsePromise<AdminOrdersRes> {
     const path = `/admin/orders/${id}/swaps/${swapId}/shipments`
-    return this.client.request("POST", path, payload, {}, customHeaders)
+    return this.client.request("POST", path, payload)
   }
 
   processSwapPayment(
     id: string,
-    swapId: string,
-    customHeaders: Record<string, any> = {}
+    swapId: string
   ): ResponsePromise<AdminOrdersRes> {
     const path = `/admin/orders/${id}/swaps/${swapId}/process-payment`
-    return this.client.request("POST", path, {}, {}, customHeaders)
+    return this.client.request("POST", path)
   }
 
   createClaim(
     id: string,
-    payload: AdminPostOrdersOrderClaimsReq,
-    customHeaders: Record<string, any> = {}
+    payload: AdminPostOrdersOrderClaimsReq
   ): ResponsePromise<AdminOrdersRes> {
     const path = `/admin/orders/${id}/claims`
-    return this.client.request("POST", path, payload, {}, customHeaders)
+    return this.client.request("POST", path, payload)
   }
 
-  cancelClaim(
-    id: string,
-    claimId: string,
-    customHeaders: Record<string, any> = {}
-  ): ResponsePromise<AdminOrdersRes> {
+  cancelClaim(id: string, claimId: string): ResponsePromise<AdminOrdersRes> {
     const path = `/admin/orders/${id}/claims/${claimId}/cancel`
-    return this.client.request("POST", path, {}, {}, customHeaders)
+    return this.client.request("POST", path)
   }
 
   updateClaim(
     id: string,
     claimId: string,
-    payload: AdminPostOrdersOrderClaimsClaimReq,
-    customHeaders: Record<string, any> = {}
+    payload: AdminPostOrdersOrderClaimsClaimReq
   ): ResponsePromise<AdminOrdersRes> {
     const path = `/admin/orders/${id}/claims/${claimId}`
-    return this.client.request("POST", path, payload, {}, customHeaders)
+    return this.client.request("POST", path, payload)
   }
 
   fulfillClaim(
     id: string,
     claimId: string,
-    payload: AdminPostOrdersOrderClaimsClaimFulfillmentsReq,
-    customHeaders: Record<string, any> = {}
+    payload: AdminPostOrdersOrderClaimsClaimFulfillmentsReq
   ): ResponsePromise<AdminOrdersRes> {
     const path = `/admin/orders/${id}/claims/${claimId}/fulfillments`
-    return this.client.request("POST", path, payload, {}, customHeaders)
+    return this.client.request("POST", path, payload)
   }
 
   createClaimShipment(
     id: string,
     claimId: string,
-    payload: AdminPostOrdersOrderClaimsClaimShipmentsReq,
-    customHeaders: Record<string, any> = {}
+    payload: AdminPostOrdersOrderClaimsClaimShipmentsReq
   ): ResponsePromise<AdminOrdersRes> {
     const path = `/admin/orders/${id}/claims/${claimId}/shipments`
-    return this.client.request("POST", path, payload, {}, customHeaders)
+    return this.client.request("POST", path, payload)
   }
 
-  deleteMetadata(
-    id: string,
-    key: string,
-    customHeaders: Record<string, any> = {}
-  ): ResponsePromise<AdminOrdersRes> {
+  deleteMetadata(id: string, key: string): ResponsePromise<AdminOrdersRes> {
     const path = `/admin/orders/${id}/metadata/${key}`
-    return this.client.request("DELETE", path, {}, {}, customHeaders)
+    return this.client.request("DELETE", path)
   }
 }
 

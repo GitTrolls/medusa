@@ -16,11 +16,9 @@ import { ulid } from "ulid"
 import { resolveDbType, DbAwareColumn } from "../utils/db-aware-column"
 
 import { Currency } from "./currency"
-import { TaxRate } from "./tax-rate"
 import { Country } from "./country"
 import { PaymentProvider } from "./payment-provider"
 import { FulfillmentProvider } from "./fulfillment-provider"
-import { TaxProvider } from "./tax-provider"
 
 @Entity()
 export class Region {
@@ -40,32 +38,16 @@ export class Region {
   @Column({ type: "real" })
   tax_rate: number
 
-  @OneToMany(() => TaxRate, (tr) => tr.region)
-  tax_rates: TaxRate[] | null
-
   @Column({ nullable: true })
   tax_code: string
 
-  @Column({ default: true })
-  gift_cards_taxable: boolean
-
-  @Column({ default: true })
-  automatic_taxes: boolean
-
-  @OneToMany(() => Country, (c) => c.region)
+  @OneToMany(
+    () => Country,
+    c => c.region
+  )
   countries: Country[]
 
-  @Column({ type: "text", nullable: true })
-  tax_provider_id: string | null
-
-  @ManyToOne(() => TaxProvider)
-  @JoinColumn({ name: "tax_provider_id" })
-  tax_provider: TaxProvider
-
-  @ManyToMany(() => PaymentProvider, {
-    eager: true,
-    cascade: ["insert", "update"],
-  })
+  @ManyToMany(() => PaymentProvider, { eager: true, cascade: ['insert', 'update'] })
   @JoinTable({
     name: "region_payment_providers",
     joinColumn: {
@@ -79,10 +61,7 @@ export class Region {
   })
   payment_providers: PaymentProvider[]
 
-  @ManyToMany(() => FulfillmentProvider, {
-    eager: true,
-    cascade: ["insert", "update"],
-  })
+  @ManyToMany(() => FulfillmentProvider, { eager: true, cascade: ['insert', 'update'] })
   @JoinTable({
     name: "region_fulfillment_providers",
     joinColumn: {

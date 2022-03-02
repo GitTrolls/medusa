@@ -1,17 +1,7 @@
-import {
-  IsArray,
-  IsEmail,
-  IsObject,
-  IsOptional,
-  IsString,
-  ValidateNested,
-} from "class-validator"
+import { IsEmail, IsObject, IsOptional, IsString } from "class-validator"
 import { MedusaError } from "medusa-core-utils"
 import CustomerService from "../../../../services/customer"
 import { validator } from "../../../../utils/validator"
-import { defaultAdminCustomersRelations } from "."
-import { Type } from "class-transformer"
-import { FindParams } from "../../../../types/common"
 
 /**
  * @oas [post] /customers/{id}
@@ -41,16 +31,6 @@ import { FindParams } from "../../../../types/common"
  *           password:
  *             type: string
  *             description: The Customer's password.
- *           groups:
- *             type: array
- *             description: A list of customer groups to which the customer belongs.
- *             items:
- *               required:
- *                 - id
- *               properties:
- *                 id:
- *                   description: The id of a customer group
- *                   type: string
  *           metadata:
  *             type: object
  *             description: Metadata for the customer.
@@ -69,41 +49,25 @@ import { FindParams } from "../../../../types/common"
 export default async (req, res) => {
   const { id } = req.params
 
-  const validatedBody = await validator(AdminPostCustomersCustomerReq, req.body)
-  const validatedQuery = await validator(FindParams, req.query)
+  const validated = await validator(AdminPostCustomersCustomerReq, req.body)
 
   const customerService: CustomerService = req.scope.resolve("customerService")
 
   let customer = await customerService.retrieve(id)
 
-  if (validatedBody.email && customer.has_account) {
+  if (validated.email && customer.has_account) {
     throw new MedusaError(
       MedusaError.Types.INVALID_DATA,
       "Email cannot be changed when the user has registered their account"
     )
   }
 
-  await customerService.update(id, validatedBody)
+  await customerService.update(id, validated)
 
-  let expandFields: string[] = []
-  if (validatedQuery.expand) {
-    expandFields = validatedQuery.expand.split(",")
-  }
-
-  const findConfig = {
-    relations: expandFields.length
-      ? expandFields
-      : defaultAdminCustomersRelations,
-  }
-
-  customer = await customerService.retrieve(id, findConfig)
-
+  customer = await customerService.retrieve(id, {
+    relations: ["orders"],
+  })
   res.status(200).json({ customer })
-}
-
-class Group {
-  @IsString()
-  id: string
 }
 
 export class AdminPostCustomersCustomerReq {
@@ -130,10 +94,4 @@ export class AdminPostCustomersCustomerReq {
   @IsObject()
   @IsOptional()
   metadata?: object
-
-  @IsArray()
-  @IsOptional()
-  @Type(() => Group)
-  @ValidateNested({ each: true })
-  groups?: Group[]
 }

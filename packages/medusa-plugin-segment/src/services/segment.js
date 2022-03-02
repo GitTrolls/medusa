@@ -73,6 +73,8 @@ class SegmentService extends BaseService {
       coupon = order.discounts[0] && order.discounts[0].code
     }
 
+    const taxRate = order.tax_rate / 100
+
     const orderData = {
       checkout_id: order.cart_id,
       order_id: order.id,
@@ -111,18 +113,15 @@ class SegmentService extends BaseService {
       products: await Promise.all(
         order.items.map(async (item) => {
           let name = item.title
-          const totals = await this.totalsService_.getLineItemTotals(
-            item,
+          const lineTotalTax = this.totalsService_.getLineItemRefund(
             order,
-            {
-              include_tax: true,
-            }
+            item
           )
 
-          const lineTotal = totals.total - totals.tax_total
+          const lineTotal = lineTotalTax / (1 + taxRate)
 
           const revenue = await this.getReportingValue(
-            curr,
+            order.currency_code,
             humanizeAmount(lineTotal, curr)
           )
 
