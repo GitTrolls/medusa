@@ -8,8 +8,13 @@ const route = Router()
 export default (app) => {
   app.use("/customer-groups", route)
 
+  route.get("/", middlewares.wrap(require("./list-customer-groups").default))
   route.get("/:id", middlewares.wrap(require("./get-customer-group").default))
   route.post("/", middlewares.wrap(require("./create-customer-group").default))
+  route.post(
+    "/:id/customers/batch",
+    middlewares.wrap(require("./add-customers-batch").default)
+  )
   route.delete(
     "/:id/customers/batch",
     middlewares.wrap(require("./delete-customers-batch").default)
@@ -27,6 +32,10 @@ export default (app) => {
   return app
 }
 
+/* ************************************** */
+/* ******** EXPORT API CLIENT TYPES ***** */
+/* ************************************** */
+
 export type AdminCustomerGroupsRes = {
   customer_group: CustomerGroup
 }
@@ -39,4 +48,9 @@ export type AdminCustomerGroupsListRes = PaginatedResponse & {
 
 export const defaultAdminCustomerGroupsRelations = []
 
+export * from "./add-customers-batch"
 export * from "./create-customer-group"
+export * from "./delete-customers-batch"
+export * from "./get-customer-group"
+export * from "./list-customer-groups"
+export * from "./update-customer-group"
