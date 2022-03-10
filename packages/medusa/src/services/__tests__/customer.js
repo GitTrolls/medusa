@@ -3,13 +3,13 @@ import CustomerService from "../customer"
 
 const eventBusService = {
   emit: jest.fn(),
-  withTransaction: function () {
+  withTransaction: function() {
     return this
   },
 }
 
 const customerGroupService = {
-  withTransaction: function () {
+  withTransaction: function() {
     return this
   },
   list: jest.fn().mockImplementation(() => Promise.resolve()),
@@ -282,43 +282,42 @@ describe("CustomerService", () => {
       jest.clearAllMocks()
     })
 
-    describe("updateAddress", () => {
-      const addressRepository = MockRepository({
-        findOne: (query) => {
-          return Promise.resolve({
-            id: IdMap.getId("hollywood-boulevard"),
-            address_1: "Hollywood Boulevard 2",
-          })
-        },
+    it("calls `customerGroupService.list` if `groups` prop is received as a param", async () => {
+      await customerService.update(IdMap.getId("ironman"), {
+        groups: [{ id: "group-id" }],
       })
 
-      const customerService = new CustomerService({
-        manager: MockManager,
-        addressRepository,
-      })
+      expect(customerGroupService.list).toBeCalledTimes(1)
+      expect(customerGroupService.list).toBeCalledWith({ id: ["group-id"] })
 
-      beforeEach(async () => {
-        jest.clearAllMocks()
-      })
+      expect(customerRepository.save).toBeCalledTimes(1)
+    })
+  })
 
-      it("successfully updates address", async () => {
-        await customerService.updateAddress(
-          IdMap.getId("ironman"),
-          IdMap.getId("hollywood-boulevard"),
-          {
-            first_name: "Tony",
-            last_name: "Stark",
-            address_1: "Hollywood Boulevard 1",
-            city: "Los Angeles",
-            country_code: "us",
-            postal_code: "90046",
-            phone: "+1 (222) 333 4444",
-          }
-        )
-
-        expect(addressRepository.save).toBeCalledTimes(1)
-        expect(addressRepository.save).toBeCalledWith({
+  describe("updateAddress", () => {
+    const addressRepository = MockRepository({
+      findOne: (query) => {
+        return Promise.resolve({
           id: IdMap.getId("hollywood-boulevard"),
+          address_1: "Hollywood Boulevard 2",
+        })
+      },
+    })
+
+    const customerService = new CustomerService({
+      manager: MockManager,
+      addressRepository,
+    })
+
+    beforeEach(async () => {
+      jest.clearAllMocks()
+    })
+
+    it("successfully updates address", async () => {
+      await customerService.updateAddress(
+        IdMap.getId("ironman"),
+        IdMap.getId("hollywood-boulevard"),
+        {
           first_name: "Tony",
           last_name: "Stark",
           address_1: "Hollywood Boulevard 1",
@@ -326,82 +325,94 @@ describe("CustomerService", () => {
           country_code: "us",
           postal_code: "90046",
           phone: "+1 (222) 333 4444",
-        })
-      })
+        }
+      )
 
-      it("throws on invalid address", async () => {
-        await expect(
-          customerService.updateAddress(
-            IdMap.getId("ironman"),
-            IdMap.getId("hollywood-boulevard"),
-            {
-              first_name: "Tony",
-              last_name: "Stark",
-              country_code: "us",
-              unknown: "key",
-              address_1: "Hollywood",
-            }
-          )
-        ).rejects.toThrow("The address is not valid")
+      expect(addressRepository.save).toBeCalledTimes(1)
+      expect(addressRepository.save).toBeCalledWith({
+        id: IdMap.getId("hollywood-boulevard"),
+        first_name: "Tony",
+        last_name: "Stark",
+        address_1: "Hollywood Boulevard 1",
+        city: "Los Angeles",
+        country_code: "us",
+        postal_code: "90046",
+        phone: "+1 (222) 333 4444",
       })
     })
 
-    describe("removeAddress", () => {
-      const addressRepository = MockRepository({
-        findOne: (query) => {
-          return Promise.resolve({
-            id: IdMap.getId("hollywood-boulevard"),
-            address_1: "Hollywood Boulevard 2",
-          })
-        },
-      })
-
-      const customerService = new CustomerService({
-        manager: MockManager,
-        addressRepository,
-      })
-
-      beforeEach(async () => {
-        jest.clearAllMocks()
-      })
-
-      it("successfully deletes address", async () => {
-        await customerService.removeAddress(
+    it("throws on invalid address", async () => {
+      await expect(
+        customerService.updateAddress(
           IdMap.getId("ironman"),
-          IdMap.getId("hollywood-boulevard")
+          IdMap.getId("hollywood-boulevard"),
+          {
+            first_name: "Tony",
+            last_name: "Stark",
+            country_code: "us",
+            unknown: "key",
+            address_1: "Hollywood",
+          }
         )
+      ).rejects.toThrow("The address is not valid")
+    })
+  })
 
-        expect(addressRepository.softRemove).toBeCalledTimes(1)
-        expect(addressRepository.softRemove).toBeCalledWith({
+  describe("removeAddress", () => {
+    const addressRepository = MockRepository({
+      findOne: (query) => {
+        return Promise.resolve({
           id: IdMap.getId("hollywood-boulevard"),
           address_1: "Hollywood Boulevard 2",
         })
-      })
+      },
     })
 
-    describe("delete", () => {
-      const customerRepository = MockRepository({
-        findOne: (query) => {
-          return Promise.resolve({ id: IdMap.getId("ironman") })
-        },
+    const customerService = new CustomerService({
+      manager: MockManager,
+      addressRepository,
+    })
+
+    beforeEach(async () => {
+      jest.clearAllMocks()
+    })
+
+    it("successfully deletes address", async () => {
+      await customerService.removeAddress(
+        IdMap.getId("ironman"),
+        IdMap.getId("hollywood-boulevard")
+      )
+
+      expect(addressRepository.softRemove).toBeCalledTimes(1)
+      expect(addressRepository.softRemove).toBeCalledWith({
+        id: IdMap.getId("hollywood-boulevard"),
+        address_1: "Hollywood Boulevard 2",
       })
+    })
+  })
 
-      const customerService = new CustomerService({
-        manager: MockManager,
-        customerRepository,
-      })
+  describe("delete", () => {
+    const customerRepository = MockRepository({
+      findOne: (query) => {
+        return Promise.resolve({ id: IdMap.getId("ironman") })
+      },
+    })
 
-      beforeEach(async () => {
-        jest.clearAllMocks()
-      })
+    const customerService = new CustomerService({
+      manager: MockManager,
+      customerRepository,
+    })
 
-      it("successfully deletes customer", async () => {
-        await customerService.delete(IdMap.getId("ironman"))
+    beforeEach(async () => {
+      jest.clearAllMocks()
+    })
 
-        expect(customerRepository.softRemove).toBeCalledTimes(1)
-        expect(customerRepository.softRemove).toBeCalledWith({
-          id: IdMap.getId("ironman"),
-        })
+    it("successfully deletes customer", async () => {
+      await customerService.delete(IdMap.getId("ironman"))
+
+      expect(customerRepository.softRemove).toBeCalledTimes(1)
+      expect(customerRepository.softRemove).toBeCalledWith({
+        id: IdMap.getId("ironman"),
       })
     })
   })
