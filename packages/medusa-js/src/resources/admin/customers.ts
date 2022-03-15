@@ -13,52 +13,40 @@ class AdminCustomersResource extends BaseResource {
   /**
    * Creates a customer
    * @param payload information of customer
-   * @param customHeaders
    */
-  create(
-    payload: AdminPostCustomersReq,
-    customHeaders: Record<string, any> = {}
-  ): ResponsePromise<AdminCustomersRes> {
+  create(payload: AdminPostCustomersReq): ResponsePromise<AdminCustomersRes> {
     const path = `/admin/customers`
-    return this.client.request("POST", path, payload, {}, customHeaders)
+    return this.client.request("POST", path, payload)
   }
 
   /**
    * Updates a customer
    * @param id customer id
    * @param payload data to update customer with
-   * @param customHeaders
    */
   update(
     id: string,
-    payload: AdminPostCustomersCustomerReq,
-    customHeaders: Record<string, any> = {}
+    payload: AdminPostCustomersCustomerReq
   ): ResponsePromise<AdminCustomersRes> {
     const path = `/admin/customers/${id}`
-    return this.client.request("POST", path, payload, {}, customHeaders)
+    return this.client.request("POST", path, payload)
   }
 
   /**
    * Retrieves a customer
    * @param id customer id
-   * @param customHeaders
    */
-  retrieve(
-    id: string,
-    customHeaders: Record<string, any> = {}
-  ): ResponsePromise<AdminCustomersRes> {
+  retrieve(id: string): ResponsePromise<AdminCustomersRes> {
     const path = `/admin/customers/${id}`
-    return this.client.request("GET", path, {}, {}, customHeaders)
+    return this.client.request("GET", path)
   }
 
   /**
    * Lists customers
    * @param query optional
-   * @param customHeaders
    */
   list(
-    query?: AdminGetCustomersParams,
-    customHeaders: Record<string, any> = {}
+    query?: AdminGetCustomersParams
   ): ResponsePromise<AdminCustomersListRes> {
     let path = `/admin/customers`
 
@@ -67,7 +55,7 @@ class AdminCustomersResource extends BaseResource {
       path = `/admin/customers?${queryString}`
     }
 
-    return this.client.request("GET", path, {}, {}, customHeaders)
+    return this.client.request("GET", path)
   }
 }
 

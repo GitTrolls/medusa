@@ -8,7 +8,6 @@ import config from "../config"
 import apiLoader from "../loaders/api"
 import passportLoader from "../loaders/passport"
 import servicesLoader from "../loaders/services"
-import strategiesLoader from "../loaders/strategies"
 
 const adminSessionOpts = {
   cookieName: "session",
@@ -46,7 +45,6 @@ testApp.use((req, res, next) => {
 })
 
 servicesLoader({ container })
-strategiesLoader({ container })
 passportLoader({ app: testApp, container })
 
 testApp.use((req, res, next) => {

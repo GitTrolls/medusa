@@ -12,64 +12,58 @@ class AdminReturnReasonsResource extends BaseResource {
   /**
    * @description Creates a return reason.
    * @param payload
-   * @param customHeaders
    * @returns Created return reason.
    */
   create(
-    payload: AdminPostReturnReasonsReq,
-    customHeaders: Record<string, any> = {}
+    payload: AdminPostReturnReasonsReq
   ): ResponsePromise<AdminReturnReasonsRes> {
     const path = `/admin/return-reasons`
-    return this.client.request("POST", path, payload, {}, customHeaders)
+    return this.client.request("POST", path, payload)
   }
 
   /**
    * @description Updates a return reason
    * @param id id of the return reason to update.
    * @param payload update to apply to return reason.
-   * @param customHeaders
    * @returns the updated return reason.
    */
   update(
     id: string,
-    payload: AdminPostReturnReasonsReasonReq,
-    customHeaders: Record<string, any> = {}
+    payload: AdminPostReturnReasonsReasonReq
   ): ResponsePromise<AdminReturnReasonsRes> {
     const path = `/admin/return-reasons/${id}`
-    return this.client.request("POST", path, payload, {}, customHeaders)
+    return this.client.request("POST", path, payload)
   }
 
   /**
    * @description deletes a return reason
    * @param id id of return reason to delete.
-   * @param customHeaders
    * @returns Deleted response
    */
-  delete(id: string, customHeaders: Record<string, any> = {}): ResponsePromise<AdminReturnReasonsDeleteRes> {
+  delete(id: string): ResponsePromise<AdminReturnReasonsDeleteRes> {
     const path = `/admin/return-reasons/${id}`
-    return this.client.request("DELETE", path, {}, {}, customHeaders)
+    return this.client.request("DELETE", path)
   }
 
   /**
    * @description retrieves a return reason
    * @param id id of the return reason to retrieve.
-   * @param customHeaders
    * @returns the return reason with the given id
    */
-  retrieve(id: string, customHeaders: Record<string, any> = {}): ResponsePromise<AdminReturnReasonsRes> {
+  retrieve(id: string): ResponsePromise<AdminReturnReasonsRes> {
     const path = `/admin/return-reasons/${id}`
-    return this.client.request("GET", path, {}, {}, customHeaders)
+    return this.client.request("GET", path)
   }
 
   /**
    * @description Lists return reasons matching a query
+   * @param query Query for searching return reasons
    * @returns a list of return reasons matching the query.
-   * @param customHeaders
    */
-  list(customHeaders: Record<string, any> = {}): ResponsePromise<AdminReturnReasonsListRes> {
+  list(): ResponsePromise<AdminReturnReasonsListRes> {
     const path = `/admin/return-reasons`
 
-    return this.client.request("GET", path, {}, {}, customHeaders)
+    return this.client.request("GET", path)
   }
 }
 

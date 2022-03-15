@@ -40,8 +40,8 @@ describe("GET /admin/shipping-options", () => {
     })
 
     it("calls service retrieve", () => {
-      expect(ShippingOptionServiceMock.listAndCount).toHaveBeenCalledTimes(1)
-      expect(ShippingOptionServiceMock.listAndCount).toHaveBeenCalledWith(
+      expect(ShippingOptionServiceMock.list).toHaveBeenCalledTimes(1)
+      expect(ShippingOptionServiceMock.list).toHaveBeenCalledWith(
         {},
         {
           select: defaultFields,

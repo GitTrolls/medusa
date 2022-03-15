@@ -16,10 +16,9 @@ import redisLoader from "./redis"
 import repositoriesLoader from "./repositories"
 import searchIndexLoader from "./search-index"
 import servicesLoader from "./services"
-import strategiesLoader from "./strategies"
 import subscribersLoader from "./subscribers"
 
-export default async ({ directory: rootDirectory, expressApp, isTest }) => {
+export default async ({ directory: rootDirectory, expressApp }) => {
   const { configModule } = getConfigFile(rootDirectory, `medusa-config`)
 
   const container = createContainer()
@@ -59,7 +58,7 @@ export default async ({ directory: rootDirectory, expressApp, isTest }) => {
 
   const modelsActivity = Logger.activity("Initializing models")
   track("MODELS_INIT_STARTED")
-  modelsLoader({ container, activityId: modelsActivity, isTest })
+  modelsLoader({ container, activityId: modelsActivity })
   const mAct = Logger.success(modelsActivity, "Models initialized") || {}
   track("MODELS_INIT_COMPLETED", { duration: mAct.duration })
 
@@ -75,7 +74,7 @@ export default async ({ directory: rootDirectory, expressApp, isTest }) => {
 
   const repoActivity = Logger.activity("Initializing repositories")
   track("REPOSITORIES_INIT_STARTED")
-  repositoriesLoader({ container, activityId: repoActivity, isTest }) || {}
+  repositoriesLoader({ container, activityId: repoActivity }) || {}
   const rAct = Logger.success(repoActivity, "Repositories initialized") || {}
   track("REPOSITORIES_INIT_COMPLETED", { duration: rAct.duration })
 
@@ -85,7 +84,6 @@ export default async ({ directory: rootDirectory, expressApp, isTest }) => {
     container,
     configModule,
     activityId: dbActivity,
-    isTest,
   })
   const dbAct = Logger.success(dbActivity, "Database initialized") || {}
   track("DATABASE_INIT_COMPLETED", { duration: dbAct.duration })
@@ -94,24 +92,12 @@ export default async ({ directory: rootDirectory, expressApp, isTest }) => {
     manager: asValue(dbConnection.manager),
   })
 
-  const stratActivity = Logger.activity("Initializing strategies")
-  track("STRATEGIES_INIT_STARTED")
-  strategiesLoader({
-    container,
-    configModule,
-    activityId: stratActivity,
-    isTest,
-  })
-  const stratAct = Logger.success(stratActivity, "Strategies initialized") || {}
-  track("STRATEGIES_INIT_COMPLETED", { duration: stratAct.duration })
-
   const servicesActivity = Logger.activity("Initializing services")
   track("SERVICES_INIT_STARTED")
   servicesLoader({
     container,
     configModule,
     activityId: servicesActivity,
-    isTest,
   })
   const servAct = Logger.success(servicesActivity, "Services initialized") || {}
   track("SERVICES_INIT_COMPLETED", { duration: servAct.duration })

@@ -68,7 +68,7 @@ class Client {
   }
 
   // Stolen from https://github.com/stripe/stripe-node/blob/fd0a597064289b8c82f374f4747d634050739043/lib/utils.js#L282
-  normalizeHeaders(obj: object): Record<string, any> {
+  normalizeHeaders(obj: object): object {
     if (!(obj && typeof obj === "object")) {
       return obj
     }
@@ -109,9 +109,9 @@ class Client {
     userHeaders: RequestOptions,
     method: RequestMethod,
     path: string,
-    customHeaders: Record<string, any> = {}
+    customHeaders: object = {}
   ): AxiosRequestHeaders {
-    let defaultHeaders: Record<string, any> = {
+    let defaultHeaders: object = {
       Accept: "application/json",
       "Content-Type": "application/json",
     }
@@ -183,14 +183,10 @@ class Client {
   async request(
     method: RequestMethod,
     path: string,
-    payload: Record<string, any> | null = null,
+    payload: object = {},
     options: RequestOptions = {},
-    customHeaders: Record<string, any> = {}
+    customHeaders: object = {}
   ): Promise<any> {
-    if (method === "POST" && !payload) {
-      payload = {}
-    }
-
     const reqOpts = {
       method,
       withCredentials: true,

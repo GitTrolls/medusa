@@ -10,40 +10,37 @@ class AddressesResource extends BaseResource {
   /**
    * Adds an address to a customers saved addresses
    * @param {StorePostCustomersCustomerAddressesReq} payload contains information to create an address
-   * @param customHeaders
-   * @return {ResponsePromise<StoreCustomersRes>}
+   * @return {ResponsePromise<StoreCustomerResponse>}
    */
   addAddress(
-    payload: StorePostCustomersCustomerAddressesReq,
-    customHeaders: Record<string, any> = {}): ResponsePromise<StoreCustomersRes> {
+    payload: StorePostCustomersCustomerAddressesReq
+  ): ResponsePromise<StoreCustomersRes> {
     const path = `/store/customers/me/addresses`
-    return this.client.request("POST", path, payload, {}, customHeaders)
+    return this.client.request("POST", path, payload)
   }
 
   /**
    * Deletes an address of a customer
    * @param {string} address_id id of the address to delete
-   * @param customHeaders
-   * @return {ResponsePromise<StoreCustomersRes>}
+   * @return {ResponsePromise<StoreCustomersResponse>}
    */
-  deleteAddress(address_id: string, customHeaders: Record<string, any> = {}): ResponsePromise<StoreCustomersRes> {
+  deleteAddress(address_id: string): ResponsePromise<StoreCustomersRes> {
     const path = `/store/customers/me/addresses/${address_id}`
-    return this.client.request("DELETE", path, {}, {}, customHeaders)
+    return this.client.request("DELETE", path)
   }
 
   /**
    * Update an address of a customer
    * @param {string} address_id id of customer
    * @param {StorePostCustomersCustomerAddressesAddressReq} payload address update
-   * @param customHeaders
-   * @return {StoreCustomersRes}
+   * @return {StoreCustomersResponse}
    */
   updateAddress(
     address_id: string,
-    payload: StorePostCustomersCustomerAddressesAddressReq,
-    customHeaders: Record<string, any> = {}): ResponsePromise<StoreCustomersRes> {
+    payload: StorePostCustomersCustomerAddressesAddressReq
+  ): ResponsePromise<StoreCustomersRes> {
     const path = `/store/customers/me/addresses/${address_id}`
-    return this.client.request("POST", path, payload, {}, customHeaders)
+    return this.client.request("POST", path, payload)
   }
 }
 

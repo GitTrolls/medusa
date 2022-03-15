@@ -9,22 +9,20 @@ class ReturnReasonsResource extends BaseResource {
   /**
    * @description Retrieves a single Return Reason
    * @param {string} id is required
-   * @param customHeaders
    * @return {ResponsePromise<StoreReturnReasonsRes>}
    */
-  retrieve(id: string, customHeaders: Record<string, any> = {}): ResponsePromise<StoreReturnReasonsRes> {
+  retrieve(id: string): ResponsePromise<StoreReturnReasonsRes> {
     const path = `/store/return-reasons/${id}`
-    return this.client.request("GET", path, {}, {}, customHeaders)
+    return this.client.request("GET", path)
   }
 
   /**
    * Lists return reasons defined in Medusa Admin
-   * @param customHeaders
    * @return {ResponsePromise<StoreReturnReasonsListRes>}
    */
-  list(customHeaders: Record<string, any> = {}): ResponsePromise<StoreReturnReasonsListRes> {
+  list(): ResponsePromise<StoreReturnReasonsListRes> {
     const path = `/store/return-reasons`
-    return this.client.request("GET", path, {}, {}, customHeaders)
+    return this.client.request("GET", path)
   }
 }
 

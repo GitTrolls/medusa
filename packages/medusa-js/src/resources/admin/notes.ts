@@ -11,30 +11,30 @@ import { ResponsePromise } from "../../typings"
 import BaseResource from "../base"
 
 class AdminNotesResource extends BaseResource {
-  create(payload: AdminPostNotesReq, customHeaders: Record<string, any> = {}): ResponsePromise<AdminNotesRes> {
+  create(payload: AdminPostNotesReq): ResponsePromise<AdminNotesRes> {
     const path = `/admin/notes`
-    return this.client.request("POST", path, payload, {}, customHeaders)
+    return this.client.request("POST", path, payload)
   }
 
   update(
     id: string,
-    payload: AdminPostNotesNoteReq,
-    customHeaders: Record<string, any> = {}): ResponsePromise<AdminNotesRes> {
+    payload: AdminPostNotesNoteReq
+  ): ResponsePromise<AdminNotesRes> {
     const path = `/admin/notes/${id}`
-    return this.client.request("POST", path, payload, {}, customHeaders)
+    return this.client.request("POST", path, payload)
   }
 
-  delete(id: string, customHeaders: Record<string, any> = {}): ResponsePromise<AdminNotesDeleteRes> {
+  delete(id: string): ResponsePromise<AdminNotesDeleteRes> {
     const path = `/admin/notes/${id}`
-    return this.client.request("DELETE", path, {}, {}, customHeaders)
+    return this.client.request("DELETE", path)
   }
 
-  retrieve(id: string, customHeaders: Record<string, any> = {}): ResponsePromise<AdminNotesRes> {
+  retrieve(id: string): ResponsePromise<AdminNotesRes> {
     const path = `/admin/notes/${id}`
-    return this.client.request("GET", path, {}, {}, customHeaders)
+    return this.client.request("GET", path)
   }
 
-  list(query?: AdminGetNotesParams, customHeaders: Record<string, any> = {}): ResponsePromise<AdminNotesListRes> {
+  list(query?: AdminGetNotesParams): ResponsePromise<AdminNotesListRes> {
     let path = `/admin/notes/`
 
     if (query) {
@@ -42,7 +42,7 @@ class AdminNotesResource extends BaseResource {
       path = `/admin/notes?${queryString}`
     }
 
-    return this.client.request("GET", path, {}, {}, customHeaders)
+    return this.client.request("GET", path)
   }
 }
 
