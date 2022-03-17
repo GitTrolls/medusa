@@ -1,7 +1,6 @@
 import { MedusaError } from "medusa-core-utils"
 import { BaseService } from "medusa-interfaces"
 import { Brackets } from "typeorm"
-import { formatException } from "../utils/exception-formatter"
 
 /**
  * Provides layer to manipulate products.
@@ -379,44 +378,38 @@ class ProductService extends BaseService {
         rest.discountable = false
       }
 
-      try {
-        let product = productRepo.create(rest)
+      let product = productRepo.create(rest)
 
-        if (images) {
-          product.images = await this.upsertImages_(images)
-        }
-
-        if (tags) {
-          product.tags = await this.upsertProductTags_(tags)
-        }
-
-        if (typeof type !== `undefined`) {
-          product.type_id = await this.upsertProductType_(type)
-        }
-
-        product = await productRepo.save(product)
-
-        product.options = await Promise.all(
-          options.map(async (o) => {
-            const res = optionRepo.create({ ...o, product_id: product.id })
-            await optionRepo.save(res)
-            return res
-          })
-        )
-
-        const result = await this.retrieve(product.id, {
-          relations: ["options"],
-        })
-
-        await this.eventBus_
-          .withTransaction(manager)
-          .emit(ProductService.Events.CREATED, {
-            id: result.id,
-          })
-        return result
-      } catch (error) {
-        throw formatException(error)
+      if (images) {
+        product.images = await this.upsertImages_(images)
       }
+
+      if (tags) {
+        product.tags = await this.upsertProductTags_(tags)
+      }
+
+      if (typeof type !== `undefined`) {
+        product.type_id = await this.upsertProductType_(type)
+      }
+
+      product = await productRepo.save(product)
+
+      product.options = await Promise.all(
+        options.map(async (o) => {
+          const res = optionRepo.create({ ...o, product_id: product.id })
+          await optionRepo.save(res)
+          return res
+        })
+      )
+
+      const result = await this.retrieve(product.id, { relations: ["options"] })
+
+      await this.eventBus_
+        .withTransaction(manager)
+        .emit(ProductService.Events.CREATED, {
+          id: result.id,
+        })
+      return result
     })
   }
 
