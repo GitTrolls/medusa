@@ -1,7 +1,7 @@
 import { MedusaError } from "medusa-core-utils"
 import { BaseService } from "medusa-interfaces"
-import { Brackets, EntityManager, ILike, SelectQueryBuilder } from "typeorm"
-import { MoneyAmount } from ".."
+import { Brackets, EntityManager, ILike, In, SelectQueryBuilder } from "typeorm"
+import { MoneyAmount } from "../models/money-amount"
 import { Product } from "../models/product"
 import { ProductOptionValue } from "../models/product-option-value"
 import { ProductVariant } from "../models/product-variant"
@@ -230,6 +230,7 @@ class ProductVariantService extends BaseService {
             await this.setRegionPrice(result.id, {
               amount: price.amount,
               region_id: price.region_id,
+              sale_amount: price.sale_amount,
             })
           } else {
             await this.setCurrencyPrice(result.id, price)
@@ -316,13 +317,6 @@ class ProductVariantService extends BaseService {
     })
   }
 
-  /**
-   * Updates a variant's prices.
-   * Deletes any prices that are not in the update object, and is not associated with a price list.
-   * @param variantId - the id of variant variant
-   * @param prices - the update prices
-   * @returns {Promise<void>} empty promise
-   */
   async updateVariantPrices(
     variantId: string,
     prices: ProductVariantPrice[]
@@ -343,6 +337,7 @@ class ProductVariantService extends BaseService {
           await this.setRegionPrice(variantId, {
             region_id: price.region_id,
             amount: price.amount,
+            sale_amount: price.sale_amount || undefined,
           })
         } else {
           await this.setCurrencyPrice(variantId, price)
@@ -350,6 +345,25 @@ class ProductVariantService extends BaseService {
       }
 
       await moneyAmountRepo.remove(obsoletePrices)
+    })
+  }
+
+  /**
+   * Sets the default price for the given currency.
+   * @param {string} variantId - the id of the variant to set prices for
+   * @param {ProductVariantPrice} price - the price for the variant
+   * @return {Promise} the result of the update operation
+   */
+  async setCurrencyPrice(
+    variantId: string,
+    price: ProductVariantPrice
+  ): Promise<MoneyAmount> {
+    return this.atomicPhase_(async (manager: EntityManager) => {
+      const moneyAmountRepo = manager.getCustomRepository(
+        this.moneyAmountRepository_
+      )
+
+      return await moneyAmountRepo.upsertCurrencyPrice(variantId, price)
     })
   }
 
@@ -392,12 +406,17 @@ class ProductVariantService extends BaseService {
         )
       }
 
+      // Always return sale price, if present
+      if (moneyAmount.sale_amount) {
+        return moneyAmount.sale_amount
+      }
+
       return moneyAmount.amount
     })
   }
 
   /**
-   * Sets the default price of a specific region
+   * Sets the price of a specific region
    * @param {string} variantId - the id of the variant to update
    * @param {string} price - the price for the variant.
    * @return {Promise} the result of the update operation
@@ -415,7 +434,6 @@ class ProductVariantService extends BaseService {
         where: {
           variant_id: variantId,
           region_id: price.region_id,
-          price_list_id: null,
         },
       })
 
@@ -426,29 +444,11 @@ class ProductVariantService extends BaseService {
         })
       } else {
         moneyAmount.amount = price.amount
+        moneyAmount.sale_amount = price.sale_amount
       }
 
       const result = await moneyAmountRepo.save(moneyAmount)
       return result
-    })
-  }
-
-  /**
-   * Sets the default price for the given currency.
-   * @param {string} variantId - the id of the variant to set prices for
-   * @param {ProductVariantPrice} price - the price for the variant
-   * @return {Promise} the result of the update operation
-   */
-  async setCurrencyPrice(
-    variantId: string,
-    price: ProductVariantPrice
-  ): Promise<MoneyAmount> {
-    return this.atomicPhase_(async (manager: EntityManager) => {
-      const moneyAmountRepo = manager.getCustomRepository(
-        this.moneyAmountRepository_
-      )
-
-      return await moneyAmountRepo.upsertVariantCurrencyPrice(variantId, price)
     })
   }
 
@@ -636,10 +636,7 @@ class ProductVariantService extends BaseService {
         this.productVariantRepository_
       )
 
-      const variant = await variantRepo.findOne({
-        where: { id: variantId },
-        relations: ["prices"],
-      })
+      const variant = await variantRepo.findOne({ where: { id: variantId } })
 
       if (!variant) {
         return Promise.resolve()
@@ -665,10 +662,7 @@ class ProductVariantService extends BaseService {
    * @param {Object} metadata - the metadata to set
    * @return {Object} updated metadata object
    */
-  setMetadata_(
-    variant: ProductVariant,
-    metadata: object
-  ): Record<string, unknown> {
+  setMetadata_(variant: ProductVariant, metadata: object): Record<string, any> {
     const existing = variant.metadata || {}
     const newData = {}
     for (const [key, value] of Object.entries(metadata)) {

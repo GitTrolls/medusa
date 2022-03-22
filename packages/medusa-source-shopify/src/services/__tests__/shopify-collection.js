@@ -2,7 +2,7 @@ import { MockManager } from "medusa-test-utils"
 import ShopifyCollectionService from "../shopify-collection"
 import { ProductCollectionServiceMock } from "../__mocks__/product-collection"
 import { ShopifyProductServiceMock } from "../__mocks__/shopify-product"
-import { medusaProducts } from "../__mocks__/test-products"
+import { shopifyProducts } from "../__mocks__/test-products"
 
 describe("ShopifyCollectionService", () => {
   describe("create", () => {
@@ -16,7 +16,7 @@ describe("ShopifyCollectionService", () => {
       jest.clearAllMocks()
     })
 
-    it("creates a collection and adds products", async () => {
+    it("creates a collection with a product", async () => {
       const collects = [
         {
           collection_id: "spring",
@@ -36,9 +36,9 @@ describe("ShopifyCollectionService", () => {
           handle: "spring",
         },
       ]
-      const products = [medusaProducts.ipod]
+      const products = [shopifyProducts.ipod]
 
-      const results = await shopifyCollectionService.createCustomCollections(
+      const results = await shopifyCollectionService.createWithProducts(
         collects,
         collections,
         products
@@ -48,6 +48,7 @@ describe("ShopifyCollectionService", () => {
         ProductCollectionServiceMock.retrieveByHandle
       ).toHaveBeenCalledTimes(1)
       expect(ProductCollectionServiceMock.create).toHaveBeenCalledTimes(1)
+      expect(ShopifyProductServiceMock.create).toHaveBeenCalledTimes(1)
       expect(results).toEqual([
         {
           id: "col_spring",
@@ -61,7 +62,7 @@ describe("ShopifyCollectionService", () => {
       ])
     })
 
-    it("normalizes a custom collection from Shopify", () => {
+    it("normalizes a collection from Shopify", () => {
       const shopifyCollection = {
         id: "spring",
         body_html: "spring collection",
@@ -69,36 +70,9 @@ describe("ShopifyCollectionService", () => {
         handle: "spring",
       }
 
-      const normalized =
-        shopifyCollectionService.normalizeCustomCollection_(shopifyCollection)
-
-      expect(normalized).toMatchSnapshot()
-    })
-
-    it("normalizes a smart collection from Shopify", () => {
-      const shopifyCollection = {
-        id: 1063001322,
-        handle: "ipods-1",
-        title: "IPods",
-        updated_at: "2022-03-11T11:00:30-05:00",
-        body_html: null,
-        published_at: "2022-03-11T11:00:30-05:00",
-        sort_order: "best-selling",
-        template_suffix: null,
-        disjunctive: false,
-        rules: [
-          {
-            column: "title",
-            relation: "starts_with",
-            condition: "iPod",
-          },
-        ],
-        published_scope: "web",
-        admin_graphql_api_id: "gid://shopify/Collection/1063001322",
-      }
-
-      const normalized =
-        shopifyCollectionService.normalizeCustomCollection_(shopifyCollection)
+      const normalized = shopifyCollectionService.normalizeCollection_(
+        shopifyCollection
+      )
 
       expect(normalized).toMatchSnapshot()
     })
