@@ -1040,19 +1040,6 @@ describe("CartService", () => {
         return this
       },
     }
-
-    const priceSelectionStrat = {
-      calculateVariantPrice: async (variantId, context) => {
-        if (variantId === IdMap.getId("fail")) {
-          throw new MedusaError(
-            MedusaError.Types.NOT_FOUND,
-            `Money amount for variant with id ${variantId} in region ${context.region_id} does not exist`
-          )
-        } else {
-          return { calculatedPrice: 100 }
-        }
-      },
-    }
     const cartService = new CartService({
       manager: MockManager,
       paymentProviderService,
@@ -1063,7 +1050,6 @@ describe("CartService", () => {
       lineItemService,
       productVariantService,
       eventBusService,
-      priceSelectionStrategy: priceSelectionStrat,
     })
 
     beforeEach(() => {
@@ -1330,7 +1316,7 @@ describe("CartService", () => {
       jest.clearAllMocks()
     })
 
-    const cartService = new CartService({})
+    let cartService = new CartService({})
 
     it("given a cart with custom shipping options and a shipping option id corresponding to a custom shipping option, then it should return a custom shipping option", async () => {
       const cartCSO = [

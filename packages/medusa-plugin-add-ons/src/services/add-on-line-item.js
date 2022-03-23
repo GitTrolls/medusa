@@ -58,7 +58,7 @@ class AddOnLineItemService extends BaseService {
 
     let unitPrice = await this.productVariantService_.getRegionPrice(
       variant._id,
-      {regionId: region._id}
+      region._id
     )
 
     const addOnPrices = await Promise.all(

@@ -1,5 +1,3 @@
-import { BaseService } from "medusa-interfaces"
-
 import { LineItem } from "../models/line-item"
 import { Region } from "../models/region"
 import { Address } from "../models/address"
@@ -54,26 +52,6 @@ export interface ITaxService {
    *   lines
    */
   getTaxLines(
-    itemLines: ItemTaxCalculationLine[],
-    shippingLines: ShippingTaxCalculationLine[],
-    context: TaxCalculationContext
-  ): Promise<ProviderTaxLine[]>
-}
-
-export abstract class AbstractTaxService
-  extends BaseService
-  implements ITaxService
-{
-  protected static identifier: string
-
-  public getIdentifier(): string {
-    if (!(<typeof AbstractTaxService>this.constructor).identifier) {
-      throw new Error('Missing static property "identifier".')
-    }
-    return (<typeof AbstractTaxService>this.constructor).identifier
-  }
-
-  public abstract getTaxLines(
     itemLines: ItemTaxCalculationLine[],
     shippingLines: ShippingTaxCalculationLine[],
     context: TaxCalculationContext
