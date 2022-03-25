@@ -63,10 +63,6 @@
     {
       "name": "Product Variant",
       "x-resourceId": "product_variant"
-    },
-    {
-      "name": "OAuth",
-      "x-resourceId": "OAuth"
     }
   ],
   "servers": [
