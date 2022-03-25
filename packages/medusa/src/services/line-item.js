@@ -143,7 +143,6 @@ class LineItemService extends BaseService {
         .withTransaction(manager)
         .retrieve(variantId, {
           relations: ["product"],
-          include_discount_prices: true,
         })
 
       const region = await this.regionService_
@@ -165,12 +164,7 @@ class LineItemService extends BaseService {
       } else {
         price = await this.productVariantService_
           .withTransaction(manager)
-          .getRegionPrice(variant.id, {
-            regionId: region.id,
-            quantity: quantity,
-            customer_id: undefined,
-            include_discount_prices: true,
-          })
+          .getRegionPrice(variant.id, region.id)
       }
 
       const toCreate = {
