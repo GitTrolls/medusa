@@ -11,16 +11,11 @@ import {
   IsString,
   ValidateNested,
 } from "class-validator"
-import { defaultAdminDiscountsFields, defaultAdminDiscountsRelations } from "."
-import { Discount } from "../../../../models/discount"
-import { DiscountConditionOperator } from "../../../../models/discount-condition"
+import { defaultAdminDiscountsRelations } from "."
 import DiscountService from "../../../../services/discount"
-import { AdminUpsertConditionsReq } from "../../../../types/discount"
-import { getRetrieveConfig } from "../../../../utils/get-query-config"
-import { validator } from "../../../../utils/validator"
 import { IsGreaterThan } from "../../../../utils/validators/greater-than"
+import { validator } from "../../../../utils/validator"
 import { IsISO8601Duration } from "../../../../utils/validators/iso8601-duration"
-import { AdminPostDiscountsDiscountParams } from "./update-discount"
 /**
  * @oas [post] /discounts
  * operationId: "PostDiscounts"
@@ -79,29 +74,15 @@ import { AdminPostDiscountsDiscountParams } from "./update-discount"
  *             discount:
  *               $ref: "#/components/schemas/discount"
  */
-
 export default async (req, res) => {
   const validated = await validator(AdminPostDiscountsReq, req.body)
 
-  console.log(validated.rule.conditions)
-
-  const validatedParams = await validator(
-    AdminPostDiscountsDiscountParams,
-    req.query
-  )
-
   const discountService: DiscountService = req.scope.resolve("discountService")
-
   const created = await discountService.create(validated)
-
-  const config = getRetrieveConfig<Discount>(
-    defaultAdminDiscountsFields,
-    defaultAdminDiscountsRelations,
-    validatedParams?.fields?.split(",") as (keyof Discount)[],
-    validatedParams?.expand?.split(",")
+  const discount = await discountService.retrieve(
+    created.id,
+    defaultAdminDiscountsRelations
   )
-
-  const discount = await discountService.retrieve(created.id, config)
 
   res.status(200).json({ discount })
 }
@@ -151,7 +132,7 @@ export class AdminPostDiscountsReq {
 
   @IsObject()
   @IsOptional()
-  metadata?: Record<string, unknown>
+  metadata?: object
 }
 
 export class AdminPostDiscountsDiscountRule {
@@ -172,22 +153,6 @@ export class AdminPostDiscountsDiscountRule {
 
   @IsOptional()
   @IsArray()
-  @ValidateNested({ each: true })
-  @Type(() => AdminCreateCondition)
-  conditions?: AdminCreateCondition[]
-}
-
-export class AdminCreateCondition extends AdminUpsertConditionsReq {
-  @IsString()
-  operator: DiscountConditionOperator
-}
-
-export class AdminPostDiscountsParams {
-  @IsArray()
-  @IsOptional()
-  expand?: string[]
-
-  @IsArray()
-  @IsOptional()
-  fields?: string[]
+  @IsString({ each: true })
+  valid_for?: string[]
 }

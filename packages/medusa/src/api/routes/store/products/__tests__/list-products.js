@@ -19,15 +19,7 @@ describe("GET /store/products", () => {
       expect(ProductServiceMock.listAndCount).toHaveBeenCalledTimes(1)
       expect(ProductServiceMock.listAndCount).toHaveBeenCalledWith(
         { status: ["published"] },
-        {
-          relations: defaultStoreProductsRelations,
-          skip: 0,
-          take: 100,
-          cart_id: undefined,
-          currency_code: undefined,
-          region_id: undefined,
-          include_discount_prices: true,
-        }
+        { relations: defaultStoreProductsRelations, skip: 0, take: 100 }
       )
     })
 
@@ -50,15 +42,7 @@ describe("GET /store/products", () => {
       expect(ProductServiceMock.listAndCount).toHaveBeenCalledTimes(1)
       expect(ProductServiceMock.listAndCount).toHaveBeenCalledWith(
         { is_giftcard: true, status: ["published"] },
-        {
-          relations: defaultStoreProductsRelations,
-          skip: 0,
-          take: 100,
-          cart_id: undefined,
-          currency_code: undefined,
-          region_id: undefined,
-          include_discount_prices: true,
-        }
+        { relations: defaultStoreProductsRelations, skip: 0, take: 100 }
       )
     })
   })

@@ -1,35 +1,16 @@
-import {
-  IsBoolean,
-  IsInt,
-  IsNumber,
-  IsOptional,
-  IsString,
-  Validate,
-  ValidateIf,
-  ValidateNested,
-} from "class-validator"
+import { IsBoolean, IsNumber, IsString, ValidateNested } from "class-validator"
 import { IsType } from "../utils/validators/is-type"
 import {
   DateComparisonOperator,
   NumericalComparisonOperator,
   StringComparisonOperator,
 } from "./common"
-import { XorConstraint } from "./validators/xor"
 
 export type ProductVariantPrice = {
-  id?: string
   currency_code?: string
   region_id?: string
   amount: number
-  min_quantity?: number
-  max_quantity?: number
-}
-
-export type GetRegionPriceContext = {
-  regionId: string
-  quantity?: number
-  customer_id?: string
-  include_discount_prices?: boolean
+  sale_amount?: number | undefined
 }
 
 export type ProductVariantOption = {
@@ -89,8 +70,8 @@ export class FilterableProductVariantProps {
   @IsType([String, [String], StringComparisonOperator])
   id?: string | string[] | StringComparisonOperator
 
-  @IsType([String, [String]])
-  title?: string | string[]
+  @IsString()
+  title?: string
 
   @IsType([String, [String]])
   product_id?: string | string[]
@@ -107,8 +88,8 @@ export class FilterableProductVariantProps {
   @IsType([String])
   upc?: string
 
-  @IsType([Number, NumericalComparisonOperator])
-  inventory_quantity?: number | NumericalComparisonOperator
+  @IsNumber()
+  inventory_quantity?: number
 
   @IsBoolean()
   allow_backorder?: boolean
@@ -148,48 +129,4 @@ export class FilterableProductVariantProps {
 
   @IsType([DateComparisonOperator])
   updated_at?: DateComparisonOperator
-}
-
-export class ProductVariantPricesUpdateReq {
-  @IsString()
-  @IsOptional()
-  id?: string
-
-  @ValidateIf((o) => !o.id)
-  @Validate(XorConstraint, ["currency_code"])
-  region_id?: string
-
-  @ValidateIf((o) => !o.id)
-  @Validate(XorConstraint, ["region_id"])
-  currency_code?: string
-
-  @IsInt()
-  amount: number
-
-  @IsOptional()
-  @IsInt()
-  min_quantity?: number
-
-  @IsOptional()
-  @IsInt()
-  max_quantity?: number
-}
-
-export class ProductVariantPricesCreateReq {
-  @Validate(XorConstraint, ["currency_code"])
-  region_id?: string
-
-  @Validate(XorConstraint, ["region_id"])
-  currency_code?: string
-
-  @IsInt()
-  amount: number
-
-  @IsOptional()
-  @IsInt()
-  min_quantity?: number
-
-  @IsOptional()
-  @IsInt()
-  max_quantity?: number
 }

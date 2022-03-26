@@ -1,8 +1,8 @@
 import { Router } from "express"
-import "reflect-metadata"
 import { Order } from "../../../.."
-import { DeleteResponse, PaginatedResponse } from "../../../../types/common"
 import middlewares from "../../../middlewares"
+import { DeleteResponse, PaginatedResponse } from "../../../../types/common"
+import "reflect-metadata"
 
 const route = Router()
 
@@ -231,6 +231,7 @@ export const defaultAdminOrdersRelations = [
   "shipping_address",
   "discounts",
   "discounts.rule",
+  "discounts.rule.valid_for",
   "shipping_methods",
   "payments",
   "fulfillments",
@@ -331,6 +332,7 @@ export const allowedAdminOrdersRelations = [
   "shipping_address",
   "discounts",
   "discounts.rule",
+  "discounts.rule.valid_for",
   "shipping_methods",
   "payments",
   "fulfillments",

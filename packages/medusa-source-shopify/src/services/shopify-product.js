@@ -1,10 +1,9 @@
-import axios from "axios"
-import isEmpty from "lodash/isEmpty"
-import omit from "lodash/omit"
-import random from "lodash/random"
-import { MedusaError } from "medusa-core-utils"
 import { BaseService } from "medusa-interfaces"
+import { MedusaError } from "medusa-core-utils"
+import _ from "lodash"
 import { parsePrice } from "../utils/parse-price"
+import { INCLUDE_PRESENTMENT_PRICES } from "../utils/const"
+import axios from "axios"
 
 class ShopifyProductService extends BaseService {
   constructor(
@@ -63,7 +62,7 @@ class ShopifyProductService extends BaseService {
    * @param {string} collectionId optional
    * @return {Product} the created product
    */
-  async create(data) {
+  async create(data, collectionId) {
     return this.atomicPhase_(async (manager) => {
       const ignore = await this.redis_.shouldIgnore(data.id, "product.created")
       if (ignore) {
@@ -72,16 +71,14 @@ class ShopifyProductService extends BaseService {
 
       const existingProduct = await this.productService_
         .withTransaction(manager)
-        .retrieveByExternalId(data.id, {
-          relations: ["variants", "options"],
-        })
+        .retrieveByExternalId(data.id)
         .catch((_) => undefined)
 
       if (existingProduct) {
-        return await this.update(existingProduct, data)
+        return await this.update(data)
       }
 
-      const normalizedProduct = this.normalizeProduct_(data)
+      const normalizedProduct = this.normalizeProduct_(data, collectionId)
       normalizedProduct.profile_id = await this.getShippingProfile_(
         normalizedProduct.is_giftcard
       )
@@ -98,8 +95,7 @@ class ShopifyProductService extends BaseService {
           this.addVariantOptions_(v, product.options)
         )
 
-        for (let variant of variants) {
-          variant = await this.ensureVariantUnique_(variant)
+        for (const variant of variants) {
           await this.productVariantService_
             .withTransaction(manager)
             .create(product.id, variant)
@@ -112,24 +108,45 @@ class ShopifyProductService extends BaseService {
     })
   }
 
-  async update(existing, shopifyUpdate) {
+  async update(data) {
     return this.atomicPhase_(async (manager) => {
-      const ignore = await this.redis_.shouldIgnore(
-        shopifyUpdate.id,
-        "product.updated"
-      )
+      const ignore = await this.redis_.shouldIgnore(data.id, "product.updated")
       if (ignore) {
         return
       }
 
-      const normalized = this.normalizeProduct_(shopifyUpdate)
+      let existing = await this.productService_
+        .retrieveByExternalId(data.id, {
+          relations: ["variants", "options"],
+        })
+        .catch((_) => undefined)
+
+      if (!existing) {
+        return await this.create(data)
+      }
+
+      /**
+       * Variants received from webhook do not include
+       * presentment prices. Therefore, we fetch them
+       * separately, and add to the data object.
+       */
+      const { variants } = await this.shopify_
+        .get({
+          path: `products/${data.id}`,
+          extraHeaders: INCLUDE_PRESENTMENT_PRICES,
+        })
+        .then((res) => {
+          return res.body.product
+        })
+
+      data.variants = variants || []
+      const normalized = this.normalizeProduct_(data)
 
       existing = await this.addProductOptions_(existing, normalized.options)
 
       await this.updateVariants_(existing, normalized.variants)
       await this.deleteVariants_(existing, normalized.variants)
       delete normalized.variants
-      delete normalized.options
 
       const update = {}
 
@@ -139,8 +156,8 @@ class ShopifyProductService extends BaseService {
         }
       }
 
-      if (!isEmpty(update)) {
-        await this.redis_.addIgnore(shopifyUpdate.id, "product.updated")
+      if (!_.isEmpty(update)) {
+        await this.redis_.addIgnore(data.id, "product.updated")
         return await this.productService_
           .withTransaction(manager)
           .update(existing.id, update)
@@ -327,12 +344,8 @@ class ShopifyProductService extends BaseService {
         }
 
         variant = this.addVariantOptions_(variant, options)
-        const match = variants.find(
-          (v) => v.metadata.sh_id === variant.metadata.sh_id
-        )
+        const match = variants.find((v) => v.sku === variant.sku)
         if (match) {
-          variant = this.removeUniqueConstraint_(variant)
-
           await this.productVariantService_
             .withTransaction(manager)
             .update(match.id, variant)
@@ -357,9 +370,7 @@ class ShopifyProductService extends BaseService {
           continue
         }
 
-        const match = updateVariants.find(
-          (v) => v.metadata.sh_id === variant.metadata.sh_id
-        )
+        const match = updateVariants.find((v) => v.sku === variant.sku)
         if (!match) {
           await this.productVariantService_
             .withTransaction(manager)
@@ -385,11 +396,7 @@ class ShopifyProductService extends BaseService {
 
       for (const option of updateOptions) {
         const match = options.find((o) => o.title === option.title)
-        if (match) {
-          await this.productService_
-            .withTransaction(manager)
-            .updateOption(product.id, match.id, { title: option.title })
-        } else if (!match) {
+        if (!match) {
           await this.productService_
             .withTransaction(manager)
             .addOption(id, option.title)
@@ -399,7 +406,6 @@ class ShopifyProductService extends BaseService {
       const result = await this.productService_.retrieve(id, {
         relations: ["variants", "options"],
       })
-
       return result
     })
   }
@@ -422,7 +428,7 @@ class ShopifyProductService extends BaseService {
    * @param {string} collectionId optional
    * @return {object} normalized object
    */
-  normalizeProduct_(product) {
+  normalizeProduct_(product, collectionId) {
     return {
       title: product.title,
       handle: product.handle,
@@ -440,11 +446,9 @@ class ShopifyProductService extends BaseService {
       tags: product.tags.split(",").map((tag) => this.normalizeTag_(tag)) || [],
       images: product.images.map((img) => img.src) || [],
       thumbnail: product.image?.src || null,
+      collection_id: collectionId || null,
       external_id: product.id,
       status: "proposed",
-      metadata: {
-        vendor: product.vendor,
-      },
     }
   }
 
@@ -543,52 +547,6 @@ class ShopifyProductService extends BaseService {
     return {
       value: tag,
     }
-  }
-
-  handleDuplicateConstraint_(uniqueVal) {
-    return `DUP-${random(100, 999)}-${uniqueVal}`
-  }
-
-  async testUnique_(uniqueVal, type) {
-    // Test if the unique value has already been added, if it was then pass the value onto the duplicate handler and return the new value
-    const exists = await this.redis_.getUniqueValue(uniqueVal, type)
-
-    if (exists) {
-      const dupValue = this.handleDuplicateConstraint_(uniqueVal)
-      await this.redis_.addUniqueValue(dupValue, type)
-      return dupValue
-    }
-    // If it doesn't exist, we return the value
-    await this.redis_.addUniqueValue(uniqueVal, type)
-    return uniqueVal
-  }
-
-  async ensureVariantUnique_(variant) {
-    let { sku, ean, upc, barcode } = variant
-
-    if (sku) {
-      sku = await this.testUnique_(sku, "SKU")
-    }
-
-    if (ean) {
-      ean = await this.testUnique_(ean, "EAN")
-    }
-
-    if (upc) {
-      upc = await this.testUnique_(upc, "UPC")
-    }
-
-    if (barcode) {
-      barcode = await this.testUnique_(barcode, "BARCODE")
-    }
-
-    return { ...variant, sku, ean, upc, barcode }
-  }
-
-  removeUniqueConstraint_(update) {
-    const payload = omit(update, ["sku", "ean", "upc", "barcode"])
-
-    return payload
   }
 }
 
