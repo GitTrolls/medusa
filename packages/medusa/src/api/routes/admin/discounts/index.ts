@@ -62,7 +62,7 @@ export default (app) => {
   return app
 }
 
-export const defaultAdminDiscountsFields: (keyof Discount)[] = [
+export const defaultAdminDiscountsFields = [
   "id",
   "code",
   "is_dynamic",
@@ -84,7 +84,7 @@ export const defaultAdminDiscountsRelations = [
   "rule",
   "parent_discount",
   "regions",
-  "rule.conditions",
+  "rule.valid_for",
 ]
 
 export type AdminDiscountsRes = {

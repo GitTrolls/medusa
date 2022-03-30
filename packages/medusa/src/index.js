@@ -4,9 +4,6 @@ export * from "./api"
 // Interfaces
 export * from "./interfaces"
 
-// Types
-export * from "./types/price-list"
-
 // Models
 export * from "./models/shipping-tax-rate"
 export * from "./models/product-tax-rate"
@@ -45,7 +42,6 @@ export * from "./models/order"
 export * from "./models/payment"
 export * from "./models/payment-provider"
 export * from "./models/payment-session"
-export * from "./models/price-list"
 export * from "./models/product"
 export * from "./models/product-collection"
 export * from "./models/product-option"

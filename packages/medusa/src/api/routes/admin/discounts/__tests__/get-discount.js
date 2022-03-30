@@ -24,7 +24,7 @@ const defaultRelations = [
   "rule",
   "parent_discount",
   "regions",
-  "rule.conditions",
+  "rule.valid_for",
 ]
 
 describe("GET /admin/discounts/:discount_id", () => {

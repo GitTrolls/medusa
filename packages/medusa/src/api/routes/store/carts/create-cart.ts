@@ -129,9 +129,7 @@ export default async (req, res) => {
         validated.items.map(async (i) => {
           const lineItem = await lineItemService
             .withTransaction(manager)
-            .generate(i.variant_id, regionId, i.quantity, {
-              customer_id: req.user?.customer_id,
-            })
+            .generate(i.variant_id, regionId, i.quantity)
           await cartService
             .withTransaction(manager)
             .addLineItem(cart.id, lineItem)
