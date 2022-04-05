@@ -257,7 +257,7 @@ class InviteService extends BaseService {
     )
   }
 
-  async resend(id): Promise<void> {
+  async resend(id): Promise<any> {
     const inviteRepo = this.manager_.getCustomRepository(InviteRepository)
 
     const invite = await inviteRepo.findOne({ id })

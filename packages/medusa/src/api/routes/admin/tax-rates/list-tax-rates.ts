@@ -1,10 +1,19 @@
 import { getListConfig, pickByConfig } from "./utils/get-query-config"
-import { IsArray, IsNumber, IsOptional, IsString } from "class-validator"
+import {
+  IsArray,
+  ValidateNested,
+  IsNumber,
+  IsOptional,
+  IsString,
+} from "class-validator"
 import { Type } from "class-transformer"
-import { omit, pickBy, identity } from "lodash"
+import { omit, pickBy, pick, identity } from "lodash"
 
 import { TaxRate } from "../../../.."
-import { NumericalComparisonOperator } from "../../../../types/common"
+import {
+  NumericalComparisonOperator,
+  FindConfig,
+} from "../../../../types/common"
 import { TaxRateService } from "../../../../services"
 import { IsType } from "../../../../utils/validators/is-type"
 import { validator } from "../../../../utils/validator"

@@ -38,7 +38,7 @@ export default async (req, res) => {
   )
 
   // should be selector
-  const query: Record<string, unknown> = {}
+  const query: any = {}
 
   if ("is_return" in req.query) {
     query.is_return = validated.is_return === "true"

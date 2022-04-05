@@ -20,7 +20,6 @@ import {
   SwapService,
 } from "../../../../services"
 import { validator } from "../../../../utils/validator"
-import { EntityManager } from "typeorm"
 
 /**
  * @oas [post] /order/{id}/swaps
@@ -202,12 +201,10 @@ export default async (req, res) => {
       case "swap_created": {
         const { key, error } = await idempotencyKeyService.workStage(
           idempotencyKey.idempotency_key,
-          async (transactionManager: EntityManager) => {
-            const swaps = await swapService
-              .withTransaction(transactionManager)
-              .list({
-                idempotency_key: idempotencyKey.idempotency_key,
-              })
+          async (manager) => {
+            const swaps = await swapService.list({
+              idempotency_key: idempotencyKey.idempotency_key,
+            })
 
             if (!swaps.length) {
               throw new MedusaError(
@@ -216,12 +213,10 @@ export default async (req, res) => {
               )
             }
 
-            const order = await orderService
-              .withTransaction(transactionManager)
-              .retrieve(id, {
-                select: defaultAdminOrdersFields,
-                relations: defaultAdminOrdersRelations,
-              })
+            const order = await orderService.retrieve(id, {
+              select: defaultAdminOrdersFields,
+              relations: defaultAdminOrdersRelations,
+            })
 
             return {
               response_code: 200,
