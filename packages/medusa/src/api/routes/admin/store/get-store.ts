@@ -31,7 +31,6 @@ export default async (req, res) => {
     req.scope.resolve("fulfillmentProviderService")
 
   const data = await storeService.retrieve(["currencies", "default_currency"])
-
   const paymentProviders = await paymentProviderService.list()
   const fulfillmentProviders = await fulfillmentProviderService.list()
 

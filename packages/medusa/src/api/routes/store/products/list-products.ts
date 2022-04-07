@@ -7,13 +7,12 @@ import {
   IsString,
   ValidateNested,
 } from "class-validator"
-import { omit, pickBy } from "lodash"
+import { omit, pickBy, identity } from "lodash"
+import { MedusaError } from "medusa-core-utils"
 import { defaultStoreProductsRelations } from "."
 import { ProductService } from "../../../../services"
 import { DateComparisonOperator } from "../../../../types/common"
-import { PriceSelectionParams } from "../../../../types/price-selection"
 import { validator } from "../../../../utils/validator"
-import { IsType } from "../../../../utils/validators/is-type"
 import { optionalBooleanMapper } from "../../../../utils/validators/is-boolean"
 
 /**
@@ -65,42 +64,17 @@ export default async (req, res) => {
   const validated = await validator(StoreGetProductsParams, req.query)
 
   const filterableFields: StoreGetProductsParams = omit(validated, [
-    "fields",
-    "expand",
     "limit",
     "offset",
-    "cart_id",
-    "region_id",
-    "currency_code",
   ])
 
   // get only published products for store endpoint
   filterableFields["status"] = ["published"]
 
-  let includeFields: string[] = []
-  if (validated.fields) {
-    const set = new Set(validated.fields.split(","))
-    set.add("id")
-    includeFields = [...set]
-  }
-
-  let expandFields: string[] = []
-  if (validated.expand) {
-    expandFields = validated.expand.split(",")
-  }
-
   const listConfig = {
-    select: includeFields.length ? includeFields : undefined,
-    relations: expandFields.length
-      ? expandFields
-      : defaultStoreProductsRelations,
+    relations: defaultStoreProductsRelations,
     skip: validated.offset,
     take: validated.limit,
-    cart_id: validated.cart_id,
-    region_id: validated.region_id,
-    currency_code: validated.currency_code,
-    customer_id: req.user?.customer_id,
-    include_discount_prices: true,
   }
 
   const [products, count] = await productService.listAndCount(
@@ -116,15 +90,7 @@ export default async (req, res) => {
   })
 }
 
-export class StoreGetProductsPaginationParams extends PriceSelectionParams {
-  @IsString()
-  @IsOptional()
-  fields?: string
-
-  @IsString()
-  @IsOptional()
-  expand?: string
-
+export class StoreGetProductsPaginationParams {
   @IsNumber()
   @IsOptional()
   @Type(() => Number)
@@ -137,9 +103,9 @@ export class StoreGetProductsPaginationParams extends PriceSelectionParams {
 }
 
 export class StoreGetProductsParams extends StoreGetProductsPaginationParams {
+  @IsString()
   @IsOptional()
-  @IsType([String, [String]])
-  id?: string | string[]
+  id?: string
 
   @IsString()
   @IsOptional()
@@ -183,4 +149,9 @@ export class StoreGetProductsParams extends StoreGetProductsPaginationParams {
   @ValidateNested()
   @Type(() => DateComparisonOperator)
   updated_at?: DateComparisonOperator
+
+  @ValidateNested()
+  @IsOptional()
+  @Type(() => DateComparisonOperator)
+  deleted_at?: DateComparisonOperator
 }
