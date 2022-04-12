@@ -227,17 +227,6 @@ module.exports = {
         },
         {
           type: "category",
-          label: "Notifications",
-          items: [
-            {
-              type: "doc",
-              id: "add-plugins/sendgrid",
-              label: "SendGrid",
-            },
-          ],
-        },
-        {
-          type: "category",
           label: "Payment",
           items: [
             {
