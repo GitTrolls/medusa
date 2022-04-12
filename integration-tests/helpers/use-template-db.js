@@ -20,13 +20,14 @@ class DatabaseFactory {
     this.templateDbName = "medusa-integration-template"
   }
 
-  async createTemplateDb_({ cwd }) {
+  async createTemplateDb_() {
     try {
-      // const cwd = path.resolve(path.join(__dirname, ".."))
+      const cwd = path.resolve(path.join(__dirname, ".."))
       const connection = await this.getMasterConnection()
       const migrationDir = path.resolve(
         path.join(
           cwd,
+          "api",
           `node_modules`,
           `@medusajs`,
           `medusa`,

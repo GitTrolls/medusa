@@ -12,8 +12,7 @@ class FulfillmentProviderService {
   async registerInstalledProviders(providers) {
     const { manager, fulfillmentProviderRepository } = this.container_
     const model = manager.getCustomRepository(fulfillmentProviderRepository)
-    await model.update({}, { is_installed: false })
-
+    model.update({}, { is_installed: false })
     for (const p of providers) {
       const n = model.create({ id: p, is_installed: true })
       await model.save(n)
@@ -24,7 +23,7 @@ class FulfillmentProviderService {
     const { manager, fulfillmentProviderRepository } = this.container_
     const fpRepo = manager.getCustomRepository(fulfillmentProviderRepository)
 
-    return await fpRepo.find({})
+    return fpRepo.find({})
   }
 
   async listFulfillmentOptions(providers) {

@@ -34,10 +34,8 @@ class PaymentProviderService extends BaseService {
 
   async registerInstalledProviders(providers) {
     const { manager, paymentProviderRepository } = this.container_
-
     const model = manager.getCustomRepository(paymentProviderRepository)
-    await model.update({}, { is_installed: false })
-
+    model.update({}, { is_installed: false })
     for (const p of providers) {
       const n = model.create({ id: p, is_installed: true })
       await model.save(n)
@@ -48,7 +46,7 @@ class PaymentProviderService extends BaseService {
     const { manager, paymentProviderRepository } = this.container_
     const ppRepo = manager.getCustomRepository(paymentProviderRepository)
 
-    return await ppRepo.find({})
+    return ppRepo.find({})
   }
 
   async retrievePayment(id, relations = []) {

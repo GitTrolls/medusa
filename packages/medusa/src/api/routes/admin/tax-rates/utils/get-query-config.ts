@@ -1,7 +1,7 @@
-import { pick } from "lodash"
 import { defaultAdminTaxRatesFields, defaultAdminTaxRatesRelations } from "../"
-import { TaxRate } from "../../../../.."
+import { pick } from "lodash"
 import { FindConfig } from "../../../../../types/common"
+import { TaxRate } from "../../../../.."
 
 export function pickByConfig<T>(
   obj: T | T[],
@@ -64,9 +64,7 @@ export function getListConfig(
     expandFields = expand
   }
 
-  const orderBy: Record<string, "DESC" | "ASC"> = order ?? {
-    created_at: "DESC",
-  }
+  const orderBy = order ?? { created_at: "DESC" }
 
   return {
     select: includeFields.length ? includeFields : defaultAdminTaxRatesFields,
