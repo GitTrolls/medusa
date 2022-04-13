@@ -1,14 +1,13 @@
 import React, { useEffect, useState } from "react"
-
 import CloseIcon from "../close-icon"
-import ConfLogo from "../../../static/img/logo.svg"
-import clsx from "clsx"
 import styles from "./banner.module.css"
-import {useColorMode} from '@docusaurus/theme-common';
+import clsx from "clsx"
+import useThemeContext from "@theme/hooks/useThemeContext"
+import ConfLogo from "../../../static/img/logo.svg"
 
 const Banner = (props) => {
   const [isBannerVisible, setIsBannerVisible] = useState(true)
-  const { isDarkTheme } = useColorMode()
+  const { isDarkTheme } = useThemeContext()
 
   const handleDismissBanner = () => {
     setIsBannerVisible(false)
