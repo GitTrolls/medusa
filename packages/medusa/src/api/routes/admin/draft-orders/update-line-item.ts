@@ -128,5 +128,5 @@ export class AdminPostDraftOrdersDraftOrderLineItemsItemReq {
 
   @IsObject()
   @IsOptional()
-  metadata?: Record<string, unknown> = {}
+  metadata?: Record<string, any> = {}
 }

@@ -1,41 +1,43 @@
 import _ from "lodash"
+import { EntityManager, DeepPartial } from "typeorm"
 import { MedusaError, Validator } from "medusa-core-utils"
 import { BaseService } from "medusa-interfaces"
-import { DeepPartial, EntityManager } from "typeorm"
-import { IPriceSelectionStrategy } from "../interfaces/price-selection-strategy"
+
+import { ShippingMethodRepository } from "../repositories/shipping-method"
+import { CartRepository } from "../repositories/cart"
+import { AddressRepository } from "../repositories/address"
+import { PaymentSessionRepository } from "../repositories/payment-session"
+
 import { Address } from "../models/address"
-import { Cart } from "../models/cart"
-import { CustomShippingOption } from "../models/custom-shipping-option"
-import { Customer } from "../models/customer"
 import { Discount } from "../models/discount"
+import { Cart } from "../models/cart"
+import { Customer } from "../models/customer"
 import { LineItem } from "../models/line-item"
 import { ShippingMethod } from "../models/shipping-method"
-import { AddressRepository } from "../repositories/address"
-import { CartRepository } from "../repositories/cart"
-import { PaymentSessionRepository } from "../repositories/payment-session"
-import { ShippingMethodRepository } from "../repositories/shipping-method"
+import { CustomShippingOption } from "../models/custom-shipping-option"
+
+import { TotalField, FindConfig } from "../types/common"
 import {
-  CartCreateProps,
-  CartUpdateProps,
   FilterableCartProps,
   LineItemUpdate,
+  CartUpdateProps,
+  CartCreateProps,
 } from "../types/cart"
-import { FindConfig, TotalField } from "../types/common"
-import CustomerService from "./customer"
-import DiscountService from "./discount"
+
 import EventBusService from "./event-bus"
-import GiftCardService from "./gift-card"
+import ProductVariantService from "./product-variant"
+import ProductService from "./product"
+import RegionService from "./region"
 import LineItemService from "./line-item"
 import PaymentProviderService from "./payment-provider"
-import ProductService from "./product"
-import ProductVariantService from "./product-variant"
-import RegionService from "./region"
 import ShippingOptionService from "./shipping-option"
+import CustomerService from "./customer"
 import TaxProviderService from "./tax-provider"
+import DiscountService from "./discount"
+import GiftCardService from "./gift-card"
 import TotalsService from "./totals"
 import InventoryService from "./inventory"
 import CustomShippingOptionService from "./custom-shipping-option"
-import LineItemAdjustmentService from "./line-item-adjustment"
 
 type CartConstructorProps = {
   manager: EntityManager
@@ -57,8 +59,6 @@ type CartConstructorProps = {
   totalsService: TotalsService
   inventoryService: InventoryService
   customShippingOptionService: CustomShippingOptionService
-  lineItemAdjustmentService: LineItemAdjustmentService
-  priceSelectionStrategy: IPriceSelectionStrategy
 }
 
 type TotalsConfig = {
@@ -94,8 +94,6 @@ class CartService extends BaseService {
   private paymentSessionRepository_: typeof PaymentSessionRepository
   private inventoryService_: InventoryService
   private customShippingOptionService_: CustomShippingOptionService
-  private lineItemAdjustmentService_: LineItemAdjustmentService
-  private priceSelectionStrategy_: IPriceSelectionStrategy
 
   constructor({
     manager,
@@ -117,8 +115,6 @@ class CartService extends BaseService {
     paymentSessionRepository,
     inventoryService,
     customShippingOptionService,
-    lineItemAdjustmentService,
-    priceSelectionStrategy,
   }: CartConstructorProps) {
     super()
 
@@ -141,8 +137,6 @@ class CartService extends BaseService {
     this.inventoryService_ = inventoryService
     this.customShippingOptionService_ = customShippingOptionService
     this.taxProviderService_ = taxProviderService
-    this.lineItemAdjustmentService_ = lineItemAdjustmentService
-    this.priceSelectionStrategy_ = priceSelectionStrategy
   }
 
   withTransaction(transactionManager: EntityManager): CartService {
@@ -170,8 +164,6 @@ class CartService extends BaseService {
       giftCardService: this.giftCardService_,
       inventoryService: this.inventoryService_,
       customShippingOptionService: this.customShippingOptionService_,
-      lineItemAdjustmentService: this.lineItemAdjustmentService_,
-      priceSelectionStrategy: this.priceSelectionStrategy_,
     })
 
     cloned.transactionManager_ = transactionManager
@@ -211,6 +203,7 @@ class CartService extends BaseService {
       relationSet.add("gift_cards")
       relationSet.add("discounts")
       relationSet.add("discounts.rule")
+      relationSet.add("discounts.rule.valid_for")
       // relationSet.add("discounts.parent_discount")
       // relationSet.add("discounts.parent_discount.rule")
       // relationSet.add("discounts.parent_discount.regions")
@@ -463,12 +456,7 @@ class CartService extends BaseService {
 
       await this.lineItemService_.withTransaction(manager).delete(lineItem.id)
 
-      const result = await this.retrieve(cartId, {
-        relations: ["items", "discounts", "discounts.rule"],
-      })
-
-      await this.refreshAdjustments_(result)
-
+      const result = await this.retrieve(cartId)
       // Notify subscribers
       await this.eventBus_
         .withTransaction(manager)
@@ -523,12 +511,9 @@ class CartService extends BaseService {
         relations: [
           "shipping_methods",
           "items",
-          "items.adjustments",
           "payment_sessions",
           "items.variant",
           "items.variant.product",
-          "discounts",
-          "discounts.rule",
         ],
       })
 
@@ -584,16 +569,10 @@ class CartService extends BaseService {
         }
       }
 
-      const result = await this.retrieve(cartId, {
-        relations: ["items", "discounts", "discounts.rule"],
-      })
-
-      await this.refreshAdjustments_(result)
-
+      const result = await this.retrieve(cartId)
       await this.eventBus_
         .withTransaction(manager)
         .emit(CartService.Events.UPDATED, result)
-
       return result
     })
   }
@@ -612,7 +591,7 @@ class CartService extends BaseService {
   ): Promise<Cart> {
     return this.atomicPhase_(async (manager: EntityManager) => {
       const cart = await this.retrieve(cartId, {
-        relations: ["items", "items.adjustments", "payment_sessions"],
+        relations: ["items", "payment_sessions"],
       })
 
       // Ensure that the line item exists in the cart
@@ -641,13 +620,8 @@ class CartService extends BaseService {
         .withTransaction(manager)
         .update(lineItemId, lineItemUpdate)
 
-      const result = await this.retrieve(cartId, {
-        relations: ["items", "discounts", "discounts.rule"],
-      })
-
-      await this.refreshAdjustments_(result)
-
       // Update the line item
+      const result = await this.retrieve(cartId)
       await this.eventBus_
         .withTransaction(manager)
         .emit(CartService.Events.UPDATED, result)
@@ -722,9 +696,16 @@ class CartService extends BaseService {
           "region.countries",
           "discounts",
           "discounts.rule",
+          "discounts.rule.valid_for",
           "discounts.regions",
         ],
       })
+
+      if (typeof update.region_id !== "undefined") {
+        const countryCode =
+          (update.country_code || update.shipping_address?.country_code) ?? null
+        await this.setRegion_(cart, update.region_id, countryCode)
+      }
 
       if (typeof update.customer_id !== "undefined") {
         await this.updateCustomerId_(cart, update.customer_id)
@@ -735,19 +716,6 @@ class CartService extends BaseService {
           cart.customer_id = customer.id
           cart.email = customer.email
         }
-      }
-
-      if (typeof update.region_id !== "undefined") {
-        const countryCode =
-          (update.country_code || update.shipping_address?.country_code) ?? null
-        await this.setRegion_(cart, update.region_id, countryCode)
-      }
-
-      if (
-        typeof update.customer_id !== "undefined" ||
-        typeof update.region_id !== "undefined"
-      ) {
-        await this.updateUnitPrices(cart, update.region_id, update.customer_id)
       }
 
       const addrRepo = manager.getCustomRepository(this.addressRepository_)
@@ -1029,51 +997,96 @@ class CartService extends BaseService {
    * @return the result of the update operation
    */
   async applyDiscount(cart: Cart, discountCode: string): Promise<void> {
-    return this.atomicPhase_(async (manager) => {
-      const discount = await this.discountService_.retrieveByCode(
-        discountCode,
-        ["rule", "regions"]
+    const discount = await this.discountService_.retrieveByCode(discountCode, [
+      "rule",
+      "rule.valid_for",
+      "regions",
+    ])
+
+    const rule = discount.rule
+
+    // if limit is set and reached, we make an early exit
+    if (discount.usage_limit) {
+      discount.usage_count = discount.usage_count || 0
+
+      if (discount.usage_count >= discount.usage_limit) {
+        throw new MedusaError(
+          MedusaError.Types.NOT_ALLOWED,
+          "Discount has been used maximum allowed times"
+        )
+      }
+    }
+
+    const today = new Date()
+    if (discount.starts_at > today) {
+      throw new MedusaError(
+        MedusaError.Types.NOT_ALLOWED,
+        "Discount is not valid yet"
+      )
+    }
+
+    if (discount.ends_at && discount.ends_at < today) {
+      throw new MedusaError(
+        MedusaError.Types.NOT_ALLOWED,
+        "Discount is expired"
+      )
+    }
+
+    let regions = discount.regions
+    if (discount.parent_discount_id) {
+      const parent = await this.discountService_.retrieve(
+        discount.parent_discount_id,
+        {
+          relations: ["rule", "regions"],
+        }
       )
 
-      await this.discountService_.validateDiscountForCartOrThrow(cart, discount)
+      regions = parent.regions
+    }
 
-      const rule = discount.rule
+    if (discount.is_disabled) {
+      throw new MedusaError(
+        MedusaError.Types.NOT_ALLOWED,
+        "The discount code is disabled"
+      )
+    }
 
-      // if discount is already there, we simply resolve
-      if (cart.discounts.find(({ id }) => id === discount.id)) {
-        return Promise.resolve()
-      }
+    if (!regions.find(({ id }) => id === cart.region_id)) {
+      throw new MedusaError(
+        MedusaError.Types.INVALID_DATA,
+        "The discount is not available in current region"
+      )
+    }
 
-      const toParse = [...cart.discounts, discount]
+    // if discount is already there, we simply resolve
+    if (cart.discounts.find(({ id }) => id === discount.id)) {
+      return Promise.resolve()
+    }
 
-      let sawNotShipping = false
-      const newDiscounts = toParse.map((d) => {
-        const drule = d.rule
-        switch (drule.type) {
-          case "free_shipping":
-            if (d.rule.type === rule.type) {
+    const toParse = [...cart.discounts, discount]
+
+    let sawNotShipping = false
+    const newDiscounts = toParse.map((d) => {
+      const drule = d.rule
+      switch (drule.type) {
+        case "free_shipping":
+          if (d.rule.type === rule.type) {
+            return discount
+          }
+          return d
+        default:
+          if (!sawNotShipping) {
+            sawNotShipping = true
+            if (rule.type !== "free_shipping") {
               return discount
             }
             return d
-          default:
-            if (!sawNotShipping) {
-              sawNotShipping = true
-              if (rule.type !== "free_shipping") {
-                return discount
-              }
-              return d
-            }
-            return null
-        }
-      })
-
-      cart.discounts = newDiscounts.filter(Boolean) as Discount[]
-
-      // ignore if free shipping
-      if (rule.type !== "free_shipping" && cart?.items) {
-        await this.refreshAdjustments_(cart)
+          }
+          return null
       }
     })
+
+    cart.discounts = newDiscounts.filter(Boolean)
   }
 
   /**
@@ -1088,6 +1101,7 @@ class CartService extends BaseService {
         relations: [
           "discounts",
           "discounts.rule",
+          "discounts.rule.valid_for",
           "payment_sessions",
           "shipping_methods",
         ],
@@ -1155,10 +1169,7 @@ class CartService extends BaseService {
    *    this could be IP address or similar for fraud handling.
    * @return the resulting cart
    */
-  async authorizePayment(
-    cartId: string,
-    context: Record<string, unknown> = {}
-  ): Promise<Cart> {
+  async authorizePayment(cartId: string, context: Record<string, any> = {}): Promise<Cart> {
     return this.atomicPhase_(async (manager: EntityManager) => {
       const cartRepository = manager.getCustomRepository(this.cartRepository_)
 
@@ -1178,13 +1189,6 @@ class CartService extends BaseService {
       if (cart.total <= 0) {
         cart.payment_authorized_at = new Date()
         return cartRepository.save(cart)
-      }
-
-      if (!cart.payment_session) {
-        throw new MedusaError(
-          MedusaError.Types.NOT_ALLOWED,
-          "You cannot complete a cart without a payment session."
-        )
       }
 
       const session = await this.paymentProviderService_
@@ -1309,6 +1313,7 @@ class CartService extends BaseService {
             "items",
             "discounts",
             "discounts.rule",
+            "discounts.rule.valid_for",
             "gift_cards",
             "shipping_methods",
             "billing_address",
@@ -1474,7 +1479,7 @@ class CartService extends BaseService {
   async addShippingMethod(
     cartId: string,
     optionId: string,
-    data: Record<string, unknown> = {}
+    data: Record<string, any> = {}
   ): Promise<Cart> {
     return this.atomicPhase_(async (manager: EntityManager) => {
       const cart = await this.retrieve(cartId, {
@@ -1483,6 +1488,7 @@ class CartService extends BaseService {
           "shipping_methods",
           "discounts",
           "discounts.rule",
+          "discounts.rule.valid_for",
           "shipping_methods.shipping_option",
           "items",
           "items.variant",
@@ -1540,7 +1546,12 @@ class CartService extends BaseService {
       }
 
       const result = await this.retrieve(cartId, {
-        relations: ["discounts", "discounts.rule", "shipping_methods"],
+        relations: [
+          "discounts",
+          "discounts.rule",
+          "discounts.rule.valid_for",
+          "shipping_methods",
+        ],
       })
 
       // if cart has freeshipping, adjust price
@@ -1581,57 +1592,6 @@ class CartService extends BaseService {
     return customOption
   }
 
-  async updateUnitPrices(
-    cart: Cart,
-    regionId?: string,
-    customer_id?: string
-  ): Promise<void> {
-    // If the cart contains items, we update the price of the items
-    // to match the updated region or customer id (keeping the old
-    // value if it exists)
-    if (cart.items.length) {
-      const region = await this.regionService_.retrieve(
-        regionId || cart.region_id,
-        {
-          relations: ["countries"],
-        }
-      )
-
-      cart.items = await Promise.all(
-        cart.items
-          .map(async (item) => {
-            const availablePrice = await this.priceSelectionStrategy_
-              .calculateVariantPrice(item.variant_id, {
-                region_id: region.id,
-                currency_code: region.currency_code,
-                quantity: item.quantity,
-                customer_id: customer_id || cart.customer_id,
-                include_discount_prices: true,
-              })
-              .catch(() => undefined)
-
-            if (
-              availablePrice !== undefined &&
-              availablePrice.calculatedPrice !== null
-            ) {
-              return this.lineItemService_
-                .withTransaction(this.transactionManager_)
-                .update(item.id, {
-                  has_shipping: false,
-                  unit_price: availablePrice.calculatedPrice,
-                })
-            } else {
-              await this.lineItemService_
-                .withTransaction(this.transactionManager_)
-                .delete(item.id)
-              return null
-            }
-          })
-          .filter(Boolean)
-      )
-    }
-  }
-
   /**
    * Set's the region of a cart.
    * @param cart - the cart to set region on
@@ -1658,6 +1618,34 @@ class CartService extends BaseService {
     const addrRepo = this.manager_.getCustomRepository(this.addressRepository_)
     cart.region = region
     cart.region_id = region.id
+
+    // If the cart contains items we want to change the unit_price field of each
+    // item to correspond to the price given in the region
+    if (cart.items.length) {
+      cart.items = await Promise.all(
+        cart.items
+          .map(async (item) => {
+            const availablePrice = await this.productVariantService_
+              .getRegionPrice(item.variant_id, regionId)
+              .catch(() => undefined)
+
+            if (availablePrice !== undefined) {
+              return this.lineItemService_
+                .withTransaction(this.transactionManager_)
+                .update(item.id, {
+                  has_shipping: false,
+                  unit_price: availablePrice,
+                })
+            } else {
+              await this.lineItemService_
+                .withTransaction(this.transactionManager_)
+                .delete(item.id)
+              return null
+            }
+          })
+          .filter(Boolean)
+      )
+    }
 
     /*
      * When changing the region you are changing the set of countries that your
@@ -1770,7 +1758,13 @@ class CartService extends BaseService {
   async delete(cartId: string): Promise<string> {
     return await this.atomicPhase_(async (manager: EntityManager) => {
       const cart = await this.retrieve(cartId, {
-        relations: ["items", "discounts", "discounts.rule", "payment_sessions"],
+        relations: [
+          "items",
+          "discounts",
+          "discounts.rule",
+          "discounts.rule.valid_for",
+          "payment_sessions",
+        ],
       })
 
       if (cart.completed_at) {
@@ -1841,6 +1835,7 @@ class CartService extends BaseService {
           "gift_cards",
           "discounts",
           "discounts.rule",
+          "discounts.rule.valid_for",
           "shipping_methods",
           "region",
           "region.tax_rates",
@@ -1848,27 +1843,11 @@ class CartService extends BaseService {
       })
       const calculationContext = this.totalsService_.getCalculationContext(cart)
 
-      const txTaxProvider = this.taxProviderService_.withTransaction(manager)
-      await txTaxProvider.createTaxLines(cart, calculationContext)
+      await this.taxProviderService_
+        .withTransaction(manager)
+        .createTaxLines(cart, calculationContext)
 
       return cart
-    })
-  }
-
-  async refreshAdjustments_(cart: Cart): Promise<void> {
-    return this.atomicPhase_(async (manager: EntityManager) => {
-      const nonReturnLines = cart.items.filter((item) => !item.is_return)
-      const nonReturnLineIDs = nonReturnLines.map((i) => i.id)
-
-      // delete all old non return line item adjustments
-      await this.lineItemAdjustmentService_.withTransaction(manager).delete({
-        item_id: nonReturnLineIDs,
-      })
-
-      // potentially create/update line item adjustments
-      await this.lineItemAdjustmentService_
-        .withTransaction(manager)
-        .createAdjustments(cart)
     })
   }
 

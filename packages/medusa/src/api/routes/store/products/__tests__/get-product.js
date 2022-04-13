@@ -21,13 +21,7 @@ describe("Get product by id", () => {
       expect(ProductServiceMock.retrieve).toHaveBeenCalledTimes(1)
       expect(ProductServiceMock.retrieve).toHaveBeenCalledWith(
         IdMap.getId("product1"),
-        {
-          relations: defaultStoreProductsRelations,
-          cart_id: undefined,
-          currency_code: undefined,
-          region_id: undefined,
-          include_discount_prices: true,
-        }
+        { relations: defaultStoreProductsRelations }
       )
     })
 
@@ -57,13 +51,7 @@ describe("Get product by id", () => {
     it("endpoint called with defaultRelations", () => {
       expect(ProductServiceMock.retrieve).toHaveBeenCalledWith(
         IdMap.getId("variantsWithPrices"),
-        {
-          relations: defaultStoreProductsRelations,
-          cart_id: undefined,
-          currency_code: undefined,
-          region_id: undefined,
-          include_discount_prices: true,
-        }
+        { relations: defaultStoreProductsRelations }
       )
     })
 

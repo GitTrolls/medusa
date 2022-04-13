@@ -1,25 +1,23 @@
-import {
-  Product,
-  ProductOption,
-  ProductTag,
-  ProductType,
-  ShippingProfile,
-  ShippingProfileType,
-} from "@medusajs/medusa"
-import faker from "faker"
 import { Connection } from "typeorm"
+import faker from "faker"
 import {
-  ProductVariantFactoryData,
+  ShippingProfileType,
+  ShippingProfile,
+  Product,
+  ProductType,
+  ProductOption,
+} from "@medusajs/medusa"
+
+import {
   simpleProductVariantFactory,
+  ProductVariantFactoryData,
 } from "./simple-product-variant-factory"
 
 export type ProductFactoryData = {
   id?: string
   is_giftcard?: boolean
-  status?: string
   title?: string
   type?: string
-  tags?: string[]
   options?: { id: string; title: string }[]
   variants?: ProductVariantFactoryData[]
 }
@@ -43,41 +41,26 @@ export const simpleProductFactory = async (
     type: ShippingProfileType.GIFT_CARD,
   })
 
-  const prodId = data.id || `simple-product-${Math.random() * 1000}`
-  const productToCreate = {
-    id: prodId,
-    title: data.title || faker.commerce.productName(),
-    status: data.status,
-    is_giftcard: data.is_giftcard || false,
-    discountable: !data.is_giftcard,
-    tags: [],
-    profile_id: data.is_giftcard ? gcProfile.id : defaultProfile.id,
-  }
-
-  if (typeof data.tags !== "undefined") {
-    for (let i = 0; i < data.tags.length; i++) {
-      const createdTag = manager.create(ProductTag, {
-        id: `tag-${Math.random() * 1000}`,
-        value: data.tags[i],
-      })
-
-      const tagRes = await manager.save(createdTag)
-
-      productToCreate.tags.push(tagRes)
-    }
-  }
-
+  let typeId: string
   if (typeof data.type !== "undefined") {
     const toSave = manager.create(ProductType, {
       value: data.type,
     })
     const res = await manager.save(toSave)
-    productToCreate["type_id"] = res.id
+    typeId = res.id
   }
 
-  const toSave = manager.create(Product, productToCreate)
+  const prodId = data.id || `simple-product-${Math.random() * 1000}`
+  const toSave = manager.create(Product, {
+    id: prodId,
+    type_id: typeId,
+    title: data.title || faker.commerce.productName(),
+    is_giftcard: data.is_giftcard || false,
+    discountable: !data.is_giftcard,
+    profile_id: data.is_giftcard ? gcProfile.id : defaultProfile.id,
+  })
 
-  await manager.save(toSave)
+  const product = await manager.save(toSave)
 
   const optionId = `${prodId}-option`
   const options = data.options || [{ id: optionId, title: "Size" }]
@@ -112,5 +95,5 @@ export const simpleProductFactory = async (
     await simpleProductVariantFactory(connection, factoryData)
   }
 
-  return await manager.findOne(Product, { id: prodId }, { relations: ["tags"] })
+  return product
 }

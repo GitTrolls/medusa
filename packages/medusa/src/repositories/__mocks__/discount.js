@@ -29,6 +29,7 @@ export const discounts = {
       type: "percentage",
       allocation: "item",
       value: 10,
+      valid_for: [IdMap.getId("eur-8-us-10"), IdMap.getId("eur-10-us-12")],
     },
     regions: [IdMap.getId("region-france")],
   },
@@ -49,6 +50,7 @@ export const discounts = {
       type: "fixed",
       allocation: "item",
       value: 9,
+      valid_for: [IdMap.getId("eur-8-us-10"), IdMap.getId("eur-10-us-12")],
     },
     regions: [IdMap.getId("region-france")],
   },
@@ -59,6 +61,7 @@ export const discounts = {
       type: "fixed",
       allocation: "item",
       value: 2,
+      valid_for: [IdMap.getId("eur-8-us-10"), IdMap.getId("eur-10-us-12")],
     },
     regions: [IdMap.getId("region-france")],
   },
@@ -69,6 +72,7 @@ export const discounts = {
       type: "fixed",
       allocation: "item",
       value: 10,
+      valid_for: [],
     },
     regions: [IdMap.getId("region-france")],
   },
@@ -80,6 +84,7 @@ export const discounts = {
       type: "fixed",
       allocation: "item",
       value: 10,
+      valid_for: [],
     },
     regions: [IdMap.getId("region-france")],
   },
@@ -90,6 +95,7 @@ export const discounts = {
       type: "free_shipping",
       allocation: "total",
       value: 10,
+      valid_for: [],
     },
     regions: [IdMap.getId("region-france")],
   },
@@ -100,6 +106,7 @@ export const discounts = {
       type: "free_shipping",
       allocation: "total",
       value: 10,
+      valid_for: [],
     },
     regions: [IdMap.getId("us")],
   },
@@ -115,12 +122,12 @@ export const discounts = {
 }
 
 export const DiscountModelMock = {
-  create: jest.fn().mockImplementation((data) => Promise.resolve(data)),
+  create: jest.fn().mockImplementation(data => Promise.resolve(data)),
   updateOne: jest.fn().mockImplementation((query, update) => {
     return Promise.resolve()
   }),
   deleteOne: jest.fn().mockReturnValue(Promise.resolve()),
-  findOne: jest.fn().mockImplementation((query) => {
+  findOne: jest.fn().mockImplementation(query => {
     if (query._id === IdMap.getId("dynamic")) {
       return Promise.resolve(discounts.dynamic)
     }
