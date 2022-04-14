@@ -101,17 +101,7 @@ export const simpleOrderFactory = async (
     await simpleShippingMethodFactory(connection, { ...sm, order_id: order.id })
   }
 
-  const items = data.line_items.map((item) => {
-    let adjustments = item?.adjustments || []
-    return {
-      ...item,
-      adjustments: adjustments.map((adj) => ({
-        ...adj,
-        discount_id: discounts.find((d) => d.code === adj?.discount_code),
-      })),
-    }
-  })
-
+  const items = data.line_items
   for (const item of items) {
     await simpleLineItemFactory(connection, { ...item, order_id: id })
   }
