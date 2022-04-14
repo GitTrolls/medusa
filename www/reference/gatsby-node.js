@@ -331,7 +331,7 @@ const createAllPages = (sections, api, siteData, createPage, template) => {
         api: api,
         title: edge.section.section_name,
         description: edge.section.schema ? edge.section.schema.description : "",
-        to: { section: baseURL, method: null, sectionObj: edge.section },
+        to: { section: baseURL, method: null },
       },
     })
     edge.section.paths.forEach(p => {
@@ -345,7 +345,7 @@ const createAllPages = (sections, api, siteData, createPage, template) => {
             api: api,
             title: method.summary,
             description: method.description || "",
-            to: { section: baseURL, method: methodURL, sectionObj: edge.section },
+            to: { section: baseURL, method: methodURL },
           },
         })
       })
