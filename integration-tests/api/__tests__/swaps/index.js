@@ -12,8 +12,6 @@ const {
   simpleProductFactory,
 } = require("../../factories")
 
-jest.setTimeout(30000)
-
 describe("Swaps", () => {
   let medusaProcess
   let dbConnection

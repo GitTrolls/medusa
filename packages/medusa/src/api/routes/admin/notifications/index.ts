@@ -1,5 +1,6 @@
 import { Router } from "express"
 import { Notification } from "./../../../../"
+import { PaginatedResponse } from "./../../../../types/common"
 import middlewares from "../../../middlewares"
 
 const route = Router()
