@@ -45,6 +45,7 @@ class OrderSubscriber {
             "shipping_address",
             "discounts",
             "discounts.rule",
+            "discounts.rule.valid_for",
             "shipping_methods",
             "payments",
             "fulfillments",
@@ -148,6 +149,7 @@ class OrderSubscriber {
             "shipping_address",
             "discounts",
             "discounts.rule",
+            "discounts.rule.valid_for",
             "shipping_methods",
             "payments",
             "fulfillments",
@@ -256,6 +258,7 @@ class OrderSubscriber {
           "shipping_address",
           "discounts",
           "discounts.rule",
+          "discounts.rule.valid_for",
           "shipping_methods",
           "payments",
           "fulfillments",
@@ -314,15 +317,6 @@ class OrderSubscriber {
         context: eventContext,
         integrations,
       }
-
-      segmentService.identify({
-        userId: order.customer_id,
-        traits: {
-          email: order.email,
-          firstName: order.shipping_address.first_name,
-          lastName: order.shipping_address.last_name,
-        },
-      })
 
       segmentService.track(orderEvent)
     })

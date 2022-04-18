@@ -1,4 +1,5 @@
 import axios, { AxiosPromise, AxiosRequestConfig } from "axios"
+import { Reporter } from "gatsby-cli/lib/reporter/reporter"
 
 function medusaRequest(
   storeURL: string,
@@ -17,28 +18,34 @@ function medusaRequest(
   return client(options)
 }
 
-export const createClient = (options: MedusaPluginOptions): any => {
+export const createClient = (
+  options: MedusaPluginOptions,
+  reporter: Reporter
+): any => {
   const { storeUrl, authToken } = options as any
 
   /**
+   *
    * @param {string} _date used fetch products updated since the specified date
-   * @return {Promise<any[]>}  products to create nodes from
+   * @return {Promise<any[]>}
    */
   async function products(_date?: string): Promise<any[]> {
     let products: any[] = []
     let offset = 0
     let count = 1
     do {
-      let path = `/store/products?offset=${offset}`
-      if (_date) {
-        path += `&updated_at[gt]=${_date}`
-      }
-
-      await medusaRequest(storeUrl, path).then(({ data }) => {
-        products = [...products, ...data.products]
-        count = data.count
-        offset = data.products.length
-      })
+      await medusaRequest(storeUrl, `/store/products?offset=${offset}`)
+        .then(({ data }) => {
+          products = [...products, ...data.products]
+          count = data.count
+          offset = data.products.length
+        })
+        .catch((error) => {
+          reporter.error(
+            `"The following error status was produced while attempting to fetch products: ${error}`
+          )
+          return []
+        })
     } while (products.length < count)
 
     return products
@@ -46,25 +53,27 @@ export const createClient = (options: MedusaPluginOptions): any => {
 
   /**
    *
-   * @param {string} _date used fetch regions updated since the specified date
-   * @return {Promise<any[]>} regions to create nodes from
+   * @param {string} date used fetch regions updated since the specified date
+   * @return {Promise<any[]>}
    */
   async function regions(_date?: string): Promise<any[]> {
-    let path = `/store/regions`
-    if (_date) {
-      path += `?updated_at[gt]=${_date}`
-    }
-
-    const regions = await medusaRequest(storeUrl, path).then(({ data }) => {
-      return data.regions
-    })
+    const regions = await medusaRequest(storeUrl, `/store/regions`)
+      .then(({ data }) => {
+        return data.regions
+      })
+      .catch((error) => {
+        console.warn(`
+            "The following error status was produced while attempting to fetch regions: ${error}
+      `)
+        return []
+      })
     return regions
   }
 
   /**
    *
    * @param {string} _date used fetch regions updated since the specified date
-   * @return {Promise<any[]>} orders to create nodes from
+   * @return {Promise<any[]>}
    */
   async function orders(_date?: string): Promise<any[]> {
     const orders = await medusaRequest(storeUrl, `/admin/orders`, {
@@ -86,22 +95,25 @@ export const createClient = (options: MedusaPluginOptions): any => {
   /**
    *
    * @param {string} _date used fetch regions updated since the specified date
-   * @return {Promise<any[]>} collections to create nodes from
+   * @return {Promise<any[]>}
    */
   async function collections(_date?: string): Promise<any[]> {
     let collections: any[] = []
     let offset = 0
     let count = 1
     do {
-      let path = `/store/collections?offset=${offset}`
-      if (_date) {
-        path += `&updated_at[gt]=${_date}`
-      }
-      await medusaRequest(storeUrl, path).then(({ data }) => {
-        collections = [...collections, ...data.collections]
-        count = data.count
-        offset = data.collections.length
-      })
+      await medusaRequest(storeUrl, `/store/collections?offset=${offset}`)
+        .then(({ data }) => {
+          collections = [...collections, ...data.collections]
+          count = data.count
+          offset = data.collections.length
+        })
+        .catch((error) => {
+          reporter.error(
+            `"The following error status was produced while attempting to fetch products: ${error}`
+          )
+          return []
+        })
     } while (collections.length < count)
 
     return collections

@@ -101,14 +101,12 @@ describe("POST /store/carts", () => {
       expect(LineItemServiceMock.generate).toHaveBeenCalledWith(
         IdMap.getId("testVariant"),
         IdMap.getId("testRegion"),
-        3,
-        { customer_id: undefined }
+        3
       )
       expect(LineItemServiceMock.generate).toHaveBeenCalledWith(
         IdMap.getId("testVariant1"),
         IdMap.getId("testRegion"),
-        1,
-        { customer_id: undefined }
+        1
       )
       expect(CartServiceMock.addLineItem).toHaveBeenCalledTimes(2)
     })

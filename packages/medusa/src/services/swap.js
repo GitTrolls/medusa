@@ -33,7 +33,6 @@ class SwapService extends BaseService {
     orderService,
     inventoryService,
     customShippingOptionService,
-    lineItemAdjustmentService,
   }) {
     super()
 
@@ -78,9 +77,6 @@ class SwapService extends BaseService {
 
     /** @private @const {CustomShippingOptionService} */
     this.customShippingOptionService_ = customShippingOptionService
-
-    /** @private @const {LineItemAdjustmentService} */
-    this.lineItemAdjustmentService_ = lineItemAdjustmentService
   }
 
   withTransaction(transactionManager) {
@@ -103,7 +99,6 @@ class SwapService extends BaseService {
       inventoryService: this.inventoryService_,
       fulfillmentService: this.fulfillmentService_,
       customShippingOptionService: this.customShippingOptionService_,
-      lineItemAdjustmentService: this.lineItemAdjustmentService_,
     })
 
     cloned.transactionManager_ = transactionManager
@@ -554,7 +549,6 @@ class SwapService extends BaseService {
           "order.claims",
           "order.claims.additional_items",
           "additional_items",
-          "additional_items.variant",
           "return_order",
           "return_order.items",
           "return_order.shipping_method",
@@ -611,10 +605,6 @@ class SwapService extends BaseService {
         await this.lineItemService_.withTransaction(manager).update(item.id, {
           cart_id: cart.id,
         })
-        // we generate adjustments in case the cart has any discounts that should be applied to the additional items
-        await this.lineItemAdjustmentService_
-          .withTransaction(manager)
-          .createAdjustmentForLineItem(cart, item)
       }
 
       // If the swap has a return shipping method the price has to be added to

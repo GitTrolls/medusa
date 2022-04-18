@@ -33,8 +33,6 @@ describe("GET /admin/products/:id", () => {
             "id",
             "title",
             "subtitle",
-            "status",
-            "external_id",
             "description",
             "handle",
             "is_giftcard",
@@ -53,7 +51,6 @@ describe("GET /admin/products/:id", () => {
             "material",
             "created_at",
             "updated_at",
-            "deleted_at",
             "metadata",
           ],
           relations: [
