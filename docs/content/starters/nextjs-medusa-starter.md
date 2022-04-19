@@ -16,15 +16,17 @@ mv .env.template .env.local
 **Install dependencies**
 Use your favourite package manager to install dependencies:
 
-```bash npm2yarn
+```shell
+yarn
+# or
 npm install
 ```
 
 **Start developing.**
 Start up the local server:
 
-```bash npm2yarn
-npm run dev
+```shell
+yarn dev
 ```
 
 Your site is now running at http://localhost:8000!
