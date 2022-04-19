@@ -36,8 +36,8 @@ export type StoreProductsRes = {
 }
 
 export type StorePostSearchRes = {
-  hits: unknown[]
-  [k: string]: unknown
+  hits: any[]
+  [k: string]: any
 }
 
 export type StoreProductsListRes = PaginatedResponse & {

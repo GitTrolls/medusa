@@ -39,6 +39,16 @@ export default (app) => {
     middlewares.wrap(require("./delete-dynamic-code").default)
   )
 
+  // Discount valid variants management
+  route.post(
+    "/:discount_id/products/:product_id",
+    middlewares.wrap(require("./add-valid-product").default)
+  )
+  route.delete(
+    "/:discount_id/products/:product_id",
+    middlewares.wrap(require("./remove-valid-product").default)
+  )
+
   // Discount region management
   route.post(
     "/:discount_id/regions/:region_id",
@@ -52,7 +62,7 @@ export default (app) => {
   return app
 }
 
-export const defaultAdminDiscountsFields: (keyof Discount)[] = [
+export const defaultAdminDiscountsFields = [
   "id",
   "code",
   "is_dynamic",
@@ -74,7 +84,7 @@ export const defaultAdminDiscountsRelations = [
   "rule",
   "parent_discount",
   "regions",
-  "rule.conditions",
+  "rule.valid_for",
 ]
 
 export type AdminDiscountsRes = {
@@ -88,6 +98,7 @@ export type AdminDiscountsListRes = PaginatedResponse & {
 }
 
 export * from "./add-region"
+export * from "./add-valid-product"
 export * from "./create-discount"
 export * from "./create-dynamic-code"
 export * from "./delete-discount"
@@ -96,4 +107,5 @@ export * from "./get-discount"
 export * from "./get-discount-by-code"
 export * from "./list-discounts"
 export * from "./remove-region"
+export * from "./remove-valid-product"
 export * from "./update-discount"

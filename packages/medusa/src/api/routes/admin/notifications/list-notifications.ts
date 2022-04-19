@@ -54,7 +54,7 @@ export default async (req, res) => {
     include_resends,
   } = await validator(AdminGetNotificationsParams, req.query)
 
-  const selector: Record<string, unknown> = {}
+  const selector: any = {}
 
   let includeFields: string[] = []
   if (fields) {
