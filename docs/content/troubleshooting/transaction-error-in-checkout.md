@@ -34,8 +34,4 @@ module.exports = {
 }
 ```
 
-> When changing from SQLite to Postgres, you should seed the database again using:
-
-```bash npm2yarn
-npm run seed
-```
+> When changing from SQLite to Postgres, you should seed the database again using: `yarn seed`

@@ -1,8 +1,6 @@
-import "../../medusa-plugin-themes/docsearch/theme.css"
-
 import React, { useContext } from "react"
-
 import { DocSearch } from "@docsearch/react"
+import "../../medusa-plugin-themes/docsearch/theme.css"
 import HitComponent from "./hit-component"
 import NavigationContext from "../../context/navigation-context"
 import { convertToKebabCase } from "../../utils/convert-to-kebab-case"
@@ -10,7 +8,7 @@ import { navigate } from "gatsby-link"
 
 const algoliaApiKey = process.env.ALGOLIA_API_KEY || "temp"
 
-const Search = ({data}) => {
+const Search = () => {
   const { goTo, api } = useContext(NavigationContext)
 
   const getOtherAPI = () => {
@@ -38,17 +36,13 @@ const Search = ({data}) => {
    */
   const goToHierarchy = item => {
     const { hierarchy } = item
-    //find section
-    let section = data.sections.find((s) => s.section.section_name == hierarchy.lvl1);
-    section = section ? section.section : {}
     if (hierarchy.lvl2) {
       goTo({
         section: convertToKebabCase(hierarchy.lvl1),
         method: convertToKebabCase(hierarchy.lvl2),
-        sectionObj: section
       })
     } else {
-      goTo({ section: convertToKebabCase(hierarchy.lvl1), sectionObj: section })
+      goTo({ section: convertToKebabCase(hierarchy.lvl1) })
     }
   }
 
@@ -73,7 +67,7 @@ const Search = ({data}) => {
     <DocSearch
       apiKey={algoliaApiKey}
       indexName="medusa-commerce"
-      hitComponent={({hit, children}) => <HitComponent data={data} hit={hit} children={children} />}
+      hitComponent={HitComponent}
       navigator={{
         navigate({ item }) {
           if (item.url.includes(`api/${api}`)) {

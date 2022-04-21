@@ -6,7 +6,7 @@ const algoliaApiKey = process.env.ALGOLIA_API_KEY || "temp"
 
 /** @type {import('@docusaurus/types').DocusaurusConfig} */
 module.exports = {
-  title: "Medusa",
+  title: "Medusa Commerce",
   tagline: "Explore and learn how to use Medusa",
   url: "https://docs.medusajs.com",
   baseUrl: "/",
@@ -25,22 +25,18 @@ module.exports = {
     ],
   ],
   themeConfig: {
-    colorMode: {
-      defaultMode: 'light',
-      disableSwitch: true,
-    },
+    disableSwitch: true,
     algolia: {
       apiKey: algoliaApiKey,
       indexName: "medusa-commerce",
       placeholder: "Search docs...",
       appId: algoliaAppId,
-      contextualSearch: false,
     },
     prism: {
       defaultLanguage: "js",
       plugins: ["line-numbers", "show-language"],
-      theme: require("prism-react-renderer/themes/vsDark"),
-      darkTheme: require("prism-react-renderer/themes/vsDark"),
+      theme: require("@kiwicopple/prism-react-renderer/themes/vsDark"),
+      darkTheme: require("@kiwicopple/prism-react-renderer/themes/vsDark"),
     },
     navbar: {
       hideOnScroll: true,
@@ -48,7 +44,6 @@ module.exports = {
         alt: "Medusa Commerce",
         src: "img/logo.svg",
         srcDark: "img/logo.svg",
-        width: 100
       },
       items: [
         {
@@ -103,12 +98,12 @@ module.exports = {
           title: "More",
           items: [
             {
-              label: "Medusa Home",
-              href: "https://medusajs.com",
+              label: "Contact",
+              href: "https://medusa-commere.com",
             },
             {
-              label: "Contact",
-              href: "https://ky5eo2x1u81.typeform.com/get-in-touch",
+              label: "Privacy & Terms",
+              href: "https://medusa-commere.com",
             },
             {
               label: "GitHub",
@@ -117,7 +112,7 @@ module.exports = {
           ],
         },
       ],
-      copyright: `© ${new Date().getFullYear()} Medusa`,
+      copyright: `© ${new Date().getFullYear()} Medusa Commerce`,
     },
   },
   presets: [
@@ -129,9 +124,6 @@ module.exports = {
           editUrl: "https://github.com/medusajs/medusa/edit/master/www/",
           path: docsPath,
           routeBasePath: "/",
-          remarkPlugins: [
-            [require('@docusaurus/remark-plugin-npm2yarn'), {sync: true}],
-          ],
         },
         theme: {
           customCss: require.resolve("./src/css/custom.css"),
