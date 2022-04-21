@@ -1,11 +1,9 @@
-import { useMutation, UseMutationOptions, useQueryClient } from "react-query"
-
+import { adminCustomerKeys } from "./queries"
 import { AdminCustomersRes, AdminPostCustomersReq } from "@medusajs/medusa"
 import { Response } from "@medusajs/medusa-js"
-
-import { useMedusa } from "../../../contexts"
+import { useMutation, UseMutationOptions, useQueryClient } from "react-query"
+import { useMedusa } from "../../../contexts/medusa"
 import { buildOptions } from "../../utils/buildOptions"
-import { adminCustomerKeys } from "./queries"
 
 export const useAdminCreateCustomer = (
   options?: UseMutationOptions<

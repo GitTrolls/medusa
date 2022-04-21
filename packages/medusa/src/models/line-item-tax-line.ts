@@ -1,11 +1,10 @@
 import {
-  BeforeInsert,
-  Column,
   Entity,
+  BeforeInsert,
   Index,
-  JoinColumn,
+  Column,
   ManyToOne,
-  Unique,
+  JoinColumn,
 } from "typeorm"
 import { ulid } from "ulid"
 
@@ -13,7 +12,6 @@ import { TaxLine } from "./tax-line"
 import { LineItem } from "./line-item"
 
 @Entity()
-@Unique(["item_id", "code"])
 export class LineItemTaxLine extends TaxLine {
   @Index()
   @Column()

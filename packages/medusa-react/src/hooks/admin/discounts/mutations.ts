@@ -1,3 +1,5 @@
+import { adminDiscountKeys } from "./queries"
+import { buildOptions } from "../../utils/buildOptions"
 import {
   AdminDiscountsDeleteRes,
   AdminDiscountsRes,
@@ -8,8 +10,6 @@ import {
 import { Response } from "@medusajs/medusa-js"
 import { useMutation, UseMutationOptions, useQueryClient } from "react-query"
 import { useMedusa } from "../../../contexts/medusa"
-import { buildOptions } from "../../utils/buildOptions"
-import { adminDiscountKeys } from "./queries"
 
 export const useAdminCreateDiscount = (
   options?: UseMutationOptions<
@@ -75,6 +75,32 @@ export const useAdminDiscountRemoveRegion = (
   const queryClient = useQueryClient()
   return useMutation(
     (regionId: string) => client.admin.discounts.removeRegion(id, regionId),
+    buildOptions(queryClient, adminDiscountKeys.detail(id), options)
+  )
+}
+
+export const useAdminDiscountAddValidProduct = (
+  id: string,
+  options?: UseMutationOptions<Response<AdminDiscountsRes>, Error, string>
+) => {
+  const { client } = useMedusa()
+  const queryClient = useQueryClient()
+  return useMutation(
+    (productId: string) =>
+      client.admin.discounts.addValidProduct(id, productId),
+    buildOptions(queryClient, adminDiscountKeys.detail(id), options)
+  )
+}
+
+export const useAdminDiscountRemoveValidProduct = (
+  id: string,
+  options?: UseMutationOptions<Response<AdminDiscountsRes>, Error, string>
+) => {
+  const { client } = useMedusa()
+  const queryClient = useQueryClient()
+  return useMutation(
+    (productId: string) =>
+      client.admin.discounts.removeValidProduct(id, productId),
     buildOptions(queryClient, adminDiscountKeys.detail(id), options)
   )
 }

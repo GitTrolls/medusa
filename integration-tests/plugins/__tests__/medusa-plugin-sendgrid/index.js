@@ -107,7 +107,6 @@ describe("medusa-plugin-sendgrid", () => {
       },
       items: [
         {
-          adjustments: [],
           created_at: expect.any(Date),
           updated_at: expect.any(Date),
           order_id: expect.any(String),
@@ -228,7 +227,6 @@ describe("medusa-plugin-sendgrid", () => {
         },
         items: [
           {
-            adjustments: [],
             created_at: expect.any(Date),
             updated_at: expect.any(Date),
             order_id: expect.any(String),
@@ -287,7 +285,6 @@ describe("medusa-plugin-sendgrid", () => {
       },
       items: [
         {
-          adjustments: [],
           created_at: expect.any(Date),
           updated_at: expect.any(Date),
           order_id: expect.any(String),
