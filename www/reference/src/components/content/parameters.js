@@ -1,9 +1,8 @@
-import { Box, Flex, Text } from "theme-ui"
-
-import Description from "./description"
+import React from "react"
+import { Flex, Text, Box } from "theme-ui"
 import Markdown from "react-markdown"
 import NestedCollapsible from "./collapsible"
-import React from "react"
+import Description from "./description"
 
 const Parameters = ({ params, type }) => {
   const getDescriptions = (title, items) => {
@@ -34,7 +33,7 @@ const Parameters = ({ params, type }) => {
                 >
                   <Flex sx={{ alignItems: "baseline", fontSize: "0" }}>
                     <Text mr={2}>{prop.property || prop.name}</Text>
-                    <Text color={"#707070"}>
+                    <Text color={"gray"}>
                       {prop.type || prop.schema?.type || nested?.title}
                     </Text>
                     {prop.required ? (

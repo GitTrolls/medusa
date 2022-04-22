@@ -1,5 +1,5 @@
 export default {
-  primary: "#7C53FF",
+  primary: "#B27979",
   secondary: "#79B28A",
   medusaGreen: "#3ecf8e",
   lightest: "#fefefe",

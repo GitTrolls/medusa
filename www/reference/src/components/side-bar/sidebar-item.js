@@ -81,12 +81,8 @@ const SideBarItem = ({ item }) => {
               height: "25px",
               justifyContent: "space-between",
               "&:hover, &.active": {
-                backgroundColor: "primary",
-                color: "light"
+                backgroundColor: "faded",
               },
-              "&:hover svg, &.active svg": {
-                color: "light"
-              }
             }}
             className={
               currentSection === convertToKebabCase(section.section_name)
@@ -94,7 +90,7 @@ const SideBarItem = ({ item }) => {
                 : null
             }
           >
-            {section.section_name} <ChevronDown fill={"light"} />
+            {section.section_name} <ChevronDown />
           </Flex>
         }
         open={isOpen}
@@ -118,15 +114,13 @@ const SideBarItem = ({ item }) => {
                 cursor: "pointer",
                 mb: "8px",
                 textDecoration: "none",
-                color: "text",
+                color: "black",
                 height: "25px",
                 "&:hover": {
-                  backgroundColor: "primary",
-                  color: "light"
+                  backgroundColor: "faded",
                 },
                 "&.active": {
-                  backgroundColor: "primary",
-                  color: "light"
+                  backgroundColor: "faded",
                 },
               }}
             >

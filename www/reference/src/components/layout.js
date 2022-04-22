@@ -35,7 +35,6 @@ const Layout = ({ data, api, children }) => {
           fontFamily: "body",
           flexGrow: "1",
         }}
-        className="layout-container"
       >
         <Sidebar data={data} api={api} />
         <ContentBox>{children}</ContentBox>
