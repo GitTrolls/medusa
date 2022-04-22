@@ -47,7 +47,7 @@ export default async (req, res) => {
     "notificationService"
   )
 
-  const config: Record<string, unknown> = {}
+  const config: any = {}
 
   if (validatedBody.to) {
     config.to = validatedBody.to

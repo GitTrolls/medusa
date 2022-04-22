@@ -14,7 +14,6 @@ class LineItemService extends BaseService {
     productService,
     regionService,
     cartRepository,
-    lineItemAdjustmentService,
   }) {
     super()
 
@@ -38,8 +37,6 @@ class LineItemService extends BaseService {
 
     /** @private @const {CartRepository} */
     this.cartRepository_ = cartRepository
-
-    this.lineItemAdjustmentService_ = lineItemAdjustmentService
   }
 
   withTransaction(transactionManager) {
@@ -55,7 +52,6 @@ class LineItemService extends BaseService {
       productService: this.productService_,
       regionService: this.regionService_,
       cartRepository: this.cartRepository_,
-      lineItemAdjustmentService: this.lineItemAdjustmentService_,
     })
 
     cloned.transactionManager_ = transactionManager
@@ -135,27 +131,18 @@ class LineItemService extends BaseService {
           })
         }),
         metadata: i.metadata,
-        adjustments: i.adjustments.map((adjustment) => {
-          return {
-            amount: -1 * adjustment.amount,
-            description: adjustment.description,
-            discount_id: adjustment.discount_id,
-            metadata: adjustment.metadata,
-          }
-        }),
       })
     )
 
     return await lineItemRepo.save(toCreate)
   }
 
-  async generate(variantId, regionId, quantity, context = {}) {
+  async generate(variantId, regionId, quantity, config = {}) {
     return this.atomicPhase_(async (manager) => {
       const variant = await this.productVariantService_
         .withTransaction(manager)
         .retrieve(variantId, {
           relations: ["product"],
-          include_discount_prices: true,
         })
 
       const region = await this.regionService_
@@ -165,24 +152,19 @@ class LineItemService extends BaseService {
       let price
       let shouldMerge = true
 
-      if (context.unit_price !== undefined && context.unit_price !== null) {
+      if (config.unit_price !== undefined && config.unit_price !== null) {
         // if custom unit_price, we ensure positive values
         // and we choose to not merge the items
         shouldMerge = false
-        if (context.unit_price < 0) {
+        if (config.unit_price < 0) {
           price = 0
         } else {
-          price = context.unit_price
+          price = config.unit_price
         }
       } else {
         price = await this.productVariantService_
           .withTransaction(manager)
-          .getRegionPrice(variant.id, {
-            regionId: region.id,
-            quantity: quantity,
-            customer_id: context.customer_id,
-            include_discount_prices: true,
-          })
+          .getRegionPrice(variant.id, region.id)
       }
 
       const toCreate = {
@@ -194,15 +176,8 @@ class LineItemService extends BaseService {
         quantity: quantity || 1,
         allow_discounts: variant.product.discountable,
         is_giftcard: variant.product.is_giftcard,
-        metadata: context?.metadata || {},
+        metadata: config?.metadata || {},
         should_merge: shouldMerge,
-      }
-
-      if (context.cart) {
-        const adjustments = await this.lineItemAdjustmentService_
-          .withTransaction(manager)
-          .generateAdjustments(context.cart, toCreate, { variant })
-        toCreate.adjustments = adjustments
       }
 
       return toCreate

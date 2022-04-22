@@ -25,7 +25,7 @@ export default {
       })
 
       // If country exists, add it to the body of the cart creation request
-      if (country?.region_id) {
+      if (country) {
         req.body.region_id = country.region_id
         req.body.country_code = country.iso_2
       }

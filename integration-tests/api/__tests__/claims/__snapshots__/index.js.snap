@@ -35,7 +35,6 @@ exports[`Claims creates a replace claim 1`] = `
 Object {
   "additional_items": Array [
     Object {
-      "adjustments": Array [],
       "allow_discounts": true,
       "cart_id": null,
       "claim_order_id": StringMatching /\\^claim_\\*/,

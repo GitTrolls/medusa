@@ -1,12 +1,14 @@
+import { BaseService } from "medusa-interfaces"
+
 import {
-  AbstractTaxService,
+  ITaxService,
   ItemTaxCalculationLine,
   ShippingTaxCalculationLine,
   TaxCalculationContext,
 } from "../interfaces/tax-service"
 import { ProviderTaxLine } from "../types/tax-service"
 
-class SystemTaxService extends AbstractTaxService {
+class SystemTaxService extends BaseService implements ITaxService {
   static identifier = "system"
 
   constructor() {

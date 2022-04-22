@@ -1,19 +1,21 @@
 import {
-  BeforeInsert,
-  Column,
-  CreateDateColumn,
-  DeleteDateColumn,
   Entity,
+  BeforeInsert,
+  DeleteDateColumn,
+  CreateDateColumn,
+  UpdateDateColumn,
   Index,
-  JoinColumn,
-  JoinTable,
+  Column,
+  PrimaryColumn,
   ManyToMany,
   ManyToOne,
-  PrimaryColumn,
-  UpdateDateColumn,
+  OneToOne,
+  JoinTable,
+  JoinColumn,
 } from "typeorm"
 import { ulid } from "ulid"
-import { DbAwareColumn, resolveDbType } from "../utils/db-aware-column"
+import { resolveDbType, DbAwareColumn } from "../utils/db-aware-column"
+
 import { DiscountRule } from "./discount-rule"
 import { Region } from "./region"
 

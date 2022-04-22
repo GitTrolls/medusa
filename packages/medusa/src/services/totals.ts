@@ -1,24 +1,28 @@
 import _ from "lodash"
-import { MedusaError } from "medusa-core-utils"
 import { BaseService } from "medusa-interfaces"
-import { ITaxCalculationStrategy, TaxCalculationContext } from "../interfaces"
+import { MedusaError } from "medusa-core-utils"
+
+import { LineItemTaxLine } from "../models/line-item-tax-line"
+import { ShippingMethodTaxLine } from "../models/shipping-method-tax-line"
+import { Order } from "../models/order"
 import { Cart } from "../models/cart"
+import { ShippingMethod } from "../models/shipping-method"
+import { LineItem } from "../models/line-item"
 import { Discount } from "../models/discount"
 import { DiscountRuleType } from "../models/discount-rule"
-import { LineItem } from "../models/line-item"
-import { LineItemTaxLine } from "../models/line-item-tax-line"
-import { Order } from "../models/order"
-import { ShippingMethod } from "../models/shipping-method"
-import { ShippingMethodTaxLine } from "../models/shipping-method-tax-line"
+
+import TaxProviderService from "./tax-provider"
+import { ITaxCalculationStrategy } from "../interfaces/tax-calculation-strategy"
+import { TaxCalculationContext } from "../interfaces/tax-service"
 import { isCart } from "../types/cart"
 import { isOrder } from "../types/orders"
+
 import {
-  LineAllocationsMap,
-  LineDiscount,
-  LineDiscountAmount,
   SubtotalOptions,
+  LineDiscount,
+  LineAllocationsMap,
+  LineDiscountAmount,
 } from "../types/totals"
-import TaxProviderService from "./tax-provider"
 
 type ShippingMethodTotals = {
   price: number
@@ -199,6 +203,8 @@ class TotalsService extends BaseService {
             cartOrOrder.items,
             calculationContext
           )
+
+          console.log(orderLines)
 
           taxLines = orderLines.filter((ol) => {
             if ("shipping_method_id" in ol) {
@@ -463,7 +469,6 @@ class TotalsService extends BaseService {
     const discountAmount =
       (allocationMap[lineItem.id]?.discount?.unit_amount || 0) *
       lineItem.quantity
-
     const lineSubtotal =
       lineItem.unit_price * lineItem.quantity - discountAmount
 
@@ -588,44 +593,25 @@ class TotalsService extends BaseService {
     discount: Discount,
     cart: Cart | Order
   ): LineDiscount[] {
-    const discounts: LineDiscount[] = cart.items.map((item) => ({
-      lineItem: item,
-      variant: item.variant.id,
-      amount: this.getLineItemDiscountAdjustment(item, discount),
-    }))
-
+    const discounts: LineDiscount[] = []
+    for (const item of cart.items) {
+      if (discount.rule.valid_for?.length > 0) {
+        discount.rule.valid_for.map(({ id }) => {
+          if (item.variant.product_id === id) {
+            discounts.push(
+              this.calculateDiscount_(
+                item,
+                item.variant.id,
+                item.unit_price,
+                discount.rule.value,
+                discount.rule.type
+              )
+            )
+          }
+        })
+      }
+    }
     return discounts
-  }
-
-  getLineItemDiscountAdjustment(
-    lineItem: LineItem,
-    discount: Discount
-  ): number {
-    const matchingDiscount = lineItem.adjustments.find(
-      (adjustment) => adjustment.discount_id === discount.id
-    )
-
-    if (!matchingDiscount) {
-      return 0
-    }
-
-    return matchingDiscount.amount
-  }
-
-  getLineItemAdjustmentsTotal(cartOrOrder: Cart | Order): number {
-    if (!cartOrOrder?.items?.length) {
-      return 0
-    }
-
-    return cartOrOrder.items.reduce(
-      (total, item) =>
-        total +
-          item.adjustments?.reduce(
-            (total, adjustment) => total + adjustment.amount,
-            0
-          ) || 0,
-      0
-    )
   }
 
   /**
@@ -639,6 +625,10 @@ class TotalsService extends BaseService {
     cartOrOrder: Cart | Order,
     discount: Discount
   ): LineDiscountAmount[] {
+    const subtotal = this.getSubtotal(cartOrOrder, {
+      excludeNonDiscounts: true,
+    })
+
     let merged: LineItem[] = [...cartOrOrder.items]
 
     // merge items from order with items from order swaps
@@ -654,22 +644,43 @@ class TotalsService extends BaseService {
       }
     }
 
-    return merged.map((item) => {
-      const adjustments = item?.adjustments || []
-      const discountAdjustments = adjustments.filter(
-        (adjustment) => adjustment.discount_id === discount.id
-      )
-
-      return {
-        item,
-        amount: item.allow_discounts
-          ? discountAdjustments.reduce(
-              (total, adjustment) => total + adjustment.amount,
-              0
-            )
-          : 0,
+    const { type, allocation, value } = discount.rule
+    if (allocation === "total") {
+      let percentage = 0
+      if (type === "percentage") {
+        percentage = value / 100
+      } else if (type === "fixed") {
+        // If the fixed discount exceeds the subtotal we should
+        // calculate a 100% discount
+        const nominator = Math.min(value, subtotal)
+        percentage = nominator / subtotal
       }
-    })
+
+      return merged.map((item) => {
+        const lineTotal = item.unit_price * item.quantity
+
+        return {
+          item,
+          amount: item.allow_discounts ? lineTotal * percentage : 0,
+        }
+      })
+    } else if (allocation === "item") {
+      const allocationDiscounts = this.getAllocationItemDiscounts(
+        discount,
+        cartOrOrder
+      )
+      return merged.map((item) => {
+        const discounted = allocationDiscounts.find(
+          (a) => a.lineItem.id === item.id
+        )
+        return {
+          item,
+          amount: discounted ? discounted.amount : 0,
+        }
+      })
+    }
+
+    return merged.map((i) => ({ item: i, amount: 0 }))
   }
 
   /**
@@ -874,13 +885,32 @@ class TotalsService extends BaseService {
       return 0
     }
 
-    const discountTotal = this.getLineItemAdjustmentsTotal(cartOrOrder)
+    const { type, allocation, value } = discount.rule
+    let toReturn = 0
 
-    if (subtotal < 0) {
-      return this.rounded(Math.max(subtotal, discountTotal))
+    if (type === "percentage" && allocation === "total") {
+      toReturn = (subtotal / 100) * value
+    } else if (type === "percentage" && allocation === "item") {
+      const itemPercentageDiscounts = this.getAllocationItemDiscounts(
+        discount,
+        cartOrOrder
+      )
+      toReturn = _.sumBy(itemPercentageDiscounts, (d) => d.amount)
+    } else if (type === "fixed" && allocation === "total") {
+      toReturn = value
+    } else if (type === "fixed" && allocation === "item") {
+      const itemFixedDiscounts = this.getAllocationItemDiscounts(
+        discount,
+        cartOrOrder
+      )
+      toReturn = _.sumBy(itemFixedDiscounts, (d) => d.amount)
     }
 
-    return this.rounded(Math.min(subtotal, discountTotal))
+    if (subtotal < 0) {
+      return this.rounded(Math.max(subtotal, toReturn))
+    }
+
+    return this.rounded(Math.min(subtotal, toReturn))
   }
 
   /**

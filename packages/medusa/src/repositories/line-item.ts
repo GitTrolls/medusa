@@ -17,7 +17,6 @@ export class LineItemRepository extends Repository<LineItem> {
   ): Promise<(LineItem & { return_item: ReturnItem })[]> {
     const qb = this.createQueryBuilder("li")
       .leftJoinAndSelect(`li.tax_lines`, "tax_lines")
-      .leftJoinAndSelect(`li.adjustments`, "adjustments")
       .leftJoinAndMapOne(
         `li.return_item`,
         ReturnItem,

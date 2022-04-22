@@ -1,11 +1,11 @@
 import Bull from "bull"
 import { MockRepository, MockManager } from "medusa-test-utils"
 import EventBusService from "../event-bus"
-import config from "../../loaders/config"
+import config from "../../config"
 
 jest.genMockFromModule("bull")
 jest.mock("bull")
-jest.mock("../../loaders/config")
+jest.mock("../../config")
 
 config.redisURI = "testhost"
 

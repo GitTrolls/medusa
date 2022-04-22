@@ -1,3 +1,4 @@
+import { TotalsService } from "@medusajs/medusa"
 import { humanizeAmount } from "medusa-core-utils"
 import { FulfillmentService } from "medusa-interfaces"
 import Webshipper from "../utils/webshipper"
@@ -113,7 +114,13 @@ class WebshipperFulfillmentService extends FulfillmentService {
 
     const fromOrder = await this.orderService_.retrieve(orderId, {
       select: ["total"],
-      relations: ["discounts", "discounts.rule", "shipping_address", "returns"],
+      relations: [
+        "discounts",
+        "discounts.rule",
+        "discounts.rule.valid_for",
+        "shipping_address",
+        "returns",
+      ],
     })
 
     const methodData = returnOrder.shipping_method.data
@@ -138,7 +145,7 @@ class WebshipperFulfillmentService extends FulfillmentService {
       }
     }
 
-    const docs = []
+    let docs = []
     if (this.invoiceGenerator_) {
       const base64Invoice = await this.invoiceGenerator_.createReturnInvoice(
         fromOrder,
@@ -331,7 +338,7 @@ class WebshipperFulfillmentService extends FulfillmentService {
         }
       }
 
-      const id = fulfillment.id
+      let id = fulfillment.id
       let visible_ref = `${fromOrder.display_id}-${id.substr(id.length - 4)}`
       let ext_ref = `${fromOrder.id}.${fulfillment.id}`
 

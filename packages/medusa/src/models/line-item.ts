@@ -20,7 +20,6 @@ import { Cart } from "./cart"
 import { Order } from "./order"
 import { ClaimOrder } from "./claim-order"
 import { ProductVariant } from "./product-variant"
-import { LineItemAdjustment } from "./line-item-adjustment"
 
 @Check(`"fulfilled_quantity" <= "quantity"`)
 @Check(`"shipped_quantity" <= "fulfilled_quantity"`)
@@ -65,9 +64,6 @@ export class LineItem {
 
   @OneToMany(() => LineItemTaxLine, (tl) => tl.item, { cascade: ["insert"] })
   tax_lines: LineItemTaxLine[]
-
-  @OneToMany(() => LineItemAdjustment, (lia) => lia.item, { cascade: ["insert"] })
-  adjustments: LineItemAdjustment[]
 
   @Column()
   title: string
