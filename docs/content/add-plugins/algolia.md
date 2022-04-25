@@ -14,7 +14,11 @@ Create an account on Algolia and grab your Application ID and Admin API Key from
 
 In your Medusa project, install the plugin using your favourite package manager:
 
-```bash npm2yarn
+```jsx
+yarn add medusa-plugin-algolia@canary
+
+// or
+
 npm install medusa-plugin-algolia@canary
 ```
 
