@@ -1,13 +1,12 @@
 import { Box, Flex, Link, Select } from "@theme-ui/components"
+import { navigate } from "gatsby-link"
 import React, { useContext } from "react"
-
-import ChevronDown from "./icons/chevron-down"
-import ColorModeToggler from "./ColorModeToggler"
 import GitHub from "../components/icons/github"
 import NavigationContext from "../context/navigation-context"
-import Search from "./search"
 import { convertToKebabCase } from "../utils/convert-to-kebab-case"
-import { navigate } from "gatsby-link"
+import ChevronDown from "./icons/chevron-down"
+import Search from "./search"
+
 
 const Topbar = ({ data, api }) => {
   const { goTo, reset, currentSection } = useContext(NavigationContext)
@@ -16,10 +15,7 @@ const Topbar = ({ data, api }) => {
     const parts = e.target.value.split(" ")
 
     if (parts[0] === api) {
-      //find section
-      let sectionObj = data.sections.find((s) => convertToKebabCase(s.section.section_name) === parts[1]);
-      sectionObj = sectionObj ? sectionObj.section : {};
-      goTo({ section: parts[1], sectionObj })
+      goTo({ section: parts[1] })
     } else {
       reset()
       navigate(`/api/${api === "admin" ? "store" : "admin"}`)
@@ -41,6 +37,7 @@ const Topbar = ({ data, api }) => {
           left: "0",
           right: "0",
           zIndex: "100",
+          backgroundColor: "light",
         },
       }}
     >
@@ -64,6 +61,7 @@ const Topbar = ({ data, api }) => {
               fontWeight: "500",
               flexGrow: "1",
               px: "0",
+              backgroundColor: "light",
               transition: "all .1s ease-in-out",
               "&:focus": {
                 outline: "none !important",
@@ -114,8 +112,7 @@ const Topbar = ({ data, api }) => {
         >
           <GitHub />
         </Link>
-        <Search data={data} />
-        <ColorModeToggler />
+        <Search />
       </Flex>
     </Flex>
   )

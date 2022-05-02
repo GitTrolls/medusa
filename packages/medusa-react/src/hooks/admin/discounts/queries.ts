@@ -1,7 +1,6 @@
 import {
   AdminDiscountsListRes,
   AdminDiscountsRes,
-  AdminGetDiscountParams,
   AdminGetDiscountsParams,
 } from "@medusajs/medusa"
 import { Response } from "@medusajs/medusa-js"
@@ -35,7 +34,6 @@ export const useAdminDiscounts = (
 
 export const useAdminDiscount = (
   id: string,
-  query?: AdminGetDiscountParams,
   options?: UseQueryOptionsWrapper<
     Response<AdminDiscountsRes>,
     Error,
@@ -45,7 +43,7 @@ export const useAdminDiscount = (
   const { client } = useMedusa()
   const { data, ...rest } = useQuery(
     adminDiscountKeys.detail(id),
-    () => client.admin.discounts.retrieve(id, query),
+    () => client.admin.discounts.retrieve(id),
     options
   )
   return { ...data, ...rest } as const

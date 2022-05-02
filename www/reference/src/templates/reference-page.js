@@ -1,15 +1,14 @@
 import React, { useContext, useEffect, useState } from "react"
-
-import Content from "../components/content"
 import { Helmet } from "react-helmet"
+
 import Layout from "../components/layout"
+import Content from "../components/content"
 import NavigationContext from "../context/navigation-context"
-import { convertToKebabCase } from "../utils/convert-to-kebab-case"
 
 export default function ReferencePage({
   pageContext: { data, api, title, description, to },
 }) {
-  const { setApi, goTo, metadata, currentSectionObj } = useContext(NavigationContext)
+  const { setApi, goTo, metadata } = useContext(NavigationContext)
   const [siteData, setSiteData] = useState({
     title: title,
     description: description,
@@ -19,14 +18,6 @@ export default function ReferencePage({
     setApi(api)
     if (to) {
       goTo(to)
-    } else if (data.sections && data.sections.length) {
-      //go to the first section
-      const firstSection = data.sections[0].section;
-      goTo({
-        section: convertToKebabCase(firstSection.section_name),
-        method: firstSection.paths && firstSection.paths.length ? firstSection.paths[0].methods[0].method : '',
-        sectionObj: firstSection
-      })
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
@@ -43,10 +34,10 @@ export default function ReferencePage({
   return (
     <Layout data={data} api={api}>
       <Helmet>
-        <title>{`API | Medusa API Reference`}</title>
+        <title>{`API | Medusa Commerce API Reference`}</title>
         <meta name="description" content={siteData.description} />
       </Helmet>
-      <Content data={data} currentSection={currentSectionObj} api={api} />
+      <Content data={data} api={api} />
     </Layout>
   )
 }

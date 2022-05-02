@@ -4,13 +4,13 @@ export const labels = {
     fontSize: 0,
   },
   GET: {
-    color: "#1b7cb8",
+    color: "#4159de",
   },
   POST: {
-    color: "#0e8761",
+    color: "#09825d",
   },
   DELETE: {
-    color: "#bf3030",
+    color: "#b50a0a",
   },
 }
 

@@ -1,4 +1,4 @@
-import { Transform, Type } from "class-transformer"
+import { Type } from "class-transformer"
 import {
   IsArray,
   IsBoolean,
@@ -7,7 +7,6 @@ import {
   IsString,
   ValidateNested,
 } from "class-validator"
-import { optionalBooleanMapper } from "../utils/validators/is-boolean"
 import { IsType } from "../utils/validators/is-type"
 import { DateComparisonOperator, StringComparisonOperator } from "./common"
 
@@ -57,8 +56,8 @@ export class FilterableProductProps {
 
   @IsBoolean()
   @IsOptional()
-  @Transform(({ value }) => optionalBooleanMapper.get(value.toLowerCase()))
-  is_giftcard?: boolean
+  @Type(() => Boolean)
+  is_giftcard?: string
 
   @IsString()
   @IsOptional()

@@ -1,7 +1,6 @@
-import { Box, Flex, Text } from "theme-ui"
-
-import CopyToClipboard from "../CopyToClipboard"
 import React from "react"
+import { Flex, Box, Text } from "theme-ui"
+import CopyToClipboard from "../CopyToClipboard"
 
 const CodeBox = ({ header, children, shell, content, allowCopy }) => {
   return (
@@ -9,7 +8,7 @@ const CodeBox = ({ header, children, shell, content, allowCopy }) => {
       sx={{
         background: "fadedContrast",
         borderRadius: "small",
-        boxShadow: "0 0 0 1px var(--theme-ui-colors-primaryLight)",
+        boxShadow: "0 0 0 1px rgb(0 0 0 / 7%)",
         alignSelf: "flex-start",
         marginLeft: "auto",
         marginRight: "auto",
@@ -19,7 +18,7 @@ const CodeBox = ({ header, children, shell, content, allowCopy }) => {
     >
       <Box
         sx={{
-          bg: "primary",
+          bg: "faded",
           p: "8px 10px",
           letterSpacing: "0.01em",
           borderRadius: "8px 8px 0 0",
@@ -32,7 +31,7 @@ const CodeBox = ({ header, children, shell, content, allowCopy }) => {
             alignItems: "baseline",
           }}
         >
-          <Text variant="small" sx={{ fontWeight: "400", color: "light" }}>
+          <Text variant="small" sx={{ fontWeight: "400" }}>
             {header.toUpperCase()}
           </Text>
           {allowCopy ? (

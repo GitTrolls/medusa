@@ -1,10 +1,9 @@
-import { Box, Text } from "theme-ui"
 import React, { useState } from "react"
-
+import { Flex, Box, Text } from "theme-ui"
 import Clipboard from '../icons/clipboard'
 import ReactTooltip from "react-tooltip"
-import copy from 'copy-to-clipboard'
 import styled from "@emotion/styled"
+import copy from 'copy-to-clipboard'
 
 const StyledTooltip = ({id, text}) => {
   const StyledTooltip = styled(ReactTooltip)`
