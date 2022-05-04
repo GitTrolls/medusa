@@ -8,16 +8,12 @@ Starting a new e-commerce project just got easier, now with one command.
 
 ## Getting started with `create-medusa-app`
 
-Use `create-medusa-app` with npx:
-
-```bash
-npx create-medusa-app
-```
-
-Or Yarn:
+Use `create-medusa-app` with your preferred package manager:
 
 ```bash
 yarn create medusa-app
+
+npx create-medusa-app
 ```
 
 Behind the scenes, `create-medusa-app` is populating your database with some initial set of mock data, which helps to interact with Medusa setup intuitively straight away. 

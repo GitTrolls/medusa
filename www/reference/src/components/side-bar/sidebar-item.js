@@ -1,11 +1,10 @@
-import { Box, Flex, Text } from "theme-ui"
-import React, { useContext, useEffect, useState } from "react"
-
-import ChevronDown from "../icons/chevron-down"
+import React, { useContext } from "react"
 import Collapsible from "react-collapsible"
-import NavigationContext from "../../context/navigation-context"
-import { convertToKebabCase } from "../../utils/convert-to-kebab-case"
+import { Flex, Box, Text } from "theme-ui"
 import styled from "@emotion/styled"
+import { convertToKebabCase } from "../../utils/convert-to-kebab-case"
+import ChevronDown from "../icons/chevron-down"
+import NavigationContext from "../../context/navigation-context"
 
 const StyledCollapsible = styled(Collapsible)`
   margin-bottom: 10px;
@@ -27,7 +26,6 @@ const SideBarItem = ({ item }) => {
     currentSection,
     goTo,
   } = useContext(NavigationContext)
-  const [isOpen, setIsOpen] = useState(false);
   const { section } = item
   const subItems = section.paths
     .map(p => {
@@ -49,20 +47,15 @@ const SideBarItem = ({ item }) => {
     if (element) {
       element.scrollIntoView()
       if (!openSections.includes(id)) {
-        openSection({id, section})
+        openSection(id)
       }
     }
   }
 
   const handleSubClick = path => {
     const id = convertToKebabCase(section.section_name)
-    goTo({ section: id, method: path, sectionObj: section })
+    goTo({ section: id, method: path })
   }
-
-  useEffect(() => {
-    setIsOpen(currentSection === convertToKebabCase(section.section_name) ||
-    openSections.includes(convertToKebabCase(section.section_name)));
-  }, [section.section_name, currentSection, openSections])
 
   return (
     <Container id={`nav-${convertToKebabCase(section.section_name)}`}>
@@ -81,12 +74,8 @@ const SideBarItem = ({ item }) => {
               height: "25px",
               justifyContent: "space-between",
               "&:hover, &.active": {
-                backgroundColor: "primary",
-                color: "light"
+                backgroundColor: "faded",
               },
-              "&:hover svg, &.active svg": {
-                color: "light"
-              }
             }}
             className={
               currentSection === convertToKebabCase(section.section_name)
@@ -94,10 +83,13 @@ const SideBarItem = ({ item }) => {
                 : null
             }
           >
-            {section.section_name} <ChevronDown fill={"light"} />
+            {section.section_name} <ChevronDown />
           </Flex>
         }
-        open={isOpen}
+        open={
+          currentSection === convertToKebabCase(section.section_name) ||
+          openSections.includes(convertToKebabCase(section.section_name))
+        }
         onTriggerOpening={handleClick}
         transitionTime={1}
       >
@@ -118,15 +110,13 @@ const SideBarItem = ({ item }) => {
                 cursor: "pointer",
                 mb: "8px",
                 textDecoration: "none",
-                color: "text",
+                color: "black",
                 height: "25px",
                 "&:hover": {
-                  backgroundColor: "primary",
-                  color: "light"
+                  backgroundColor: "faded",
                 },
                 "&.active": {
-                  backgroundColor: "primary",
-                  color: "light"
+                  backgroundColor: "faded",
                 },
               }}
             >

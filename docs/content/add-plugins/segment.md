@@ -21,16 +21,12 @@ Common integration use cases that can be implemented with Segment include:
 
 ## Adding Segment to your Medusa store
 
-:::note
-
-You should create a [Node.js source in Segment](https://segment.com/docs/connections/sources/catalog/libraries/server/node/quickstart/) in order to obtain the write key that will be provided in the plugin options.
-
-:::
+> Note: you should create a [Node.js source in Segment](https://segment.com/docs/connections/sources/catalog/libraries/server/node/quickstart/) in order to obtain the write key that will be provided in the plugin options.
 
 Plugins in Medusa's ecosystem come as separate npm packages, that can be installed from the npm registry.
 
-```bash npm2yarn
-npm install medusa-plugin-segment
+```bash
+yarn add medusa-plugin-segment
 ```
 
 After installation open `medusa-config.js` to configure the Segment plugin, by adding it to your project's plugin array and providing the options required by the plugin, namely the write key obtained from the Segment dashboard.

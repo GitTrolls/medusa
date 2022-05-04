@@ -1,4 +1,4 @@
-import { Transform, Type } from "class-transformer"
+import { Type } from "class-transformer"
 import {
   IsArray,
   IsBoolean,
@@ -18,7 +18,6 @@ import {
 } from "."
 import listAndCount from "../../../../controllers/products/admin-list-products"
 import { validator } from "../../../../utils/validator"
-import { optionalBooleanMapper } from "../../../../utils/validators/is-boolean"
 
 /**
  * @oas [get] /products
@@ -163,8 +162,8 @@ export class AdminGetProductsParams extends AdminGetProductsPaginationParams {
 
   @IsBoolean()
   @IsOptional()
-  @Transform(({ value }) => optionalBooleanMapper.get(value.toLowerCase()))
-  is_giftcard?: boolean
+  @Type(() => Boolean)
+  is_giftcard?: string
 
   @IsString()
   @IsOptional()

@@ -1,4 +1,4 @@
-# medusa-plugin-twilio-sms
+# medusa-plugin-sendgrid
 
 Twilio SMS / Messaging plugin.
 

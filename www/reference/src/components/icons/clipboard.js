@@ -1,6 +1,7 @@
 import { Image } from "@theme-ui/components"
-import Logo from "../../assets/clipboard.svg"
 import React from "react"
+
+import Logo from "../../assets/clipboard.svg"
 
 const Clipboard = () => {
   return (
@@ -8,7 +9,7 @@ const Clipboard = () => {
       src={Logo}
       sx={{
         height: "100%",
-        fill: "light",
+        fill: "#000",
         cursor: 'pointer'
       }}
     />

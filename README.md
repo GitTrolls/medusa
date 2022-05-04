@@ -66,17 +66,17 @@ After these four steps and only a couple of minutes, you now have a complete com
 
 Write-ups for all features will be made available in [Github discussions](https://github.com/medusajs/medusa/discussions) prior to starting the implementation process.
 
-### H1 2022
+### Q1
+
 - [x] Admin revamp
 - [x] Tax API
-- [x] Tax Calculation Strategy
-- [x] Cart Calculation Strategy
-- [x] Customer Groups API
-- [x] Promotions API
-- [x] Price Lists API
-- [x] Price Selection Strategy
+- [x] Strategy pattern
+- [ ] Promotions API
 - [ ] Bulk import / export
-- [ ] Extended Product API (custom fields, publishing control, and more)
+
+### Q2
+
+- [ ] Extended Product API (custom fields, price lists, publishing control, and more)
 - [ ] Extended Order API (managing placed orders, improved inventory control, and more)
 - [ ] Sales Channel API
 - [ ] Multi-warehouse support
