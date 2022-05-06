@@ -204,21 +204,7 @@ describe("CartService", () => {
       },
     }
 
-    const addressRepository = MockRepository({
-      create: (c) => c,
-      findOne: (id) => {
-        return {
-          id,
-          first_name: "LeBron",
-          last_name: "James",
-          address_1: "Dunk St",
-          city: "Dunkville",
-          province: "CA",
-          postal_code: "12345",
-          country_code: "us",
-        }
-      }
-    })
+    const addressRepository = MockRepository({ create: (c) => c })
     const cartRepository = MockRepository()
     const customerService = {
       retrieveByEmail: jest.fn().mockReturnValue(
@@ -276,40 +262,7 @@ describe("CartService", () => {
       expect(cartRepository.save).toHaveBeenCalledTimes(1)
     })
 
-    it("successfully creates a cart with a shipping address id but no shippings_address", async () => {
-      await cartService.create({
-        region_id: IdMap.getId("testRegion"),
-        email: "email@test.com",
-        shipping_address_id: "test_shipping_address",
-      })
-
-      expect(eventBusService.emit).toHaveBeenCalledTimes(1)
-      expect(eventBusService.emit).toHaveBeenCalledWith(
-        "cart.created",
-        expect.any(Object)
-      )
-
-      expect(cartRepository.create).toHaveBeenCalledTimes(1)
-      expect(cartRepository.create).toHaveBeenCalledWith(expect.objectContaining({
-        region_id: IdMap.getId("testRegion"),
-        shipping_address: {
-          id: "test_shipping_address",
-          first_name: "LeBron",
-          last_name: "James",
-          address_1: "Dunk St",
-          city: "Dunkville",
-          province: "CA",
-          postal_code: "12345",
-          country_code: "us",
-        },
-        customer_id: IdMap.getId("customer"),
-        email: "email@test.com"
-      }))
-
-      expect(cartRepository.save).toHaveBeenCalledTimes(1)
-    })
-
-    it("creates a cart with a prefilled shipping address but a country not part of the region", async () => {
+    it("creates a cart with a prefilled shipping address", async () => {
       const res = cartService.create({
         region_id: IdMap.getId("testRegion"),
         shipping_address: {
