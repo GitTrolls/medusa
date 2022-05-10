@@ -668,7 +668,7 @@ class ProductService extends BaseService {
       // Should not fail, if product does not exist, since delete is idempotent
       const product = await productRepo.findOne(
         { id: productId },
-        { relations: ["variants", "variants.prices", "variants.options"] }
+        { relations: ["variants"] }
       )
 
       if (!product) {

@@ -1,12 +1,6 @@
 import { Transform, Type } from "class-transformer"
 import { IsDate, IsNumber, IsOptional, IsString } from "class-validator"
 import "reflect-metadata"
-import {
-  BaseEntity,
-  FindManyOptions,
-  FindOperator,
-  OrderByCondition,
-} from "typeorm"
 import { transformDate } from "../utils/validators/date-transform"
 
 export type PartialPick<T, K extends keyof T> = {
@@ -29,17 +23,6 @@ export interface FindConfig<Entity> {
   take?: number
   relations?: string[]
   order?: Record<string, "ASC" | "DESC">
-}
-
-export interface CustomFindOptions<TModel, InKeys extends keyof TModel> {
-  select?: FindManyOptions<TModel>["select"]
-  where?: FindManyOptions<TModel>["where"] &
-    {
-      [P in InKeys]?: TModel[P][]
-    }
-  order?: OrderByCondition
-  skip?: number
-  take?: number
 }
 
 export type PaginatedResponse = { limit: number; offset: number; count: number }

@@ -1,9 +1,11 @@
 import _ from "lodash"
+import { getManager } from "typeorm"
 import { MedusaError } from "medusa-core-utils"
 import { IdMap, MockManager, MockRepository } from "medusa-test-utils"
 import CartService from "../cart"
 import { InventoryServiceMock } from "../__mocks__/inventory"
 import { LineItemAdjustmentServiceMock } from "../__mocks__/line-item-adjustment"
+import { CartRepository } from "../../repositories/cart"
 
 const eventBusService = {
   emit: jest.fn(),
@@ -204,7 +206,21 @@ describe("CartService", () => {
       },
     }
 
-    const addressRepository = MockRepository({ create: (c) => c })
+    const addressRepository = MockRepository({
+      create: (c) => c,
+      findOne: (id) => {
+        return {
+          id,
+          first_name: "LeBron",
+          last_name: "James",
+          address_1: "Dunk St",
+          city: "Dunkville",
+          province: "CA",
+          postal_code: "12345",
+          country_code: "us",
+        }
+      }
+    })
     const cartRepository = MockRepository()
     const customerService = {
       retrieveByEmail: jest.fn().mockReturnValue(
@@ -262,7 +278,7 @@ describe("CartService", () => {
       expect(cartRepository.save).toHaveBeenCalledTimes(1)
     })
 
-    it("creates a cart with a prefilled shipping address", async () => {
+    it("creates a cart with a prefilled shipping address but a country not part of the region", async () => {
       const res = cartService.create({
         region_id: IdMap.getId("testRegion"),
         shipping_address: {
