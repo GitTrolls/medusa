@@ -186,6 +186,10 @@ module.exports = {
                   type: "doc",
                   id: "advanced/backend/payment/how-to-create-payment-provider",
                 },
+                {
+                  type: "doc",
+                  id: "advanced/backend/payment/frontend-payment-flow-in-checkout",
+                },
               ]
             },
             {
@@ -216,17 +220,6 @@ module.exports = {
                   label: "v1.3.1"
                 },
               ]
-            },
-          ]
-        },
-        {
-          type: "category",
-          label: "Storefront",
-          collapsed: true,
-          items: [
-            {
-              type: "doc",
-              id: "advanced/storefront/how-to-implement-checkout-flow",
             },
           ]
         }
