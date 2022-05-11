@@ -1,6 +1,6 @@
+import _ from "lodash"
 import Stripe from "stripe"
 import { PaymentService } from "medusa-interfaces"
-import { PaymentSessionStatus } from '@medusajs/medusa/dist'
 
 class StripeProviderService extends PaymentService {
   static identifier = "stripe"
@@ -42,21 +42,37 @@ class StripeProviderService extends PaymentService {
     const { id } = paymentData
     const paymentIntent = await this.stripe_.paymentIntents.retrieve(id)
 
-    switch (paymentIntent.status) {
-      case "requires_payment_method":
-      case "requires_confirmation":
-      case "processing":
-        return PaymentSessionStatus.PENDING
-      case "requires_action":
-        return PaymentSessionStatus.REQUIRES_MORE
-      case "canceled":
-        return PaymentSessionStatus.CANCELED
-      case "requires_capture":
-      case "succeeded":
-        return PaymentSessionStatus.AUTHORIZED
-      default:
-        return PaymentSessionStatus.PENDING
+    let status = "pending"
+
+    if (paymentIntent.status === "requires_payment_method") {
+      return status
     }
+
+    if (paymentIntent.status === "requires_confirmation") {
+      return status
+    }
+
+    if (paymentIntent.status === "processing") {
+      return status
+    }
+
+    if (paymentIntent.status === "requires_action") {
+      status = "requires_more"
+    }
+
+    if (paymentIntent.status === "canceled") {
+      status = "canceled"
+    }
+
+    if (paymentIntent.status === "requires_capture") {
+      status = "authorized"
+    }
+
+    if (paymentIntent.status === "succeeded") {
+      status = "authorized"
+    }
+
+    return status
   }
 
   /**
@@ -125,7 +141,6 @@ class StripeProviderService extends PaymentService {
     const amount = await this.totalsService_.getTotal(cart)
 
     const intentRequest = {
-      description: cart?.context?.payment_description ?? this.options?.payment_description,
       amount: Math.round(amount),
       currency: currency_code,
       setup_future_usage: "on_session",
@@ -154,9 +169,11 @@ class StripeProviderService extends PaymentService {
       intentRequest.customer = stripeCustomer.id
     }
 
-    return await this.stripe_.paymentIntents.create(
+    const paymentIntent = await this.stripe_.paymentIntents.create(
       intentRequest
     )
+
+    return paymentIntent
   }
 
   /**
