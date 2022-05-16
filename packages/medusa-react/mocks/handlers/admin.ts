@@ -170,6 +170,89 @@ export const adminHandlers = [
     )
   }),
 
+  rest.post("/admin/price-lists/", (req, res, ctx) => {
+    const body = req.body as Record<string, any>
+    return res(
+      ctx.status(200),
+      ctx.json({
+        price_list: {
+          ...fixtures.get("price_list"),
+          ...body,
+        },
+      })
+    )
+  }),
+
+  rest.get("/admin/price-lists/", (req, res, ctx) => {
+    return res(
+      ctx.status(200),
+      ctx.json({
+        price_lists: fixtures.list("price_list"),
+        count: 2,
+        offset: 0,
+        limit: 10,
+      })
+    )
+  }),
+
+  rest.get("/admin/price-lists/:id", (req, res, ctx) => {
+    return res(
+      ctx.status(200),
+      ctx.json({
+        price_list: fixtures.get("price_list"),
+      })
+    )
+  }),
+
+  rest.post("/admin/price-lists/:id", (req, res, ctx) => {
+    const body = req.body as Record<string, any>
+    return res(
+      ctx.status(200),
+      ctx.json({
+        price_list: {
+          ...fixtures.get("price_list"),
+          ...body,
+          id: req.params.id,
+        },
+      })
+    )
+  }),
+
+  rest.delete("/admin/price-lists/:id", (req, res, ctx) => {
+    return res(
+      ctx.status(200),
+      ctx.json({
+        id: req.params.id,
+        object: "price_list",
+        deleted: true,
+      })
+    )
+  }),
+
+  rest.delete("/admin/price-lists/:id/prices/batch", (req, res, ctx) => {
+    const body = req.body as Record<string, any>
+    return res(
+      ctx.status(200),
+      ctx.json({
+        ids: body.price_ids,
+        object: "money-amount",
+        deleted: true,
+      })
+    )
+  }),
+
+  rest.post("/admin/price-lists/:id/prices/batch", (req, res, ctx) => {
+    return res(
+      ctx.status(200),
+      ctx.json({
+        price_list: {
+          ...fixtures.get("price_list"),
+          id: req.params.id,
+        },
+      })
+    )
+  }),
+
   rest.post("/admin/return-reasons/", (req, res, ctx) => {
     const body = req.body as Record<string, any>
     return res(
@@ -509,6 +592,57 @@ export const adminHandlers = [
     )
   }),
 
+  rest.get("/admin/customer-groups/", (req, res, ctx) => {
+    return res(
+      ctx.status(200),
+      ctx.json({
+        customer_groups: fixtures.list("customer_group"),
+      })
+    )
+  }),
+
+  rest.get("/admin/customer-groups/:id", (req, res, ctx) => {
+    return res(
+      ctx.status(200),
+      ctx.json({
+        customer_group: fixtures.get("customer_group"),
+      })
+    )
+  }),
+
+  rest.post("/admin/customer-groups/", (req, res, ctx) => {
+    return res(
+      ctx.status(200),
+      ctx.json({
+        customer_group: {
+          ...fixtures.get("customer_group"),
+          ...(req.body as any),
+        },
+      })
+    )
+  }),
+
+  rest.post("/admin/customer-groups/:id", (req, res, ctx) => {
+    return res(
+      ctx.status(200),
+      ctx.json({
+        customer_group: {
+          ...fixtures.get("customer_group"),
+          ...(req.body as any),
+        },
+      })
+    )
+  }),
+
+  rest.get("/admin/customer-groups/:id/customers", (req, res, ctx) => {
+    return res(
+      ctx.status(200),
+      ctx.json({
+        customers: fixtures.list("customer"),
+      })
+    )
+  }),
+
   rest.get("/admin/discounts/", (req, res, ctx) => {
     return res(
       ctx.status(200),
@@ -627,6 +761,43 @@ export const adminHandlers = [
       })
     )
   }),
+
+  rest.post("/admin/discounts/:id/conditions", (req, res, ctx) => {
+    return res(
+      ctx.status(200),
+      ctx.json({
+        discount: {
+          ...fixtures.get("discount"),
+        },
+      })
+    )
+  }),
+
+  rest.post("/admin/discounts/:id/conditions/:conditionId", (req, res, ctx) => {
+    return res(
+      ctx.status(200),
+      ctx.json({
+        discount: {
+          ...fixtures.get("discount"),
+        },
+      })
+    )
+  }),
+
+  rest.delete(
+    "/admin/discounts/:id/conditions/:conditionId",
+    (req, res, ctx) => {
+      return res(
+        ctx.status(200),
+        ctx.json({
+          id: req.params.conditionId,
+          object: "discount-condition",
+          deleted: true,
+          discount: fixtures.get("discount"),
+        })
+      )
+    }
+  ),
 
   rest.get("/admin/draft-orders/", (req, res, ctx) => {
     return res(
