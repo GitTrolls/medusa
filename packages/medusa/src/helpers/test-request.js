@@ -4,7 +4,7 @@ import jwt from "jsonwebtoken"
 import { MockManager } from "medusa-test-utils"
 import "reflect-metadata"
 import supertest from "supertest"
-import querystring from "querystring"
+import config from "../config"
 import apiLoader from "../loaders/api"
 import passportLoader from "../loaders/passport"
 import servicesLoader from "../loaders/services"
@@ -22,19 +22,9 @@ const clientSessionOpts = {
   secret: "test",
 }
 
-const config = {
-  projectConfig: {
-    jwt_secret: 'supersecret',
-    cookie_secret: 'superSecret',
-    admin_cors: '',
-    store_cors: ''
-  }
-}
-
 const testApp = express()
 
 const container = createContainer()
-container.register('configModule', asValue(config))
 container.register({
   logger: asValue({
     error: () => {},
@@ -55,30 +45,30 @@ testApp.use((req, res, next) => {
   next()
 })
 
-servicesLoader({ container, configModule: config })
-strategiesLoader({ container, configModule: config })
-passportLoader({ app: testApp, container, configModule: config })
+servicesLoader({ container })
+strategiesLoader({ container })
+passportLoader({ app: testApp, container })
 
 testApp.use((req, res, next) => {
   req.scope = container.createScope()
   next()
 })
 
-apiLoader({ container, app: testApp, configModule: config })
+apiLoader({ container, rootDirectory: ".", app: testApp })
 
 const supertestRequest = supertest(testApp)
 
 export async function request(method, url, opts = {}) {
-  const { payload, query, headers = {} } = opts
+  let { payload, headers } = opts
 
-  const queryParams = query && querystring.stringify(query);
-  const req = supertestRequest[method.toLowerCase()](`${url}${queryParams ? "?" + queryParams : ''}`)
+  const req = supertestRequest[method.toLowerCase()](url)
+  headers = headers || {}
   headers.Cookie = headers.Cookie || ""
   if (opts.adminSession) {
     if (opts.adminSession.jwt) {
       opts.adminSession.jwt = jwt.sign(
         opts.adminSession.jwt,
-        config.projectConfig.jwt_secret,
+        config.jwtSecret,
         {
           expiresIn: "30m",
         }
@@ -90,7 +80,7 @@ export async function request(method, url, opts = {}) {
     if (opts.clientSession.jwt) {
       opts.clientSession.jwt = jwt.sign(
         opts.clientSession.jwt,
-        config.projectConfig.jwt_secret,
+        config.jwtSecret,
         {
           expiresIn: "30d",
         }

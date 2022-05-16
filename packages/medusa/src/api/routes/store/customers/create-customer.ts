@@ -2,6 +2,7 @@ import { IsEmail, IsOptional, IsString } from "class-validator"
 import jwt from "jsonwebtoken"
 import { defaultStoreCustomersFields, defaultStoreCustomersRelations } from "."
 import { Customer } from "../../../.."
+import config from "../../../../config"
 import CustomerService from "../../../../services/customer"
 import { validator } from "../../../../utils/validator"
 
@@ -35,10 +36,7 @@ export default async (req, res) => {
   let customer: Customer = await customerService.create(validated)
 
   // Add JWT to cookie
-  const {
-    projectConfig: { jwt_secret },
-  } = req.scope.resolve("configModule")
-  req.session.jwt = jwt.sign({ customer_id: customer.id }, jwt_secret!, {
+  req.session.jwt = jwt.sign({ customer_id: customer.id }, config.jwtSecret!, {
     expiresIn: "30d",
   })
 

@@ -11,7 +11,4 @@ export const ProductCollectionServiceMock = {
   retrieveByHandle: jest.fn().mockImplementation((handle) => {
     return Promise.resolve(undefined)
   }),
-  addProducts: jest.fn().mockImplementation((id, products) => {
-    return Promise.resolve()
-  }),
 }
