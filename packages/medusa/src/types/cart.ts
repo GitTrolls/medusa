@@ -71,5 +71,5 @@ export type CartUpdateProps = {
   discounts?: Discount[]
   customer_id?: string
   context?: object
-  metadata?: Record<string, unknown>
+  metadata?: object
 }

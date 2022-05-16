@@ -1,6 +1,5 @@
 import fs from "fs"
 import aws from "aws-sdk"
-import { parse } from "path"
 import { FileService } from "medusa-interfaces"
 
 class DigitalOceanService extends FileService {
@@ -24,14 +23,12 @@ class DigitalOceanService extends FileService {
       endpoint: this.endpoint_,
     })
 
-    const parsedFilename = parse(file.originalname)
-    const fileKey = `${parsedFilename.name}-${Date.now()}${parsedFilename.ext}`
     const s3 = new aws.S3()
     var params = {
       ACL: "public-read",
       Bucket: this.bucket_,
       Body: fs.createReadStream(file.path),
-      Key: fileKey,
+      Key: `${file.originalname}`,
     }
 
     return new Promise((resolve, reject) => {

@@ -45,11 +45,7 @@ export const useAdminUpdatePriceList = (
       client.admin.priceLists.update(id, payload),
     buildOptions(
       queryClient,
-      [
-        adminPriceListKeys.detail(id),
-        adminPriceListKeys.lists(),
-        adminPriceListKeys.detailProducts(id),
-      ],
+      [adminPriceListKeys.detail(id), adminPriceListKeys.lists()],
       options
     )
   )
@@ -85,11 +81,7 @@ export const useAdminCreatePriceListPrices = (
   return useMutation(
     (payload: AdminPostPriceListPricesPricesReq) =>
       client.admin.priceLists.addPrices(id, payload),
-    buildOptions(
-      queryClient,
-      [adminPriceListKeys.lists(), adminPriceListKeys.detailProducts(id)],
-      options
-    )
+    buildOptions(queryClient, adminPriceListKeys.lists(), options)
   )
 }
 
@@ -109,11 +101,7 @@ export const useAdminDeletePriceListPrices = (
       client.admin.priceLists.deletePrices(id, payload),
     buildOptions(
       queryClient,
-      [
-        adminPriceListKeys.detail(id),
-        adminPriceListKeys.lists(),
-        adminPriceListKeys.detailProducts(id),
-      ],
+      [adminPriceListKeys.detail(id), adminPriceListKeys.lists()],
       options
     )
   )
