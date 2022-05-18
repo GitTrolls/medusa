@@ -105,7 +105,6 @@ export class AdminUpsertConditionsReq {
 }
 
 export type UpsertDiscountConditionInput = {
-  rule_id?: string
   id?: string
   operator?: DiscountConditionOperator
   products?: string[]

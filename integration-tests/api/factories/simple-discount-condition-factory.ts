@@ -13,7 +13,6 @@ import faker from "faker"
 import { Connection } from "typeorm"
 
 export type DiscuntConditionFactoryData = {
-  id?: string
   rule_id: string
   type: DiscountConditionType
   operator: DiscountConditionOperator
@@ -94,17 +93,11 @@ export const simpleDiscountConditionFactory = async (
     resources = data.customer_groups
   }
 
-  const toCreate = {
+  const condToSave = manager.create(DiscountCondition, {
     type: data.type,
     operator: data.operator,
     discount_rule_id: data.rule_id,
-  }
-
-  if (data.id) {
-    toCreate["id"] = data.id
-  }
-
-  const condToSave = manager.create(DiscountCondition, toCreate)
+  })
 
   const { conditionTable, resourceKey } = getJoinTableResourceIdentifiers(
     data.type

@@ -81,45 +81,33 @@ export class FilterableProductProps {
 }
 
 export class FilterableProductTagProps {
-  @IsOptional()
+  @ValidateNested()
   @IsType([String, [String], StringComparisonOperator])
   id?: string | string[] | StringComparisonOperator
 
-  @IsOptional()
+  @ValidateNested()
   @IsType([String, [String], StringComparisonOperator])
   value?: string | string[] | StringComparisonOperator
 
-  @IsOptional()
   @IsType([DateComparisonOperator])
   created_at?: DateComparisonOperator
 
-  @IsOptional()
   @IsType([DateComparisonOperator])
   updated_at?: DateComparisonOperator
-
-  @IsString()
-  @IsOptional()
-  q?: string
 }
 
 export class FilterableProductTypeProps {
-  @IsOptional()
+  @ValidateNested()
   @IsType([String, [String], StringComparisonOperator])
   id?: string | string[] | StringComparisonOperator
 
-  @IsOptional()
+  @ValidateNested()
   @IsType([String, [String], StringComparisonOperator])
   value?: string | string[] | StringComparisonOperator
 
-  @IsOptional()
   @IsType([DateComparisonOperator])
   created_at?: DateComparisonOperator
 
-  @IsOptional()
   @IsType([DateComparisonOperator])
   updated_at?: DateComparisonOperator
-
-  @IsString()
-  @IsOptional()
-  q?: string
 }
