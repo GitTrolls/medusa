@@ -245,8 +245,8 @@ function registerApi(
  *    registered
  * @return {void}
  */
-export async function registerServices(pluginDetails: PluginDetails, container: MedusaContainer): Promise<void> {
-  const files = glob.sync(`${pluginDetails.resolve}/services/[!__]*.js`, {})
+async function registerServices(pluginDetails: PluginDetails, container: MedusaContainer): Promise<void> {
+  const files = glob.sync(`${pluginDetails.resolve}/services/[!__]*`, {})
   await Promise.all(
     files.map(async (fn) => {
       const loaded = require(fn).default

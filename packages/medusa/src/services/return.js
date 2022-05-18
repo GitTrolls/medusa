@@ -563,8 +563,6 @@ class ReturnService extends BaseService {
             "region",
             "swaps",
             "swaps.additional_items",
-            "claims",
-            "claims.additional_items",
           ],
         })
 
