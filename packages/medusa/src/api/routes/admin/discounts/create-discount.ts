@@ -83,6 +83,8 @@ import { AdminPostDiscountsDiscountParams } from "./update-discount"
 export default async (req, res) => {
   const validated = await validator(AdminPostDiscountsReq, req.body)
 
+  console.log(validated.rule.conditions)
+
   const validatedParams = await validator(
     AdminPostDiscountsDiscountParams,
     req.query

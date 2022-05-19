@@ -61,8 +61,9 @@ export const useUpdatePaymentSession = (
 ) => {
   const { client } = useMedusa()
   return useMutation(
-    ({ data, provider_id }) =>
-      client.carts.updatePaymentSession(cartId, provider_id, { data }),
+    (
+      data: { provider_id: string } & StorePostCartsCartPaymentSessionUpdateReq
+    ) => client.carts.updatePaymentSession(cartId, data.provider_id, data),
     options
   )
 }
