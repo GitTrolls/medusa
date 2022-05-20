@@ -145,10 +145,6 @@ export class DiscountCondition {
 
   @BeforeInsert()
   private beforeInsert() {
-    if (this.id) {
-      return
-    }
-
     const id = ulid()
     this.id = `discon_${id}`
   }

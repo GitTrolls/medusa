@@ -70,13 +70,11 @@ describe("StripeProviderService", () => {
 
     it("returns created stripe payment intent for cart with no customer", async () => {
       carts.frCart.customer_id = ""
-      carts.frCart.context.payment_description = 'some description'
       result = await stripeProviderService.createPayment(carts.frCart)
       expect(result).toEqual({
         id: "pi_lebron",
         customer: "cus_lebron",
         amount: 100,
-        description: 'some description',
       })
     })
   })

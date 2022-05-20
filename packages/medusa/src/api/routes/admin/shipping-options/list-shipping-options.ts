@@ -66,10 +66,10 @@ export class AdminGetShippingOptionsParams {
   @IsOptional()
   @IsBoolean()
   @Transform(({ value }) => optionalBooleanMapper.get(value))
-  is_return?: boolean
+  is_return?: string
 
   @IsOptional()
   @IsBoolean()
   @Transform(({ value }) => optionalBooleanMapper.get(value))
-  admin_only?: boolean
+  admin_only?: string
 }
