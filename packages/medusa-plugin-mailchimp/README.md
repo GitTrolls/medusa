@@ -2,14 +2,12 @@
 
 Mailchimp plugin for Medusa that supports newsletter subscriptions.
 
-Learn more about how you can use this plugin in the [documentaion](https://docs.medusajs.com/add-plugins/mailchimp).
+## Plugin Options
 
-## Options
-
-```js
+```
 {
-  api_key: "MAILCHIMP_API_KEY",
-  newsletter_list_id: ["123456789"]
+  api_key: [your mailchimp api key] (required),
+  newsletter_list_id: ["123456789"] (required)
 }
 ```
 
