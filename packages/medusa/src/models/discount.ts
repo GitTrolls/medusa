@@ -10,7 +10,7 @@ import {
   ManyToMany,
   ManyToOne,
   PrimaryColumn,
-  UpdateDateColumn
+  UpdateDateColumn,
 } from "typeorm"
 import { ulid } from "ulid"
 import { DbAwareColumn, resolveDbType } from "../utils/db-aware-column"
@@ -54,10 +54,10 @@ export class Discount {
   starts_at: Date
 
   @Column({ type: resolveDbType("timestamptz"), nullable: true })
-  ends_at: Date | null
+  ends_at: Date
 
-  @Column({ type: String, nullable: true })
-  valid_duration: string | null
+  @Column({ nullable: true })
+  valid_duration: string
 
   @ManyToMany(() => Region, { cascade: true })
   @JoinTable({
@@ -73,8 +73,8 @@ export class Discount {
   })
   regions: Region[]
 
-  @Column({ type: Number, nullable: true })
-  usage_limit: number | null
+  @Column({ nullable: true })
+  usage_limit: number
 
   @Column({ default: 0 })
   usage_count: number
