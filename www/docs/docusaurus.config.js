@@ -127,7 +127,7 @@ module.exports = {
       {
         docs: {
           sidebarPath: require.resolve("./sidebars.js"),
-          editUrl: "https://github.com/medusajs/medusa/edit/master/docs/content",
+          editUrl: "https://github.com/medusajs/medusa/edit/master/www/",
           path: docsPath,
           routeBasePath: "/",
           remarkPlugins: [
