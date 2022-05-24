@@ -1,4 +1,20 @@
-import { Column, Entity, JoinColumn, ManyToOne, PrimaryColumn } from "typeorm"
+import {
+  Entity,
+  Generated,
+  RelationId,
+  BeforeInsert,
+  Column,
+  DeleteDateColumn,
+  CreateDateColumn,
+  UpdateDateColumn,
+  PrimaryColumn,
+  OneToOne,
+  OneToMany,
+  ManyToOne,
+  ManyToMany,
+  JoinColumn,
+  JoinTable,
+} from "typeorm"
 import { DbAwareColumn } from "../utils/db-aware-column"
 
 import { ReturnReason } from "./return-reason"
@@ -44,7 +60,7 @@ export class ReturnItem {
   note: string
 
   @DbAwareColumn({ type: "jsonb", nullable: true })
-  metadata: Record<string, unknown>
+  metadata: any
 }
 
 /**

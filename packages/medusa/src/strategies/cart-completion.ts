@@ -141,7 +141,7 @@ class CartCompletionStrategy implements ICartCompletionStrategy {
                     const swapId = cart.metadata?.swap_id
                     let swap = await swapService
                       .withTransaction(manager)
-                      .registerCartCompletion(swapId as string)
+                      .registerCartCompletion(swapId)
 
                     swap = await swapService
                       .withTransaction(manager)

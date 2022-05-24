@@ -126,16 +126,16 @@ export class AdminPostDiscountsDiscountReq {
   @IsOptional()
   @IsGreaterThan("starts_at")
   @Type(() => Date)
-  ends_at?: Date | null
+  ends_at?: Date
 
   @IsISO8601Duration()
   @IsOptional()
-  valid_duration?: string | null
+  valid_duration?: string
 
   @IsNumber()
   @IsOptional()
   @IsPositive()
-  usage_limit?: number | null
+  usage_limit?: number
 
   @IsArray()
   @IsOptional()

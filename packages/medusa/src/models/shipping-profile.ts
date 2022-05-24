@@ -1,10 +1,18 @@
-import { BeforeInsert, Column, Entity, OneToMany } from "typeorm"
-import { DbAwareColumn } from "../utils/db-aware-column"
+import {
+  Entity,
+  BeforeInsert,
+  Column,
+  DeleteDateColumn,
+  CreateDateColumn,
+  UpdateDateColumn,
+  PrimaryColumn,
+  OneToMany,
+} from "typeorm"
+import { ulid } from "ulid"
+import { resolveDbType, DbAwareColumn } from "../utils/db-aware-column"
 
 import { ShippingOption } from "./shipping-option"
 import { Product } from "./product"
-import { SoftDeletableEntity } from "../interfaces/models/soft-deletable-entity"
-import { generateEntityId } from "../utils/generate-entity-id"
 
 export enum ShippingProfileType {
   DEFAULT = "default",
@@ -13,25 +21,45 @@ export enum ShippingProfileType {
 }
 
 @Entity()
-export class ShippingProfile extends SoftDeletableEntity {
+export class ShippingProfile {
+  @PrimaryColumn()
+  id: string
+
   @Column()
   name: string
 
   @DbAwareColumn({ type: "enum", enum: ShippingProfileType })
   type: ShippingProfileType
 
-  @OneToMany(() => Product, (product) => product.profile)
+  @OneToMany(
+    () => Product,
+    product => product.profile
+  )
   products: Product[]
 
-  @OneToMany(() => ShippingOption, (so) => so.profile)
+  @OneToMany(
+    () => ShippingOption,
+    so => so.profile
+  )
   shipping_options: ShippingOption[]
 
+  @CreateDateColumn({ type: resolveDbType("timestamptz") })
+  created_at: Date
+
+  @UpdateDateColumn({ type: resolveDbType("timestamptz") })
+  updated_at: Date
+
+  @DeleteDateColumn({ type: resolveDbType("timestamptz") })
+  deleted_at: Date
+
   @DbAwareColumn({ type: "jsonb", nullable: true })
-  metadata: Record<string, unknown>
+  metadata: any
 
   @BeforeInsert()
-  private beforeInsert(): void {
-    this.id = generateEntityId(this.id, "sp")
+  private beforeInsert() {
+    if (this.id) return
+    const id = ulid()
+    this.id = `sp_${id}`
   }
 }
 

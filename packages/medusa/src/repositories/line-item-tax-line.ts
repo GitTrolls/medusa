@@ -1,13 +1,12 @@
 import { EntityRepository, Repository } from "typeorm"
 import { LineItemTaxLine } from "../models/line-item-tax-line"
-import { QueryDeepPartialEntity } from "typeorm/query-builder/QueryPartialEntity"
 
 @EntityRepository(LineItemTaxLine)
 export class LineItemTaxLineRepository extends Repository<LineItemTaxLine> {
   async upsertLines(lines: LineItemTaxLine[]): Promise<LineItemTaxLine[]> {
     const insertResult = await this.createQueryBuilder()
       .insert()
-      .values(lines as QueryDeepPartialEntity<LineItemTaxLine>[])
+      .values(lines)
       .orUpdate({
         conflict_target: ["item_id", "code"],
         overwrite: ["rate", "name", "updated_at"],

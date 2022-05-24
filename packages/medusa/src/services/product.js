@@ -2,7 +2,6 @@ import { MedusaError } from "medusa-core-utils"
 import { BaseService } from "medusa-interfaces"
 import { Brackets } from "typeorm"
 import { formatException } from "../utils/exception-formatter"
-import { defaultAdminProductsVariantsRelations } from "../api/routes/admin/products"
 
 /**
  * Provides layer to manipulate products.
@@ -386,18 +385,10 @@ class ProductService extends BaseService {
   /**
    * Gets all variants belonging to a product.
    * @param {string} productId - the id of the product to get variants from.
-   * @param {FindConfig<Product>} config - The config to select and configure relations etc...
    * @return {Promise} an array of variants
    */
-  async retrieveVariants(
-    productId,
-    config = {
-      skip: 0,
-      take: 50,
-      relations: defaultAdminProductsVariantsRelations,
-    }
-  ) {
-    const product = await this.retrieve(productId, config)
+  async retrieveVariants(productId) {
+    const product = await this.retrieve(productId, { relations: ["variants"] })
     return product.variants
   }
 
@@ -677,11 +668,11 @@ class ProductService extends BaseService {
       // Should not fail, if product does not exist, since delete is idempotent
       const product = await productRepo.findOne(
         { id: productId },
-        { relations: ["variants", "variants.prices", "variants.options"] }
+        { relations: ["variants"] }
       )
 
       if (!product) {
-        return
+        return Promise.resolve()
       }
 
       await productRepo.softRemove(product)
@@ -1078,25 +1069,22 @@ class ProductService extends BaseService {
 
       const productArray = Array.isArray(products) ? products : [products]
 
-      const priceSelectionStrategy = this.priceSelectionStrategy_.withTransaction(
-        manager
-      )
+      const priceSelectionStrategy =
+        this.priceSelectionStrategy_.withTransaction(manager)
 
       const productsWithPrices = await Promise.all(
         productArray.map(async (p) => {
           if (p.variants?.length) {
             p.variants = await Promise.all(
               p.variants.map(async (v) => {
-                const prices = await priceSelectionStrategy.calculateVariantPrice(
-                  v.id,
-                  {
+                const prices =
+                  await priceSelectionStrategy.calculateVariantPrice(v.id, {
                     region_id: regionId,
                     currency_code: currencyCode,
                     cart_id: cart_id,
                     customer_id: customer_id,
                     include_discount_prices,
-                  }
-                )
+                  })
 
                 return {
                   ...v,

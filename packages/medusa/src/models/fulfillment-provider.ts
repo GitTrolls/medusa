@@ -1,4 +1,4 @@
-import { Column, Entity, PrimaryColumn } from "typeorm"
+import { Entity, Column, PrimaryColumn, OneToOne, JoinColumn } from "typeorm"
 
 @Entity()
 export class FulfillmentProvider {

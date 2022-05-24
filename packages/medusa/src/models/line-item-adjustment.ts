@@ -6,11 +6,12 @@ import {
   ManyToOne,
   JoinColumn,
   PrimaryColumn,
+  OneToOne,
 } from "typeorm"
+import { ulid } from "ulid"
 import { DbAwareColumn } from "../utils/db-aware-column"
 import { Discount } from "./discount"
 import { LineItem } from "./line-item"
-import { generateEntityId } from "../utils/generate-entity-id"
 
 @Entity()
 @Index(["discount_id", "item_id"], {
@@ -25,7 +26,11 @@ export class LineItemAdjustment {
   @Column()
   item_id: string
 
-  @ManyToOne(() => LineItem, (li) => li.adjustments, { onDelete: "CASCADE" })
+  @ManyToOne(
+    () => LineItem,
+    (li) => li.adjustments,
+    { onDelete: "CASCADE" }
+  )
   @JoinColumn({ name: "item_id" })
   item: LineItem
 
@@ -44,10 +49,12 @@ export class LineItemAdjustment {
   amount: number
 
   @DbAwareColumn({ type: "jsonb", nullable: true })
-  metadata: Record<string, unknown>
+  metadata: any
 
   @BeforeInsert()
-  private beforeInsert(): void {
-    this.id = generateEntityId(this.id, "lia")
+  private beforeInsert() {
+    if (this.id) return
+    const id = ulid()
+    this.id = `lia_${id}`
   }
 }

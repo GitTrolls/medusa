@@ -1,13 +1,22 @@
 import {
+  Entity,
+  RelationId,
   BeforeInsert,
   Column,
-  Entity,
   Index,
-  JoinColumn,
-  ManyToOne,
+  DeleteDateColumn,
+  CreateDateColumn,
+  UpdateDateColumn,
+  PrimaryColumn,
+  OneToOne,
   OneToMany,
+  ManyToOne,
+  ManyToMany,
+  JoinColumn,
+  JoinTable,
 } from "typeorm"
-import { DbAwareColumn, resolveDbType } from "../utils/db-aware-column"
+import { ulid } from "ulid"
+import { resolveDbType, DbAwareColumn } from "../utils/db-aware-column"
 
 import { Order } from "./order"
 import { FulfillmentProvider } from "./fulfillment-provider"
@@ -15,16 +24,20 @@ import { FulfillmentItem } from "./fulfillment-item"
 import { Swap } from "./swap"
 import { ClaimOrder } from "./claim-order"
 import { TrackingLink } from "./tracking-link"
-import { BaseEntity } from "../interfaces/models/base-entity"
-import { generateEntityId } from "../utils/generate-entity-id"
 
 @Entity()
-export class Fulfillment extends BaseEntity {
+export class Fulfillment {
+  @PrimaryColumn()
+  id: string
+
   @Index()
   @Column({ nullable: true })
   claim_order_id: string
 
-  @ManyToOne(() => ClaimOrder, (co) => co.fulfillments)
+  @ManyToOne(
+    () => ClaimOrder,
+    co => co.fulfillments
+  )
   @JoinColumn({ name: "claim_order_id" })
   claim_order: ClaimOrder
 
@@ -32,7 +45,10 @@ export class Fulfillment extends BaseEntity {
   @Column({ nullable: true })
   swap_id: string
 
-  @ManyToOne(() => Swap, (swap) => swap.fulfillments)
+  @ManyToOne(
+    () => Swap,
+    swap => swap.fulfillments
+  )
   @JoinColumn({ name: "swap_id" })
   swap: Swap
 
@@ -40,12 +56,15 @@ export class Fulfillment extends BaseEntity {
   @Column({ nullable: true })
   order_id: string
 
-  @ManyToOne(() => Order, (o) => o.fulfillments)
+  @ManyToOne(
+    () => Order,
+    o => o.fulfillments
+  )
   @JoinColumn({ name: "order_id" })
   order: Order
 
   @Column({ type: "boolean", nullable: true })
-  no_notification: boolean
+  no_notification: Boolean
 
   @Index()
   @Column()
@@ -55,22 +74,25 @@ export class Fulfillment extends BaseEntity {
   @JoinColumn({ name: "provider_id" })
   provider: FulfillmentProvider
 
-  @OneToMany(() => FulfillmentItem, (i) => i.fulfillment, {
-    eager: true,
-    cascade: true,
-  })
+  @OneToMany(
+    () => FulfillmentItem,
+    i => i.fulfillment,
+    { eager: true, cascade: true }
+  )
   items: FulfillmentItem[]
 
-  @OneToMany(() => TrackingLink, (tl) => tl.fulfillment, {
-    cascade: ["insert"],
-  })
+  @OneToMany(
+    () => TrackingLink,
+    tl => tl.fulfillment,
+    { cascade: ["insert"] }
+  )
   tracking_links: TrackingLink[]
 
   @DbAwareColumn({ type: "jsonb", default: [] })
   tracking_numbers: string[]
 
   @DbAwareColumn({ type: "jsonb" })
-  data: Record<string, unknown>
+  data: any
 
   @Column({ type: resolveDbType("timestamptz"), nullable: true })
   shipped_at: Date
@@ -78,15 +100,23 @@ export class Fulfillment extends BaseEntity {
   @Column({ type: resolveDbType("timestamptz"), nullable: true })
   canceled_at: Date
 
+  @CreateDateColumn({ type: resolveDbType("timestamptz") })
+  created_at: Date
+
+  @UpdateDateColumn({ type: resolveDbType("timestamptz") })
+  updated_at: Date
+
   @DbAwareColumn({ type: "jsonb", nullable: true })
-  metadata: Record<string, unknown>
+  metadata: any
 
   @Column({ nullable: true })
   idempotency_key: string
 
   @BeforeInsert()
-  private beforeInsert(): void {
-    this.id = generateEntityId(this.id, "ful")
+  private beforeInsert() {
+    if (this.id) return
+    const id = ulid()
+    this.id = `ful_${id}`
   }
 }
 
