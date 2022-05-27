@@ -49,12 +49,17 @@ module.exports = {
             {
               type: "doc",
               id: "starters/gatsby-medusa-starter",
-              label: "Gatsby Storefront Quickstart",
+              label: "Quickstart: Gatsby",
             },
             {
               type: "doc",
               id: "starters/nextjs-medusa-starter",
-              label: "Next.js Storefront Quickstart",
+              label: "Quickstart: Next.js",
+            },
+            {
+              type: "doc",
+              id: "how-to/setting-up-a-nextjs-storefront-for-your-medusa-project",
+              label: "Set Up a Next.js Storefront for your Medusa Project"
             },
           ],
         },
@@ -147,6 +152,11 @@ module.exports = {
                   type: "doc",
                   id: "advanced/backend/subscribers/create-subscriber",
                   label: "Create a Subscriber"
+                },
+                {
+                  type: "doc",
+                  id: "advanced/backend/subscribers/events-list",
+                  label: "List of Events"
                 },
               ]
             },
