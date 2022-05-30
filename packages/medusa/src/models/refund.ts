@@ -3,14 +3,19 @@ import {
   BeforeInsert,
   Column,
   Index,
+  CreateDateColumn,
+  UpdateDateColumn,
+  PrimaryColumn,
+  OneToOne,
   ManyToOne,
   JoinColumn,
 } from "typeorm"
-import { BaseEntity } from "../interfaces/models/base-entity"
-import { DbAwareColumn } from "../utils/db-aware-column"
+import { ulid } from "ulid"
+import { resolveDbType, DbAwareColumn } from "../utils/db-aware-column"
 
+import { Currency } from "./currency"
+import { Cart } from "./cart"
 import { Order } from "./order"
-import { generateEntityId } from "../utils/generate-entity-id"
 
 export enum RefundReason {
   DISCOUNT = "discount",
@@ -21,12 +26,18 @@ export enum RefundReason {
 }
 
 @Entity()
-export class Refund extends BaseEntity {
+export class Refund {
+  @PrimaryColumn()
+  id: string
+
   @Index()
   @Column()
   order_id: string
 
-  @ManyToOne(() => Order, (order) => order.payments)
+  @ManyToOne(
+    () => Order,
+    order => order.payments
+  )
   @JoinColumn({ name: "order_id" })
   order: Order
 
@@ -39,15 +50,22 @@ export class Refund extends BaseEntity {
   @DbAwareColumn({ type: "enum", enum: RefundReason })
   reason: string
 
+  @CreateDateColumn({ type: resolveDbType("timestamptz") })
+  created_at: Date
+
+  @UpdateDateColumn({ type: resolveDbType("timestamptz") })
+  updated_at: Date
+
   @DbAwareColumn({ type: "jsonb", nullable: true })
-  metadata: Record<string, unknown>
+  metadata: any
 
   @Column({ nullable: true })
   idempotency_key: string
 
   @BeforeInsert()
-  private beforeInsert(): void {
-    this.id = generateEntityId(this.id, "ref")
+  private beforeInsert() {
+    const id = ulid()
+    this.id = `ref_${id}`
   }
 }
 

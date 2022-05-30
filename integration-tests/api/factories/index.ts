@@ -1,5 +1,4 @@
 export * from "./simple-payment-factory"
-export * from "./simple-batch-job-factory"
 export * from "./simple-order-factory"
 export * from "./simple-cart-factory"
 export * from "./simple-region-factory"

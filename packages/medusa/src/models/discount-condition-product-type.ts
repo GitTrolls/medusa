@@ -33,7 +33,7 @@ export class DiscountConditionProductType {
   updated_at: Date
 
   @DbAwareColumn({ type: "jsonb", nullable: true })
-  metadata: Record<string, unknown>
+  metadata: any
 }
 
 /**
