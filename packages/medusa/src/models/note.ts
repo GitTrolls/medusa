@@ -1,18 +1,24 @@
 import {
+  Entity,
   BeforeInsert,
   Column,
-  Entity,
+  DeleteDateColumn,
+  CreateDateColumn,
+  UpdateDateColumn,
   Index,
   JoinColumn,
+  PrimaryColumn,
   ManyToOne,
 } from "typeorm"
+import { ulid } from "ulid"
 import { User } from "./user"
-import { SoftDeletableEntity } from "../interfaces/models/soft-deletable-entity"
-import { DbAwareColumn } from "../utils/db-aware-column"
-import { generateEntityId } from "../utils/generate-entity-id"
+import { resolveDbType, DbAwareColumn } from "../utils/db-aware-column"
 
 @Entity()
-export class Note extends SoftDeletableEntity {
+export class Note {
+  @PrimaryColumn()
+  id: string
+
   @Column()
   value: string
 
@@ -31,12 +37,23 @@ export class Note extends SoftDeletableEntity {
   @JoinColumn({ name: "author_id" })
   author: User
 
+  @CreateDateColumn({ type: resolveDbType("timestamptz") })
+  created_at: Date
+
+  @UpdateDateColumn({ type: resolveDbType("timestamptz") })
+  updated_at: Date
+
+  @DeleteDateColumn({ type: resolveDbType("timestamptz") })
+  deleted_at: Date
+
   @DbAwareColumn({ type: "jsonb", nullable: true })
-  metadata: Record<string, unknown>
+  metadata: any
 
   @BeforeInsert()
-  private beforeInsert(): void {
-    this.id = generateEntityId(this.id, "note")
+  private beforeInsert() {
+    if (this.id) return
+    const id = ulid()
+    this.id = `note_${id}`
   }
 }
 

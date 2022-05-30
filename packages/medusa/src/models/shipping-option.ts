@@ -1,21 +1,28 @@
 import {
-  BeforeInsert,
-  Check,
-  Column,
   Entity,
+  Check,
   Index,
-  JoinColumn,
-  ManyToOne,
+  BeforeInsert,
+  Column,
+  DeleteDateColumn,
+  CreateDateColumn,
+  UpdateDateColumn,
+  RelationId,
+  PrimaryColumn,
+  OneToOne,
   OneToMany,
+  ManyToOne,
+  ManyToMany,
+  JoinColumn,
+  JoinTable,
 } from "typeorm"
-import { DbAwareColumn } from "../utils/db-aware-column"
+import { ulid } from "ulid"
+import { resolveDbType, DbAwareColumn } from "../utils/db-aware-column"
 
 import { ShippingProfile } from "./shipping-profile"
 import { Region } from "./region"
 import { FulfillmentProvider } from "./fulfillment-provider"
 import { ShippingOptionRequirement } from "./shipping-option-requirement"
-import { SoftDeletableEntity } from "../interfaces/models/soft-deletable-entity"
-import { generateEntityId } from "../utils/generate-entity-id"
 
 export enum ShippingOptionPriceType {
   FLAT_RATE = "flat_rate",
@@ -24,7 +31,10 @@ export enum ShippingOptionPriceType {
 
 @Check(`"amount" >= 0`)
 @Entity()
-export class ShippingOption extends SoftDeletableEntity {
+export class ShippingOption {
+  @PrimaryColumn()
+  id: string
+
   @Column()
   name: string
 
@@ -64,20 +74,33 @@ export class ShippingOption extends SoftDeletableEntity {
   @Column({ default: false })
   admin_only: boolean
 
-  @OneToMany(() => ShippingOptionRequirement, (req) => req.shipping_option, {
-    cascade: ["insert"],
-  })
+  @OneToMany(
+    () => ShippingOptionRequirement,
+    req => req.shipping_option,
+    { cascade: ["insert"] }
+  )
   requirements: ShippingOptionRequirement[]
 
   @DbAwareColumn({ type: "jsonb" })
-  data: Record<string, unknown>
+  data: any
+
+  @CreateDateColumn({ type: resolveDbType("timestamptz") })
+  created_at: Date
+
+  @UpdateDateColumn({ type: resolveDbType("timestamptz") })
+  updated_at: Date
+
+  @DeleteDateColumn({ type: resolveDbType("timestamptz") })
+  deleted_at: Date
 
   @DbAwareColumn({ type: "jsonb", nullable: true })
-  metadata: Record<string, unknown>
+  metadata: any
 
   @BeforeInsert()
-  private beforeInsert(): void {
-    this.id = generateEntityId(this.id, "so")
+  private beforeInsert() {
+    if (this.id) return
+    const id = ulid()
+    this.id = `so_${id}`
   }
 }
 

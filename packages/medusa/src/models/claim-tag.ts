@@ -1,20 +1,45 @@
-import { BeforeInsert, Column, Entity, Index } from "typeorm"
-import { SoftDeletableEntity } from "../interfaces/models/soft-deletable-entity"
-import { DbAwareColumn } from "../utils/db-aware-column"
-import { generateEntityId } from "../utils/generate-entity-id"
+import {
+  Entity,
+  BeforeInsert,
+  DeleteDateColumn,
+  CreateDateColumn,
+  UpdateDateColumn,
+  Column,
+  PrimaryColumn,
+  Index,
+  ManyToOne,
+  OneToMany,
+  JoinColumn,
+} from "typeorm"
+import { ulid } from "ulid"
+import { resolveDbType, DbAwareColumn } from "../utils/db-aware-column"
 
 @Entity()
-export class ClaimTag extends SoftDeletableEntity {
+export class ClaimTag {
+  @PrimaryColumn()
+  id: string
+
   @Index()
   @Column()
   value: string
 
+  @CreateDateColumn({ type: resolveDbType("timestamptz") })
+  created_at: Date
+
+  @UpdateDateColumn({ type: resolveDbType("timestamptz") })
+  updated_at: Date
+
+  @DeleteDateColumn({ type: resolveDbType("timestamptz") })
+  deleted_at: Date
+
   @DbAwareColumn({ type: "jsonb", nullable: true })
-  metadata: Record<string, unknown>
+  metadata: any
 
   @BeforeInsert()
-  private beforeInsert(): void {
-    this.id = generateEntityId(this.id, "ctag")
+  private beforeInsert() {
+    if (this.id) return
+    const id = ulid()
+    this.id = `ctag_${id}`
   }
 }
 

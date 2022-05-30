@@ -1,23 +1,29 @@
 import {
-  BeforeInsert,
-  Column,
   Entity,
   Index,
-  JoinColumn,
-  ManyToOne,
+  BeforeInsert,
+  Column,
+  CreateDateColumn,
+  UpdateDateColumn,
+  PrimaryColumn,
   OneToOne,
+  ManyToOne,
+  JoinColumn,
 } from "typeorm"
-import { DbAwareColumn, resolveDbType } from "../utils/db-aware-column"
+import { ulid } from "ulid"
+import { resolveDbType, DbAwareColumn } from "../utils/db-aware-column"
 
 import { Swap } from "./swap"
 import { Currency } from "./currency"
 import { Cart } from "./cart"
 import { Order } from "./order"
-import { BaseEntity } from "../interfaces/models/base-entity"
-import { generateEntityId } from "../utils/generate-entity-id"
+import { DraftOrder } from "./draft-order"
 
 @Entity()
-export class Payment extends BaseEntity {
+export class Payment {
+  @PrimaryColumn()
+  id: string
+
   @Index()
   @Column({ nullable: true })
   swap_id: string
@@ -38,7 +44,10 @@ export class Payment extends BaseEntity {
   @Column({ nullable: true })
   order_id: string
 
-  @ManyToOne(() => Order, (order) => order.payments)
+  @ManyToOne(
+    () => Order,
+    order => order.payments
+  )
   @JoinColumn({ name: "order_id" })
   order: Order
 
@@ -60,7 +69,7 @@ export class Payment extends BaseEntity {
   provider_id: string
 
   @DbAwareColumn({ type: "jsonb" })
-  data: Record<string, unknown>
+  data: any
 
   @Column({ type: resolveDbType("timestamptz"), nullable: true })
   captured_at: Date
@@ -68,15 +77,23 @@ export class Payment extends BaseEntity {
   @Column({ type: resolveDbType("timestamptz"), nullable: true })
   canceled_at: Date
 
+  @CreateDateColumn({ type: resolveDbType("timestamptz") })
+  created_at: Date
+
+  @UpdateDateColumn({ type: resolveDbType("timestamptz") })
+  updated_at: Date
+
   @DbAwareColumn({ type: "jsonb", nullable: true })
-  metadata: Record<string, unknown>
+  metadata: any
 
   @Column({ nullable: true })
   idempotency_key: string
 
   @BeforeInsert()
-  private beforeInsert(): void {
-    this.id = generateEntityId(this.id, "pay")
+  private beforeInsert() {
+    if (this.id) return
+    const id = ulid()
+    this.id = `pay_${id}`
   }
 }
 

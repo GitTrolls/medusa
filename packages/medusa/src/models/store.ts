@@ -1,20 +1,29 @@
 import {
+  Entity,
+  RelationId,
   BeforeInsert,
   Column,
-  Entity,
+  DeleteDateColumn,
+  CreateDateColumn,
+  UpdateDateColumn,
+  PrimaryColumn,
+  OneToOne,
+  OneToMany,
+  ManyToOne,
+  ManyToMany,
   JoinColumn,
   JoinTable,
-  ManyToMany,
-  ManyToOne,
 } from "typeorm"
-import { BaseEntity } from "../interfaces/models/base-entity"
-import { DbAwareColumn } from "../utils/db-aware-column"
+import { ulid } from "ulid"
+import { resolveDbType, DbAwareColumn } from "../utils/db-aware-column"
 
 import { Currency } from "./currency"
-import { generateEntityId } from "../utils/generate-entity-id"
 
 @Entity()
-export class Store extends BaseEntity {
+export class Store {
+  @PrimaryColumn()
+  id: string
+
   @Column({ default: "Medusa Store" })
   name: string
 
@@ -48,12 +57,19 @@ export class Store extends BaseEntity {
   @Column({ nullable: true })
   invite_link_template: string
 
+  @CreateDateColumn({ type: resolveDbType("timestamptz") })
+  created_at: Date
+
+  @UpdateDateColumn({ type: resolveDbType("timestamptz") })
+  updated_at: Date
+
   @DbAwareColumn({ type: "jsonb", nullable: true })
-  metadata: Record<string, unknown>
+  metadata: any
 
   @BeforeInsert()
-  private beforeInsert(): void {
-    this.id = generateEntityId(this.id, "store")
+  private beforeInsert() {
+    const id = ulid()
+    this.id = `store_${id}`
   }
 }
 

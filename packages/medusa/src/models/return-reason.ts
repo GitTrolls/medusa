@@ -1,18 +1,24 @@
 import {
-  BeforeInsert,
-  Column,
   Entity,
   Index,
-  JoinColumn,
-  ManyToOne,
+  BeforeInsert,
+  Column,
+  DeleteDateColumn,
+  CreateDateColumn,
+  UpdateDateColumn,
+  PrimaryColumn,
+  ManyToOne, 
   OneToMany,
+  JoinColumn
 } from "typeorm"
-import { SoftDeletableEntity } from "../interfaces/models/soft-deletable-entity"
-import { DbAwareColumn } from "../utils/db-aware-column"
-import { generateEntityId } from "../utils/generate-entity-id"
+import { ulid } from "ulid"
+import { resolveDbType, DbAwareColumn } from "../utils/db-aware-column"
 
 @Entity()
-export class ReturnReason extends SoftDeletableEntity {
+export class ReturnReason {
+  @PrimaryColumn()
+  id: string
+
   @Index({ unique: true })
   @Column()
   value: string
@@ -26,23 +32,35 @@ export class ReturnReason extends SoftDeletableEntity {
   @Column({ nullable: true })
   parent_return_reason_id: string
 
-  @ManyToOne(() => ReturnReason, { cascade: ["soft-remove"] })
+  @ManyToOne(() => ReturnReason, {cascade: ['soft-remove']}
+  )
   @JoinColumn({ name: "parent_return_reason_id" })
   parent_return_reason: ReturnReason
 
   @OneToMany(
     () => ReturnReason,
-    (return_reason) => return_reason.parent_return_reason,
-    { cascade: ["insert", "soft-remove"] }
+    return_reason => return_reason.parent_return_reason,
+    { cascade: ["insert", 'soft-remove'] }
   )
   return_reason_children: ReturnReason[]
 
+  @CreateDateColumn({ type: resolveDbType("timestamptz") })
+  created_at: Date
+
+  @UpdateDateColumn({ type: resolveDbType("timestamptz") })
+  updated_at: Date
+
+  @DeleteDateColumn({ type: resolveDbType("timestamptz") })
+  deleted_at: Date
+
   @DbAwareColumn({ type: "jsonb", nullable: true })
-  metadata: Record<string, unknown>
+  metadata: any
 
   @BeforeInsert()
-  private beforeInsert(): void {
-    this.id = generateEntityId(this.id, "rr")
+  private beforeInsert() {
+    if (this.id) return
+    const id = ulid()
+    this.id = `rr_${id}`
   }
 }
 

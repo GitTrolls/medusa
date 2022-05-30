@@ -27,11 +27,7 @@ export const PayPalMock = {
 
   payments: {
     AuthorizationsGetRequest: jest.fn().mockImplementation(() => {}),
-    AuthorizationsVoidRequest: jest.fn().mockImplementation(() => {
-      return {
-        status: "VOIDED"
-      }
-    }),
+    AuthorizationsVoidRequest: jest.fn().mockImplementation(() => {}),
     AuthorizationsCaptureRequest: jest.fn().mockImplementation(() => {
       return {
         result: {
@@ -45,8 +41,6 @@ export const PayPalMock = {
         result: {
           id: "test",
         },
-        status: "COMPLETED",
-        invoice_id: 'invoice_id',
         body: null,
         requestBody: function (d) {
           this.body = d
@@ -80,29 +74,11 @@ export const PayPalMock = {
         },
       }
     }),
-    OrdersGetRequest: jest.fn().mockImplementation((id) => {
-      switch (id) {
-        case "test-refund":
-          return {
-            result: {
-              id: "test-refund",
-              status: "COMPLETED",
-              invoice_id: "invoice_id"
-            }
-          }
-        case "test-voided":
-          return {
-            result: {
-              id: "test-voided",
-              status: "VOIDED"
-            }
-          }
-        default:
-          return {
-            result: {
-              id: "test",
-            },
-          }
+    OrdersGetRequest: jest.fn().mockImplementation(() => {
+      return {
+        result: {
+          id: "test",
+        },
       }
     }),
   },

@@ -1,13 +1,26 @@
-import { BeforeInsert, Column, Entity, Index, OneToMany } from "typeorm"
+import {
+  Entity,
+  BeforeInsert,
+  DeleteDateColumn,
+  CreateDateColumn,
+  UpdateDateColumn,
+  Column,
+  PrimaryColumn,
+  ManyToMany,
+  Index,
+  OneToMany,
+} from "typeorm"
+import { ulid } from "ulid"
+import { resolveDbType, DbAwareColumn } from "../utils/db-aware-column"
 import _ from "lodash"
 
 import { Product } from "./product"
-import { SoftDeletableEntity } from "../interfaces/models/soft-deletable-entity"
-import { DbAwareColumn } from "../utils/db-aware-column"
-import { generateEntityId } from "../utils/generate-entity-id"
 
 @Entity()
-export class ProductCollection extends SoftDeletableEntity {
+export class ProductCollection {
+  @PrimaryColumn()
+  id: string
+
   @Column()
   title: string
 
@@ -15,17 +28,30 @@ export class ProductCollection extends SoftDeletableEntity {
   @Column({ nullable: true })
   handle: string
 
-  @OneToMany(() => Product, (product) => product.collection)
+  @OneToMany(
+    () => Product,
+    product => product.collection
+  )
   products: Product[]
 
+  @CreateDateColumn({ type: resolveDbType("timestamptz") })
+  created_at: Date
+
+  @UpdateDateColumn({ type: resolveDbType("timestamptz") })
+  updated_at: Date
+
+  @DeleteDateColumn({ type: resolveDbType("timestamptz") })
+  deleted_at: Date
+
   @DbAwareColumn({ type: "jsonb", nullable: true })
-  metadata: Record<string, unknown>
+  metadata: any
 
   @BeforeInsert()
-  private createHandleIfNotProvided(): void {
+  private beforeInsert() {
     if (this.id) return
+    const id = ulid()
+    this.id = `pcol_${id}`
 
-    this.id = generateEntityId(this.id, "pcol")
     if (!this.handle) {
       this.handle = _.kebabCase(this.title)
     }

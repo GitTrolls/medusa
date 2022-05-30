@@ -1,13 +1,16 @@
 import {
   BeforeInsert,
   Column,
+  CreateDateColumn,
   Entity,
   Generated,
   Index,
   JoinColumn,
   OneToOne,
+  PrimaryColumn,
+  UpdateDateColumn,
 } from "typeorm"
-import { BaseEntity } from "../interfaces/models/base-entity"
+import { ulid } from "ulid"
 import {
   DbAwareColumn,
   resolveDbGenerationStrategy,
@@ -16,7 +19,6 @@ import {
 import { manualAutoIncrement } from "../utils/manual-auto-increment"
 import { Cart } from "./cart"
 import { Order } from "./order"
-import { generateEntityId } from "../utils/generate-entity-id"
 
 enum DraftOrderStatus {
   OPEN = "open",
@@ -24,7 +26,10 @@ enum DraftOrderStatus {
 }
 
 @Entity()
-export class DraftOrder extends BaseEntity {
+export class DraftOrder {
+  @PrimaryColumn()
+  id: string
+
   @DbAwareColumn({ type: "enum", enum: DraftOrderStatus, default: "open" })
   status: DraftOrderStatus
 
@@ -52,6 +57,12 @@ export class DraftOrder extends BaseEntity {
   @Column({ nullable: true, type: resolveDbType("timestamptz") })
   canceled_at: Date
 
+  @CreateDateColumn({ type: resolveDbType("timestamptz") })
+  created_at: Date
+
+  @UpdateDateColumn({ type: resolveDbType("timestamptz") })
+  updated_at: Date
+
   @Column({ type: resolveDbType("timestamptz"), nullable: true })
   completed_at: Date
 
@@ -59,14 +70,17 @@ export class DraftOrder extends BaseEntity {
   no_notification_order: boolean
 
   @DbAwareColumn({ type: "jsonb", nullable: true })
-  metadata: Record<string, unknown>
+  metadata: any
 
   @Column({ nullable: true })
   idempotency_key: string
 
   @BeforeInsert()
   private async beforeInsert(): Promise<void> {
-    this.id = generateEntityId(this.id, "dorder")
+    if (!this.id) {
+      const id = ulid()
+      this.id = `dorder_${id}`
+    }
 
     if (process.env.NODE_ENV === "development" && !this.display_id) {
       const disId = await manualAutoIncrement("draft_order")
