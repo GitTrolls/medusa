@@ -66,11 +66,11 @@ const corsOptions = {
 }
 ```
 
-Finally, for each route you add, create an `OPTIONS` request and add `cors` as a middleware for the route:
+Finally, for each route you add, create an `OPTIONS` request:
 
 ```js
 router.options("/admin/hello", cors(corsOptions))
-router.get("/admin/hello", cors(corsOptions), (req, res) => {
+router.get("/admin/hello", (req, res) => {
   //...
 })
 ```
