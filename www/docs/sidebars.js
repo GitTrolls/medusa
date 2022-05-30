@@ -37,6 +37,11 @@ module.exports = {
           label: "Set Up your Development Environment"
         },
         {
+          type: "doc",
+          id: "tutorial/creating-your-medusa-server",
+          label: "Create your Medusa Server"
+        },
+        {
           type: "category",
           collapsed: true,
           label: "Storefront Quickstart",
