@@ -1,20 +1,26 @@
 import {
-  BeforeInsert,
-  Column,
   Entity,
+  BeforeInsert,
+  DeleteDateColumn,
+  CreateDateColumn,
+  UpdateDateColumn,
   Index,
-  JoinColumn,
+  Column,
+  PrimaryColumn,
   ManyToOne,
+  JoinColumn,
 } from "typeorm"
-import { DbAwareColumn, resolveDbType } from "../utils/db-aware-column"
+import { ulid } from "ulid"
+import { resolveDbType, DbAwareColumn } from "../utils/db-aware-column"
 
 import { Region } from "./region"
 import { Order } from "./order"
-import { SoftDeletableEntity } from "../interfaces/models/soft-deletable-entity"
-import { generateEntityId } from "../utils/generate-entity-id"
 
 @Entity()
-export class GiftCard extends SoftDeletableEntity {
+export class GiftCard {
+  @PrimaryColumn()
+  id: string
+
   @Index({ unique: true })
   @Column()
   code: string
@@ -50,12 +56,23 @@ export class GiftCard extends SoftDeletableEntity {
   })
   ends_at: Date
 
+  @CreateDateColumn({ type: resolveDbType("timestamptz") })
+  created_at: Date
+
+  @UpdateDateColumn({ type: resolveDbType("timestamptz") })
+  updated_at: Date
+
+  @DeleteDateColumn({ type: resolveDbType("timestamptz") })
+  deleted_at: Date
+
   @DbAwareColumn({ type: "jsonb", nullable: true })
-  metadata: Record<string, unknown>
+  metadata: any
 
   @BeforeInsert()
-  private beforeInsert(): void {
-    this.id = generateEntityId(this.id, "gift")
+  private beforeInsert() {
+    if (this.id) return
+    const id = ulid()
+    this.id = `gift_${id}`
   }
 }
 

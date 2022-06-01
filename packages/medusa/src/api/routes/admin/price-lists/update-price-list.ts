@@ -128,10 +128,10 @@ export class AdminPostPriceListsPriceListPriceListReq {
   description?: string
 
   @IsOptional()
-  starts_at?: Date | null
+  starts_at?: Date
 
   @IsOptional()
-  ends_at?: Date | null
+  ends_at?: Date
 
   @IsOptional()
   @IsEnum(PriceListStatus)

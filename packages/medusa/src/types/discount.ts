@@ -105,7 +105,6 @@ export class AdminUpsertConditionsReq {
 }
 
 export type UpsertDiscountConditionInput = {
-  rule_id?: string
   id?: string
   operator?: DiscountConditionOperator
   products?: string[]
@@ -117,9 +116,9 @@ export type UpsertDiscountConditionInput = {
 
 export type CreateDiscountRuleInput = {
   description?: string
-  type: DiscountRuleType
+  type: string
   value: number
-  allocation: AllocationType
+  allocation: string
   conditions?: UpsertDiscountConditionInput[]
 }
 
@@ -139,19 +138,21 @@ export type CreateDiscountInput = {
 export type UpdateDiscountRuleInput = {
   id: string
   description?: string
-  value?: number
-  allocation?: AllocationType
+  type: string
+  value: number
+  allocation: string
   conditions?: UpsertDiscountConditionInput[]
 }
 
 export type UpdateDiscountInput = {
   code?: string
   rule?: UpdateDiscountRuleInput
+  is_dynamic?: boolean
   is_disabled?: boolean
   starts_at?: Date
-  ends_at?: Date | null
-  valid_duration?: string | null
-  usage_limit?: number | null
+  ends_at?: Date
+  valid_duration?: string
+  usage_limit?: number
   regions?: string[]
   metadata?: Record<string, unknown>
 }

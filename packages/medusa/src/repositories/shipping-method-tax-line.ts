@@ -1,6 +1,5 @@
 import { EntityRepository, Repository } from "typeorm"
 import { ShippingMethodTaxLine } from "../models/shipping-method-tax-line"
-import { QueryDeepPartialEntity } from "typeorm/query-builder/QueryPartialEntity"
 
 @EntityRepository(ShippingMethodTaxLine)
 export class ShippingMethodTaxLineRepository extends Repository<ShippingMethodTaxLine> {
@@ -9,7 +8,7 @@ export class ShippingMethodTaxLineRepository extends Repository<ShippingMethodTa
   ): Promise<ShippingMethodTaxLine[]> {
     const insertResult = await this.createQueryBuilder()
       .insert()
-      .values(lines as QueryDeepPartialEntity<ShippingMethodTaxLine>[])
+      .values(lines)
       .orUpdate({
         conflict_target: ["shipping_method_id", "code"],
         overwrite: ["rate", "name", "updated_at"],

@@ -27,22 +27,28 @@
  */
 
 import {
-  BeforeInsert,
-  Column,
   Entity,
   Index,
-  JoinColumn,
+  BeforeInsert,
+  Column,
+  DeleteDateColumn,
+  CreateDateColumn,
+  UpdateDateColumn,
+  PrimaryColumn,
   ManyToOne,
+  JoinColumn,
 } from "typeorm"
+import { ulid } from "ulid"
+import { resolveDbType, DbAwareColumn } from "../utils/db-aware-column"
 
 import { Customer } from "./customer"
 import { Country } from "./country"
-import { SoftDeletableEntity } from "../interfaces/models/soft-deletable-entity"
-import { DbAwareColumn } from "../utils/db-aware-column"
-import { generateEntityId } from "../utils/generate-entity-id"
 
 @Entity()
-export class Address extends SoftDeletableEntity {
+export class Address {
+  @PrimaryColumn()
+  id: string
+
   @Index()
   @Column({ type: "varchar", nullable: true })
   customer_id: string | null
@@ -85,11 +91,22 @@ export class Address extends SoftDeletableEntity {
   @Column({ type: "varchar", nullable: true })
   phone: string | null
 
+  @CreateDateColumn({ type: resolveDbType("timestamptz") })
+  created_at: Date
+
+  @UpdateDateColumn({ type: resolveDbType("timestamptz") })
+  updated_at: Date
+
+  @DeleteDateColumn({ type: resolveDbType("timestamptz") })
+  deleted_at: Date | null
+
   @DbAwareColumn({ type: "jsonb", nullable: true })
-  metadata: Record<string, unknown>
+  metadata: any
 
   @BeforeInsert()
-  private beforeInsert(): void {
-    this.id = generateEntityId(this.id, "addr")
+  private beforeInsert() {
+    if (this.id) return
+    const id = ulid()
+    this.id = `addr_${id}`
   }
 }

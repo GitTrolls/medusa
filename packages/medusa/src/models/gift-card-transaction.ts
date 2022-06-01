@@ -1,19 +1,19 @@
 import {
-  BeforeInsert,
-  Column,
-  CreateDateColumn,
   Entity,
+  BeforeInsert,
   Index,
-  JoinColumn,
-  ManyToOne,
+  CreateDateColumn,
+  Column,
   PrimaryColumn,
+  ManyToOne,
   Unique,
+  JoinColumn,
 } from "typeorm"
+import { ulid } from "ulid"
 import { resolveDbType } from "../utils/db-aware-column"
 
 import { GiftCard } from "./gift-card"
 import { Order } from "./order"
-import { generateEntityId } from "../utils/generate-entity-id"
 
 @Unique("gcuniq", ["gift_card_id", "order_id"])
 @Entity()
@@ -43,8 +43,10 @@ export class GiftCardTransaction {
   created_at: Date
 
   @BeforeInsert()
-  private beforeInsert(): void {
-    this.id = generateEntityId(this.id, "gct")
+  private beforeInsert() {
+    if (this.id) return
+    const id = ulid()
+    this.id = `gct_${id}`
   }
 }
 

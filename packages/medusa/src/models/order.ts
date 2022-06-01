@@ -1,6 +1,7 @@
 import {
   BeforeInsert,
   Column,
+  CreateDateColumn,
   Entity,
   Generated,
   Index,
@@ -10,8 +11,10 @@ import {
   ManyToOne,
   OneToMany,
   OneToOne,
+  PrimaryColumn,
+  UpdateDateColumn,
 } from "typeorm"
-import { BaseEntity } from "../interfaces/models/base-entity"
+import { ulid } from "ulid"
 import {
   DbAwareColumn,
   resolveDbGenerationStrategy,
@@ -35,7 +38,6 @@ import { Region } from "./region"
 import { Return } from "./return"
 import { ShippingMethod } from "./shipping-method"
 import { Swap } from "./swap"
-import { generateEntityId } from "../utils/generate-entity-id"
 
 export enum OrderStatus {
   PENDING = "pending",
@@ -68,7 +70,10 @@ export enum PaymentStatus {
 }
 
 @Entity()
-export class Order extends BaseEntity {
+export class Order {
+  @PrimaryColumn()
+  id: string
+
   readonly object = "order"
 
   @DbAwareColumn({ type: "enum", enum: OrderStatus, default: "pending" })
@@ -213,8 +218,14 @@ export class Order extends BaseEntity {
   @Column({ nullable: true, type: resolveDbType("timestamptz") })
   canceled_at: Date
 
+  @CreateDateColumn({ type: resolveDbType("timestamptz") })
+  created_at: Date
+
+  @UpdateDateColumn({ type: resolveDbType("timestamptz") })
+  updated_at: Date
+
   @DbAwareColumn({ type: "jsonb", nullable: true })
-  metadata: Record<string, unknown>
+  metadata: any
 
   @Column({ type: "boolean", nullable: true })
   no_notification: boolean
@@ -238,7 +249,10 @@ export class Order extends BaseEntity {
 
   @BeforeInsert()
   private async beforeInsert(): Promise<void> {
-    this.id = generateEntityId(this.id, "order")
+    if (!this.id) {
+      const id = ulid()
+      this.id = `order_${id}`
+    }
 
     if (process.env.NODE_ENV === "development" && !this.display_id) {
       const disId = await manualAutoIncrement("order")

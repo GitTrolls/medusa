@@ -1,17 +1,24 @@
 import {
+  Entity,
   BeforeInsert,
   Column,
-  DeleteDateColumn,
-  Entity,
   Index,
-  JoinColumn,
-  ManyToOne,
+  DeleteDateColumn,
+  CreateDateColumn,
+  UpdateDateColumn,
+  RelationId,
   PrimaryColumn,
+  OneToOne,
+  OneToMany,
+  ManyToOne,
+  ManyToMany,
+  JoinColumn,
+  JoinTable,
 } from "typeorm"
+import { ulid } from "ulid"
 import { DbAwareColumn, resolveDbType } from "../utils/db-aware-column"
 
 import { ShippingOption } from "./shipping-option"
-import { generateEntityId } from "../utils/generate-entity-id"
 
 export enum RequirementType {
   MIN_SUBTOTAL = "min_subtotal",
@@ -41,8 +48,10 @@ export class ShippingOptionRequirement {
   deleted_at: Date
 
   @BeforeInsert()
-  private beforeInsert(): void {
-    this.id = generateEntityId(this.id, "sor")
+  private beforeInsert() {
+    if (this.id) return
+    const id = ulid()
+    this.id = `sor_${id}`
   }
 }
 

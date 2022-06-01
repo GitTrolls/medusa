@@ -3,7 +3,6 @@ import {
   IsArray,
   IsBoolean,
   IsDate,
-  IsEnum,
   IsNotEmpty,
   IsNumber,
   IsObject,
@@ -13,7 +12,6 @@ import {
   ValidateNested,
 } from "class-validator"
 import { defaultAdminDiscountsFields, defaultAdminDiscountsRelations } from "."
-import { AllocationType, DiscountRuleType } from "../../../../models"
 import { Discount } from "../../../../models/discount"
 import { DiscountConditionOperator } from "../../../../models/discount-condition"
 import DiscountService from "../../../../services/discount"
@@ -84,6 +82,8 @@ import { AdminPostDiscountsDiscountParams } from "./update-discount"
 
 export default async (req, res) => {
   const validated = await validator(AdminPostDiscountsReq, req.body)
+
+  console.log(validated.rule.conditions)
 
   const validatedParams = await validator(
     AdminPostDiscountsDiscountParams,
@@ -159,18 +159,16 @@ export class AdminPostDiscountsDiscountRule {
   @IsOptional()
   description?: string
 
-  @IsEnum(DiscountRuleType, {
-    message: `Invalid rule type, must be one of "fixed", "percentage" or "free_shipping"`,
-  })
-  type: DiscountRuleType
+  @IsString()
+  @IsNotEmpty()
+  type: string
 
   @IsNumber()
   value: number
 
-  @IsEnum(AllocationType, {
-    message: `Invalid allocation type, must be one of "total" or "item"`,
-  })
-  allocation: AllocationType
+  @IsString()
+  @IsNotEmpty()
+  allocation: string
 
   @IsOptional()
   @IsArray()

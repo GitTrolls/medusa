@@ -49,7 +49,7 @@ export default async (req, res) => {
     expandFields = validated.expand.split(",")
   }
 
-  const listConfig: FindConfig<FilterablePriceListProps> = {
+  const listConfig: FindConfig<PriceList> = {
     relations: expandFields,
     skip: validated.offset,
     take: validated.limit,
@@ -65,7 +65,7 @@ export default async (req, res) => {
     }
   }
 
-  const filterableFields: FilterablePriceListProps = omit(validated, [
+  const filterableFields = omit(validated, [
     "limit",
     "offset",
     "expand",

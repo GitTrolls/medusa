@@ -1,20 +1,27 @@
 import {
   BeforeInsert,
   Column,
+  CreateDateColumn,
+  DeleteDateColumn,
   Entity,
   Index,
   JoinColumn,
   ManyToOne,
+  PrimaryColumn,
+  UpdateDateColumn,
 } from "typeorm"
+import { ulid } from "ulid"
+import { resolveDbType } from "../utils/db-aware-column"
 import { Currency } from "./currency"
 import { PriceList } from "./price-list"
 import { ProductVariant } from "./product-variant"
 import { Region } from "./region"
-import { SoftDeletableEntity } from "../interfaces/models/soft-deletable-entity"
-import { generateEntityId } from "../utils/generate-entity-id"
 
 @Entity()
-export class MoneyAmount extends SoftDeletableEntity {
+export class MoneyAmount {
+  @PrimaryColumn()
+  id: string
+
   @Column()
   currency_code: string
 
@@ -45,9 +52,13 @@ export class MoneyAmount extends SoftDeletableEntity {
   @Column({ nullable: true })
   variant_id: string
 
-  @ManyToOne(() => ProductVariant, (variant) => variant.prices, {
-    onDelete: "CASCADE",
-  })
+  @ManyToOne(
+    () => ProductVariant,
+    (variant) => variant.prices,
+    {
+      onDelete: "CASCADE",
+    }
+  )
   @JoinColumn({ name: "variant_id" })
   variant: ProductVariant
 
@@ -59,9 +70,22 @@ export class MoneyAmount extends SoftDeletableEntity {
   @JoinColumn({ name: "region_id" })
   region: Region
 
+  @CreateDateColumn({ type: resolveDbType("timestamptz") })
+  created_at: Date
+
+  @UpdateDateColumn({ type: resolveDbType("timestamptz") })
+  updated_at: Date
+
+  @DeleteDateColumn({ type: resolveDbType("timestamptz") })
+  deleted_at: Date
+
   @BeforeInsert()
   private beforeInsert(): undefined | void {
-    this.id = generateEntityId(this.id, "ma")
+    if (this.id) {
+      return
+    }
+    const id = ulid()
+    this.id = `ma_${id}`
   }
 }
 

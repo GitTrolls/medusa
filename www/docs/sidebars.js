@@ -37,6 +37,11 @@ module.exports = {
           label: "Set Up your Development Environment"
         },
         {
+          type: "doc",
+          id: "tutorial/creating-your-medusa-server",
+          label: "Create your Medusa Server"
+        },
+        {
           type: "category",
           collapsed: true,
           label: "Storefront Quickstart",
@@ -209,6 +214,11 @@ module.exports = {
               label: 'Upgrade Guides',
               collapsed: true,
               items: [
+                {
+                  type: "doc",
+                  id: "advanced/backend/upgrade-guides/1-3-0",
+                  label: "v1.3.0"
+                },
                 {
                   type: "doc",
                   id: "advanced/backend/upgrade-guides/1-3-1",

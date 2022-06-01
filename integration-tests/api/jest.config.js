@@ -5,7 +5,6 @@ module.exports = {
   name: "api",
   testEnvironment: `node`,
   rootDir: "./",
-  testTimeout: 10000,
   testPathIgnorePatterns: [
     `/examples/`,
     `/www/`,
