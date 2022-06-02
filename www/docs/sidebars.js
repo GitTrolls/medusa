@@ -149,11 +149,6 @@ module.exports = {
               ]
             },
             {
-              type: "doc",
-              id: "advanced/backend/entities",
-              label: "Entities"
-            },
-            {
               type: "category",
               label: 'Shipping',
               collapsed: true,
