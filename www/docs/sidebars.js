@@ -144,11 +144,6 @@ module.exports = {
               ]
             },
             {
-              type: "doc",
-              id: "advanced/backend/entities",
-              label: "Entities"
-            },
-            {
               type: "category",
               label: 'Shipping',
               collapsed: true,
@@ -398,6 +393,11 @@ module.exports = {
           label: "Documentation Error",
         },
       ],
+    },
+    {
+      type: "doc",
+      id: "contribution-guidelines",
+      label: "Contribution Guidelines",
     },
   ],
   servicesSidebar: [
