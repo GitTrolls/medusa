@@ -141,7 +141,17 @@ module.exports = {
                   id: "advanced/backend/subscribers/create-subscriber",
                   label: "Create a Subscriber"
                 },
+                {
+                  type: "doc",
+                  id: "advanced/backend/subscribers/events-list",
+                  label: "List of Events"
+                },
               ]
+            },
+            {
+              type: "doc",
+              id: "advanced/backend/entities",
+              label: "Entities"
             },
             {
               type: "category",
@@ -204,8 +214,8 @@ module.exports = {
               items: [
                 {
                   type: "doc",
-                  id: "advanced/backend/upgrade-guides/1-3-1",
-                  label: "v1.3.1"
+                  id: "advanced/backend/upgrade-guides/1-3-0",
+                  label: "v1.3.0"
                 },
               ]
             },
