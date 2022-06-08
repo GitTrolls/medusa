@@ -1,20 +1,20 @@
-import { parse } from "path"
+import path from "path"
 
 /**
  * Formats a filename into the correct container resolution name.
  * Names are camelCase formatted and namespaced by the folder i.e:
  * models/example-person -> examplePersonModel
- * @param path - the full path of the file
- * @return the formatted name
+ * @param {string} fn - the full path of the file
+ * @return {string} the formatted name
  */
-function formatRegistrationName(path: string): string {
-  const parsed = parse(path)
-  const parsedDir = parse(parsed.dir)
+function formatRegistrationName(fn) {
+  const parsed = path.parse(fn)
+  const parsedDir = path.parse(parsed.dir)
 
   const rawname = parsed.name
   let namespace = parsedDir.name
   if (namespace.startsWith("__")) {
-    const parsedCoreDir = parse(parsedDir.dir)
+    const parsedCoreDir = path.parse(parsedDir.dir)
     namespace = parsedCoreDir.name
   }
 
