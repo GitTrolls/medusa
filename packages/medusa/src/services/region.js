@@ -326,10 +326,8 @@ class RegionService extends BaseService {
     )
 
     const countryCode = code.toUpperCase()
-    const isCountryExists = countries.some(
-      (country) => country.alpha2 === countryCode
-    )
-    if (!isCountryExists) {
+    const validCountry = countries.find((c) => c.alpha2 === countryCode)
+    if (!validCountry) {
       throw new MedusaError(
         MedusaError.Types.INVALID_DATA,
         "Invalid country code"
