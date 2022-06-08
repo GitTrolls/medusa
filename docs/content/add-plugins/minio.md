@@ -76,7 +76,7 @@ You will not be able to access the Secret Key after closing the pop-up. So, make
 
 In the directory of your Medusa server, run the following command to install the MinIO plugin:
 
-```bash npm2yarn
+```bash
 npm install medusa-file-minio
 ```
 
