@@ -186,15 +186,8 @@ module.exports = {
               ]
             },
             {
-              type: "category",
-              label: "Notification",
-              collapsed: true,
-              items: [
-                {
-                  type: "doc",
-                  id: "advanced/backend/notification/overview"
-                }
-              ]
+              type: "doc",
+              id: "how-to/notification-api",
             },
             {
               type: "doc",
@@ -398,6 +391,11 @@ module.exports = {
           label: "Documentation Error",
         },
       ],
+    },
+    {
+      type: "doc",
+      id: "contribution-guidelines",
+      label: "Contribution Guidelines",
     },
   ],
   servicesSidebar: [
