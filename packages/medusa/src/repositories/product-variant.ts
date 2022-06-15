@@ -82,7 +82,8 @@ export class ProductVariantRepository extends Repository<ProductVariant> {
   ): Promise<ProductVariant[]> {
     const entitiesIdsWithRelations = await Promise.all(
       Object.entries(groupedRelations).map(([toplevel, rels]) => {
-        let querybuilder = this.createQueryBuilder("pv").leftJoinAndSelect(
+        let querybuilder = this.createQueryBuilder("pv")
+        querybuilder = querybuilder.leftJoinAndSelect(
           `pv.${toplevel}`,
           toplevel
         )
@@ -93,20 +94,20 @@ export class ProductVariantRepository extends Repository<ProductVariant> {
             continue
           }
           // Regex matches all '.' except the rightmost
-          querybuilder.leftJoinAndSelect(
+          querybuilder = querybuilder.leftJoinAndSelect(
             rel.replace(/\.(?=[^.]*\.)/g, "__"),
             rel.replace(".", "__")
           )
         }
 
         if (withDeleted) {
-          querybuilder
+          querybuilder = querybuilder
             .where("pv.id IN (:...entitiesIds)", {
               entitiesIds: entityIds,
             })
             .withDeleted()
         } else {
-          querybuilder.where(
+          querybuilder = querybuilder.where(
             "pv.deleted_at IS NULL AND pv.id IN (:...entitiesIds)",
             {
               entitiesIds: entityIds,

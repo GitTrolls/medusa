@@ -1,3 +1,4 @@
+import { MedusaError } from "medusa-core-utils"
 import { Type } from "class-transformer"
 import {
   IsArray,
@@ -7,12 +8,15 @@ import {
   IsString,
   ValidateNested,
 } from "class-validator"
-import { pickBy } from "lodash"
+import { pickBy, omit, identity } from "lodash"
+import { defaultAdminBatchFields } from "."
 import BatchJobService from "../../../../services/batch-job"
+import { BatchJob } from "../../../../models"
 import { BatchJobStatus } from "../../../../types/batch-job"
 import { DateComparisonOperator } from "../../../../types/common"
 import { IsType } from "../../../../utils/validators/is-type"
-import { Request } from "express"
+import { getListConfig } from "../../../../utils/get-query-config"
+import { validator } from "../../../../utils/validator"
 
 /**
  * @oas [get] /batch
@@ -43,25 +47,47 @@ import { Request } from "express"
  *            batch_job:
  *              $ref: "#/components/schemas/batch_job"
  */
-export default async (req: Request, res) => {
+export default async (req, res) => {
+  const { fields, expand, order, limit, offset, ...filterableFields } =
+    await validator(AdminGetBatchParams, req.query)
+
   const batchService: BatchJobService = req.scope.resolve("batchJobService")
 
-  const created_by = req.user?.id || req.user?.userId
+  let orderBy: { [k: symbol]: "DESC" | "ASC" } | undefined
+  if (typeof order !== "undefined") {
+    if (order.startsWith("-")) {
+      const [, field] = order.split("-")
+      orderBy = { [field]: "DESC" }
+    } else {
+      orderBy = { [order]: "ASC" }
+    }
+  }
+
+  const listConfig = getListConfig<BatchJob>(
+    defaultAdminBatchFields as (keyof BatchJob)[],
+    [],
+    fields?.split(",") as (keyof BatchJob)[],
+    expand?.split(","),
+    limit,
+    offset,
+    orderBy
+  )
+
+  const created_by: string = req.user.id || req.user.userId
 
   const [jobs, count] = await batchService.listAndCount(
     pickBy(
-      { created_by, ...(req.filterableFields ?? {}) },
+      { created_by, ...filterableFields },
       (val) => typeof val !== "undefined"
     ),
-    req.listConfig
+    listConfig
   )
 
-  const { limit, offset } = req.validatedQuery
   res.status(200).json({
     batch_jobs: jobs,
     count,
-    offset,
-    limit,
+    offset: offset,
+    limit: limit,
   })
 }
 

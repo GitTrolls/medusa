@@ -1,7 +1,8 @@
 import { MedusaError } from "medusa-core-utils"
 import { BaseService } from "medusa-interfaces"
-import { defaultAdminProductsVariantsRelations } from "../api/routes/admin/products"
+import { Brackets } from "typeorm"
 import { formatException } from "../utils/exception-formatter"
+import { defaultAdminProductsVariantsRelations } from "../api/routes/admin/products"
 
 /**
  * Provides layer to manipulate products.
@@ -22,10 +23,13 @@ class ProductService extends BaseService {
     productOptionRepository,
     eventBusService,
     productVariantService,
+    productCollectionService,
     productTypeRepository,
     productTagRepository,
     imageRepository,
     searchService,
+    cartRepository,
+    priceSelectionStrategy,
   }) {
     super()
 
@@ -48,6 +52,9 @@ class ProductService extends BaseService {
     this.productVariantService_ = productVariantService
 
     /** @private @const {ProductCollectionService} */
+    this.productCollectionService_ = productCollectionService
+
+    /** @private @const {ProductCollectionService} */
     this.productTypeRepository_ = productTypeRepository
 
     /** @private @const {ProductCollectionService} */
@@ -58,6 +65,12 @@ class ProductService extends BaseService {
 
     /** @private @const {SearchService} */
     this.searchService_ = searchService
+
+    /** @private @const {CartRepository} */
+    this.cartRepository_ = cartRepository
+
+    /** @private @const {IPriceSelectionStrategy} */
+    this.priceSelectionStrategy_ = priceSelectionStrategy
   }
 
   withTransaction(transactionManager) {
@@ -72,9 +85,12 @@ class ProductService extends BaseService {
       productOptionRepository: this.productOptionRepository_,
       eventBusService: this.eventBus_,
       productVariantService: this.productVariantService_,
+      productCollectionService: this.productCollectionService_,
       productTagRepository: this.productTagRepository_,
       productTypeRepository: this.productTypeRepository_,
       imageRepository: this.imageRepository_,
+      cartRepository: this.cartRepository_,
+      priceSelectionStrategy: this.priceSelectionStrategy_,
     })
 
     cloned.transactionManager_ = transactionManager
@@ -102,20 +118,36 @@ class ProductService extends BaseService {
     const productRepo = this.manager_.getCustomRepository(
       this.productRepository_
     )
+    const priceIndex = config.relations?.indexOf("variants.prices") ?? -1
+    if (priceIndex >= 0 && config.relations) {
+      config.relations = [...config.relations]
+      config.relations.splice(priceIndex, 1)
+    }
 
     const { q, query, relations } = this.prepareListQuery_(selector, config)
 
     if (q) {
-      const [products] = await productRepo.getFreeTextSearchResultsAndCount(
-        q,
-        query,
-        relations
+      const qb = this.getFreeTextQueryBuilder_(productRepo, query, q)
+      const raw = await qb.getMany()
+      return productRepo.findWithRelations(
+        relations,
+        raw.map((i) => i.id),
+        query.withDeleted ?? false
       )
-
-      return products
     }
 
-    return await productRepo.findWithRelations(relations, query)
+    const products = productRepo.findWithRelations(relations, query)
+
+    return priceIndex > -1
+      ? await this.setAdditionalPrices(
+          products,
+          config.currency_code,
+          config.region_id,
+          config.cart_id,
+          config.customer_id,
+          config.include_discount_prices
+        )
+      : products
   }
 
   /**
@@ -142,17 +174,45 @@ class ProductService extends BaseService {
       this.productRepository_
     )
 
+    const priceIndex = config.relations?.indexOf("variants.prices") ?? -1
+    if (priceIndex >= 0 && config.relations) {
+      config.relations = [...config.relations]
+      config.relations.splice(priceIndex, 1)
+    }
+
     const { q, query, relations } = this.prepareListQuery_(selector, config)
 
     if (q) {
-      return await productRepo.getFreeTextSearchResultsAndCount(
-        q,
-        query,
-        relations
+      const qb = this.getFreeTextQueryBuilder_(productRepo, query, q)
+      const [raw, count] = await qb.getManyAndCount()
+
+      const products = await productRepo.findWithRelations(
+        relations,
+        raw.map((i) => i.id),
+        query.withDeleted ?? false
       )
+      return [products, count]
     }
 
-    return await productRepo.findWithRelationsAndCount(relations, query)
+    const [products, count] = await productRepo.findWithRelationsAndCount(
+      relations,
+      query
+    )
+
+    if (priceIndex > -1) {
+      const productsWithAdditionalPrices = await this.setAdditionalPrices(
+        products,
+        config.currency_code,
+        config.region_id,
+        config.cart_id,
+        config.customer_id,
+        config.include_discount_prices
+      )
+
+      return [productsWithAdditionalPrices, count]
+    } else {
+      return [products, count]
+    }
   }
 
   /**
@@ -182,6 +242,12 @@ class ProductService extends BaseService {
     )
     const validatedId = this.validateId_(productId)
 
+    const priceIndex = config.relations?.indexOf("variants.prices") ?? -1
+    if (priceIndex >= 0 && config.relations) {
+      config.relations = [...config.relations]
+      config.relations.splice(priceIndex, 1)
+    }
+
     const query = { where: { id: validatedId } }
 
     if (config.relations && config.relations.length > 0) {
@@ -203,7 +269,16 @@ class ProductService extends BaseService {
       )
     }
 
-    return product
+    return priceIndex > -1
+      ? await this.setAdditionalPrices(
+          product,
+          config.currency_code,
+          config.region_id,
+          config.cart_id,
+          config.customer_id,
+          config.include_discount_prices
+        )
+      : product
   }
 
   /**
@@ -217,6 +292,12 @@ class ProductService extends BaseService {
     const productRepo = this.manager_.getCustomRepository(
       this.productRepository_
     )
+
+    const priceIndex = config.relations?.indexOf("variants.prices") ?? -1
+    if (priceIndex >= 0 && config.relations) {
+      config.relations = [...config.relations]
+      config.relations.splice(priceIndex, 1)
+    }
 
     const query = { where: { handle: productHandle } }
 
@@ -239,7 +320,16 @@ class ProductService extends BaseService {
       )
     }
 
-    return product
+    return priceIndex > -1
+      ? await this.setAdditionalPrices(
+          product,
+          config.currency_code,
+          config.region_id,
+          config.cart_id,
+          config.customer_id,
+          config.include_discount_prices
+        )
+      : product
   }
 
   /**
@@ -253,6 +343,12 @@ class ProductService extends BaseService {
     const productRepo = this.manager_.getCustomRepository(
       this.productRepository_
     )
+
+    const priceIndex = config.relations?.indexOf("variants.prices") ?? -1
+    if (priceIndex >= 0 && config.relations) {
+      config.relations = [...config.relations]
+      config.relations.splice(priceIndex, 1)
+    }
 
     const query = { where: { external_id: externalId } }
 
@@ -275,7 +371,16 @@ class ProductService extends BaseService {
       )
     }
 
-    return product
+    return priceIndex > -1
+      ? await this.setAdditionalPrices(
+          product,
+          config.currency_code,
+          config.region_id,
+          config.cart_id,
+          config.customer_id,
+          config.include_discount_prices
+        )
+      : product
   }
 
   /**
@@ -840,12 +945,29 @@ class ProductService extends BaseService {
   async decorate(productId, fields = [], expandFields = [], config = {}) {
     const requiredFields = ["id", "metadata"]
 
+    const priceIndex = expandFields.indexOf("variants.prices") ?? -1
+    if (priceIndex >= 0 && expandFields.length) {
+      expandFields = [...expandFields]
+      expandFields.splice(priceIndex, 1)
+    }
+
     fields = fields.concat(requiredFields)
 
-    return await this.retrieve(productId, {
+    const product = await this.retrieve(productId, {
       select: fields,
       relations: expandFields,
     })
+
+    return priceIndex > -1
+      ? await this.setAdditionalPrices(
+          product,
+          config.currency_code,
+          config.region_id,
+          config.cart_id,
+          config.customer_id,
+          config.include_discount_prices
+        )
+      : product
   }
 
   /**
@@ -880,6 +1002,121 @@ class ProductService extends BaseService {
       relations: rels,
       q,
     }
+  }
+
+  /**
+   * Creates a QueryBuilder that can fetch products based on free text.
+   * @param {ProductRepository} productRepo - an instance of a ProductRepositry
+   * @param {FindOptions<Product>} query - the query to get products by
+   * @param {string} q - the text to perform free text search from
+   * @return {QueryBuilder<Product>} a query builder that can fetch products
+   */
+  getFreeTextQueryBuilder_(productRepo, query, q) {
+    const where = query.where
+
+    delete where.description
+    delete where.title
+
+    let qb = productRepo
+      .createQueryBuilder("product")
+      .leftJoinAndSelect("product.variants", "variant")
+      .leftJoinAndSelect("product.collection", "collection")
+      .select(["product.id"])
+      .where(where)
+      .andWhere(
+        new Brackets((qb) => {
+          qb.where(`product.description ILIKE :q`, { q: `%${q}%` })
+            .orWhere(`product.title ILIKE :q`, { q: `%${q}%` })
+            .orWhere(`variant.title ILIKE :q`, { q: `%${q}%` })
+            .orWhere(`variant.sku ILIKE :q`, { q: `%${q}%` })
+            .orWhere(`collection.title ILIKE :q`, { q: `%${q}%` })
+        })
+      )
+      .skip(query.skip)
+      .take(query.take)
+
+    if (query.withDeleted) {
+      qb = qb.withDeleted()
+    }
+
+    return qb
+  }
+
+  /**
+   * Set additional prices on a list of products.
+   * @param {Product[] | Product} products list of products on which to set additional prices
+   * @param {string} currency_code currency code to fetch prices for
+   * @param {string} region_id region to fetch prices for
+   * @param {string} cart_id string of cart to use as a basis for getting currency and region
+   * @param {string} customer_id id of potentially logged in customer, used to get prices valid for their customer groups
+   * @param {boolean} include_discount_prices indication wether or not to include sales prices in result
+   * @return {Promise<Product[]>} A list of products with variants decorated with "additional_prices"
+   */
+  async setAdditionalPrices(
+    products,
+    currency_code,
+    region_id,
+    cart_id,
+    customer_id,
+    include_discount_prices = false
+  ) {
+    return this.atomicPhase_(async (manager) => {
+      const cartRepo = this.manager_.getCustomRepository(this.cartRepository_)
+
+      let regionId = region_id
+      let currencyCode = currency_code
+
+      if (cart_id) {
+        const cart = await cartRepo.findOne({
+          where: { id: cart_id },
+          relations: ["region"],
+        })
+
+        regionId = cart.region.id
+        currencyCode = cart.region.currency_code
+      }
+
+      const productArray = Array.isArray(products) ? products : [products]
+
+      const priceSelectionStrategy = this.priceSelectionStrategy_.withTransaction(
+        manager
+      )
+
+      const productsWithPrices = await Promise.all(
+        productArray.map(async (p) => {
+          if (p.variants?.length) {
+            p.variants = await Promise.all(
+              p.variants.map(async (v) => {
+                const prices = await priceSelectionStrategy.calculateVariantPrice(
+                  v.id,
+                  {
+                    region_id: regionId,
+                    currency_code: currencyCode,
+                    cart_id: cart_id,
+                    customer_id: customer_id,
+                    include_discount_prices,
+                  }
+                )
+
+                return {
+                  ...v,
+                  prices: prices.prices,
+                  original_price: prices.originalPrice,
+                  calculated_price: prices.calculatedPrice,
+                  calculated_price_type: prices.calculatedPriceType,
+                }
+              })
+            )
+          }
+
+          return p
+        })
+      )
+
+      return Array.isArray(products)
+        ? productsWithPrices
+        : productsWithPrices[0]
+    })
   }
 }
 
