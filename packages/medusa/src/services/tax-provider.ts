@@ -28,11 +28,6 @@ import TaxRateService from "./tax-rate"
 
 const CACHE_TIME = 30 // seconds
 
-type RegionDetails = {
-  id: string
-  tax_rate: number | null
-}
-
 /**
  * Finds tax providers and assists in tax related operations.
  */
@@ -326,14 +321,14 @@ class TaxProviderService extends BaseService {
    * Gets the tax rates configured for a shipping option. The rates are cached
    * between calls.
    * @param optionId - the option id of the shipping method.
-   * @param regionDetails - the region to get configured rates for.
+   * @param region - the region to get configured rates for.
    * @return the tax rates configured for the shipping option.
    */
   async getRegionRatesForShipping(
     optionId: string,
-    regionDetails: RegionDetails
+    region: Region
   ): Promise<TaxServiceRate[]> {
-    const cacheHit = await this.getCacheEntry(optionId, regionDetails.id)
+    const cacheHit = await this.getCacheEntry(optionId, region.id)
     if (cacheHit) {
       return cacheHit
     }
@@ -341,7 +336,7 @@ class TaxProviderService extends BaseService {
     let toReturn: TaxServiceRate[] = []
     const optionRates = await this.taxRateService_.listByShippingOption(
       optionId,
-      { region_id: regionDetails.id }
+      { region_id: region.id }
     )
 
     if (optionRates.length > 0) {
@@ -357,14 +352,14 @@ class TaxProviderService extends BaseService {
     if (toReturn.length === 0) {
       toReturn = [
         {
-          rate: regionDetails.tax_rate,
+          rate: region.tax_rate,
           name: "default",
           code: "default",
         },
       ]
     }
 
-    await this.setCache(optionId, regionDetails.id, toReturn)
+    await this.setCache(optionId, region.id, toReturn)
 
     return toReturn
   }
@@ -378,7 +373,7 @@ class TaxProviderService extends BaseService {
    */
   async getRegionRatesForProduct(
     productId: string,
-    region: RegionDetails
+    region: Region
   ): Promise<TaxServiceRate[]> {
     const cacheHit = await this.getCacheEntry(productId, region.id)
     if (cacheHit) {

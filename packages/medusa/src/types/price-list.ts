@@ -124,8 +124,6 @@ export type CreatePriceListInput = {
   status?: PriceListStatus
   prices: AdminPriceListPricesCreateReq[]
   customer_groups?: { id: string }[]
-  starts_at?: Date
-  ends_at?: Date
 }
 
 export type UpdatePriceListInput = Partial<

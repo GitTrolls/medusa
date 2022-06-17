@@ -38,7 +38,6 @@ import RegionService from "./region"
 import ShippingOptionService from "./shipping-option"
 import TaxProviderService from "./tax-provider"
 import TotalsService from "./totals"
-import { DiscountRuleType } from "../models"
 
 type InjectedDependencies = {
   manager: EntityManager
@@ -706,14 +705,7 @@ class CartService extends TransactionBaseService<CartService> {
           cart.shipping_methods.map(async (shippingMethod) => {
             // if free shipping discount is removed, we adjust the shipping
             // back to its original amount
-            // if shipping option amount is null, we assume the option is calculated
-            shippingMethod.price =
-              shippingMethod.shipping_option.amount ??
-              (await this.shippingOptionService_.getPrice_(
-                shippingMethod.shipping_option,
-                shippingMethod.data,
-                cart
-              ))
+            shippingMethod.price = shippingMethod.shipping_option.amount
             return shippingMethodRepository.save(shippingMethod)
           })
         )
@@ -1072,7 +1064,7 @@ class CartService extends TransactionBaseService<CartService> {
         let sawNotShipping = false
         const newDiscounts = toParse.map((discountToParse) => {
           switch (discountToParse.rule?.type) {
-            case DiscountRuleType.FREE_SHIPPING:
+            case "free_shipping":
               if (discountToParse.rule.type === rule.type) {
                 return discount
               }
