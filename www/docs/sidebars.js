@@ -144,11 +144,6 @@ module.exports = {
               ]
             },
             {
-              type: "doc",
-              id: "advanced/backend/entities",
-              label: "Entities"
-            },
-            {
               type: "category",
               label: 'Shipping',
               collapsed: true,
@@ -179,23 +174,15 @@ module.exports = {
                   type: "doc",
                   id: "advanced/backend/payment/how-to-create-payment-provider",
                 },
+                {
+                  type: "doc",
+                  id: "advanced/backend/payment/frontend-payment-flow-in-checkout",
+                },
               ]
             },
             {
-              type: "category",
-              label: "Notification",
-              collapsed: true,
-              items: [
-                {
-                  type: "doc",
-                  id: "advanced/backend/notification/overview"
-                },
-                {
-                  type: "doc",
-                  id: "advanced/backend/notification/how-to-create-notification-provider",
-                  label: "Create a Notification Provider"
-                }
-              ]
+              type: "doc",
+              id: "how-to/notification-api",
             },
             {
               type: "doc",
@@ -221,17 +208,6 @@ module.exports = {
                   label: "v1.3.0"
                 },
               ]
-            },
-          ]
-        },
-        {
-          type: "category",
-          label: "Storefront",
-          collapsed: true,
-          items: [
-            {
-              type: "doc",
-              id: "advanced/storefront/how-to-implement-checkout-flow",
             },
           ]
         }
@@ -410,11 +386,6 @@ module.exports = {
           label: "Documentation Error",
         },
       ],
-    },
-    {
-      type: "doc",
-      id: "contribution-guidelines",
-      label: "Contribution Guidelines",
     },
   ],
   servicesSidebar: [

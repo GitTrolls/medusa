@@ -1,9 +1,5 @@
 name: Medusa Pipeline
-on: 
-  pull_request:
-    paths-ignore:
-      - 'docs/**'
-      - 'www/**'
+on: [pull_request]
 
 jobs:
   unit-tests:
