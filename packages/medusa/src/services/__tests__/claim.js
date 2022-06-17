@@ -58,10 +58,6 @@ describe("ClaimService", () => {
       create: (d) => ({ id: "claim_134", ...d }),
     })
 
-    const lineItemRepository = MockRepository({
-      create: (d) => ({ id: "claim_item_134", ...d }),
-    })
-
     const taxProviderService = {
       createTaxLines: jest.fn(),
       withTransaction: function () {
@@ -107,7 +103,6 @@ describe("ClaimService", () => {
     const claimService = new ClaimService({
       manager: MockManager,
       claimRepository: claimRepo,
-      lineItemRepository: lineItemRepository,
       taxProviderService,
       totalsService,
       returnService,

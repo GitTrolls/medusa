@@ -78,7 +78,10 @@ export function buildQuery<TEntity = unknown>(
     }, {} as Partial<Writable<TEntity>>)
   }
 
-  const query: ExtendedFindConfig<TEntity> = {
+  const query: FindConfig<TEntity> & {
+    where: Partial<Writable<TEntity>>
+    withDeleted?: boolean
+  } = {
     where: build(selector),
   }
 

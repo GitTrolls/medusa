@@ -1,12 +1,12 @@
 import passport from "passport"
-import { Request, Response, NextFunction, RequestHandler } from "express"
 
-export default (): RequestHandler => {
-  return (req: Request, res: Response, next: NextFunction): void => {
+export default () => {
+  // Always go to next
+  return (req, res, next) => {
     passport.authenticate(
       ["jwt", "bearer"],
       { session: false },
-      (err, user) => {
+      (err, user, info) => {
         if (err) {
           return next(err)
         }
