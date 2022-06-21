@@ -1,40 +1,18 @@
 import { Router } from "express"
 import { BatchJob } from "../../../.."
 import { DeleteResponse, PaginatedResponse } from "../../../../types/common"
-import middlewares, {
-  canAccessBatchJob,
-  getRequestedBatchJob,
-  transformQuery,
-} from "../../../middlewares"
-import { AdminGetBatchParams } from "./list-batch-jobs"
+import middlewares from "../../../middlewares"
 
 export default (app) => {
   const route = Router()
 
-  app.use("/batch-jobs", route)
+  app.use("/batch", route)
 
   route.get(
     "/",
-    transformQuery(AdminGetBatchParams, {
-      defaultFields: defaultAdminBatchFields,
-      isList: true,
-    }),
+    middlewares.normalizeQuery(),
     middlewares.wrap(require("./list-batch-jobs").default)
   )
-  route.post("/", middlewares.wrap(require("./create-batch-job").default))
-
-  const batchJobRouter = Router({ mergeParams: true })
-  route.use("/:id", getRequestedBatchJob, canAccessBatchJob, batchJobRouter)
-  batchJobRouter.get("/", middlewares.wrap(require("./get-batch-job").default))
-  batchJobRouter.post(
-    "/confirm",
-    middlewares.wrap(require("./confirm-batch-job").default)
-  )
-  batchJobRouter.post(
-    "/cancel",
-    middlewares.wrap(require("./cancel-batch-job").default)
-  )
-
   return app
 }
 
@@ -50,6 +28,7 @@ export type AdminBatchJobListRes = PaginatedResponse & {
 
 export const defaultAdminBatchFields = [
   "id",
+  "status",
   "type",
   "context",
   "result",
@@ -59,8 +38,4 @@ export const defaultAdminBatchFields = [
   "deleted_at",
 ]
 
-export * from "./cancel-batch-job"
-export * from "./confirm-batch-job"
-export * from "./create-batch-job"
-export * from "./get-batch-job"
 export * from "./list-batch-jobs"

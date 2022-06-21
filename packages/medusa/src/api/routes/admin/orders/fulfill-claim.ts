@@ -65,7 +65,7 @@ export default async (req, res) => {
 export class AdminPostOrdersOrderClaimsClaimFulfillmentsReq {
   @IsObject()
   @IsOptional()
-  metadata?: Record<string, unknown>
+  metadata?: object
 
   @IsBoolean()
   @IsOptional()

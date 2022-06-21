@@ -7,8 +7,6 @@ import { IsNumber, IsOptional, IsString } from "class-validator"
 import { validator } from "../../../../utils/validator"
 import { Type } from "class-transformer"
 import { DraftOrderListSelector } from "../../../../types/draft-orders"
-import { FindConfig } from "../../../../types/common"
-import { DraftOrder } from "../../../../models"
 /**
  * @oas [get] /draft-orders
  * operationId: "GetDraftOrders"
@@ -40,11 +38,11 @@ export default async (req, res) => {
     selector.q = validated.q
   }
 
-  const listConfig: FindConfig<DraftOrder> = {
+  const listConfig = {
     select: defaultAdminDraftOrdersFields,
     relations: defaultAdminDraftOrdersRelations,
-    skip: validated.offset ?? 0,
-    take: validated.limit ?? 50,
+    skip: validated.offset,
+    take: validated.limit,
     order: { created_at: "DESC" },
   }
 

@@ -12,13 +12,13 @@ Array [
     "created_at": Any<String>,
     "id": "tag3",
     "updated_at": Any<String>,
-    "value": "1235",
+    "value": "123",
   },
   Object {
     "created_at": Any<String>,
     "id": "tag4",
     "updated_at": Any<String>,
-    "value": "1234",
+    "value": "123",
   },
 ]
 `;
@@ -35,13 +35,13 @@ Array [
     "created_at": Any<String>,
     "id": "tag3",
     "updated_at": Any<String>,
-    "value": "1235",
+    "value": "123",
   },
   Object {
     "created_at": Any<String>,
     "id": "tag4",
     "updated_at": Any<String>,
-    "value": "1234",
+    "value": "123",
   },
 ]
 `;
