@@ -1,8 +1,9 @@
 import jwt from "jsonwebtoken"
-import Scrypt from "scrypt-kdf"
 import { MedusaError, Validator } from "medusa-core-utils"
+import { BaseService } from "medusa-interfaces"
+import Scrypt from "scrypt-kdf"
 import { EntityManager } from "typeorm"
-import { User } from "../models"
+import { User } from "../models/user"
 import { UserRepository } from "../repositories/user"
 import { FindConfig } from "../types/common"
 import {
@@ -11,8 +12,6 @@ import {
   UpdateUserInput,
 } from "../types/user"
 import EventBusService from "./event-bus"
-import { TransactionBaseService } from "../interfaces"
-import { buildQuery, setMetadata } from "../utils"
 
 type UserServiceProps = {
   userRepository: typeof UserRepository
@@ -24,22 +23,43 @@ type UserServiceProps = {
  * Provides layer to manipulate users.
  * @extends BaseService
  */
-class UserService extends TransactionBaseService<UserService> {
+class UserService extends BaseService {
   static Events = {
     PASSWORD_RESET: "user.password_reset",
   }
 
-  protected manager_: EntityManager
-  protected transactionManager_: EntityManager
-  protected readonly userRepository_: typeof UserRepository
-  protected readonly eventBus_: EventBusService
+  private userRepository_: typeof UserRepository
+  private eventBus_: EventBusService
+  private manager_: EntityManager
+  private transactionManager_: EntityManager
 
   constructor({ userRepository, eventBusService, manager }: UserServiceProps) {
-    super({ userRepository, eventBusService, manager })
+    super()
 
+    /** @private @const {UserRepository} */
     this.userRepository_ = userRepository
+
+    /** @private @const {EventBus} */
     this.eventBus_ = eventBusService
+
+    /** @private @const {EntityManager} */
     this.manager_ = manager
+  }
+
+  withTransaction(transactionManager: EntityManager): UserService {
+    if (!transactionManager) {
+      return this
+    }
+
+    const cloned = new UserService({
+      manager: transactionManager,
+      userRepository: this.userRepository_,
+      eventBusService: this.eventBus_,
+    })
+
+    cloned.transactionManager_ = transactionManager
+
+    return cloned
   }
 
   /**
@@ -66,12 +86,8 @@ class UserService extends TransactionBaseService<UserService> {
    * @return {Promise} the result of the find operation
    */
   async list(selector: FilterableUserProps, config = {}): Promise<User[]> {
-    return await this.atomicPhase_(async (transactionManager) => {
-      const userRepo = transactionManager.getCustomRepository(
-        this.userRepository_
-      )
-      return await userRepo.find(buildQuery(selector, config))
-    })
+    const userRepo = this.manager_.getCustomRepository(this.userRepository_)
+    return userRepo.find(this.buildQuery_(selector, config))
   }
 
   /**
@@ -82,23 +98,20 @@ class UserService extends TransactionBaseService<UserService> {
    * @return {Promise<User>} the user document.
    */
   async retrieve(userId: string, config: FindConfig<User> = {}): Promise<User> {
-    return await this.atomicPhase_(async (transactionManager) => {
-      const userRepo = transactionManager.getCustomRepository(
-        this.userRepository_
+    const userRepo = this.manager_.getCustomRepository(this.userRepository_)
+    const validatedId = this.validateId_(userId)
+    const query = this.buildQuery_({ id: validatedId }, config)
+
+    const user = await userRepo.findOne(query)
+
+    if (!user) {
+      throw new MedusaError(
+        MedusaError.Types.NOT_FOUND,
+        `User with id: ${userId} was not found`
       )
-      const query = buildQuery({ id: userId }, config)
+    }
 
-      const user = await userRepo.findOne(query)
-
-      if (!user) {
-        throw new MedusaError(
-          MedusaError.Types.NOT_FOUND,
-          `User with id: ${userId} was not found`
-        )
-      }
-
-      return user
-    })
+    return user
   }
 
   /**
@@ -112,25 +125,21 @@ class UserService extends TransactionBaseService<UserService> {
     apiToken: string,
     relations: string[] = []
   ): Promise<User> {
-    return await this.atomicPhase_(async (transactionManager) => {
-      const userRepo = transactionManager.getCustomRepository(
-        this.userRepository_
-      )
+    const userRepo = this.manager_.getCustomRepository(this.userRepository_)
 
-      const user = await userRepo.findOne({
-        where: { api_token: apiToken },
-        relations,
-      })
-
-      if (!user) {
-        throw new MedusaError(
-          MedusaError.Types.NOT_FOUND,
-          `User with api token: ${apiToken} was not found`
-        )
-      }
-
-      return user
+    const user = await userRepo.findOne({
+      where: { api_token: apiToken },
+      relations,
     })
+
+    if (!user) {
+      throw new MedusaError(
+        MedusaError.Types.NOT_FOUND,
+        `User with api token: ${apiToken} was not found`
+      )
+    }
+
+    return user
   }
 
   /**
@@ -144,23 +153,19 @@ class UserService extends TransactionBaseService<UserService> {
     email: string,
     config: FindConfig<User> = {}
   ): Promise<User> {
-    return await this.atomicPhase_(async (transactionManager) => {
-      const userRepo = transactionManager.getCustomRepository(
-        this.userRepository_
+    const userRepo = this.manager_.getCustomRepository(this.userRepository_)
+
+    const query = this.buildQuery_({ email: email.toLowerCase() }, config)
+    const user = await userRepo.findOne(query)
+
+    if (!user) {
+      throw new MedusaError(
+        MedusaError.Types.NOT_FOUND,
+        `User with email: ${email} was not found`
       )
+    }
 
-      const query = buildQuery({ email: email.toLowerCase() }, config)
-      const user = await userRepo.findOne(query)
-
-      if (!user) {
-        throw new MedusaError(
-          MedusaError.Types.NOT_FOUND,
-          `User with email: ${email} was not found`
-        )
-      }
-
-      return user
-    })
+    return user
   }
 
   /**
@@ -181,7 +186,7 @@ class UserService extends TransactionBaseService<UserService> {
    * @return {Promise} the result of create
    */
   async create(user: CreateUserInput, password: string): Promise<User> {
-    return await this.atomicPhase_(async (manager: EntityManager) => {
+    return this.atomicPhase_(async (manager: EntityManager) => {
       const userRepo = manager.getCustomRepository(this.userRepository_)
 
       const createData = { ...user } as CreateUserInput & {
@@ -198,7 +203,7 @@ class UserService extends TransactionBaseService<UserService> {
 
       const created = userRepo.create(createData)
 
-      return await userRepo.save(created)
+      return userRepo.save(created)
     })
   }
 
@@ -209,10 +214,11 @@ class UserService extends TransactionBaseService<UserService> {
    * @return {Promise} the result of create
    */
   async update(userId: string, update: UpdateUserInput): Promise<User> {
-    return await this.atomicPhase_(async (manager: EntityManager) => {
+    return this.atomicPhase_(async (manager: EntityManager) => {
       const userRepo = manager.getCustomRepository(this.userRepository_)
+      const validatedId = this.validateId_(userId)
 
-      const user = await this.retrieve(userId)
+      const user = await this.retrieve(validatedId)
 
       const { email, password_hash, metadata, ...rest } = update
 
@@ -231,14 +237,14 @@ class UserService extends TransactionBaseService<UserService> {
       }
 
       if (metadata) {
-        user.metadata = setMetadata(user, metadata)
+        user.metadata = this.setMetadata_(user, metadata)
       }
 
       for (const [key, value] of Object.entries(rest)) {
         user[key as keyof User] = value
       }
 
-      return await userRepo.save(user)
+      return userRepo.save(user)
     })
   }
 
@@ -248,8 +254,8 @@ class UserService extends TransactionBaseService<UserService> {
    *   castable as an ObjectId
    * @return {Promise} the result of the delete operation.
    */
-  async delete(userId: string): Promise<void> {
-    return await this.atomicPhase_(async (manager: EntityManager) => {
+  async delete(userId: string): Promise<null> {
+    return this.atomicPhase_(async (manager: EntityManager) => {
       const userRepo = manager.getCustomRepository(this.userRepository_)
 
       // Should not fail, if user does not exist, since delete is idempotent
@@ -274,7 +280,7 @@ class UserService extends TransactionBaseService<UserService> {
    * @return {Promise} the result of the update operation
    */
   async setPassword_(userId: string, password: string): Promise<User> {
-    return await this.atomicPhase_(async (manager: EntityManager) => {
+    return this.atomicPhase_(async (manager: EntityManager) => {
       const userRepo = manager.getCustomRepository(this.userRepository_)
 
       const user = await this.retrieve(userId)
@@ -289,7 +295,7 @@ class UserService extends TransactionBaseService<UserService> {
 
       user.password_hash = hashedPassword
 
-      return await userRepo.save(user)
+      return userRepo.save(user)
     })
   }
 
@@ -303,25 +309,20 @@ class UserService extends TransactionBaseService<UserService> {
    * @return {string} the generated JSON web token
    */
   async generateResetPasswordToken(userId: string): Promise<string> {
-    return await this.atomicPhase_(async (transactionManager) => {
-      const user = await this.retrieve(userId, {
-        select: ["id", "email", "password_hash"],
-      })
-      const secret = user.password_hash
-      const expiry = Math.floor(Date.now() / 1000) + 60 * 15
-      const payload = { user_id: user.id, email: user.email, exp: expiry }
-      const token = jwt.sign(payload, secret)
-
-      // Notify subscribers
-      await this.eventBus_
-        .withTransaction(transactionManager)
-        .emit(UserService.Events.PASSWORD_RESET, {
-          email: user.email,
-          token,
-        })
-
-      return token
+    const user = await this.retrieve(userId, {
+      select: ["id", "email", "password_hash"],
     })
+    const secret = user.password_hash
+    const expiry = Math.floor(Date.now() / 1000) + 60 * 15
+    const payload = { user_id: user.id, email: user.email, exp: expiry }
+    const token = jwt.sign(payload, secret)
+
+    // Notify subscribers
+    this.eventBus_.emit(UserService.Events.PASSWORD_RESET, {
+      email: user.email,
+      token,
+    })
+    return token
   }
 }
 

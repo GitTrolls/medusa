@@ -13,5 +13,3 @@ export * from "./simple-shipping-option-factory"
 export * from "./simple-shipping-method-factory"
 export * from "./simple-product-type-tax-rate-factory"
 export * from "./simple-price-list-factory"
-export * from "./simple-batch-job-factory"
-

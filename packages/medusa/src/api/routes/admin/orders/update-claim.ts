@@ -133,7 +133,7 @@ export class AdminPostOrdersOrderClaimsClaimReq {
 
   @IsObject()
   @IsOptional()
-  metadata?: Record<string, unknown>
+  metadata?: object
 }
 
 class ShippingMethod {

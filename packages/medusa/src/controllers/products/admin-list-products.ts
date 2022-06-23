@@ -3,10 +3,9 @@ import { AdminProductsListRes } from "../../api"
 import { pickBy } from "lodash"
 import { MedusaError } from "medusa-core-utils"
 import { Product } from "../../models/product"
-import { ProductService, PricingService } from "../../services"
+import { ProductService } from "../../services"
 import { getListConfig } from "../../utils/get-query-config"
 import { FilterableProductProps } from "../../types/product"
-import { PricedProduct } from "../../types/pricing"
 
 type ListContext = {
   limit: number
@@ -29,7 +28,6 @@ const listAndCount = async (
     context
 
   const productService: ProductService = scope.resolve("productService")
-  const pricingService: PricingService = scope.resolve("pricingService")
   let includeFields: (keyof Product)[] | undefined
   if (context.fields) {
     includeFields = context.fields.split(",") as (keyof Product)[]
@@ -69,19 +67,10 @@ const listAndCount = async (
     orderBy
   )
 
-  const [rawProducts, count] = await productService.listAndCount(
+  const [products, count] = await productService.listAndCount(
     pickBy(query, (val) => typeof val !== "undefined"),
     listConfig
   )
-
-  let products: (Product | PricedProduct)[] = rawProducts
-
-  const includesPricing = ["variants", "variants.prices"].every((relation) =>
-    listConfig?.relations?.includes(relation)
-  )
-  if (includesPricing) {
-    products = await pricingService.setProductPrices(rawProducts)
-  }
 
   return {
     products,

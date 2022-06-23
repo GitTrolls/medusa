@@ -23,7 +23,6 @@ import { buildQuery } from "../utils"
 import { FilterableProductProps } from "../types/product"
 import ProductVariantService from "./product-variant"
 import { FilterableProductVariantProps } from "../types/product-variant"
-import { ProductVariantRepository } from "../repositories/product-variant"
 
 type PriceListConstructorProps = {
   manager: EntityManager
@@ -33,7 +32,6 @@ type PriceListConstructorProps = {
   productVariantService: ProductVariantService
   priceListRepository: typeof PriceListRepository
   moneyAmountRepository: typeof MoneyAmountRepository
-  productVariantRepository: typeof ProductVariantRepository
 }
 
 /**
@@ -50,7 +48,6 @@ class PriceListService extends TransactionBaseService<PriceListService> {
   protected readonly variantService_: ProductVariantService
   protected readonly priceListRepo_: typeof PriceListRepository
   protected readonly moneyAmountRepo_: typeof MoneyAmountRepository
-  protected readonly productVariantRepo_: typeof ProductVariantRepository
 
   constructor({
     manager,
@@ -60,7 +57,6 @@ class PriceListService extends TransactionBaseService<PriceListService> {
     productVariantService,
     priceListRepository,
     moneyAmountRepository,
-    productVariantRepository,
   }: PriceListConstructorProps) {
     // eslint-disable-next-line prefer-rest-params
     super(arguments[0])
@@ -72,7 +68,6 @@ class PriceListService extends TransactionBaseService<PriceListService> {
     this.regionService_ = regionService
     this.priceListRepo_ = priceListRepository
     this.moneyAmountRepo_ = moneyAmountRepository
-    this.productVariantRepo_ = productVariantRepository
   }
 
   /**
@@ -252,7 +247,10 @@ class PriceListService extends TransactionBaseService<PriceListService> {
       const priceListRepo = manager.getCustomRepository(this.priceListRepo_)
 
       const { q, ...priceListSelector } = selector
-      const query = buildQuery(priceListSelector, config)
+      const query = buildQuery<FilterablePriceListProps>(
+        priceListSelector,
+        config
+      )
 
       const groups = query.where.customer_groups as FindOperator<string[]>
       query.where.customer_groups = undefined
@@ -279,10 +277,10 @@ class PriceListService extends TransactionBaseService<PriceListService> {
     return await this.atomicPhase_(async (manager: EntityManager) => {
       const priceListRepo = manager.getCustomRepository(this.priceListRepo_)
       const { q, ...priceListSelector } = selector
-      const { relations, ...query } = buildQuery<
-        FilterablePriceListProps,
-        FilterablePriceListProps
-      >(priceListSelector, config)
+      const { relations, ...query } = buildQuery<FilterablePriceListProps>(
+        priceListSelector,
+        config
+      )
 
       const groups = query.where.customer_groups as FindOperator<string[]>
       delete query.where.customer_groups
@@ -329,9 +327,6 @@ class PriceListService extends TransactionBaseService<PriceListService> {
     requiresPriceList = false
   ): Promise<[Product[], number]> {
     return await this.atomicPhase_(async (manager: EntityManager) => {
-      const productVariantRepo = manager.getCustomRepository(
-        this.productVariantRepo_
-      )
       const [products, count] = await this.productService_.listAndCount(
         selector,
         config
@@ -351,10 +346,10 @@ class PriceListService extends TransactionBaseService<PriceListService> {
                     requiresPriceList
                   )
 
-                return productVariantRepo.create({
+                return {
                   ...v,
                   prices,
-                })
+                }
               })
             )
           }

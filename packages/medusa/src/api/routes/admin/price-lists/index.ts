@@ -2,18 +2,7 @@ import { Router } from "express"
 import "reflect-metadata"
 import { PriceList } from "../../../.."
 import { DeleteResponse, PaginatedResponse } from "../../../../types/common"
-import middlewares, {
-  transformQuery,
-  transformBody,
-} from "../../../middlewares"
-import { AdminGetPriceListPaginationParams } from "./list-price-lists"
-import { AdminGetPriceListsPriceListProductsParams } from "./list-price-list-products"
-import {
-  allowedAdminProductFields,
-  defaultAdminProductFields,
-  defaultAdminProductRelations,
-} from "../products"
-import { AdminPostPriceListsPriceListReq } from "./create-price-list"
+import middlewares from "../../../middlewares"
 
 const route = Router()
 
@@ -24,21 +13,12 @@ export default (app) => {
 
   route.get(
     "/",
-    transformQuery(AdminGetPriceListPaginationParams, { isList: true }),
+    middlewares.normalizeQuery(),
     middlewares.wrap(require("./list-price-lists").default)
   )
 
   route.get(
     "/:id/products",
-    transformQuery(AdminGetPriceListsPriceListProductsParams, {
-      allowedFields: allowedAdminProductFields,
-      defaultFields: defaultAdminProductFields,
-      defaultRelations: defaultAdminProductRelations.filter(
-        (r) => r !== "variants.prices"
-      ),
-      defaultLimit: 50,
-      isList: true,
-    }),
     middlewares.wrap(require("./list-price-list-products").default)
   )
 
@@ -51,11 +31,7 @@ export default (app) => {
     middlewares.wrap(require("./delete-variant-prices").default)
   )
 
-  route.post(
-    "/",
-    transformBody(AdminPostPriceListsPriceListReq),
-    middlewares.wrap(require("./create-price-list").default)
-  )
+  route.post("/", middlewares.wrap(require("./create-price-list").default))
 
   route.post("/:id", middlewares.wrap(require("./update-price-list").default))
 
