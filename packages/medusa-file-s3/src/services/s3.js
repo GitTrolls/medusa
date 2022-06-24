@@ -1,10 +1,10 @@
 import fs from "fs"
 import aws from "aws-sdk"
-import { AbstractFileService } from '@medusajs/medusa'
+import { FileService } from "medusa-interfaces"
 
-class S3Service extends AbstractFileService {
+class S3Service extends FileService {
   constructor({}, options) {
-    super({}, options)
+    super()
 
     this.bucket_ = options.bucket
     this.s3Url_ = options.s3_url
@@ -15,13 +15,13 @@ class S3Service extends AbstractFileService {
   }
 
   upload(file) {
-    aws.config.setPromisesDependency(null)
+    aws.config.setPromisesDependency()
     aws.config.update({
       accessKeyId: this.accessKeyId_,
       secretAccessKey: this.secretAccessKey_,
       region: this.region_,
       endpoint: this.endpoint_,
-    }, true)
+    })
 
     const s3 = new aws.S3()
     var params = {
@@ -44,13 +44,13 @@ class S3Service extends AbstractFileService {
   }
 
   delete(file) {
-    aws.config.setPromisesDependency(null)
+    aws.config.setPromisesDependency()
     aws.config.update({
       accessKeyId: this.accessKeyId_,
       secretAccessKey: this.secretAccessKey_,
       region: this.region_,
       endpoint: this.endpoint_,
-    }, true)
+    })
 
     const s3 = new aws.S3()
     var params = {
@@ -67,18 +67,6 @@ class S3Service extends AbstractFileService {
         resolve(data)
       })
     })
-  }
-  
-  async getUploadStreamDescriptor(fileData) {
-    throw new Error("Method not implemented.")
-  }
-
-  async getDownloadStream(fileData) {
-    throw new Error("Method not implemented.")
-  }
-
-  async getPresignedDownloadUrl(fileData) {
-    throw new Error("Method not implemented.")
   }
 }
 

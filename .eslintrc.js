@@ -29,7 +29,7 @@ module.exports = {
       files: [`*.ts`],
       parser: `@typescript-eslint/parser`,
       plugins: [`@typescript-eslint/eslint-plugin`],
-      extends: [`plugin:@typescript-eslint/recommended`, "prettier"],
+      extends: [`plugin:@typescript-eslint/recommended`],
       rules: {
         "valid-jsdoc": [
           "error",

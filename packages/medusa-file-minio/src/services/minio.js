@@ -1,11 +1,10 @@
-import { AbstractFileService } from '@medusajs/medusa'
-import aws from "aws-sdk"
 import fs from "fs"
+import aws from "aws-sdk"
+import { FileService } from "medusa-interfaces"
 
-class MinioService extends AbstractFileService {
-  
+class MinioService extends FileService {
   constructor({}, options) {
-    super({}, options)
+    super()
 
     this.bucket_ = options.bucket
     this.accessKeyId_ = options.access_key_id
@@ -16,14 +15,14 @@ class MinioService extends AbstractFileService {
   }
 
   upload(file) {
-    aws.config.setPromisesDependency(null)
+    aws.config.setPromisesDependency()
     aws.config.update({
       accessKeyId: this.accessKeyId_,
       secretAccessKey: this.secretAccessKey_,
       endpoint: this.endpoint_,
       s3ForcePathStyle: this.s3ForcePathStyle_,
       signatureVersion: this.signatureVersion_,
-    }, true)
+    })
 
     const s3 = new aws.S3()
     const params = {
@@ -47,14 +46,14 @@ class MinioService extends AbstractFileService {
   }
 
   delete(file) {
-    aws.config.setPromisesDependency(null)
+    aws.config.setPromisesDependency()
     aws.config.update({
       accessKeyId: this.accessKeyId_,
       secretAccessKey: this.secretAccessKey_,
       endpoint: this.endpoint_,
       s3ForcePathStyle: this.s3ForcePathStyle_,
       signatureVersion: this.signatureVersion_,
-    }, true)
+    })
 
     const s3 = new aws.S3()
     const params = {
@@ -71,18 +70,6 @@ class MinioService extends AbstractFileService {
         resolve(data)
       })
     })
-  }
-
-  async getUploadStreamDescriptor(fileData) {
-    throw new Error("Method not implemented.")
-  }
-
-  async getDownloadStream(fileData) {
-    throw new Error("Method not implemented.")
-  }
-
-  async getPresignedDownloadUrl(fileData) {
-    throw new Error("Method not implemented.")
   }
 }
 

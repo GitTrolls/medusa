@@ -2,9 +2,6 @@ import { IdMap } from "medusa-test-utils"
 import Scrypt from "scrypt-kdf"
 
 export const CustomerServiceMock = {
-  withTransaction: function () {
-    return this
-  },
   create: jest.fn().mockImplementation((data) => {
     return Promise.resolve({ ...data, id: IdMap.getId("lebron") })
   }),
