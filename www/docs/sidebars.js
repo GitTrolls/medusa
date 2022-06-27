@@ -281,6 +281,17 @@ module.exports = {
         },
         {
           type: "category",
+          label: "Bot",
+          items: [
+            {
+              type: "doc",
+              id: "add-plugins/slack",
+              label: "Slack",
+            },
+          ],
+        },
+        {
+          type: "category",
           label: "CMS",
           items: [
             {
@@ -327,11 +338,6 @@ module.exports = {
               type: "doc",
               id: "add-plugins/twilio-sms",
               label: "Twilio SMS",
-            },
-            {
-              type: "doc",
-              id: "add-plugins/slack",
-              label: "Slack",
             },
           ],
         },
