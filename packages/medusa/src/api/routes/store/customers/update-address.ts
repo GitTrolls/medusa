@@ -45,9 +45,9 @@ export default async (req, res) => {
     "customerService"
   ) as CustomerService
 
-  await customerService.updateAddress(id, address_id, validated)
+  let customer = await customerService.updateAddress(id, address_id, validated)
 
-  const customer = await customerService.retrieve(id, {
+  customer = await customerService.retrieve(id, {
     relations: defaultStoreCustomersRelations,
     select: defaultStoreCustomersFields,
   })

@@ -1,32 +1,21 @@
 import Scrypt from "scrypt-kdf"
+import { BaseService } from "medusa-interfaces"
 import { AuthenticateResult } from "../types/auth"
-import { User, Customer } from "../models"
-import { TransactionBaseService } from "../interfaces"
-import UserService from "./user"
-import CustomerService from "./customer"
-import { EntityManager } from "typeorm"
-
-type InjectedDependencies = {
-  manager: EntityManager
-  userService: UserService
-  customerService: CustomerService
-}
+import { User } from "../models/user"
+import { Customer } from "../models/customer"
 
 /**
  * Can authenticate a user based on email password combination
  * @extends BaseService
  */
-class AuthService extends TransactionBaseService<AuthService> {
-  protected manager_: EntityManager
-  protected transactionManager_: EntityManager | undefined
-  protected readonly userService_: UserService
-  protected readonly customerService_: CustomerService
+class AuthService extends BaseService {
+  constructor({ userService, customerService }) {
+    super()
 
-  constructor({ manager, userService, customerService }: InjectedDependencies) {
-    super({ manager, userService, customerService })
-
-    this.manager_ = manager
+    /** @private @const {UserService} */
     this.userService_ = userService
+
+    /** @private @const {CustomerService} */
     this.customerService_ = customerService
   }
 
@@ -36,10 +25,7 @@ class AuthService extends TransactionBaseService<AuthService> {
    * @param {string} hash - the hash to compare against
    * @return {bool} the result of the comparison
    */
-  protected async comparePassword_(
-    password: string,
-    hash: string
-  ): Promise<boolean> {
+  async comparePassword_(password: string, hash: string): Promise<boolean> {
     const buf = Buffer.from(hash, "base64")
     return Scrypt.verify(buf, password)
   }
@@ -53,36 +39,30 @@ class AuthService extends TransactionBaseService<AuthService> {
    *    error: a string with the error message
    */
   async authenticateAPIToken(token: string): Promise<AuthenticateResult> {
-    return await this.atomicPhase_(async (transactionManager) => {
-      if (process.env.NODE_ENV?.startsWith("dev")) {
-        try {
-          const user: User = await this.userService_
-            .withTransaction(transactionManager)
-            .retrieve(token)
-          return {
-            success: true,
-            user,
-          }
-        } catch (error) {
-          // ignore
-        }
-      }
-
+    if (process.env.NODE_ENV === "development") {
       try {
-        const user: User = await this.userService_
-          .withTransaction(transactionManager)
-          .retrieveByApiToken(token)
+        const user: User = await this.userService_.retrieve(token)
         return {
           success: true,
           user,
         }
       } catch (error) {
-        return {
-          success: false,
-          error: "Invalid API Token",
-        }
+        // ignore
       }
-    })
+    }
+
+    try {
+      const user: User = await this.userService_.retrieveByApiToken(token)
+      return {
+        success: true,
+        user,
+      }
+    } catch (error) {
+      return {
+        success: false,
+        error: "Invalid API Token",
+      }
+    }
   }
 
   /**
@@ -99,39 +79,35 @@ class AuthService extends TransactionBaseService<AuthService> {
     email: string,
     password: string
   ): Promise<AuthenticateResult> {
-    return await this.atomicPhase_(async (transactionManager) => {
-      try {
-        const userPasswordHash: User = await this.userService_
-          .withTransaction(transactionManager)
-          .retrieveByEmail(email, {
-            select: ["password_hash"],
-          })
-
-        const passwordsMatch = await this.comparePassword_(
-          password,
-          userPasswordHash.password_hash
-        )
-
-        if (passwordsMatch) {
-          const user = await this.userService_
-            .withTransaction(transactionManager)
-            .retrieveByEmail(email)
-
-          return {
-            success: true,
-            user: user,
-          }
+    try {
+      const userPasswordHash: User = await this.userService_.retrieveByEmail(
+        email,
+        {
+          select: ["password_hash"],
         }
-      } catch (error) {
-        console.log("error ->", error)
-        // ignore
-      }
+      )
 
-      return {
-        success: false,
-        error: "Invalid email or password",
+      const passwordsMatch = await this.comparePassword_(
+        password,
+        userPasswordHash.password_hash
+      )
+
+      if (passwordsMatch) {
+        const user = await this.userService_.retrieveByEmail(email)
+
+        return {
+          success: true,
+          user: user,
+        }
       }
-    })
+    } catch (error) {
+      // ignore
+    }
+
+    return {
+      success: false,
+      error: "Invalid email or password",
+    }
   }
 
   /**
@@ -148,39 +124,32 @@ class AuthService extends TransactionBaseService<AuthService> {
     email: string,
     password: string
   ): Promise<AuthenticateResult> {
-    return await this.atomicPhase_(async (transactionManager) => {
-      try {
-        const customerPasswordHash: Customer = await this.customerService_
-          .withTransaction(transactionManager)
-          .retrieveByEmail(email, {
-            select: ["password_hash"],
-          })
-        if (customerPasswordHash.password_hash) {
-          const passwordsMatch = await this.comparePassword_(
-            password,
-            customerPasswordHash.password_hash
-          )
+    try {
+      const customerPasswordHash: Customer =
+        await this.customerService_.retrieveByEmail(email, {
+          select: ["password_hash"],
+        })
+      if (customerPasswordHash.password_hash) {
+        const passwordsMatch = await this.comparePassword_(
+          password,
+          customerPasswordHash.password_hash
+        )
 
-          if (passwordsMatch) {
-            const customer = await this.customerService_
-              .withTransaction(transactionManager)
-              .retrieveByEmail(email)
-
-            return {
-              success: true,
-              customer,
-            }
+        if (passwordsMatch) {
+          const customer = await this.customerService_.retrieveByEmail(email)
+          return {
+            success: true,
+            customer,
           }
         }
-      } catch (error) {
-        // ignore
       }
-
-      return {
-        success: false,
-        error: "Invalid email or password",
-      }
-    })
+    } catch (error) {
+      // ignore
+    }
+    return {
+      success: false,
+      error: "Invalid email or password",
+    }
   }
 }
 
