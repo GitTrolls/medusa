@@ -68,7 +68,7 @@ module.exports = {
         },
         {
           type: "doc",
-          id: "usage/create-medusa-app",
+          id: "how-to/create-medusa-app",
         },
         {
           type: "category",
@@ -281,6 +281,17 @@ module.exports = {
         },
         {
           type: "category",
+          label: "Bot",
+          items: [
+            {
+              type: "doc",
+              id: "add-plugins/slack",
+              label: "Slack",
+            },
+          ],
+        },
+        {
+          type: "category",
           label: "CMS",
           items: [
             {
@@ -327,11 +338,6 @@ module.exports = {
               type: "doc",
               id: "add-plugins/twilio-sms",
               label: "Twilio SMS",
-            },
-            {
-              type: "doc",
-              id: "add-plugins/slack",
-              label: "Slack",
             },
           ],
         },
@@ -430,11 +436,6 @@ module.exports = {
           label: "Documentation Error",
         },
       ],
-    },
-    {
-      type: "doc",
-      id: "cli/reference",
-      label: "CLI Reference",
     },
     {
       type: "doc",
