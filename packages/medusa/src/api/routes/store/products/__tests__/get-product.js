@@ -23,6 +23,10 @@ describe("Get product by id", () => {
         IdMap.getId("product1"),
         {
           relations: defaultStoreProductsRelations,
+          cart_id: undefined,
+          currency_code: undefined,
+          region_id: undefined,
+          include_discount_prices: true,
         }
       )
     })
@@ -55,6 +59,10 @@ describe("Get product by id", () => {
         IdMap.getId("variantsWithPrices"),
         {
           relations: defaultStoreProductsRelations,
+          cart_id: undefined,
+          currency_code: undefined,
+          region_id: undefined,
+          include_discount_prices: true,
         }
       )
     })

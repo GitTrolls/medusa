@@ -21,7 +21,7 @@ import { ShippingProfile } from "./shipping-profile"
 import { SoftDeletableEntity } from "../interfaces/models/soft-deletable-entity"
 import { generateEntityId } from "../utils/generate-entity-id"
 
-export enum ProductStatus {
+export enum Status {
   DRAFT = "draft",
   PROPOSED = "proposed",
   PUBLISHED = "published",
@@ -33,21 +33,21 @@ export class Product extends SoftDeletableEntity {
   @Column()
   title: string
 
-  @Column({ type: "text", nullable: true })
-  subtitle: string | null
+  @Column({ nullable: true })
+  subtitle: string
 
-  @Column({ type: "text", nullable: true })
-  description: string | null
+  @Column({ nullable: true })
+  description: string
 
   @Index({ unique: true, where: "deleted_at IS NULL" })
-  @Column({ type: "text", nullable: true })
-  handle: string | null
+  @Column({ nullable: true })
+  handle: string
 
   @Column({ default: false })
   is_giftcard: boolean
 
-  @DbAwareColumn({ type: "enum", enum: ProductStatus, default: "draft" })
-  status: ProductStatus
+  @DbAwareColumn({ type: "enum", enum: Status, default: "draft" })
+  status: Status
 
   @ManyToMany(() => Image, { cascade: ["insert"] })
   @JoinTable({
@@ -63,22 +63,15 @@ export class Product extends SoftDeletableEntity {
   })
   images: Image[]
 
-  @Column({ type: "text", nullable: true })
-  thumbnail: string | null
+  @Column({ nullable: true })
+  thumbnail: string
 
-  @OneToMany(
-    () => ProductOption,
-    (productOption) => productOption.product
-  )
+  @OneToMany(() => ProductOption, (productOption) => productOption.product)
   options: ProductOption[]
 
-  @OneToMany(
-    () => ProductVariant,
-    (variant) => variant.product,
-    {
-      cascade: true,
-    }
-  )
+  @OneToMany(() => ProductVariant, (variant) => variant.product, {
+    cascade: true,
+  })
   variants: ProductVariant[]
 
   @Index()
@@ -90,38 +83,38 @@ export class Product extends SoftDeletableEntity {
   profile: ShippingProfile
 
   @Column({ type: "int", nullable: true })
-  weight: number | null
+  weight: number
 
   @Column({ type: "int", nullable: true })
-  length: number | null
+  length: number
 
   @Column({ type: "int", nullable: true })
-  height: number | null
+  height: number
 
   @Column({ type: "int", nullable: true })
-  width: number | null
+  width: number
 
-  @Column({ type: "text", nullable: true })
-  hs_code: string | null
+  @Column({ nullable: true })
+  hs_code: string
 
-  @Column({ type: "text", nullable: true })
-  origin_country: string | null
+  @Column({ nullable: true })
+  origin_country: string
 
-  @Column({ type: "text", nullable: true })
-  mid_code: string | null
+  @Column({ nullable: true })
+  mid_code: string
 
-  @Column({ type: "text", nullable: true })
-  material: string | null
+  @Column({ nullable: true })
+  material: string
 
-  @Column({ type: "text", nullable: true })
+  @Column({ nullable: true })
   collection_id: string | null
 
   @ManyToOne(() => ProductCollection)
   @JoinColumn({ name: "collection_id" })
   collection: ProductCollection
 
-  @Column({ type: "text", nullable: true })
-  type_id: string | null
+  @Column({ nullable: true })
+  type_id: string
 
   @ManyToOne(() => ProductType)
   @JoinColumn({ name: "type_id" })
@@ -144,11 +137,11 @@ export class Product extends SoftDeletableEntity {
   @Column({ default: true })
   discountable: boolean
 
-  @Column({ type: "text", nullable: true })
-  external_id: string | null
+  @Column({ nullable: true })
+  external_id: string
 
   @DbAwareColumn({ type: "jsonb", nullable: true })
-  metadata: Record<string, unknown> | null
+  metadata: Record<string, unknown>
 
   @BeforeInsert()
   private beforeInsert(): void {

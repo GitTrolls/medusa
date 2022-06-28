@@ -12,9 +12,12 @@ import {
   ValidateIf,
   ValidateNested,
 } from "class-validator"
-import { defaultAdminProductFields, defaultAdminProductRelations } from "."
-import { ProductStatus } from "../../../../models"
-import { ProductService, PricingService } from "../../../../services"
+import {
+  defaultAdminProductFields,
+  defaultAdminProductRelations,
+  ProductStatus,
+} from "."
+import { ProductService } from "../../../../services"
 import { ProductVariantPricesUpdateReq } from "../../../../types/product-variant"
 import { validator } from "../../../../utils/validator"
 
@@ -207,15 +210,13 @@ export default async (req, res) => {
   const validated = await validator(AdminPostProductsProductReq, req.body)
 
   const productService: ProductService = req.scope.resolve("productService")
-  const pricingService: PricingService = req.scope.resolve("pricingService")
 
   await productService.update(id, validated)
 
-  const rawProduct = await productService.retrieve(id, {
+  const product = await productService.retrieve(id, {
     select: defaultAdminProductFields,
     relations: defaultAdminProductRelations,
   })
-  const [product] = await pricingService.setProductPrices([rawProduct])
 
   res.json({ product })
 }
@@ -317,7 +318,7 @@ class ProductVariantReq {
 
   @IsObject()
   @IsOptional()
-  metadata?: Record<string, unknown>
+  metadata?: object
 
   @IsArray()
   @IsOptional()
@@ -421,5 +422,5 @@ export class AdminPostProductsProductReq {
 
   @IsObject()
   @IsOptional()
-  metadata?: Record<string, unknown>
+  metadata?: object
 }

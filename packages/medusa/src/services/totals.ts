@@ -689,6 +689,7 @@ class TotalsService extends BaseService {
     const calculationContext = this.getCalculationContext(cartOrOrder, {
       exclude_shipping: true,
     })
+
     const lineItemAllocation =
       calculationContext.allocation_map[lineItem.id] || {}
 
