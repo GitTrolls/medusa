@@ -77,7 +77,7 @@ export const defaultAdminDraftOrdersCartFields: (keyof Cart)[] = [
   "total",
 ]
 
-export const defaultAdminDraftOrdersFields: (keyof DraftOrder)[] = [
+export const defaultAdminDraftOrdersFields = [
   "id",
   "status",
   "display_id",

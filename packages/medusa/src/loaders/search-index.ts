@@ -42,7 +42,6 @@ async function loadProductsIntoSearchEngine(
           "type",
           "collection",
           "variants.prices",
-          "images",
           "variants.options",
           "options",
         ],

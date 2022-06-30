@@ -2,7 +2,6 @@ import { IsString } from "class-validator"
 import { defaultStoreCartFields, defaultStoreCartRelations } from "."
 import { CartService } from "../../../../services"
 import { validator } from "../../../../utils/validator"
-import { decorateLineItemsWithTotals } from "./decorate-line-items-with-totals"
 
 /**
  * @oas [post] /carts/{id}/payment-session
@@ -40,8 +39,7 @@ export default async (req, res) => {
     relations: defaultStoreCartRelations,
   })
 
-  const data = await decorateLineItemsWithTotals(cart, req)
-  res.status(200).json({ cart: data })
+  res.status(200).json({ cart })
 }
 
 export class StorePostCartsCartPaymentSessionReq {

@@ -166,11 +166,11 @@ function buildLocalCommands(cli, isLocalProject) {
     })
     .command({
       command: `migrations [action]`,
-      desc: `Manage migrations from the core and your own project`,
+      desc: `Migrate the database to the most recent version.`,
       builder: {
         action: {
           demand: true,
-          choices: ["run", "revert", "show"],
+          choices: ["run", "show"],
         },
       },
       handler: handlerP(

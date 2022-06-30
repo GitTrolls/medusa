@@ -302,7 +302,7 @@ class RegionService extends BaseService {
   async validateCurrency_(currencyCode) {
     const store = await this.storeService_
       .withTransaction(this.transactionManager_)
-      .retrieve({ relations: ["currencies"] })
+      .retrieve(["currencies"])
 
     const storeCurrencies = store.currencies.map((curr) => curr.code)
 
@@ -326,10 +326,8 @@ class RegionService extends BaseService {
     )
 
     const countryCode = code.toUpperCase()
-    const isCountryExists = countries.some(
-      (country) => country.alpha2 === countryCode
-    )
-    if (!isCountryExists) {
+    const validCountry = countries.find((c) => c.alpha2 === countryCode)
+    if (!validCountry) {
       throw new MedusaError(
         MedusaError.Types.INVALID_DATA,
         "Invalid country code"
