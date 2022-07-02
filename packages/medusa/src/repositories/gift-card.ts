@@ -1,20 +1,15 @@
-import { flatten, groupBy, merge } from "lodash"
-import {
-  Brackets,
-  EntityRepository,
-  FindManyOptions,
-  Repository,
-} from "typeorm"
+import { flatten, groupBy, map, merge } from "lodash"
+import { EntityRepository, FindManyOptions, Repository } from "typeorm"
 import { GiftCard } from "../models/gift-card"
-import { ExtendedFindConfig, QuerySelector, Writable } from "../types/common"
 
 @EntityRepository(GiftCard)
 export class GiftCardRepository extends Repository<GiftCard> {
   public async findWithRelations(
-    relations: (keyof GiftCard | string)[] = [],
-    idsOrOptionsWithoutRelations:
-      | Omit<FindManyOptions<GiftCard>, "relations">
-      | string[] = {}
+    relations: Array<keyof GiftCard> = [],
+    idsOrOptionsWithoutRelations: Omit<
+      FindManyOptions<GiftCard>,
+      "relations"
+    > = {}
   ): Promise<GiftCard[]> {
     let entities
     if (Array.isArray(idsOrOptionsWithoutRelations)) {
@@ -45,45 +40,9 @@ export class GiftCardRepository extends Repository<GiftCard> {
     const entitiesAndRelations = entitiesIdsWithRelations.concat(entities)
 
     const entitiesAndRelationsById = groupBy(entitiesAndRelations, "id")
-    return Object.values(entitiesAndRelationsById).map((v) => merge({}, ...v))
-  }
-
-  protected async queryGiftCards(
-    q: string,
-    where: Partial<Writable<QuerySelector<GiftCard>>>,
-    rels: (keyof GiftCard | string)[]
-  ): Promise<GiftCard[]> {
-    const raw = await this.createQueryBuilder("gift_card")
-      .leftJoinAndSelect("gift_card.order", "order")
-      .select(["gift_card.id"])
-      .where(where)
-      .andWhere(
-        new Brackets((qb) => {
-          return qb
-            .where(`gift_card.code ILIKE :q`, { q: `%${q}%` })
-            .orWhere(`display_id::varchar(255) ILIKE :dId`, { dId: `${q}` })
-        })
-      )
-      .getMany()
-
-    return this.findWithRelations(
-      rels,
-      raw.map((i) => i.id)
+    return map(entitiesAndRelationsById, entityAndRelations =>
+      merge({}, ...entityAndRelations)
     )
-  }
-
-  public async listGiftCards(
-    query: ExtendedFindConfig<GiftCard, QuerySelector<GiftCard>>,
-    rels: (keyof GiftCard | string)[] = [],
-    q?: string
-  ): Promise<GiftCard[]> {
-    if (q) {
-      const where = query.where
-      delete where.id
-
-      return await this.queryGiftCards(q, where, rels)
-    }
-    return this.findWithRelations(rels, query)
   }
 
   public async findOneWithRelations(

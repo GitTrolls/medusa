@@ -1,8 +1,6 @@
-import { IsString } from "class-validator"
-
 /**
  * [delete] /uploads
- * operationId: "AdminDeleteUploads"
+ * operationId: "AdminDeleteUpload"
  * summary: "Removes an uploaded file"
  * description: "Removes an uploaded file using the installed fileservice"
  * x-authenticated: true
@@ -13,18 +11,14 @@ import { IsString } from "class-validator"
  *     description: OK
  */
 export default async (req, res) => {
-  const validated = req.validatedBody as AdminDeleteUploadsReq
+  try {
+    const fileService = req.scope.resolve("fileService")
 
-  const fileService = req.scope.resolve("fileService")
+    await fileService.delete(req.body.file)
 
-  await fileService.delete(validated)
-
-  res
-    .status(200)
-    .send({ id: validated.file_key, object: "file", deleted: true })
-}
-
-export class AdminDeleteUploadsReq {
-  @IsString()
-  file_key: string
+    res.status(200).send({ id: "", object: "file", deleted: true })
+  } catch (err) {
+    console.log(err)
+    throw err
+  }
 }

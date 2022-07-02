@@ -1,6 +1,6 @@
 import { IsObject, IsOptional, IsString } from "class-validator"
 import ProductCollectionService from "../../../../services/product-collection"
-import { Request, Response } from "express"
+import { validator } from "../../../../utils/validator"
 /**
  * @oas [post] /collections/{id}
  * operationId: "PostCollectionsCollection"
@@ -35,15 +35,15 @@ import { Request, Response } from "express"
  *            collection:
  *              $ref: "#/components/schemas/product_collection"
  */
-export default async (req: Request, res: Response) => {
+export default async (req, res) => {
   const { id } = req.params
-  const { validatedBody } = req
 
+  const validated = await validator(AdminPostCollectionsCollectionReq, req.body)
   const productCollectionService: ProductCollectionService = req.scope.resolve(
     "productCollectionService"
   )
 
-  const updated = await productCollectionService.update(id, validatedBody)
+  const updated = await productCollectionService.update(id, validated)
   const collection = await productCollectionService.retrieve(updated.id)
 
   res.status(200).json({ collection })

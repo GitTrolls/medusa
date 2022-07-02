@@ -2,58 +2,27 @@ import { Router } from "express"
 import "reflect-metadata"
 import { ProductCollection } from "../../../.."
 import { DeleteResponse, PaginatedResponse } from "../../../../types/common"
-import middlewares, { transformBody, transformQuery } from "../../../middlewares"
-import { AdminGetCollectionsParams } from "./list-collections"
-import { AdminPostCollectionsReq } from "./create-collection"
-import { AdminPostCollectionsCollectionReq } from "./update-collection"
-import { AdminPostProductsToCollectionReq } from "./add-products"
-import { AdminDeleteProductsFromCollectionReq } from "./remove-products"
+import middlewares from "../../../middlewares"
+
+const route = Router()
 
 export default (app) => {
-  const route = Router()
   app.use("/collections", route)
 
-  route.post(
-    "/",
-    transformBody(AdminPostCollectionsReq),
-    middlewares.wrap(require("./create-collection").default)
-  )
-  route.get(
-    "/",
-    transformQuery(
-      AdminGetCollectionsParams,
-      {
-        defaultRelations: defaultAdminCollectionsRelations,
-        defaultFields: defaultAdminCollectionsFields,
-        isList: true,
-      }
-    ),
-    middlewares.wrap(require("./list-collections").default)
-  )
+  route.post("/", middlewares.wrap(require("./create-collection").default))
+  route.post("/:id", middlewares.wrap(require("./update-collection").default))
 
-  const collectionRouter = Router({ mergeParams: true })
-  route.use("/:id", collectionRouter)
-  collectionRouter.post(
-    "/",
-    transformBody(AdminPostCollectionsCollectionReq),
-    middlewares.wrap(require("./update-collection").default)
-  )
-  collectionRouter.get(
-    "/",
-    middlewares.wrap(require("./get-collection").default)
-  )
-  collectionRouter.delete(
-    "/",
-    middlewares.wrap(require("./delete-collection").default)
-  )
-  collectionRouter.post(
-    "/products/batch",
-    transformBody(AdminPostProductsToCollectionReq),
+  route.delete("/:id", middlewares.wrap(require("./delete-collection").default))
+
+  route.get("/:id", middlewares.wrap(require("./get-collection").default))
+  route.get("/", middlewares.wrap(require("./list-collections").default))
+
+  route.post(
+    "/:id/products/batch",
     middlewares.wrap(require("./add-products").default)
   )
-  collectionRouter.delete(
-    "/products/batch",
-    transformBody(AdminDeleteProductsFromCollectionReq),
+  route.delete(
+    "/:id/products/batch",
     middlewares.wrap(require("./remove-products").default)
   )
 

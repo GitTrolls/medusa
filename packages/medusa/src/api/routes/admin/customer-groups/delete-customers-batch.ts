@@ -3,7 +3,6 @@ import { ValidateNested } from "class-validator"
 import { CustomerGroupService } from "../../../../services"
 import { CustomerGroupsBatchCustomer } from "../../../../types/customer-groups"
 import { validator } from "../../../../utils/validator"
-import { Request, Response } from "express"
 
 /**
  * @oas [delete] /customer-groups/{id}/customers/batch
@@ -27,7 +26,7 @@ import { Request, Response } from "express"
  *               $ref: "#/components/schemas/customergroup"
  */
 
-export default async (req: Request, res: Response) => {
+export default async (req, res) => {
   const { id } = req.params
   const validated = await validator(
     AdminDeleteCustomerGroupsGroupCustomerBatchReq,

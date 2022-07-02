@@ -1,4 +1,4 @@
-import { CartService, PricingService } from "../../../../services"
+import CartService from "../../../../services/cart"
 import ShippingProfileService from "../../../../services/shipping-profile"
 
 /**
@@ -26,7 +26,6 @@ export default async (req, res) => {
   const { cart_id } = req.params
 
   const cartService: CartService = req.scope.resolve("cartService")
-  const pricingService: PricingService = req.scope.resolve("pricingService")
   const shippingProfileService: ShippingProfileService = req.scope.resolve(
     "shippingProfileService"
   )
@@ -37,9 +36,6 @@ export default async (req, res) => {
   })
 
   const options = await shippingProfileService.fetchCartOptions(cart)
-  const data = await pricingService.setShippingOptionPrices(options, {
-    cart_id,
-  })
 
-  res.status(200).json({ shipping_options: data })
+  res.status(200).json({ shipping_options: options })
 }

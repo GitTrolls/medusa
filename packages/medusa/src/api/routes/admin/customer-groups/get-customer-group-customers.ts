@@ -1,5 +1,4 @@
 import CustomerController from "../../../../controllers/customers"
-import { Request, Response } from "express"
 
 /**
  * @oas [get] /customer-groups/{id}/customers
@@ -19,7 +18,7 @@ import { Request, Response } from "express"
  *             customer:
  *               $ref: "#/components/schemas/customer"
  */
-export default async (req: Request, res: Response) => {
+export default async (req, res) => {
   const { id } = req.params
 
   req.query.groups = [id]

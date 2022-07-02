@@ -14,12 +14,7 @@ export default (app) => {
 
 export const defaultStoreGiftCardRelations = ["region"]
 
-export const defaultStoreGiftCardFields: (keyof GiftCard)[] = [
-  "id",
-  "code",
-  "value",
-  "balance",
-]
+export const defaultStoreGiftCardFields = ["id", "code", "value", "balance"]
 
 export const allowedStoreGiftCardRelations = ["region"]
 

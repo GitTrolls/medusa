@@ -1,6 +1,5 @@
 import { defaultAdminCollectionsRelations } from "."
 import ProductCollectionService from "../../../../services/product-collection"
-import { Request, Response } from "express"
 /**
  * @oas [get] /collections/{id}
  * operationId: "GetCollectionsCollection"
@@ -21,15 +20,17 @@ import { Request, Response } from "express"
  *            collection:
  *              $ref: "#/components/schemas/product_collection"
  */
-export default async (req: Request, res: Response) => {
+export default async (req, res) => {
   const { id } = req.params
+
+  const retrieveConfig = {
+    relations: defaultAdminCollectionsRelations,
+  }
 
   const productCollectionService: ProductCollectionService = req.scope.resolve(
     "productCollectionService"
   )
 
-  const collection = await productCollectionService.retrieve(id, {
-    relations: defaultAdminCollectionsRelations,
-  })
+  const collection = await productCollectionService.retrieve(id, retrieveConfig)
   res.status(200).json({ collection })
 }

@@ -287,21 +287,19 @@ class WebshipperFulfillmentService extends FulfillmentService {
           fulfillmentItems
         )
 
-        if (base64Invoice) {
-          invoice = await this.client_.documents
-            .create({
-              type: "documents",
-              attributes: {
-                document_size: this.options_.document_size || "A4",
-                document_format: "PDF",
-                base64: base64Invoice,
-                document_type: "invoice",
-              },
-            })
-            .catch((err) => {
-              throw err
-            })
-        }
+        invoice = await this.client_.documents
+          .create({
+            type: "documents",
+            attributes: {
+              document_size: this.options_.document_size || "A4",
+              document_format: "PDF",
+              base64: base64Invoice,
+              document_type: "invoice",
+            },
+          })
+          .catch((err) => {
+            throw err
+          })
 
         const cooCountries = this.options_.coo_countries
         if (

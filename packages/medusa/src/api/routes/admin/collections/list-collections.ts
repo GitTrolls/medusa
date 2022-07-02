@@ -1,10 +1,13 @@
 import { Type } from "class-transformer"
 import { IsNumber, IsOptional, IsString, ValidateNested } from "class-validator"
 import _, { identity } from "lodash"
+import {
+  defaultAdminCollectionsFields,
+  defaultAdminCollectionsRelations,
+} from "."
 import ProductCollectionService from "../../../../services/product-collection"
 import { DateComparisonOperator } from "../../../../types/common"
-import { Request, Response } from "express"
-
+import { validator } from "../../../../utils/validator"
 /**
  * @oas [get] /collections
  * operationId: "GetCollections"
@@ -31,16 +34,21 @@ import { Request, Response } from "express"
  *            collection:
  *              $ref: "#/components/schemas/product_collection"
  */
-export default async (req: Request, res: Response) => {
+export default async (req, res) => {
+  const validated = await validator(AdminGetCollectionsParams, req.query)
+
   const productCollectionService: ProductCollectionService = req.scope.resolve(
     "productCollectionService"
   )
 
-  const {
-    validatedQuery: { limit, offset },
-    filterableFields,
-    listConfig
-  } = req
+  const listConfig = {
+    select: defaultAdminCollectionsFields,
+    relations: defaultAdminCollectionsRelations,
+    skip: validated.offset,
+    take: validated.limit,
+  }
+
+  const filterableFields = _.omit(validated, ["limit", "offset"])
 
   const [collections, count] = await productCollectionService.listAndCount(
     _.pickBy(filterableFields, identity),
@@ -50,8 +58,8 @@ export default async (req: Request, res: Response) => {
   res.status(200).json({
     collections,
     count,
-    offset,
-    limit,
+    offset: validated.offset,
+    limit: validated.limit,
   })
 }
 

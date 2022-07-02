@@ -53,5 +53,5 @@ export class AdminPostCustomersReq {
 
   @IsObject()
   @IsOptional()
-  metadata?: Record<string, unknown>
+  metadata?: object
 }

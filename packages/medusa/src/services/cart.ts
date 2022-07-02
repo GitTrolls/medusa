@@ -1,8 +1,9 @@
-import { isEmpty, isEqual } from "lodash"
+import _ from "lodash"
 import { MedusaError, Validator } from "medusa-core-utils"
 import { DeepPartial, EntityManager, In } from "typeorm"
 import { TransactionBaseService } from "../interfaces"
 import { IPriceSelectionStrategy } from "../interfaces/price-selection-strategy"
+import { DiscountRuleType } from "../models"
 import { Address } from "../models/address"
 import { Cart } from "../models/cart"
 import { CustomShippingOption } from "../models/custom-shipping-option"
@@ -38,7 +39,6 @@ import RegionService from "./region"
 import ShippingOptionService from "./shipping-option"
 import TaxProviderService from "./tax-provider"
 import TotalsService from "./totals"
-import { DiscountRuleType } from "../models"
 
 type InjectedDependencies = {
   manager: EntityManager
@@ -262,7 +262,7 @@ class CartService extends TransactionBaseService<CartService> {
           this.cartRepository_
         )
 
-        const query = buildQuery(selector, config)
+        const query = buildQuery<Cart>(selector, config)
         return await cartRepo.find(query)
       }
     )
@@ -290,7 +290,7 @@ class CartService extends TransactionBaseService<CartService> {
         const { select, relations, totalsToSelect } =
           this.transformQueryForTotals_(options)
 
-        const query = buildQuery(
+        const query = buildQuery<Cart>(
           { id: validatedId },
           { ...options, select, relations }
         )
@@ -546,7 +546,7 @@ class CartService extends TransactionBaseService<CartService> {
         if (lineItem.should_merge) {
           currentItem = cart.items.find((item) => {
             if (item.should_merge && item.variant_id === lineItem.variant_id) {
-              return isEqual(item.metadata, lineItem.metadata)
+              return _.isEqual(item.metadata, lineItem.metadata)
             }
             return false
           })
@@ -706,14 +706,7 @@ class CartService extends TransactionBaseService<CartService> {
           cart.shipping_methods.map(async (shippingMethod) => {
             // if free shipping discount is removed, we adjust the shipping
             // back to its original amount
-            // if shipping option amount is null, we assume the option is calculated
-            shippingMethod.price =
-              shippingMethod.shipping_option.amount ??
-              (await this.shippingOptionService_.getPrice_(
-                shippingMethod.shipping_option,
-                shippingMethod.data,
-                cart
-              ))
+            shippingMethod.price = shippingMethod.shipping_option.amount
             return shippingMethodRepository.save(shippingMethod)
           })
         )
@@ -1072,7 +1065,7 @@ class CartService extends TransactionBaseService<CartService> {
         let sawNotShipping = false
         const newDiscounts = toParse.map((discountToParse) => {
           switch (discountToParse.rule?.type) {
-            case DiscountRuleType.FREE_SHIPPING:
+            case "free_shipping":
               if (discountToParse.rule.type === rule.type) {
                 return discount
               }
@@ -1786,7 +1779,7 @@ class CartService extends TransactionBaseService<CartService> {
       let updated = { ...shippingAddress }
 
       // If the country code of a shipping address is set we need to clear it
-      if (!isEmpty(shippingAddress) && shippingAddress.country_code) {
+      if (!_.isEmpty(shippingAddress) && shippingAddress.country_code) {
         updated = {
           ...updated,
           country_code: null,
@@ -1938,7 +1931,6 @@ class CartService extends TransactionBaseService<CartService> {
             "region.tax_rates",
           ],
         })
-
         const calculationContext = this.totalsService_
           .withTransaction(transactionManager)
           .getCalculationContext(cart)

@@ -26,9 +26,6 @@ export const users = {
 }
 
 export const UserServiceMock = {
-  withTransaction: function () {
-    return this
-  },
   create: jest.fn().mockImplementation(data => {
     if (data.email === "oliver@test.dk") {
       return Promise.resolve(users.testUser)

@@ -254,11 +254,21 @@ export class TaxRateRepository extends Repository<TaxRate> {
     return unionBy(...results, (txr) => txr.id)
   }
 
-  async listByShippingOption(optionId: string) {
+  async listByShippingOption(optionId: string, config: TaxRateListByConfig) {
     let rates = this.createQueryBuilder("txr")
       .leftJoin(ShippingTaxRate, "ptr", "ptr.rate_id = txr.id")
-      .where("ptr.shipping_option_id = :optionId", { optionId })
+      .leftJoin(
+        ShippingMethod,
+        "sm",
+        "sm.shipping_option_id = ptr.shipping_option_id"
+      )
+      .where("sm.shipping_option_id = :optionId", { optionId })
 
+    if (typeof config.region_id !== "undefined") {
+      rates.andWhere("txr.region_id = :regionId", {
+        regionId: config.region_id,
+      })
+    }
     return await rates.getMany()
   }
 }
