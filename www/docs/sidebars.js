@@ -68,66 +68,36 @@ module.exports = {
         },
         {
           type: "doc",
-          id: "usage/create-medusa-app",
+          id: "how-to/create-medusa-app",
         },
         {
           type: "category",
           label: "Deployment",
           items: [
             {
-              type: "category",
-              label: "Server",
-              link: {
-                type: "doc",
-                id: "deployments/server/index"
-              },
-              items: [
-                {
-                  type: "doc",
-                  id: "deployments/server/deploying-on-heroku",
-                  label: "Deploy on Heroku"
-                },
-                {
-                  type: "doc",
-                  id: "deployments/server/deploying-on-digital-ocean",
-                  label: "Deploy on DigitalOcean"
-                },
-                {
-                  type: "doc",
-                  id: "deployments/server/deploying-on-qovery",
-                  label: "Deploy on Qovery"
-                }
-              ]
+              type: "doc",
+              id: "how-to/deploying-on-heroku",
+              label: "Deploy: Heroku",
             },
             {
-              type: "category",
-              label: "Admin",
-              link: {
-                type: "doc",
-                id: "deployments/admin/index"
-              },
-              items: [
-                {
-                  type: "doc",
-                  id: "deployments/admin/deploying-on-netlify",
-                  label: "Deploy on Netlify"
-                },
-              ]
+              type: "doc",
+              id: "how-to/deploying-on-qovery",
+              label: "Deploy: Qovery",
             },
             {
-              type: "category",
-              label: "Storefront",
-              link: {
-                type: "doc",
-                id: "deployments/storefront/index"
-              },
-              items: [
-                {
-                  type: "doc",
-                  id: "deployments/storefront/deploying-gatsby-on-netlify",
-                  label: "Deploy Gatsby on Netlify"
-                },
-              ]
+              type: "doc",
+              id: "how-to/deploying-on-digital-ocean",
+              label: "Deploy: DigitalOcean",
+            },
+            {
+              type: "doc",
+              id: "how-to/deploying-admin-on-netlify",
+              label: "Deploy: Admin on Netlify",
+            },
+            {
+              type: "doc",
+              id: "how-to/deploying-gatsby-on-netlify",
+              label: "Deploy: Gatsby on Netlify",
             },
           ],
         },
@@ -311,6 +281,17 @@ module.exports = {
         },
         {
           type: "category",
+          label: "Bot",
+          items: [
+            {
+              type: "doc",
+              id: "add-plugins/slack",
+              label: "Slack",
+            },
+          ],
+        },
+        {
+          type: "category",
           label: "CMS",
           items: [
             {
@@ -357,11 +338,6 @@ module.exports = {
               type: "doc",
               id: "add-plugins/twilio-sms",
               label: "Twilio SMS",
-            },
-            {
-              type: "doc",
-              id: "add-plugins/slack",
-              label: "Slack",
             },
           ],
         },
@@ -460,11 +436,6 @@ module.exports = {
           label: "Documentation Error",
         },
       ],
-    },
-    {
-      type: "doc",
-      id: "cli/reference",
-      label: "CLI Reference",
     },
     {
       type: "doc",
