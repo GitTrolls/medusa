@@ -18,7 +18,6 @@ import AdminProductsResource from "./products"
 import AdminRegionsResource from "./regions"
 import AdminReturnReasonsResource from "./return-reasons"
 import AdminReturnsResource from "./returns"
-import AdminSalesChannelsResource from "./sales-channels"
 import AdminShippingOptionsResource from "./shipping-options"
 import AdminShippingProfilesResource from "./shipping-profiles"
 import AdminStoresResource from "./store"
@@ -48,7 +47,6 @@ class Admin extends BaseResource {
   public orders = new AdminOrdersResource(this.client)
   public returnReasons = new AdminReturnReasonsResource(this.client)
   public variants = new AdminVariantsResource(this.client)
-  public salesChannels = new AdminSalesChannelsResource(this.client)
   public swaps = new AdminSwapsResource(this.client)
   public shippingProfiles = new AdminShippingProfilesResource(this.client)
   public store = new AdminStoresResource(this.client)

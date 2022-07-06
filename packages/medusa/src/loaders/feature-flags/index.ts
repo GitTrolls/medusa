@@ -19,9 +19,9 @@ export default (
 ): FlagRouter => {
   const { featureFlags: projectConfigFlags = {} } = configModule
 
-  const flagDir = path.join(flagDirectory || __dirname, "*.{j,t}s")
+  const flagDir = path.join(flagDirectory || __dirname, "*.js")
   const supportedFlags = glob.sync(flagDir, {
-    ignore: ["**/index.js", "**/index.ts", "**/*.d.ts"],
+    ignore: ["**/index.js"],
   })
 
   const flagConfig: Record<string, boolean> = {}
