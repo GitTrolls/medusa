@@ -3,7 +3,6 @@
 ## Classes
 
 - [AuthService](classes/AuthService.md)
-- [BatchJobService](classes/BatchJobService.md)
 - [CartService](classes/CartService.md)
 - [ClaimItemService](classes/ClaimItemService.md)
 - [ClaimService](classes/ClaimService.md)
@@ -25,7 +24,6 @@
 - [OauthService](classes/OauthService.md)
 - [OrderService](classes/OrderService.md)
 - [PaymentProviderService](classes/PaymentProviderService.md)
-- [PricingService](classes/PricingService.md)
 - [ProductCollectionService](classes/ProductCollectionService.md)
 - [ProductService](classes/ProductService.md)
 - [ProductTypeService](classes/ProductTypeService.md)
@@ -38,10 +36,10 @@
 - [ShippingOptionService](classes/ShippingOptionService.md)
 - [ShippingProfileService](classes/ShippingProfileService.md)
 - [StoreService](classes/StoreService.md)
-- [StrategyResolverService](classes/StrategyResolverService.md)
 - [SwapService](classes/SwapService.md)
 - [SystemPaymentProviderService](classes/SystemPaymentProviderService.md)
 - [TaxProviderService](classes/TaxProviderService.md)
 - [TaxRateService](classes/TaxRateService.md)
 - [TotalsService](classes/TotalsService.md)
+- [TransactionService](classes/TransactionService.md)
 - [UserService](classes/UserService.md)
