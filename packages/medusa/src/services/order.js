@@ -1152,7 +1152,6 @@ class OrderService extends BaseService {
           "shipping_methods",
           "shipping_methods.shipping_option",
           "items",
-          "items.adjustments",
           "items.variant",
           "items.variant.product",
           "payments",

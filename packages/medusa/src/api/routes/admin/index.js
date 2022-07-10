@@ -21,7 +21,6 @@ import productRoutes from "./products"
 import regionRoutes from "./regions"
 import returnReasonRoutes from "./return-reasons"
 import returnRoutes from "./returns"
-import salesChannelRoutes from "./sales-channels"
 import shippingOptionRoutes from "./shipping-options"
 import shippingProfileRoutes from "./shipping-profiles"
 import storeRoutes from "./store"
@@ -64,33 +63,32 @@ export default (app, container, config) => {
   middlewareService.usePostAuthentication(app)
 
   appRoutes(route)
-  batchRoutes(route)
-  collectionRoutes(route)
-  customerGroupRoutes(route)
-  customerRoutes(route)
-  discountRoutes(route)
-  draftOrderRoutes(route)
-  giftCardRoutes(route)
-  inviteRoutes(route)
-  noteRoutes(route)
-  notificationRoutes(route)
-  orderRoutes(route)
-  priceListRoutes(route)
   productRoutes(route)
-  productTagRoutes(route)
-  productTypesRoutes(route)
+  batchRoutes(route)
+  userRoutes(route)
   regionRoutes(route)
-  returnReasonRoutes(route)
-  returnRoutes(route)
-  salesChannelRoutes(route)
   shippingOptionRoutes(route)
   shippingProfileRoutes(route)
+  discountRoutes(route)
+  giftCardRoutes(route)
+  orderRoutes(route)
   storeRoutes(route)
-  swapRoutes(route)
-  taxRateRoutes(route)
   uploadRoutes(route)
-  userRoutes(route)
+  customerRoutes(route)
+  swapRoutes(route)
+  returnRoutes(route)
   variantRoutes(route)
+  draftOrderRoutes(route)
+  collectionRoutes(route)
+  notificationRoutes(route)
+  returnReasonRoutes(route)
+  productTagRoutes(route)
+  productTypesRoutes(route)
+  noteRoutes(route)
+  inviteRoutes(route)
+  taxRateRoutes(route)
+  customerGroupRoutes(route)
+  priceListRoutes(route)
 
   return app
 }

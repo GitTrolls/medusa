@@ -3,7 +3,6 @@ import { Logger as _Logger } from "winston"
 import { LoggerOptions } from "typeorm"
 import { Customer, User } from "../models"
 import { FindConfig, RequestQueryFields } from "./common"
-import { Request } from "express"
 
 declare global {
   // eslint-disable-next-line @typescript-eslint/no-namespace
@@ -20,7 +19,6 @@ declare global {
   }
 }
 
-export type ExtendedRequest<TEntity> = Request & { resource: TEntity }
 
 export type ClassConstructor<T> = {
   new (...args: unknown[]): T
