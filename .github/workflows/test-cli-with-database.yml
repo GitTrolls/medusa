@@ -1,9 +1,5 @@
 name: CLI Pipeline
-on:
-  pull_request:
-    paths-ignore:
-      - "docs/**"
-      - "www/**"
+on: [pull_request]
 
 jobs:
   test-cli-with-database:
