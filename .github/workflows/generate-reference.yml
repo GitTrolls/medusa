@@ -1,8 +1,10 @@
 name: Generate References
-on:
-  push:
+on: 
+  pull_request:
+    types:
+      - closed
     branches:
-      - "master"
+      - 'master'
     paths:
       - packages/medusa/src/services/**
 jobs:
@@ -17,6 +19,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v2.3.5
         with:
+          token: ${{ secrets.REFERENCE_PAT }}
           fetch-depth: 0
 
       - name: Setup Node.js environment
@@ -24,9 +27,9 @@ jobs:
         with:
           node-version: "14"
           cache: "yarn"
-
-      - name: Install packages
-        uses: ./.github/actions/cache-deps
+        
+      - name: Bootstrap packages
+        uses: ./.github/actions/cache-bootstrap
         with:
           extension: unit-tests
 
@@ -37,7 +40,7 @@ jobs:
         run: yarn generate:services
 
       - uses: stefanzweifel/git-auto-commit-action@v4
-        with:
-          commit_message: Automatically Generated Services Reference
+        with: 
+          commit_message: "docs: automatically Generated Services Reference"
           file_pattern: docs/content/*
           skip_dirty_check: false

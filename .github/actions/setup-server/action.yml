@@ -24,8 +24,8 @@ runs:
         node-version: ${{ inputs.node-version }}
         cache: "yarn"
 
-    - name: Install dependencies
-      uses: ./.github/actions/cache-deps
+    - name: Bootstrap packages
+      uses: ./.github/actions/cache-bootstrap
       with:
         extension: ${{ inputs.cache-extension }}
 

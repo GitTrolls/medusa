@@ -3,7 +3,7 @@ import { AbstractBatchJobStrategy, IFileService } from "../../../interfaces"
 import { Product, ProductVariant } from "../../../models"
 import { BatchJobService, ProductService } from "../../../services"
 import { BatchJobStatus, CreateBatchJobInput } from "../../../types/batch-job"
-import { defaultAdminProductRelations } from "../../../api"
+import { defaultAdminProductRelations } from "../../../api/routes/admin/products"
 import { prepareListQuery } from "../../../utils/get-query-config"
 import {
   ProductExportBatchJob,
@@ -236,17 +236,9 @@ export default class ProductExportStrategy extends AbstractBatchJobStrategy<
           })
 
         const header = await this.buildHeader(batchJob)
-        writeStream.write(header)
-        approximateFileSize += Buffer.from(header).byteLength
 
-        await this.batchJobService_
-          .withTransaction(transactionManager)
-          .update(batchJobId, {
-            result: {
-              file_key: fileKey,
-              file_size: approximateFileSize,
-            },
-          })
+        approximateFileSize += Buffer.from(header).byteLength
+        writeStream.write(header)
 
         advancementCount =
           batchJob.result?.advancement_count ?? advancementCount
@@ -292,6 +284,7 @@ export default class ProductExportStrategy extends AbstractBatchJobStrategy<
             .withTransaction(transactionManager)
             .update(batchJobId, {
               result: {
+                file_key: fileKey,
                 file_size: approximateFileSize,
                 count: productCount,
                 advancement_count: advancementCount,
@@ -301,7 +294,10 @@ export default class ProductExportStrategy extends AbstractBatchJobStrategy<
 
           if (batchJob.status === BatchJobStatus.CANCELED) {
             writeStream.end()
-            await this.onProcessCanceled(batchJobId, fileKey)
+
+            await this.fileService_
+              .withTransaction(transactionManager)
+              .delete({ fileKey })
             return
           }
         }
@@ -430,23 +426,5 @@ export default class ProductExportStrategy extends AbstractBatchJobStrategy<
     }
 
     return outputLineData
-  }
-
-  private async onProcessCanceled(
-    batchJobId: string,
-    fileKey: string
-  ): Promise<void> {
-    const transactionManager = this.transactionManager_ ?? this.manager_
-    await this.fileService_
-      .withTransaction(transactionManager)
-      .delete({ fileKey })
-    await this.batchJobService_
-      .withTransaction(transactionManager)
-      .update(batchJobId, {
-        result: {
-          file_key: undefined,
-          file_size: undefined,
-        },
-      })
   }
 }

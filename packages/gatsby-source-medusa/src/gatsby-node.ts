@@ -7,10 +7,7 @@ import {
   SourceNodesArgs,
   Store,
 } from "gatsby"
-import {
-  createRemoteFileNode,
-  CreateRemoteFileNodeArgs,
-} from "gatsby-source-filesystem"
+import { createRemoteFileNode } from "gatsby-source-filesystem"
 import { makeSourceFromOperation } from "./make-source-from-operation"
 import { createOperations } from "./operations"
 
@@ -180,7 +177,7 @@ export async function onCreateNode({
         cache,
         store,
         reporter,
-      } as CreateRemoteFileNodeArgs)
+      })
 
       if (thumbnailNode) {
         createNodeField({
@@ -201,7 +198,7 @@ export async function onCreateNode({
       cache,
       store,
       reporter,
-    } as CreateRemoteFileNodeArgs)
+    })
 
     if (imageNode) {
       createNodeField({

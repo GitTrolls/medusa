@@ -191,7 +191,6 @@ class CartService extends TransactionBaseService<CartService> {
       // relationSet.add("discounts.parent_discount.rule")
       // relationSet.add("discounts.parent_discount.regions")
       relationSet.add("shipping_methods")
-      relationSet.add("shipping_address")
       relationSet.add("region")
       relationSet.add("region.tax_rates")
       relations = Array.from(relationSet.values())
@@ -288,11 +287,8 @@ class CartService extends TransactionBaseService<CartService> {
         )
         const validatedId = validateId(cartId)
 
-        const {
-          select,
-          relations,
-          totalsToSelect,
-        } = this.transformQueryForTotals_(options)
+        const { select, relations, totalsToSelect } =
+          this.transformQueryForTotals_(options)
 
         const query = buildQuery(
           { id: validatedId },
@@ -898,9 +894,7 @@ class CartService extends TransactionBaseService<CartService> {
   protected async createOrFetchUserFromEmail_(
     email: string
   ): Promise<Customer> {
-    const schema = Validator.string()
-      .email()
-      .required()
+    const schema = Validator.string().email().required()
     const { value, error } = schema.validate(email.toLowerCase())
     if (error) {
       throw new MedusaError(
@@ -1559,9 +1553,10 @@ class CartService extends TransactionBaseService<CartService> {
           ],
         })
 
-        const cartCustomShippingOptions = await this.customShippingOptionService_
-          .withTransaction(transactionManager)
-          .list({ cart_id: cart.id })
+        const cartCustomShippingOptions =
+          await this.customShippingOptionService_
+            .withTransaction(transactionManager)
+            .list({ cart_id: cart.id })
 
         const customShippingOption = this.findCustomShippingOption(
           cartCustomShippingOptions,
@@ -1939,16 +1934,13 @@ class CartService extends TransactionBaseService<CartService> {
       async (transactionManager: EntityManager) => {
         const cart = await this.retrieve(id, {
           relations: [
-            "customer",
+            "items",
+            "gift_cards",
             "discounts",
             "discounts.rule",
-            "gift_cards",
-            "items",
-            "items.adjustments",
+            "shipping_methods",
             "region",
             "region.tax_rates",
-            "shipping_address",
-            "shipping_methods",
           ],
         })
 

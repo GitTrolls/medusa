@@ -82,8 +82,8 @@ jobs:
           node-version: 16.x
           cache: "yarn"
 
-      - name: Install dependencies
-        uses: ./.github/actions/cache-deps
+      - name: Bootstrap packages
+        uses: ./.github/actions/cache-bootstrap
         with:
           extension: snapshot-this
 

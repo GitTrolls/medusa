@@ -10,5 +10,4 @@ module.exports = {
     ".(ts|tsx)$": require.resolve("ts-jest/dist/"),
   },
   setupFilesAfterEnv: ["./jest.setup.js"],
-  testEnvironment: "jsdom",
 }
