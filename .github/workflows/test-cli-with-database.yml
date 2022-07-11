@@ -1,9 +1,5 @@
 name: CLI Pipeline
-on:
-  pull_request:
-    paths-ignore:
-      - "docs/**"
-      - "www/**"
+on: [pull_request]
 
 jobs:
   test-cli-with-database:
@@ -54,7 +50,7 @@ jobs:
           cache-extension: "cli-test"
 
       - name: Install Medusa cli
-        run: yarn global add @medusajs/medusa-cli
+        run: npm i -g @medusajs/medusa-cli
 
       - name: Create Medusa project
         run: |

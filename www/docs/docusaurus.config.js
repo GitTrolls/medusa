@@ -69,11 +69,6 @@ module.exports = {
           label: "Services Reference",
         },
         {
-          type: "docSidebar",
-          sidebarId: "jsClientSidebar",
-          label: "JS Client Reference",
-        },
-        {
           href: `https://docs.medusajs.com/api/store`,
           target: "_self",
           label: "API Reference",
