@@ -1,8 +1,4 @@
-import {
-  AdminSalesChannelsRes,
-  AdminSalesChannelsListRes,
-  AdminGetSalesChannelsParams,
-} from "@medusajs/medusa"
+import { AdminSalesChannelsRes } from "@medusajs/medusa"
 import { Response } from "@medusajs/medusa-js"
 import { useQuery } from "react-query"
 import { useMedusa } from "../../../contexts"
@@ -40,26 +36,21 @@ export const useAdminSalesChannel = (
   return { ...data, ...rest } as const
 }
 
-/**
- * retrieve a list of sales channels
- * @experimental This feature is under development and may change in the future.
- * To use this feature please enable feature flag `sales_channels` in your medusa backend project.
- * @description Retrieve a list of sales channel
- * @returns a list of sales channel as well as the pagination properties
- */
+/*
 export const useAdminSalesChannels = (
   query?: AdminGetSalesChannelsParams,
   options?: UseQueryOptionsWrapper<
-    Response<AdminSalesChannelsListRes>,
+    Response<AdminProductsListRes>,
     Error,
     ReturnType<SalesChannelsQueryKeys["list"]>
   >
 ) => {
   const { client } = useMedusa()
   const { data, ...rest } = useQuery(
-    adminSalesChannelsKeys.list(query),
+    adminProductKeys.list(query),
     () => client.admin.salesChannels.list(query),
     options
   )
   return { ...data, ...rest } as const
 }
+*/
