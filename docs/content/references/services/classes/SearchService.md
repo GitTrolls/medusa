@@ -1,5 +1,7 @@
 # Class: SearchService
 
+Default class that implements SearchService but provides stuv implementation for all methods
+
 ## Hierarchy
 
 - `"medusa-interfaces"`
@@ -24,7 +26,7 @@ SearchService.constructor
 
 #### Defined in
 
-[services/search.js:8](https://github.com/medusajs/medusa/blob/32b066d92/packages/medusa/src/services/search.js#L8)
+[services/search.js:8](https://github.com/medusajs/medusa/blob/ae5c88b89/packages/medusa/src/services/search.js#L8)
 
 ## Properties
 
@@ -34,7 +36,7 @@ SearchService.constructor
 
 #### Defined in
 
-[services/search.js:11](https://github.com/medusajs/medusa/blob/32b066d92/packages/medusa/src/services/search.js#L11)
+[services/search.js:11](https://github.com/medusajs/medusa/blob/ae5c88b89/packages/medusa/src/services/search.js#L11)
 
 ___
 
@@ -44,7 +46,7 @@ ___
 
 #### Defined in
 
-[services/search.js:13](https://github.com/medusajs/medusa/blob/32b066d92/packages/medusa/src/services/search.js#L13)
+[services/search.js:13](https://github.com/medusajs/medusa/blob/ae5c88b89/packages/medusa/src/services/search.js#L13)
 
 ## Methods
 
@@ -66,7 +68,7 @@ ___
 
 #### Defined in
 
-[services/search.js:28](https://github.com/medusajs/medusa/blob/32b066d92/packages/medusa/src/services/search.js#L28)
+[services/search.js:28](https://github.com/medusajs/medusa/blob/ae5c88b89/packages/medusa/src/services/search.js#L28)
 
 ___
 
@@ -87,7 +89,7 @@ ___
 
 #### Defined in
 
-[services/search.js:16](https://github.com/medusajs/medusa/blob/32b066d92/packages/medusa/src/services/search.js#L16)
+[services/search.js:16](https://github.com/medusajs/medusa/blob/ae5c88b89/packages/medusa/src/services/search.js#L16)
 
 ___
 
@@ -107,7 +109,7 @@ ___
 
 #### Defined in
 
-[services/search.js:46](https://github.com/medusajs/medusa/blob/32b066d92/packages/medusa/src/services/search.js#L46)
+[services/search.js:46](https://github.com/medusajs/medusa/blob/ae5c88b89/packages/medusa/src/services/search.js#L46)
 
 ___
 
@@ -128,7 +130,7 @@ ___
 
 #### Defined in
 
-[services/search.js:40](https://github.com/medusajs/medusa/blob/32b066d92/packages/medusa/src/services/search.js#L40)
+[services/search.js:40](https://github.com/medusajs/medusa/blob/ae5c88b89/packages/medusa/src/services/search.js#L40)
 
 ___
 
@@ -148,7 +150,7 @@ ___
 
 #### Defined in
 
-[services/search.js:22](https://github.com/medusajs/medusa/blob/32b066d92/packages/medusa/src/services/search.js#L22)
+[services/search.js:22](https://github.com/medusajs/medusa/blob/ae5c88b89/packages/medusa/src/services/search.js#L22)
 
 ___
 
@@ -170,7 +172,7 @@ ___
 
 #### Defined in
 
-[services/search.js:34](https://github.com/medusajs/medusa/blob/32b066d92/packages/medusa/src/services/search.js#L34)
+[services/search.js:34](https://github.com/medusajs/medusa/blob/ae5c88b89/packages/medusa/src/services/search.js#L34)
 
 ___
 
@@ -196,7 +198,7 @@ ___
 
 #### Defined in
 
-[services/search.js:52](https://github.com/medusajs/medusa/blob/32b066d92/packages/medusa/src/services/search.js#L52)
+[services/search.js:52](https://github.com/medusajs/medusa/blob/ae5c88b89/packages/medusa/src/services/search.js#L52)
 
 ___
 
@@ -217,4 +219,4 @@ ___
 
 #### Defined in
 
-[services/search.js:59](https://github.com/medusajs/medusa/blob/32b066d92/packages/medusa/src/services/search.js#L59)
+[services/search.js:59](https://github.com/medusajs/medusa/blob/ae5c88b89/packages/medusa/src/services/search.js#L59)

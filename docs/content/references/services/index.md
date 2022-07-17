@@ -34,7 +34,6 @@
 - [RegionService](classes/RegionService.md)
 - [ReturnReasonService](classes/ReturnReasonService.md)
 - [ReturnService](classes/ReturnService.md)
-- [SalesChannelService](classes/SalesChannelService.md)
 - [SearchService](classes/SearchService.md)
 - [ShippingOptionService](classes/ShippingOptionService.md)
 - [ShippingProfileService](classes/ShippingProfileService.md)

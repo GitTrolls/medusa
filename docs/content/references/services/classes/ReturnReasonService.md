@@ -24,7 +24,7 @@ BaseService.constructor
 
 #### Defined in
 
-[services/return-reason.js:5](https://github.com/medusajs/medusa/blob/32b066d92/packages/medusa/src/services/return-reason.js#L5)
+[services/return-reason.js:5](https://github.com/medusajs/medusa/blob/ae5c88b89/packages/medusa/src/services/return-reason.js#L5)
 
 ## Methods
 
@@ -44,7 +44,7 @@ BaseService.constructor
 
 #### Defined in
 
-[services/return-reason.js:30](https://github.com/medusajs/medusa/blob/32b066d92/packages/medusa/src/services/return-reason.js#L30)
+[services/return-reason.js:30](https://github.com/medusajs/medusa/blob/ae5c88b89/packages/medusa/src/services/return-reason.js#L30)
 
 ___
 
@@ -64,7 +64,7 @@ ___
 
 #### Defined in
 
-[services/return-reason.js:114](https://github.com/medusajs/medusa/blob/32b066d92/packages/medusa/src/services/return-reason.js#L114)
+[services/return-reason.js:114](https://github.com/medusajs/medusa/blob/ae5c88b89/packages/medusa/src/services/return-reason.js#L114)
 
 ___
 
@@ -76,16 +76,18 @@ ___
 
 | Name | Type | Description |
 | :------ | :------ | :------ |
-| `selector` | `any` |  |
-| `config` | `any` |  |
+| `selector` | `any` | the query object for find |
+| `config` | `any` | config object |
 
 #### Returns
 
 `Promise`<`any`\>
 
+the result of the find operation
+
 #### Defined in
 
-[services/return-reason.js:82](https://github.com/medusajs/medusa/blob/32b066d92/packages/medusa/src/services/return-reason.js#L82)
+[services/return-reason.js:82](https://github.com/medusajs/medusa/blob/ae5c88b89/packages/medusa/src/services/return-reason.js#L82)
 
 ___
 
@@ -93,20 +95,24 @@ ___
 
 ▸ **retrieve**(`id`, `config?`): `Promise`<`Order`\>
 
+Gets an order by id.
+
 #### Parameters
 
 | Name | Type | Description |
 | :------ | :------ | :------ |
-| `id` | `string` |  |
-| `config` | `any` |  |
+| `id` | `string` | id of order to retrieve |
+| `config` | `any` | config object |
 
 #### Returns
 
 `Promise`<`Order`\>
 
+the order document
+
 #### Defined in
 
-[services/return-reason.js:97](https://github.com/medusajs/medusa/blob/32b066d92/packages/medusa/src/services/return-reason.js#L97)
+[services/return-reason.js:97](https://github.com/medusajs/medusa/blob/ae5c88b89/packages/medusa/src/services/return-reason.js#L97)
 
 ___
 
@@ -127,7 +133,7 @@ ___
 
 #### Defined in
 
-[services/return-reason.js:52](https://github.com/medusajs/medusa/blob/32b066d92/packages/medusa/src/services/return-reason.js#L52)
+[services/return-reason.js:52](https://github.com/medusajs/medusa/blob/ae5c88b89/packages/medusa/src/services/return-reason.js#L52)
 
 ___
 
@@ -147,4 +153,4 @@ ___
 
 #### Defined in
 
-[services/return-reason.js:15](https://github.com/medusajs/medusa/blob/32b066d92/packages/medusa/src/services/return-reason.js#L15)
+[services/return-reason.js:15](https://github.com/medusajs/medusa/blob/ae5c88b89/packages/medusa/src/services/return-reason.js#L15)
