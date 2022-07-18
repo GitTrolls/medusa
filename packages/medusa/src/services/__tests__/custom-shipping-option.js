@@ -86,7 +86,9 @@ describe("CustomShippingOptionService", () => {
 
   describe("create", () => {
     const customShippingOptionRepository = MockRepository({
-      create: jest.fn().mockImplementation((f) => ({ id: "test-cso", ...f })),
+      create: jest
+        .fn()
+        .mockImplementation((f) => Promise.resolve({ id: "test-cso", ...f })),
       save: jest.fn().mockImplementation((f) => Promise.resolve(f)),
     })
 

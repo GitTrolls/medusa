@@ -1,12 +1,11 @@
-import { SalesChannel } from "@medusajs/medusa"
-import faker from "faker"
 import { Connection } from "typeorm"
+import faker from "faker"
+import { SalesChannel } from "@medusajs/medusa"
 
 export type SalesChannelFactoryData = {
   name?: string
   description?: string
   is_disabled?: boolean
-  id?: string
 }
 
 export const simpleSalesChannelFactory = async (
@@ -21,7 +20,7 @@ export const simpleSalesChannelFactory = async (
   const manager = connection.manager
 
   const salesChannel = manager.create(SalesChannel, {
-    id: data.id ?? `simple-id-${Math.random() * 1000}`,
+    id: `simple-id-${Math.random() * 1000}`,
     name: data.name || faker.name.firstName(),
     description: data.description || faker.name.lastName(),
     is_disabled:
