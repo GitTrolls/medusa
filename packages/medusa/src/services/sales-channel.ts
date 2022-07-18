@@ -9,18 +9,15 @@ import {
   CreateSalesChannelInput,
   UpdateSalesChannelInput,
 } from "../types/sales-channels"
-import { buildQuery } from "../utils"
 import EventBusService from "./event-bus"
+import { buildQuery } from "../utils"
 import StoreService from "./store"
-import { formatException, PostgresError } from "../utils/exception-formatter"
-import ProductService from "./product"
 
 type InjectedDependencies = {
   salesChannelRepository: typeof SalesChannelRepository
   eventBusService: EventBusService
   manager: EntityManager
   storeService: StoreService
-  productService: ProductService
 }
 
 class SalesChannelService extends TransactionBaseService<SalesChannelService> {
@@ -36,14 +33,12 @@ class SalesChannelService extends TransactionBaseService<SalesChannelService> {
   protected readonly salesChannelRepository_: typeof SalesChannelRepository
   protected readonly eventBusService_: EventBusService
   protected readonly storeService_: StoreService
-  protected readonly productService_: ProductService
 
   constructor({
     salesChannelRepository,
     eventBusService,
     manager,
     storeService,
-    productService,
   }: InjectedDependencies) {
     // eslint-disable-next-line prefer-rest-params
     super(arguments[0])
@@ -52,7 +47,6 @@ class SalesChannelService extends TransactionBaseService<SalesChannelService> {
     this.salesChannelRepository_ = salesChannelRepository
     this.eventBusService_ = eventBusService
     this.storeService_ = storeService
-    this.productService_ = productService
   }
 
   /**
@@ -91,40 +85,11 @@ class SalesChannelService extends TransactionBaseService<SalesChannelService> {
     })
   }
 
-  /**
-   * Lists sales channels based on the provided parameters and includes the count of
-   * sales channels that match the query.
-   * @return an array containing the sales channels as
-   *   the first element and the total count of sales channels that matches the query
-   *   as the second element.
-   */
   async listAndCount(
-    selector: QuerySelector<SalesChannel>,
-    config: FindConfig<SalesChannel> = {
-      skip: 0,
-      take: 20,
-    }
+    selector: QuerySelector<any> = {},
+    config: FindConfig<any> = { relations: [], skip: 0, take: 10 }
   ): Promise<[SalesChannel[], number]> {
-    return await this.atomicPhase_(async (transactionManager) => {
-      const salesChannelRepo = transactionManager.getCustomRepository(
-        this.salesChannelRepository_
-      )
-
-      const selector_ = { ...selector }
-      let q: string | undefined
-      if ("q" in selector_) {
-        q = selector_.q
-        delete selector_.q
-      }
-
-      const query = buildQuery(selector_, config)
-
-      if (q) {
-        return await salesChannelRepo.getFreeTextSearchResultsAndCount(q, query)
-      }
-
-      return await salesChannelRepo.findAndCount(query)
-    })
+    throw new Error("Method not implemented.")
   }
 
   /**
@@ -200,17 +165,6 @@ class SalesChannelService extends TransactionBaseService<SalesChannelService> {
         return
       }
 
-      const store = await this.storeService_.retrieve({
-        select: ["default_sales_channel_id"],
-      })
-
-      if (salesChannel.id === store?.default_sales_channel_id) {
-        throw new MedusaError(
-          MedusaError.Types.NOT_ALLOWED,
-          "You cannot delete the default sales channel"
-        )
-      }
-
       await salesChannelRepo.softRemove(salesChannel)
 
       await this.eventBusService_
@@ -249,69 +203,6 @@ class SalesChannelService extends TransactionBaseService<SalesChannelService> {
 
       return defaultSalesChannel
     })
-  }
-
-  /**
-   * Remove a batch of product from a sales channel
-   * @param salesChannelId - The id of the sales channel on which to remove the products
-   * @param productIds - The products ids to remove from the sales channel
-   * @return the sales channel on which the products have been removed
-   */
-  async removeProducts(
-    salesChannelId: string,
-    productIds: string[]
-  ): Promise<SalesChannel | never> {
-    return await this.atomicPhase_(async (transactionManager) => {
-      const salesChannelRepo = transactionManager.getCustomRepository(
-        this.salesChannelRepository_
-      )
-
-      await salesChannelRepo.removeProducts(salesChannelId, productIds)
-
-      return await this.retrieve(salesChannelId)
-    })
-  }
-
-  /**
-   * Add a batch of product to a sales channel
-   * @param salesChannelId - The id of the sales channel on which to add the products
-   * @param productIds - The products ids to attach to the sales channel
-   * @return the sales channel on which the products have been added
-   */
-  async addProducts(
-    salesChannelId: string,
-    productIds: string[]
-  ): Promise<SalesChannel | never> {
-    return await this.atomicPhase_(
-      async (transactionManager) => {
-        const salesChannelRepo = transactionManager.getCustomRepository(
-          this.salesChannelRepository_
-        )
-
-        await salesChannelRepo.addProducts(salesChannelId, productIds)
-
-        return await this.retrieve(salesChannelId)
-      },
-      async (error: { code: string }) => {
-        if (error.code === PostgresError.FOREIGN_KEY_ERROR) {
-          const existingProducts = await this.productService_.list({
-            id: productIds,
-          })
-
-          const nonExistingProducts = productIds.filter(
-            (cId) => existingProducts.findIndex((el) => el.id === cId) === -1
-          )
-
-          throw new MedusaError(
-            MedusaError.Types.NOT_FOUND,
-            `The following product ids do not exist: ${JSON.stringify(
-              nonExistingProducts.join(", ")
-            )}`
-          )
-        }
-        throw formatException(error)
-      }
-    )
   }
 }
 
