@@ -167,22 +167,23 @@ class FulfillmentService extends TransactionBaseService<FulfillmentService> {
     id: string,
     config: FindConfig<Fulfillment> = {}
   ): Promise<Fulfillment> {
-    const manager = this.manager_
-    const fulfillmentRepository = manager.getCustomRepository(
-      this.fulfillmentRepository_
-    )
-
-    const query = buildQuery({ id }, config)
-
-    const fulfillment = await fulfillmentRepository.findOne(query)
-
-    if (!fulfillment) {
-      throw new MedusaError(
-        MedusaError.Types.NOT_FOUND,
-        `Fulfillment with id: ${id} was not found`
+    return await this.atomicPhase_(async (manager) => {
+      const fulfillmentRepository = manager.getCustomRepository(
+        this.fulfillmentRepository_
       )
-    }
-    return fulfillment
+
+      const query = buildQuery({ id }, config)
+
+      const fulfillment = await fulfillmentRepository.findOne(query)
+
+      if (!fulfillment) {
+        throw new MedusaError(
+          MedusaError.Types.NOT_FOUND,
+          `Fulfillment with id: ${id} was not found`
+        )
+      }
+      return fulfillment
+    })
   }
 
   /**

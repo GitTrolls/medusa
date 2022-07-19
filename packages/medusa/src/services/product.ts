@@ -113,20 +113,21 @@ class ProductService extends TransactionBaseService<ProductService> {
       include_discount_prices: false,
     }
   ): Promise<Product[]> {
-    const manager = this.manager_
-    const productRepo = manager.getCustomRepository(this.productRepository_)
+    return await this.atomicPhase_(async (manager) => {
+      const productRepo = manager.getCustomRepository(this.productRepository_)
 
-    const { q, query, relations } = this.prepareListQuery_(selector, config)
-    if (q) {
-      const [products] = await productRepo.getFreeTextSearchResultsAndCount(
-        q,
-        query,
-        relations
-      )
-      return products
-    }
+      const { q, query, relations } = this.prepareListQuery_(selector, config)
+      if (q) {
+        const [products] = await productRepo.getFreeTextSearchResultsAndCount(
+          q,
+          query,
+          relations
+        )
+        return products
+      }
 
-    return await productRepo.findWithRelations(relations, query)
+      return await productRepo.findWithRelations(relations, query)
+    })
   }
 
   /**
@@ -149,20 +150,21 @@ class ProductService extends TransactionBaseService<ProductService> {
       include_discount_prices: false,
     }
   ): Promise<[Product[], number]> {
-    const manager = this.manager_
-    const productRepo = manager.getCustomRepository(this.productRepository_)
+    return await this.atomicPhase_(async (manager) => {
+      const productRepo = manager.getCustomRepository(this.productRepository_)
 
-    const { q, query, relations } = this.prepareListQuery_(selector, config)
+      const { q, query, relations } = this.prepareListQuery_(selector, config)
 
-    if (q) {
-      return await productRepo.getFreeTextSearchResultsAndCount(
-        q,
-        query,
-        relations
-      )
-    }
+      if (q) {
+        return await productRepo.getFreeTextSearchResultsAndCount(
+          q,
+          query,
+          relations
+        )
+      }
 
-    return await productRepo.findWithRelationsAndCount(relations, query)
+      return await productRepo.findWithRelationsAndCount(relations, query)
+    })
   }
 
   /**
@@ -171,10 +173,11 @@ class ProductService extends TransactionBaseService<ProductService> {
    * @return {Promise} the result of the count operation
    */
   async count(selector: Selector<Product> = {}): Promise<number> {
-    const manager = this.manager_
-    const productRepo = manager.getCustomRepository(this.productRepository_)
-    const query = buildQuery(selector)
-    return await productRepo.count(query)
+    return await this.atomicPhase_(async (manager) => {
+      const productRepo = manager.getCustomRepository(this.productRepository_)
+      const query = buildQuery(selector)
+      return await productRepo.count(query)
+    })
   }
 
   /**
@@ -191,7 +194,9 @@ class ProductService extends TransactionBaseService<ProductService> {
       include_discount_prices: false,
     }
   ): Promise<Product> {
-    return await this.retrieve_({ id: productId }, config)
+    return await this.atomicPhase_(async () => {
+      return await this.retrieve_({ id: productId }, config)
+    })
   }
 
   /**
@@ -205,7 +210,9 @@ class ProductService extends TransactionBaseService<ProductService> {
     productHandle: string,
     config: FindProductConfig = {}
   ): Promise<Product> {
-    return await this.retrieve_({ handle: productHandle }, config)
+    return await this.atomicPhase_(async () => {
+      return await this.retrieve_({ handle: productHandle }, config)
+    })
   }
 
   /**
@@ -219,7 +226,9 @@ class ProductService extends TransactionBaseService<ProductService> {
     externalId: string,
     config: FindProductConfig = {}
   ): Promise<Product> {
-    return await this.retrieve_({ external_id: externalId }, config)
+    return await this.atomicPhase_(async () => {
+      return await this.retrieve_({ external_id: externalId }, config)
+    })
   }
 
   /**
@@ -236,28 +245,29 @@ class ProductService extends TransactionBaseService<ProductService> {
       include_discount_prices: false,
     }
   ): Promise<Product> {
-    const manager = this.manager_
-    const productRepo = manager.getCustomRepository(this.productRepository_)
+    return await this.atomicPhase_(async (manager) => {
+      const productRepo = manager.getCustomRepository(this.productRepository_)
 
-    const { relations, ...query } = buildQuery(selector, config)
+      const { relations, ...query } = buildQuery(selector, config)
 
-    const product = await productRepo.findOneWithRelations(
-      relations,
-      query as FindWithoutRelationsOptions
-    )
-
-    if (!product) {
-      const selectorConstraints = Object.entries(selector)
-        .map(([key, value]) => `${key}: ${value}`)
-        .join(", ")
-
-      throw new MedusaError(
-        MedusaError.Types.NOT_FOUND,
-        `Product with ${selectorConstraints} was not found`
+      const product = await productRepo.findOneWithRelations(
+        relations,
+        query as FindWithoutRelationsOptions
       )
-    }
 
-    return product
+      if (!product) {
+        const selectorConstraints = Object.entries(selector)
+          .map(([key, value]) => `${key}: ${value}`)
+          .join(", ")
+
+        throw new MedusaError(
+          MedusaError.Types.NOT_FOUND,
+          `Product with ${selectorConstraints} was not found`
+        )
+      }
+
+      return product
+    })
   }
 
   /**
@@ -273,33 +283,37 @@ class ProductService extends TransactionBaseService<ProductService> {
       take: 50,
     }
   ): Promise<ProductVariant[]> {
-    const givenRelations = config.relations ?? []
-    const requiredRelations = ["variants"]
-    const relationsSet = new Set([...givenRelations, ...requiredRelations])
+    return await this.atomicPhase_(async () => {
+      const givenRelations = config.relations ?? []
+      const requiredRelations = ["variants"]
+      const relationsSet = new Set([...givenRelations, ...requiredRelations])
 
-    const product = await this.retrieve(productId, {
-      ...config,
-      relations: [...relationsSet],
+      const product = await this.retrieve(productId, {
+        ...config,
+        relations: [...relationsSet],
+      })
+      return product.variants
     })
-    return product.variants
   }
 
   async listTypes(): Promise<ProductType[]> {
-    const manager = this.manager_
-    const productTypeRepository = manager.getCustomRepository(
-      this.productTypeRepository_
-    )
+    return await this.atomicPhase_(async (manager) => {
+      const productTypeRepository = manager.getCustomRepository(
+        this.productTypeRepository_
+      )
 
-    return await productTypeRepository.find({})
+      return await productTypeRepository.find({})
+    })
   }
 
   async listTagsByUsage(count = 10): Promise<ProductTag[]> {
-    const manager = this.manager_
-    const productTagRepo = manager.getCustomRepository(
-      this.productTagRepository_
-    )
+    return await this.atomicPhase_(async (manager) => {
+      const productTagRepo = manager.getCustomRepository(
+        this.productTagRepository_
+      )
 
-    return await productTagRepo.listTagsByUsage(count)
+      return await productTagRepo.listTagsByUsage(count)
+    })
   }
 
   /**
