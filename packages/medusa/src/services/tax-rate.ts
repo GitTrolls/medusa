@@ -85,19 +85,20 @@ class TaxRateService extends BaseService {
     id: string,
     config: FindConfig<TaxRate> = {}
   ): Promise<TaxRate> {
-    const manager = this.manager_
-    const taxRateRepo = manager.getCustomRepository(this.taxRateRepository_)
-    const query = this.buildQuery_({ id }, config)
+    return await this.atomicPhase_(async (manager: EntityManager) => {
+      const taxRateRepo = manager.getCustomRepository(this.taxRateRepository_)
+      const query = this.buildQuery_({ id }, config)
 
-    const taxRate = await taxRateRepo.findOneWithResolution(query)
-    if (!taxRate) {
-      throw new MedusaError(
-        MedusaError.Types.NOT_FOUND,
-        `TaxRate with ${id} was not found`
-      )
-    }
+      const taxRate = await taxRateRepo.findOneWithResolution(query)
+      if (!taxRate) {
+        throw new MedusaError(
+          MedusaError.Types.NOT_FOUND,
+          `TaxRate with ${id} was not found`
+        )
+      }
 
-    return taxRate
+      return taxRate
+    })
   }
 
   async create(data: CreateTaxRateInput): Promise<TaxRate> {
@@ -322,15 +323,17 @@ class TaxRateService extends BaseService {
     config: TaxRateListByConfig
   ): Promise<TaxRate[]> {
     // Check both ProductTaxRate + ProductTypeTaxRate
-    const manager = this.manager_
-    const taxRateRepo = manager.getCustomRepository(this.taxRateRepository_)
-    return await taxRateRepo.listByProduct(productId, config)
+    return await this.atomicPhase_(async (manager: EntityManager) => {
+      const taxRateRepo = manager.getCustomRepository(this.taxRateRepository_)
+      return await taxRateRepo.listByProduct(productId, config)
+    })
   }
 
   async listByShippingOption(shippingOptionId: string): Promise<TaxRate[]> {
-    const manager = this.manager_
-    const taxRateRepo = manager.getCustomRepository(this.taxRateRepository_)
-    return await taxRateRepo.listByShippingOption(shippingOptionId)
+    return await this.atomicPhase_(async (manager: EntityManager) => {
+      const taxRateRepo = manager.getCustomRepository(this.taxRateRepository_)
+      return await taxRateRepo.listByShippingOption(shippingOptionId)
+    })
   }
 }
 

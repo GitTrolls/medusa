@@ -1,5 +1,3 @@
-import { IdMap } from "medusa-test-utils";
-
 export const SalesChannelServiceMock = {
   withTransaction: function () {
     return this
@@ -17,17 +15,7 @@ export const SalesChannelServiceMock = {
     return Promise.resolve({ id, ...data })
   }),
 
-  listAndCount: jest.fn().mockImplementation(() => {
-    return Promise.resolve([
-      [{
-        id: IdMap.getId("sales_channel_1"),
-        name: "sales channel 1 name",
-        description: "sales channel 1 description",
-        is_disabled: false,
-      }],
-      1,
-    ])
-  }),
+  listAndCount: jest.fn().mockImplementation(() => {}),
 
   create: jest.fn().mockImplementation((data) => {
     return Promise.resolve({
@@ -46,15 +34,7 @@ export const SalesChannelServiceMock = {
       description: "sales channel 1 description",
       is_disabled: false,
     })
-  }),
-
-  removeProducts: jest.fn().mockImplementation((id, productIds) => {
-    return Promise.resolve()
-  }),
-
-  addProducts: jest.fn().mockImplementation((id, productIds) => {
-    return Promise.resolve()
-  }),
+  })
 }
 
 const mock = jest.fn().mockImplementation(() => {
