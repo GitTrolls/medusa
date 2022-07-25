@@ -1,18 +1,19 @@
 const path = require("path")
 
-const { SalesChannel } = require("@medusajs/medusa")
+const { SalesChannel, Product } = require("@medusajs/medusa")
 
 const { useApi } = require("../../../helpers/use-api")
 const { useDb } = require("../../../helpers/use-db")
 
 const adminSeeder = require("../../helpers/admin-seeder")
-
 const {
   simpleSalesChannelFactory,
   simpleProductFactory,
   simpleCartFactory,
 } = require("../../factories")
 const { simpleOrderFactory } = require("../../factories")
+const orderSeeder = require("../../helpers/order-seeder");
+const productSeeder = require("../../helpers/product-seeder");
 
 const startServerWithEnvironment =
   require("../../../helpers/start-server-with-environment").default
@@ -82,6 +83,124 @@ describe("sales channels", () => {
         description: salesChannel.description,
         created_at: expect.any(String),
         updated_at: expect.any(String),
+      })
+    })
+  })
+
+  describe("GET /admin/sales-channels", () => {
+    let salesChannel1, salesChannel2
+
+    beforeEach(async () => {
+      try {
+        await adminSeeder(dbConnection)
+        salesChannel1 = await simpleSalesChannelFactory(dbConnection, {
+          name: "test name",
+          description: "test description",
+        })
+        salesChannel2 = await simpleSalesChannelFactory(dbConnection, {
+          name: "test name 2",
+          description: "test description 2",
+        })
+      } catch (e) {
+        console.error(e)
+      }
+    })
+
+    afterEach(async () => {
+      const db = useDb()
+      await db.teardown()
+    })
+
+    it("should list the sales channel", async () => {
+      const api = useApi()
+      const response = await api.get(
+        `/admin/sales-channels/`,
+        adminReqConfig
+      )
+
+      expect(response.status).toEqual(200)
+      expect(response.data.sales_channels).toBeTruthy()
+      expect(response.data.sales_channels.length).toBe(2)
+      expect(response.data).toMatchSnapshot({
+        count: 2,
+        limit: 20,
+        offset: 0,
+        sales_channels: expect.arrayContaining([
+          {
+            id: expect.any(String),
+            name: salesChannel1.name,
+            description: salesChannel1.description,
+            is_disabled: false,
+            deleted_at: null,
+            created_at: expect.any(String),
+            updated_at: expect.any(String),
+          },
+          {
+            id: expect.any(String),
+            name: salesChannel2.name,
+            description: salesChannel2.description,
+            is_disabled: false,
+            deleted_at: null,
+            created_at: expect.any(String),
+            updated_at: expect.any(String),
+          },
+        ])
+      })
+    })
+
+    it("should list the sales channel using free text search", async () => {
+      const api = useApi()
+      const response = await api.get(
+        `/admin/sales-channels/?q=2`,
+        adminReqConfig
+      )
+
+      expect(response.status).toEqual(200)
+      expect(response.data.sales_channels).toBeTruthy()
+      expect(response.data.sales_channels.length).toBe(1)
+      expect(response.data).toMatchSnapshot({
+        count: 1,
+        limit: 20,
+        offset: 0,
+        sales_channels: expect.arrayContaining([
+          {
+            id: expect.any(String),
+            name: salesChannel2.name,
+            description: salesChannel2.description,
+            is_disabled: false,
+            deleted_at: null,
+            created_at: expect.any(String),
+            updated_at: expect.any(String),
+          },
+        ])
+      })
+    })
+
+    it("should list the sales channel using properties filters", async () => {
+      const api = useApi()
+      const response = await api.get(
+        `/admin/sales-channels/?name=test+name`,
+        adminReqConfig
+      )
+
+      expect(response.status).toEqual(200)
+      expect(response.data.sales_channels).toBeTruthy()
+      expect(response.data.sales_channels.length).toBe(1)
+      expect(response.data).toMatchSnapshot({
+        count: 1,
+        limit: 20,
+        offset: 0,
+        sales_channels: expect.arrayContaining([
+          {
+            id: expect.any(String),
+            name: salesChannel1.name,
+            description: salesChannel1.description,
+            is_disabled: false,
+            deleted_at: null,
+            created_at: expect.any(String),
+            updated_at: expect.any(String),
+          },
+        ])
       })
     })
   })
@@ -188,6 +307,15 @@ describe("sales channels", () => {
           name: "test name",
           description: "test description",
         })
+
+        await simpleSalesChannelFactory(dbConnection, {
+          name: "Default channel",
+          id: "test-channel",
+        })
+
+        await dbConnection.manager.query(
+          `UPDATE store SET default_sales_channel_id = 'test-channel'`
+        )
       } catch (e) {
         console.error(e)
       }
@@ -197,6 +325,7 @@ describe("sales channels", () => {
       const db = useDb()
       await db.teardown()
     })
+
     it("should delete the requested sales channel", async () => {
       const api = useApi()
 
@@ -285,6 +414,20 @@ describe("sales channels", () => {
 
       expect(deletedSalesChannel.id).toEqual(salesChannel.id)
       expect(deletedSalesChannel.deleted_at).not.toEqual(null)
+    })
+
+    it("should throw if we attempt to delete default channel", async () => {
+      const api = useApi()
+      expect.assertions(2)
+
+      const res = await api
+        .delete(`/admin/sales-channels/test-channel`, adminReqConfig)
+        .catch((err) => err)
+
+      expect(res.response.status).toEqual(400)
+      expect(res.response.data.message).toEqual(
+        "You cannot delete the default sales channel"
+      )
     })
   })
 
@@ -512,6 +655,263 @@ describe("sales channels", () => {
         is_disabled: false,
         created_at: expect.any(String),
         updated_at: expect.any(String),
+      })
+    })
+  })
+
+  describe("DELETE /admin/sales-channels/:id/products/batch", () => {
+    let salesChannel
+    let product
+
+    beforeEach(async() => {
+      try {
+        await adminSeeder(dbConnection)
+        product = await simpleProductFactory(dbConnection, {
+          id: "product_1",
+          title: "test title",
+        })
+        salesChannel = await simpleSalesChannelFactory(dbConnection, {
+          name: "test name",
+          description: "test description",
+          products: [product]
+        })
+      } catch (e) {
+        console.error(e)
+      }
+    })
+
+    afterEach(async () => {
+      const db = useDb()
+      await db.teardown()
+    })
+
+    it("should remove products from a sales channel", async() => {
+      const api = useApi()
+
+      let attachedProduct = await dbConnection.manager.findOne(Product, {
+        where: { id: product.id },
+        relations: ["sales_channels"]
+      })
+
+      expect(attachedProduct.sales_channels.length).toBe(1)
+      expect(attachedProduct.sales_channels).toEqual(
+        expect.arrayContaining([
+          expect.objectContaining({
+            id: expect.any(String),
+            name: "test name",
+            description: "test description",
+            is_disabled: false,
+          })
+        ])
+      )
+
+      const payload = {
+        product_ids: [{ id: product.id }]
+      }
+
+      await api.delete(
+        `/admin/sales-channels/${salesChannel.id}/products/batch`,
+          {
+            ...adminReqConfig,
+            data: payload,
+          },
+      )
+      // Validate idempotency
+      const response = await api.delete(
+        `/admin/sales-channels/${salesChannel.id}/products/batch`,
+          {
+            ...adminReqConfig,
+            data: payload,
+          },
+      )
+
+      expect(response.status).toEqual(200)
+      expect(response.data.sales_channel).toEqual(
+        expect.objectContaining({
+          id: expect.any(String),
+          name: "test name",
+          description: "test description",
+          is_disabled: false,
+        })
+      )
+
+      attachedProduct = await dbConnection.manager.findOne(Product, {
+        where: { id: product.id },
+        relations: ["sales_channels"]
+      })
+
+      expect(attachedProduct.sales_channels.length).toBe(0)
+    })
+  })
+
+  describe("POST /admin/sales-channels/:id/products/batch", () => {
+    let salesChannel
+    let product
+
+    beforeEach(async() => {
+      try {
+        await adminSeeder(dbConnection)
+        salesChannel = await simpleSalesChannelFactory(dbConnection, {
+          name: "test name",
+          description: "test description",
+        })
+        product = await simpleProductFactory(dbConnection, {
+          id: "product_1",
+          title: "test title",
+        })
+      } catch (e) {
+        console.error(e)
+      }
+    })
+
+    afterEach(async () => {
+      const db = useDb()
+      await db.teardown()
+    })
+
+    it("should add products to a sales channel", async() => {
+      const api = useApi()
+
+      const payload = {
+        product_ids: [{ id: product.id }]
+      }
+
+      let response = await api.post(
+          `/admin/sales-channels/${salesChannel.id}/products/batch`,
+          payload,
+          adminReqConfig
+      )
+
+      expect(response.status).toEqual(200)
+      expect(response.data.sales_channel).toEqual({
+        id: expect.any(String),
+        name: "test name",
+        description: "test description",
+        is_disabled: false,
+        created_at: expect.any(String),
+        updated_at: expect.any(String),
+        deleted_at: null,
+      })
+
+      let attachedProduct = await dbConnection.manager.findOne(Product, {
+        where: { id: product.id },
+        relations: ["sales_channels"]
+      })
+
+      expect(attachedProduct.sales_channels.length).toBe(1)
+      expect(attachedProduct.sales_channels).toEqual(
+        expect.arrayContaining([
+          expect.objectContaining({
+            id: expect.any(String),
+            name: "test name",
+            description: "test description",
+            is_disabled: false,
+          })
+        ])
+      )
+    })
+  })
+
+  describe("/admin/orders using sales channels", () => {
+    describe("GET /admin/orders", () => {
+      let order
+
+      beforeEach(async() => {
+        try {
+          await adminSeeder(dbConnection)
+          order = await simpleOrderFactory(dbConnection, {
+            sales_channel: {
+              name: "test name",
+              description: "test description",
+            },
+          })
+          await orderSeeder(dbConnection)
+        } catch (err) {
+          console.log(err)
+          throw err
+        }
+      })
+
+      afterEach(async() => {
+        const db = useDb()
+        await db.teardown()
+      })
+
+      it("should successfully lists orders that belongs to the requested sales channels", async() => {
+        const api = useApi()
+
+        const response = await api.get(
+            `/admin/orders?sales_channel_id[]=${order.sales_channel_id}`,
+            {
+              headers: {
+                authorization: "Bearer test_token",
+              },
+            }
+        )
+
+        expect(response.status).toEqual(200)
+        expect(response.data.orders.length).toEqual(1)
+        expect(response.data.orders).toEqual([
+          expect.objectContaining({
+            id: order.id,
+          }),
+        ])
+      })
+    })
+  })
+
+  describe("/admin/products using sales channels", () => {
+    describe("GET /admin/products", () => {
+      const productData = {
+        id: "product-sales-channel-1",
+        title: "test description",
+      }
+      let salesChannel
+
+      beforeEach(async () => {
+        try {
+          await productSeeder(dbConnection)
+          await adminSeeder(dbConnection)
+          const product = await simpleProductFactory(dbConnection, productData)
+          salesChannel = await simpleSalesChannelFactory(dbConnection, {
+            name: "test name",
+            description: "test description",
+            products: [product]
+          })
+        } catch (err) {
+          console.log(err)
+          throw err
+        }
+      })
+
+      afterEach(async() => {
+        const db = useDb()
+        await db.teardown()
+      })
+
+      it("should returns a list of products that belongs to the requested sales channels", async() => {
+        const api = useApi()
+
+        const response = await api
+            .get(`/admin/products?sales_channel_id[]=${salesChannel.id}`, {
+              headers: {
+                Authorization: "Bearer test_token",
+              },
+            })
+            .catch((err) => {
+              console.log(err)
+            })
+
+        expect(response.status).toEqual(200)
+        expect(response.data.products.length).toEqual(1)
+        expect(response.data.products).toEqual(
+            expect.arrayContaining([
+              expect.objectContaining({
+                id: productData.id,
+                title: productData.title
+              }),
+            ])
+        )
       })
     })
   })
