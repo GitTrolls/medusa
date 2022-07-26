@@ -13,7 +13,6 @@ import {
   Selector,
   WithRequiredProperty,
 } from "../types/common"
-import { SalesChannel } from "../models";
 
 export type ProductSelector = Omit<Selector<Product>, "tags"> & {
   tags: FindOperator<string[]>
@@ -27,7 +26,6 @@ export type DefaultWithoutRelations = Omit<
 export type FindWithoutRelationsOptions = DefaultWithoutRelations & {
   where: DefaultWithoutRelations["where"] & {
     price_list_id?: FindOperator<PriceList>
-    sales_channel_id?: FindOperator<SalesChannel>
   }
 }
 
@@ -51,9 +49,6 @@ export class ProductRepository extends Repository<Product> {
 
     const price_lists = optionsWithoutRelations?.where?.price_list_id
     delete optionsWithoutRelations?.where?.price_list_id
-
-    const sales_channels = optionsWithoutRelations?.where?.sales_channel_id
-    delete optionsWithoutRelations?.where?.sales_channel_id
 
     const qb = this.createQueryBuilder("product")
       .select(["product.id"])
@@ -93,15 +88,6 @@ export class ProductRepository extends Repository<Product> {
         })
     }
 
-    if (sales_channels) {
-      qb.innerJoin(
-        "product.sales_channels",
-        "sales_channels",
-        "sales_channels.id IN (:...sales_channels_ids)",
-        { sales_channels_ids: sales_channels.value }
-      )
-    }
-
     if (optionsWithoutRelations.withDeleted) {
       qb.withDeleted()
     }
@@ -119,7 +105,9 @@ export class ProductRepository extends Repository<Product> {
     return [entities, count]
   }
 
-  private getGroupedRelations(relations: string[]): {
+  private getGroupedRelations(
+    relations: string[]
+  ): {
     [toplevel: string]: string[]
   } {
     const groupedRelations: { [toplevel: string]: string[] } = {}
@@ -243,8 +231,9 @@ export class ProductRepository extends Repository<Product> {
     )
 
     const entitiesAndRelations = entitiesIdsWithRelations.concat(entities)
-    const entitiesToReturn =
-      this.mergeEntitiesWithRelations(entitiesAndRelations)
+    const entitiesToReturn = this.mergeEntitiesWithRelations(
+      entitiesAndRelations
+    )
 
     return [entitiesToReturn, count]
   }
@@ -290,8 +279,9 @@ export class ProductRepository extends Repository<Product> {
     )
 
     const entitiesAndRelations = entitiesIdsWithRelations.concat(entities)
-    const entitiesToReturn =
-      this.mergeEntitiesWithRelations(entitiesAndRelations)
+    const entitiesToReturn = this.mergeEntitiesWithRelations(
+      entitiesAndRelations
+    )
 
     return entitiesToReturn
   }
@@ -384,10 +374,6 @@ export class ProductRepository extends Repository<Product> {
     }
     if ("title" in where) {
       delete where.title
-    }
-
-    if ("price_list_id" in where) {
-      delete where?.price_list_id
     }
 
     return {

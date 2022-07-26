@@ -50,23 +50,24 @@ class DiscountConditionService extends TransactionBaseService<DiscountConditionS
     conditionId: string,
     config?: FindConfig<DiscountCondition>
   ): Promise<DiscountCondition | never> {
-    const manager = this.manager_
-    const conditionRepo = manager.getCustomRepository(
-      this.discountConditionRepository_
-    )
-
-    const query = buildQuery({ id: conditionId }, config)
-
-    const condition = await conditionRepo.findOne(query)
-
-    if (!condition) {
-      throw new MedusaError(
-        MedusaError.Types.NOT_FOUND,
-        `DiscountCondition with id ${conditionId} was not found`
+    return await this.atomicPhase_(async (manager: EntityManager) => {
+      const conditionRepo = manager.getCustomRepository(
+        this.discountConditionRepository_
       )
-    }
 
-    return condition
+      const query = buildQuery({ id: conditionId }, config)
+
+      const condition = await conditionRepo.findOne(query)
+
+      if (!condition) {
+        throw new MedusaError(
+          MedusaError.Types.NOT_FOUND,
+          `DiscountCondition with id ${conditionId} was not found`
+        )
+      }
+
+      return condition
+    })
   }
 
   protected static resolveConditionType_(data: UpsertDiscountConditionInput):
