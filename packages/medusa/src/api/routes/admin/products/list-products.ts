@@ -1,9 +1,18 @@
-import { Type } from "class-transformer"
-import { IsNumber, IsOptional, IsString } from "class-validator"
-import { Product } from "../../../../models"
+import { Transform, Type } from "class-transformer"
+import {
+  IsArray,
+  IsBoolean,
+  IsEnum,
+  IsNumber,
+  IsOptional,
+  IsString,
+  ValidateNested,
+} from "class-validator"
+import { Product, ProductStatus } from "../../../../models/product"
+import { DateComparisonOperator } from "../../../../types/common"
+import { optionalBooleanMapper } from "../../../../utils/validators/is-boolean"
 import { PricedProduct } from "../../../../types/pricing"
 import { PricingService, ProductService } from "../../../../services"
-import { FilterableProductProps } from "../../../../types/product"
 
 /**
  * @oas [get] /products
@@ -23,7 +32,6 @@ import { FilterableProductProps } from "../../../../types/product"
  *   - (query) is_giftcard {string} Search for giftcards using is_giftcard=true.
  *   - (query) type {string} to search for.
  *   - (query) order {string} to retrieve products in.
- *   - (query) sales_chanel_id {string[]} to retrieve products in.
  *   - (query) deleted_at {DateComparisonOperator} Date comparison for when resulting products was deleted, i.e. less than, greater than etc.
  *   - (query) created_at {DateComparisonOperator} Date comparison for when resulting products was created, i.e. less than, greater than etc.
  *   - (query) updated_at {DateComparisonOperator} Date comparison for when resulting products was updated, i.e. less than, greater than etc.
@@ -82,7 +90,7 @@ export default async (req, res) => {
   })
 }
 
-export class AdminGetProductsParams extends FilterableProductProps {
+export class AdminGetProductsPaginationParams {
   @IsNumber()
   @IsOptional()
   @Type(() => Number)
@@ -100,4 +108,70 @@ export class AdminGetProductsParams extends FilterableProductProps {
   @IsString()
   @IsOptional()
   fields?: string
+}
+
+export class AdminGetProductsParams extends AdminGetProductsPaginationParams {
+  @IsString()
+  @IsOptional()
+  id?: string
+
+  @IsString()
+  @IsOptional()
+  q?: string
+
+  @IsOptional()
+  @IsEnum(ProductStatus, { each: true })
+  status?: ProductStatus[]
+
+  @IsArray()
+  @IsOptional()
+  collection_id?: string[]
+
+  @IsArray()
+  @IsOptional()
+  tags?: string[]
+
+  @IsArray()
+  @IsOptional()
+  price_list_id?: string[]
+
+  @IsString()
+  @IsOptional()
+  title?: string
+
+  @IsString()
+  @IsOptional()
+  description?: string
+
+  @IsString()
+  @IsOptional()
+  handle?: string
+
+  @IsBoolean()
+  @IsOptional()
+  @Transform(({ value }) => optionalBooleanMapper.get(value.toLowerCase()))
+  is_giftcard?: boolean
+
+  @IsString()
+  @IsOptional()
+  type?: string
+
+  @IsString()
+  @IsOptional()
+  order?: string
+
+  @IsOptional()
+  @ValidateNested()
+  @Type(() => DateComparisonOperator)
+  created_at?: DateComparisonOperator
+
+  @IsOptional()
+  @ValidateNested()
+  @Type(() => DateComparisonOperator)
+  updated_at?: DateComparisonOperator
+
+  @ValidateNested()
+  @IsOptional()
+  @Type(() => DateComparisonOperator)
+  deleted_at?: DateComparisonOperator
 }

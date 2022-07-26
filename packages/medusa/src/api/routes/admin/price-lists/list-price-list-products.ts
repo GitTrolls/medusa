@@ -9,11 +9,9 @@ import {
   ValidateNested,
 } from "class-validator"
 import { ProductStatus } from "../../../../models"
-import {
-  DateComparisonOperator,
-  extendedFindParamsMixin,
-} from "../../../../types/common"
+import { DateComparisonOperator } from "../../../../types/common"
 import { FilterableProductProps } from "../../../../types/product"
+import { AdminGetProductsPaginationParams } from "../products"
 import PriceListService from "../../../../services/price-list"
 import { Request } from "express"
 
@@ -91,9 +89,7 @@ export default async (req: Request, res) => {
   })
 }
 
-export class AdminGetPriceListsPriceListProductsParams extends extendedFindParamsMixin(
-  { limit: 50 }
-) {
+export class AdminGetPriceListsPriceListProductsParams extends AdminGetProductsPaginationParams {
   @IsString()
   @IsOptional()
   id?: string

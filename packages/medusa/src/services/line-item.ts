@@ -91,10 +91,15 @@ class LineItemService extends BaseService {
     selector,
     config = { skip: 0, take: 50, order: { created_at: "DESC" } }
   ): Promise<LineItem[]> {
-    const manager = this.manager_
-    const lineItemRepo = manager.getCustomRepository(this.lineItemRepository_)
-    const query = this.buildQuery_(selector, config)
-    return await lineItemRepo.find(query)
+    return await this.atomicPhase_(
+      async (transactionManager: EntityManager) => {
+        const lineItemRepo = transactionManager.getCustomRepository(
+          this.lineItemRepository_
+        )
+        const query = this.buildQuery_(selector, config)
+        return await lineItemRepo.find(query)
+      }
+    )
   }
 
   /**
@@ -104,24 +109,27 @@ class LineItemService extends BaseService {
    * @return {Promise<LineItem | never>} the line item
    */
   async retrieve(id: string, config = {}): Promise<LineItem | never> {
-    const manager = this.manager_
-    const lineItemRepository = manager.getCustomRepository(
-      this.lineItemRepository_
+    return await this.atomicPhase_(
+      async (transactionManager: EntityManager) => {
+        const lineItemRepository = transactionManager.getCustomRepository(
+          this.lineItemRepository_
+        )
+
+        const validatedId = this.validateId_(id)
+        const query = this.buildQuery_({ id: validatedId }, config)
+
+        const lineItem = await lineItemRepository.findOne(query)
+
+        if (!lineItem) {
+          throw new MedusaError(
+            MedusaError.Types.NOT_FOUND,
+            `Line item with ${id} was not found`
+          )
+        }
+
+        return lineItem
+      }
     )
-
-    const validatedId = this.validateId_(id)
-    const query = this.buildQuery_({ id: validatedId }, config)
-
-    const lineItem = await lineItemRepository.findOne(query)
-
-    if (!lineItem) {
-      throw new MedusaError(
-        MedusaError.Types.NOT_FOUND,
-        `Line item with ${id} was not found`
-      )
-    }
-
-    return lineItem
   }
 
   /**

@@ -8,7 +8,6 @@ import {
   IsString,
   ValidateNested,
 } from "class-validator"
-import { IsType } from "../utils/validators/is-type"
 import { Order } from "../models/order"
 import { DateComparisonOperator } from "./common"
 
@@ -87,9 +86,9 @@ export class AdminListOrdersSelector {
   @IsOptional()
   email?: string
 
+  @IsString()
   @IsOptional()
-  @IsType([String, [String]])
-  region_id?: string | string[]
+  region_id?: string
 
   @IsString()
   @IsOptional()
@@ -98,10 +97,6 @@ export class AdminListOrdersSelector {
   @IsString()
   @IsOptional()
   tax_rate?: string
-
-  @IsArray()
-  @IsOptional()
-  sales_channel_id?: string[]
 
   @IsOptional()
   @ValidateNested()
