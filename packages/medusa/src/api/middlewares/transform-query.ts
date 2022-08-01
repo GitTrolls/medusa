@@ -7,10 +7,9 @@ import {
   prepareListQuery,
   prepareRetrieveQuery,
 } from "../../utils/get-query-config"
-import { BaseEntity } from "../../interfaces"
+import { BaseEntity } from "../../interfaces/models/base-entity"
 import { FindConfig, QueryConfig, RequestQueryFields } from "../../types/common"
 import { omit } from "lodash"
-import { removeUndefinedProperties } from "../../utils"
 
 export function transformQuery<
   T extends RequestQueryFields,
@@ -37,7 +36,6 @@ export function transformQuery<
         "fields",
         "order",
       ])
-      req.filterableFields = removeUndefinedProperties(req.filterableFields)
 
       if (queryConfig?.isList) {
         req.listConfig = prepareListQuery(

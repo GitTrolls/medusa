@@ -27,7 +27,6 @@ describe("GET /store/shipping-options", () => {
           relations: [
             "region",
             "items",
-            "items.adjustments",
             "items.variant",
             "items.variant.product",
           ],

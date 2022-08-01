@@ -7,12 +7,14 @@ import {
   IsString,
   ValidateNested,
 } from "class-validator"
+import { FindOperator } from "typeorm"
 import { Product, ProductOptionValue, ProductStatus } from "../models"
 import { optionalBooleanMapper } from "../utils/validators/is-boolean"
 import { IsType } from "../utils/validators/is-type"
 import {
   DateComparisonOperator,
   FindConfig,
+  Selector,
   StringComparisonOperator,
 } from "./common"
 import { PriceListLoadConfig } from "./price-list"
@@ -65,10 +67,6 @@ export class FilterableProductProps {
   @IsString()
   @IsOptional()
   type?: string
-
-  @IsArray()
-  @IsOptional()
-  sales_channel_id?: string[]
 
   @IsOptional()
   @ValidateNested()
@@ -150,7 +148,6 @@ export type CreateProductInput = {
   tags?: CreateProductProductTagInput[]
   options?: CreateProductProductOption[]
   variants?: CreateProductProductVariantInput[]
-  sales_channels?: CreateProductProductSalesChannelInput[] | null
   weight?: number
   length?: number
   height?: number
@@ -165,10 +162,6 @@ export type CreateProductInput = {
 export type CreateProductProductTagInput = {
   id?: string
   value: string
-}
-
-export type CreateProductProductSalesChannelInput = {
-  id: string
 }
 
 export type CreateProductProductTypeInput = {
@@ -246,26 +239,3 @@ export type ProductOptionInput = {
 }
 
 export type FindProductConfig = FindConfig<Product> & PriceListLoadConfig
-
-export class ProductSalesChannelReq {
-  @IsString()
-  id: string
-}
-
-export class ProductTagReq {
-  @IsString()
-  @IsOptional()
-  id?: string
-
-  @IsString()
-  value: string
-}
-
-export class ProductTypeReq {
-  @IsString()
-  @IsOptional()
-  id?: string
-
-  @IsString()
-  value: string
-}

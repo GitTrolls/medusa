@@ -814,10 +814,15 @@ export default class ClaimService extends TransactionBaseService<
       order: { created_at: "DESC" },
     }
   ): Promise<ClaimOrder[]> {
-    const manager = this.manager_
-    const claimRepo = manager.getCustomRepository(this.claimRepository_)
-    const query = buildQuery(selector, config)
-    return await claimRepo.find(query)
+    return await this.atomicPhase_(
+      async (transactionManager: EntityManager) => {
+        const claimRepo = transactionManager.getCustomRepository(
+          this.claimRepository_
+        )
+        const query = buildQuery(selector, config)
+        return await claimRepo.find(query)
+      }
+    )
   }
 
   /**
@@ -830,19 +835,24 @@ export default class ClaimService extends TransactionBaseService<
     id: string,
     config: FindConfig<ClaimOrder> = {}
   ): Promise<ClaimOrder> {
-    const manager = this.manager_
-    const claimRepo = manager.getCustomRepository(this.claimRepository_)
+    return await this.atomicPhase_(
+      async (transactionManager: EntityManager) => {
+        const claimRepo = transactionManager.getCustomRepository(
+          this.claimRepository_
+        )
 
-    const query = buildQuery({ id }, config)
-    const claim = await claimRepo.findOne(query)
+        const query = buildQuery({ id }, config)
+        const claim = await claimRepo.findOne(query)
 
-    if (!claim) {
-      throw new MedusaError(
-        MedusaError.Types.NOT_FOUND,
-        `Claim with ${id} was not found`
-      )
-    }
+        if (!claim) {
+          throw new MedusaError(
+            MedusaError.Types.NOT_FOUND,
+            `Claim with ${id} was not found`
+          )
+        }
 
-    return claim
+        return claim
+      }
+    )
   }
 }

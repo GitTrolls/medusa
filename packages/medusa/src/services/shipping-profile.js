@@ -430,14 +430,12 @@ class ShippingProfileService extends BaseService {
       admin_only: false,
     }
 
-    const customShippingOptions = await this.customShippingOptionService_
-      .withTransaction(this.manager_)
-      .list(
-        {
-          cart_id: cart.id,
-        },
-        { select: ["id", "shipping_option_id", "price"] }
-      )
+    const customShippingOptions = await this.customShippingOptionService_.list(
+      {
+        cart_id: cart.id,
+      },
+      { select: ["id", "shipping_option_id", "price"] }
+    )
 
     const hasCustomShippingOptions = customShippingOptions?.length
     // if there are custom shipping options associated with the cart, use those
@@ -445,11 +443,9 @@ class ShippingProfileService extends BaseService {
       selector.id = customShippingOptions.map((cso) => cso.shipping_option_id)
     }
 
-    const rawOpts = await this.shippingOptionService_
-      .withTransaction(this.manager_)
-      .list(selector, {
-        relations: ["requirements", "profile"],
-      })
+    const rawOpts = await this.shippingOptionService_.list(selector, {
+      relations: ["requirements", "profile"],
+    })
 
     // if there are custom shipping options associated with the cart, return cart shipping options with custom price
     if (hasCustomShippingOptions) {
@@ -465,24 +461,20 @@ class ShippingProfileService extends BaseService {
       })
     }
 
-    const options = await Promise.all(
-      rawOpts.map(async (so) => {
-        try {
-          const option = await this.shippingOptionService_
-            .withTransaction(this.manager_)
-            .validateCartOption(so, cart)
-          if (option) {
-            return option
-          }
-          return null
-        } catch (err) {
-          // if validateCartOption fails it means the option is not valid
-          return null
-        }
-      })
-    )
+    const options = []
 
-    return options.filter(Boolean)
+    for (const o of rawOpts) {
+      try {
+        const option = this.shippingOptionService_.validateCartOption(o, cart)
+        if (option) {
+          options.push(option)
+        }
+      } catch (ex) {
+        // catch the error, but intentionally do not break the iterations
+      }
+    }
+
+    return options
   }
 }
 

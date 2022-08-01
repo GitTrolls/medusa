@@ -1,10 +1,4 @@
-import {
-  IsBoolean,
-  IsInt,
-  IsObject,
-  IsOptional,
-  IsString,
-} from "class-validator"
+import { IsInt, IsObject, IsOptional, IsString } from "class-validator"
 import { MedusaError } from "medusa-core-utils"
 import { EntityManager } from "typeorm"
 import {
@@ -18,7 +12,6 @@ import {
   LineItemService,
 } from "../../../../services"
 import { validator } from "../../../../utils/validator"
-import { FlagRouter } from "../../../../utils/flag-router"
 /**
  * @oas [post] /draft-orders/{id}/line-items
  * operationId: "PostDraftOrdersDraftOrderLineItems"
@@ -99,7 +92,7 @@ export default async (req, res) => {
 
       await cartService
         .withTransaction(manager)
-        .addLineItem(draftOrder.cart_id, line, { validateSalesChannels: false })
+        .addLineItem(draftOrder.cart_id, line)
     } else {
       // custom line items can be added to a draft order
       await lineItemService.withTransaction(manager).create({

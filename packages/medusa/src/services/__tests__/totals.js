@@ -100,11 +100,7 @@ const calculateAdjustment = (cart, lineItem, discount) => {
 
 describe("TotalsService", () => {
   const container = {
-    taxProviderService: {
-      withTransaction: function () {
-        return this
-      },
-    },
+    taxProviderService: {},
     taxCalculationStrategy: {},
   }
 
@@ -541,9 +537,6 @@ describe("TotalsService", () => {
 
     const cradle = {
       taxProviderService: {
-        withTransaction: function () {
-          return this
-        },
         getTaxLines: getTaxLinesMock,
       },
       taxCalculationStrategy: {

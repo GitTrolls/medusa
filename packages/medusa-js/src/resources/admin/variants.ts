@@ -4,10 +4,7 @@ import { ResponsePromise } from "../.."
 import BaseResource from "../base"
 
 class AdminVariantsResource extends BaseResource {
-  list(
-    query?: AdminGetVariantsParams,
-    customHeaders: Record<string, any> = {}
-  ): ResponsePromise<AdminVariantsListRes> {
+  list(query?: AdminGetVariantsParams, customHeaders: Record<string, any> = {}): ResponsePromise<AdminVariantsListRes> {
     let path = `/admin/variants`
 
     if (query) {
@@ -15,7 +12,7 @@ class AdminVariantsResource extends BaseResource {
       path = `/admin/variants?${queryString}`
     }
 
-    return this.client.request("GET", path, undefined, {}, customHeaders)
+    return this.client.request("GET", path, {}, {}, customHeaders)
   }
 }
 

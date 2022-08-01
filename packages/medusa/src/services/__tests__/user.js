@@ -35,15 +35,11 @@ describe("UserService", () => {
   })
 
   describe("create", () => {
-    const userRepository = MockRepository({
-      create: (any) => Promise.resolve({ id: IdMap.getId("ironman") }),
-      save: (any) => Promise.resolve({ id: IdMap.getId("ironman") }),
-    })
+    const userRepository = MockRepository({})
 
     const userService = new UserService({
       manager: MockManager,
       userRepository,
-      eventBusService,
     })
 
     beforeEach(async () => {
@@ -66,13 +62,6 @@ describe("UserService", () => {
         name: "Oliver",
         password_hash: expect.stringMatching(/.{128}$/),
       })
-
-      expect(eventBusService.emit).toHaveBeenCalledWith(
-        UserService.Events.CREATED,
-        {
-          id: expect.any(String),
-        }
-      )
     })
   })
 
@@ -83,7 +72,6 @@ describe("UserService", () => {
     const userService = new UserService({
       manager: MockManager,
       userRepository,
-      eventBusService,
     })
 
     beforeEach(async () => {
@@ -102,13 +90,6 @@ describe("UserService", () => {
         first_name: "Tony",
         last_name: "Stark",
       })
-
-      expect(eventBusService.emit).toHaveBeenCalledWith(
-        UserService.Events.UPDATED,
-        {
-          id: IdMap.getId("ironman"),
-        }
-      )
     })
 
     it("successfully updates user metadata", async () => {
@@ -125,13 +106,6 @@ describe("UserService", () => {
           company: "Stark Industries",
         },
       })
-
-      expect(eventBusService.emit).toHaveBeenCalledWith(
-        UserService.Events.UPDATED,
-        {
-          id: IdMap.getId("ironman"),
-        }
-      )
     })
 
     it("fails on email update", async () => {

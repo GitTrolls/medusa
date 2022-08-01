@@ -92,21 +92,24 @@ class DraftOrderService extends TransactionBaseService<DraftOrderService> {
     id: string,
     config: FindConfig<DraftOrder> = {}
   ): Promise<DraftOrder | never> {
-    const manager = this.manager_
-    const draftOrderRepo = manager.getCustomRepository(
-      this.draftOrderRepository_
+    return await this.atomicPhase_(
+      async (transactionManager: EntityManager) => {
+        const draftOrderRepo = transactionManager.getCustomRepository(
+          this.draftOrderRepository_
+        )
+
+        const query = buildQuery({ id }, config)
+        const draftOrder = await draftOrderRepo.findOne(query)
+        if (!draftOrder) {
+          throw new MedusaError(
+            MedusaError.Types.NOT_FOUND,
+            `Draft order with ${id} was not found`
+          )
+        }
+
+        return draftOrder
+      }
     )
-
-    const query = buildQuery({ id }, config)
-    const draftOrder = await draftOrderRepo.findOne(query)
-    if (!draftOrder) {
-      throw new MedusaError(
-        MedusaError.Types.NOT_FOUND,
-        `Draft order with ${id} was not found`
-      )
-    }
-
-    return draftOrder
   }
 
   /**
@@ -119,21 +122,24 @@ class DraftOrderService extends TransactionBaseService<DraftOrderService> {
     cartId: string,
     config: FindConfig<DraftOrder> = {}
   ): Promise<DraftOrder | never> {
-    const manager = this.manager_
-    const draftOrderRepo = manager.getCustomRepository(
-      this.draftOrderRepository_
+    return await this.atomicPhase_(
+      async (transactionManager: EntityManager) => {
+        const draftOrderRepo = transactionManager.getCustomRepository(
+          this.draftOrderRepository_
+        )
+
+        const query = buildQuery({ cart_id: cartId }, config)
+        const draftOrder = await draftOrderRepo.findOne(query)
+        if (!draftOrder) {
+          throw new MedusaError(
+            MedusaError.Types.NOT_FOUND,
+            `Draft order was not found`
+          )
+        }
+
+        return draftOrder
+      }
     )
-
-    const query = buildQuery({ cart_id: cartId }, config)
-    const draftOrder = await draftOrderRepo.findOne(query)
-    if (!draftOrder) {
-      throw new MedusaError(
-        MedusaError.Types.NOT_FOUND,
-        `Draft order was not found`
-      )
-    }
-
-    return draftOrder
   }
 
   /**
@@ -173,44 +179,47 @@ class DraftOrderService extends TransactionBaseService<DraftOrderService> {
       order: { created_at: "DESC" },
     }
   ): Promise<[DraftOrder[], number]> {
-    const manager = this.manager_
-    const draftOrderRepository = manager.getCustomRepository(
-      this.draftOrderRepository_
-    )
-
-    const { q, ...restSelector } = selector
-    const query = buildQuery(
-      restSelector,
-      config
-    ) as FindManyOptions<DraftOrder> & ExtendedFindConfig<DraftOrder>
-
-    if (q) {
-      const where = query.where
-      delete where?.display_id
-
-      query.join = {
-        alias: "draft_order",
-        innerJoin: {
-          cart: "draft_order.cart",
-        },
-      }
-
-      query.where = (qb): void => {
-        qb.where(where)
-
-        qb.andWhere(
-          new Brackets((qb) => {
-            qb.where(`cart.email ILIKE :q`, {
-              q: `%${q}%`,
-            }).orWhere(`draft_order.display_id::TEXT ILIKE :displayId`, {
-              displayId: `${q}`,
-            })
-          })
+    return await this.atomicPhase_(
+      async (transactionManager: EntityManager) => {
+        const draftOrderRepository = transactionManager.getCustomRepository(
+          this.draftOrderRepository_
         )
-      }
-    }
 
-    return await draftOrderRepository.findAndCount(query)
+        const { q, ...restSelector } = selector
+        const query = buildQuery(
+          restSelector,
+          config
+        ) as FindManyOptions<DraftOrder> & ExtendedFindConfig<DraftOrder>
+
+        if (q) {
+          const where = query.where
+          delete where?.display_id
+
+          query.join = {
+            alias: "draft_order",
+            innerJoin: {
+              cart: "draft_order.cart",
+            },
+          }
+
+          query.where = (qb): void => {
+            qb.where(where)
+
+            qb.andWhere(
+              new Brackets((qb) => {
+                qb.where(`cart.email ILIKE :q`, {
+                  q: `%${q}%`,
+                }).orWhere(`draft_order.display_id::TEXT ILIKE :displayId`, {
+                  displayId: `${q}`,
+                })
+              })
+            )
+          }
+        }
+
+        return await draftOrderRepository.findAndCount(query)
+      }
+    )
   }
 
   /**
@@ -227,14 +236,17 @@ class DraftOrderService extends TransactionBaseService<DraftOrderService> {
       order: { created_at: "DESC" },
     }
   ): Promise<DraftOrder[]> {
-    const manager = this.manager_
-    const draftOrderRepo = manager.getCustomRepository(
-      this.draftOrderRepository_
+    return await this.atomicPhase_(
+      async (transactionManager: EntityManager) => {
+        const draftOrderRepo = transactionManager.getCustomRepository(
+          this.draftOrderRepository_
+        )
+
+        const query = buildQuery(selector, config)
+
+        return await draftOrderRepo.find(query)
+      }
     )
-
-    const query = buildQuery(selector, config)
-
-    return await draftOrderRepo.find(query)
   }
 
   /**
