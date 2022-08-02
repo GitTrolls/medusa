@@ -64,33 +64,19 @@ module.exports = {
           label: "Docs"
         },
         {
-          type: 'dropdown',
-          label: 'References',
-          items: [
-            {
-              href: `https://docs.medusajs.com/api/store`,
-              target: "_self",
-              label: "API Reference",
-            },
-            {
-              to: "cli/reference",
-              label: "CLI Reference",
-            },
-            {
-              to: "advanced/backend/subscribers/events-list",
-              label: "Events Reference",
-            },
-            {
-              type: "docSidebar",
-              sidebarId: "jsClientSidebar",
-              label: "JS Client Reference",
-            },
-            {
-              type: "docSidebar",
-              sidebarId: "servicesSidebar",
-              label: "Services Reference",
-            },
-          ]
+          type: "docSidebar",
+          sidebarId: "servicesSidebar",
+          label: "Services Reference",
+        },
+        {
+          type: "docSidebar",
+          sidebarId: "jsClientSidebar",
+          label: "JS Client Reference",
+        },
+        {
+          href: `https://docs.medusajs.com/api/store`,
+          target: "_self",
+          label: "API Reference",
         },
         {
           href: "https://github.com/medusajs/medusa",
@@ -105,6 +91,15 @@ module.exports = {
     },
     footer: {
       links: [
+        {
+          title: "Docs",
+          items: [
+            {
+              label: "Tutorial",
+              to: "/tutorial/set-up-your-development-environment",
+            },
+          ],
+        },
         {
           title: "Community",
           items: [
