@@ -97,12 +97,6 @@ Where `database_type` is `sqlite` and `database_database` is the location you wa
 
 ### PostgreSQL Configurations
 
-:::note
-
-Before getting started with configuring PostgreSQL, you should have created a PostgreSQL `database`. You can check how to create a database in [PostgreSQL's documentation](https://www.postgresql.org/docs/current/sql-createdatabase.html).
-
-:::
-
 For PostgreSQL you mainly need 2 configurations:
 
 ```jsx
@@ -262,12 +256,6 @@ ADMIN_CORS=<YOUR_ADMIN_CORS>
 
 Where `<YOUR_ADMIN_CORS>` is the URL of your admin dashboard.
 
-:::tip
-
-Make sure that the URL is without a backslash at the end. For example, you should use `http://localhost:7000` instead of `http://localhost:7000/`.
-
-:::
-
 ## Storefront CORS
 
 Medusa uses CORS to only allow specific origins to access the server. To make sure your Storefront dashboard can access the Medusa server, set this configuration:
@@ -290,12 +278,6 @@ STORE_CORS=<YOUR_STORE_CORS>
 ```
 
 Where `<YOUR_STORE_CORS>` is the URL of your storefront.
-
-:::tip
-
-Make sure that the URL is without a backslash at the end. For example, you should use `http://localhost:8000` instead of `http://localhost:8000/`.
-
-:::
 
 ## Plugins
 

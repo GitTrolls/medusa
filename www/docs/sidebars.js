@@ -85,26 +85,17 @@ module.exports = {
                 {
                   type: "doc",
                   id: "deployments/server/deploying-on-heroku",
-                  label: "Deploy on Heroku",
-                  customProps: {
-                    image: 'https://i.imgur.com/xNvxSkf.png'
-                  }
+                  label: "Deploy on Heroku"
                 },
                 {
                   type: "doc",
                   id: "deployments/server/deploying-on-digital-ocean",
-                  label: "Deploy on DigitalOcean",
-                  customProps: {
-                    image: 'https://i.imgur.com/aahqJp4.png'
-                  }
+                  label: "Deploy on DigitalOcean"
                 },
                 {
                   type: "doc",
                   id: "deployments/server/deploying-on-qovery",
-                  label: "Deploy on Qovery",
-                  customProps: {
-                    image: 'https://i.imgur.com/qOvY2dN.png'
-                  }
+                  label: "Deploy on Qovery"
                 }
               ]
             },
@@ -119,10 +110,7 @@ module.exports = {
                 {
                   type: "doc",
                   id: "deployments/admin/deploying-on-netlify",
-                  label: "Deploy on Netlify",
-                  customProps: {
-                    image: 'https://i.imgur.com/gCbsCvX.png'
-                  }
+                  label: "Deploy on Netlify"
                 },
               ]
             },
@@ -137,10 +125,7 @@ module.exports = {
                 {
                   type: "doc",
                   id: "deployments/storefront/deploying-gatsby-on-netlify",
-                  label: "Deploy Gatsby on Netlify",
-                  customProps: {
-                    image: 'https://i.imgur.com/gCbsCvX.png'
-                  }
+                  label: "Deploy Gatsby on Netlify"
                 },
               ]
             },
@@ -329,24 +314,28 @@ module.exports = {
           label: "CMS",
           items: [
             {
-              type: "category",
+              type: "doc",
+              id: "add-plugins/contentful",
               label: "Contentful",
-              link: {
-                type: "doc",
-                id: "add-plugins/contentful/index",
-              },
-              items: [
-                {
-                  type: "doc",
-                  id: "add-plugins/contentful/customize-contentful",
-                  label: "Customize Contentful Integration",
-                },
-              ]
             },
             {
               type: "doc",
               id: "add-plugins/strapi",
               label: "Strapi",
+            },
+            {
+              type: "category",
+              label: "Gatsby + Contentful + Medusa",
+              items: [
+                {
+                  type: "doc",
+                  id: "how-to/headless-ecommerce-store-with-gatsby-contentful-medusa",
+                },
+                {
+                  type: "doc",
+                  id: "how-to/making-your-store-more-powerful-with-contentful",
+                },
+              ],
             },
           ],
         },
@@ -464,11 +453,6 @@ module.exports = {
           type: "doc",
           id: "troubleshooting/signing-in-to-admin",
           label: "Signing in to Medusa Admin",
-        },
-        {
-          type: "doc",
-          id: "troubleshooting/s3-acl-error",
-          label: "S3 Plugin ACL Error",
         },
         {
           type: "doc",
