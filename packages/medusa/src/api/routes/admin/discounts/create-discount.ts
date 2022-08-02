@@ -13,12 +13,9 @@ import {
   ValidateNested,
 } from "class-validator"
 import { defaultAdminDiscountsFields, defaultAdminDiscountsRelations } from "."
-import {
-  AllocationType,
-  DiscountRuleType,
-  Discount,
-  DiscountConditionOperator,
-} from "../../../../models"
+import { AllocationType, DiscountRuleType } from "../../../../models"
+import { Discount } from "../../../../models/discount"
+import { DiscountConditionOperator } from "../../../../models/discount-condition"
 import DiscountService from "../../../../services/discount"
 import { AdminUpsertConditionsReq } from "../../../../types/discount"
 import { getRetrieveConfig } from "../../../../utils/get-query-config"
@@ -26,7 +23,6 @@ import { validator } from "../../../../utils/validator"
 import { IsGreaterThan } from "../../../../utils/validators/greater-than"
 import { IsISO8601Duration } from "../../../../utils/validators/iso8601-duration"
 import { AdminPostDiscountsDiscountParams } from "./update-discount"
-import { EntityManager } from "typeorm"
 /**
  * @oas [post] /discounts
  * operationId: "PostDiscounts"
@@ -96,12 +92,7 @@ export default async (req, res) => {
 
   const discountService: DiscountService = req.scope.resolve("discountService")
 
-  const manager: EntityManager = req.scope.resolve("manager")
-  const created = await manager.transaction(async (transactionManager) => {
-    return await discountService
-      .withTransaction(transactionManager)
-      .create(validated)
-  })
+  const created = await discountService.create(validated)
 
   const config = getRetrieveConfig<Discount>(
     defaultAdminDiscountsFields,

@@ -28,19 +28,21 @@ export default async (req, res) => {
     )
 
     const ids = selected_shipping_option.id.split(".")
-    for (const id of ids) {
-      const option = shippingOptions.find((so) => so.id === id)
-      if (option) {
-        await cartService.addShippingMethod(cart.id, option.id, option.data)
-      }
-    }
+    await Promise.all(
+      ids.map(async (id) => {
+        const option = shippingOptions.find((so) => so.id === id)
+
+        if (option) {
+          await cartService.addShippingMethod(cart.id, option.id, option.data)
+        }
+      })
+    )
 
     const newCart = await cartService.retrieve(cart.id, {
       select: [
         "gift_card_total",
         "subtotal",
         "total",
-        "shipping_total",
         "tax_total",
         "discount_total",
         "subtotal",
@@ -59,7 +61,6 @@ export default async (req, res) => {
     })
 
     const order = await klarnaProviderService.cartToKlarnaOrder(newCart)
-
     res.json(order)
   } catch (error) {
     throw error

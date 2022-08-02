@@ -1,6 +1,5 @@
 import RegionService from "../../../../services/region"
 import { defaultAdminRegionRelations, defaultAdminRegionFields } from "."
-import { EntityManager } from "typeorm"
 
 /**
  * @oas [delete] /regions/{id}/countries/{country_code}
@@ -27,12 +26,7 @@ export default async (req, res) => {
   const { region_id, country_code } = req.params
 
   const regionService: RegionService = req.scope.resolve("regionService")
-  const manager: EntityManager = req.scope.resolve("manager")
-  await manager.transaction(async (transactionManager) => {
-    return await regionService
-      .withTransaction(transactionManager)
-      .removeCountry(region_id, country_code)
-  })
+  await regionService.removeCountry(region_id, country_code)
 
   const region = await regionService.retrieve(region_id, {
     select: defaultAdminRegionFields,

@@ -2,9 +2,7 @@ import { Router } from "express"
 import "reflect-metadata"
 import { Cart, Order, Swap } from "../../../../"
 import { DeleteResponse, EmptyQueryParams } from "../../../../types/common"
-import middlewares, { transformBody, transformQuery } from "../../../middlewares"
-import { StorePostCartsCartReq } from "./update-cart";
-import { StorePostCartReq } from "./create-cart";
+import middlewares, { transformQuery } from "../../../middlewares"
 const route = Router()
 
 export default (app, container) => {
@@ -13,8 +11,9 @@ export default (app, container) => {
 
   app.use("/carts", route)
 
+  const relations = [...defaultStoreCartRelations]
   if (featureFlagRouter.isFeatureEnabled("sales_channels")) {
-    defaultStoreCartRelations.push("sales_channel")
+    relations.push("sales_channel")
   }
 
   // Inject plugin routes
@@ -26,7 +25,7 @@ export default (app, container) => {
   route.get(
     "/:id",
     transformQuery(EmptyQueryParams, {
-      defaultRelations: defaultStoreCartRelations,
+      defaultRelations: relations,
       defaultFields: defaultStoreCartFields,
       isList: false,
     }),
@@ -36,15 +35,10 @@ export default (app, container) => {
   route.post(
     "/",
     middlewareService.usePreCartCreation(),
-    transformBody(StorePostCartReq),
     middlewares.wrap(require("./create-cart").default)
   )
 
-  route.post(
-    "/:id",
-    transformBody(StorePostCartsCartReq),
-    middlewares.wrap(require("./update-cart").default)
-  )
+  route.post("/:id", middlewares.wrap(require("./update-cart").default))
 
   route.post(
     "/:id/complete",

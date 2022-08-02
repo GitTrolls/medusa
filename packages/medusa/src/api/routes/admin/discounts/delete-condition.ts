@@ -6,7 +6,6 @@ import { DiscountService } from "../../../../services"
 import DiscountConditionService from "../../../../services/discount-condition"
 import { getRetrieveConfig } from "../../../../utils/get-query-config"
 import { validator } from "../../../../utils/validator"
-import { EntityManager } from "typeorm"
 
 /**
  * @oas [delete] /discounts/{discount_id}/conditions/{condition_id}
@@ -80,12 +79,7 @@ export default async (req, res) => {
     )
   }
 
-  const manager: EntityManager = req.scope.resolve("manager")
-  await manager.transaction(async (transactionManager) => {
-    return await conditionService
-      .withTransaction(transactionManager)
-      .delete(condition_id)
-  })
+  await conditionService.delete(condition_id)
 
   const config = getRetrieveConfig<Discount>(
     defaultAdminDiscountsFields,

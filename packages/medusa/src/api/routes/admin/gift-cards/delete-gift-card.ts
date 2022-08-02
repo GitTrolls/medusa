@@ -1,5 +1,3 @@
-import { EntityManager } from "typeorm"
-
 /**
  * @oas [delete] /gift-cards/{id}
  * operationId: "DeleteGiftCardsGiftCard"
@@ -30,10 +28,7 @@ export default async (req, res) => {
   const { id } = req.params
 
   const giftCardService = req.scope.resolve("giftCardService")
-  const manager: EntityManager = req.scope.resolve("manager")
-  await manager.transaction(async (transactionManager) => {
-    return await giftCardService.withTransaction(transactionManager).delete(id)
-  })
+  await giftCardService.delete(id)
 
   res.json({
     id,

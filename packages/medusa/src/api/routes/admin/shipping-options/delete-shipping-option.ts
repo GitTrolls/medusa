@@ -1,5 +1,3 @@
-import { EntityManager } from "typeorm"
-
 /**
  * @oas [delete] /shipping-options/{id}
  * operationId: "DeleteShippingOptionsOption"
@@ -30,12 +28,7 @@ export default async (req, res) => {
   const { option_id } = req.params
   const optionService = req.scope.resolve("shippingOptionService")
 
-  const manager: EntityManager = req.scope.resolve("manager")
-  await manager.transaction(async (transactionManager) => {
-    return await optionService
-      .withTransaction(transactionManager)
-      .delete(option_id)
-  })
+  await optionService.delete(option_id)
 
   res.json({
     id: option_id,

@@ -1,33 +1,34 @@
 import { MedusaError } from "medusa-core-utils"
-import { EntityManager } from "typeorm"
-import { TransactionBaseService } from "../interfaces"
-import { Return, ReturnReason } from "../models"
-import { ReturnReasonRepository } from "../repositories/return-reason"
-import { FindConfig, Selector } from "../types/common"
-import { CreateReturnReason, UpdateReturnReason } from "../types/return-reason"
-import { buildQuery } from "../utils"
+import { BaseService } from "medusa-interfaces"
 
-type InjectedDependencies = {
-  manager: EntityManager
-  returnReasonRepository: typeof ReturnReasonRepository
-}
+class ReturnReasonService extends BaseService {
+  constructor({ manager, returnReasonRepository }) {
+    super()
 
-class ReturnReasonService extends TransactionBaseService<ReturnReasonService> {
-  protected readonly retReasonRepo_: typeof ReturnReasonRepository
-
-  protected manager_: EntityManager
-  protected transactionManager_: EntityManager | undefined
-
-  constructor({ manager, returnReasonRepository }: InjectedDependencies) {
-    // eslint-disable-next-line prefer-rest-params
-    super(arguments[0])
-
+    /** @private @constant {EntityManager} */
     this.manager_ = manager
+
+    /** @private @constant {ReturnReasonRepository} */
     this.retReasonRepo_ = returnReasonRepository
   }
 
-  async create(data: CreateReturnReason): Promise<ReturnReason | never> {
-    return await this.atomicPhase_(async (manager) => {
+  withTransaction(manager) {
+    if (!manager) {
+      return this
+    }
+
+    const cloned = new ReturnReasonService({
+      manager,
+      returnReasonRepository: this.retReasonRepo_,
+    })
+
+    cloned.transactionManager_ = manager
+
+    return cloned
+  }
+
+  create(data) {
+    return this.atomicPhase_(async (manager) => {
       const rrRepo = manager.getCustomRepository(this.retReasonRepo_)
 
       if (data.parent_return_reason_id && data.parent_return_reason_id !== "") {
@@ -43,19 +44,28 @@ class ReturnReasonService extends TransactionBaseService<ReturnReasonService> {
 
       const created = rrRepo.create(data)
 
-      return await rrRepo.save(created)
+      const result = await rrRepo.save(created)
+      return result
     })
   }
 
-  async update(id: string, data: UpdateReturnReason): Promise<ReturnReason> {
-    return await this.atomicPhase_(async (manager) => {
+  update(id, data) {
+    return this.atomicPhase_(async (manager) => {
       const rrRepo = manager.getCustomRepository(this.retReasonRepo_)
       const reason = await this.retrieve(id)
 
-      for (const key of Object.keys(data).filter(
-        (k) => typeof data[k] !== `undefined`
-      )) {
-        reason[key] = data[key]
+      const { description, label, parent_return_reason_id } = data
+
+      if (description) {
+        reason.description = data.description
+      }
+
+      if (label) {
+        reason.label = data.label
+      }
+
+      if (parent_return_reason_id) {
+        reason.parent_return_reason_id = parent_return_reason_id
       }
 
       await rrRepo.save(reason)
@@ -70,15 +80,11 @@ class ReturnReasonService extends TransactionBaseService<ReturnReasonService> {
    * @return {Promise} the result of the find operation
    */
   async list(
-    selector: Selector<ReturnReason>,
-    config: FindConfig<ReturnReason> = {
-      skip: 0,
-      take: 50,
-      order: { created_at: "DESC" },
-    }
-  ): Promise<ReturnReason[]> {
+    selector,
+    config = { skip: 0, take: 50, order: { created_at: "DESC" } }
+  ) {
     const rrRepo = this.manager_.getCustomRepository(this.retReasonRepo_)
-    const query = buildQuery(selector, config)
+    const query = this.buildQuery_(selector, config)
     return rrRepo.find(query)
   }
 
@@ -88,13 +94,11 @@ class ReturnReasonService extends TransactionBaseService<ReturnReasonService> {
    * @param {Object} config - config object
    * @return {Promise<Order>} the order document
    */
-  async retrieve(
-    id: string,
-    config: FindConfig<ReturnReason> = {}
-  ): Promise<ReturnReason | never> {
+  async retrieve(id, config = {}) {
     const rrRepo = this.manager_.getCustomRepository(this.retReasonRepo_)
+    const validatedId = this.validateId_(id)
 
-    const query = buildQuery({ id }, config)
+    const query = this.buildQuery_({ id: validatedId }, config)
     const item = await rrRepo.findOne(query)
 
     if (!item) {
@@ -107,7 +111,7 @@ class ReturnReasonService extends TransactionBaseService<ReturnReasonService> {
     return item
   }
 
-  async delete(returnReasonId: string): Promise<void> {
+  async delete(returnReasonId) {
     return this.atomicPhase_(async (manager) => {
       const rrRepo = manager.getCustomRepository(this.retReasonRepo_)
 

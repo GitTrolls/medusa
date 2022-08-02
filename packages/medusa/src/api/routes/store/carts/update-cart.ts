@@ -8,12 +8,11 @@ import {
 } from "class-validator"
 import { defaultStoreCartFields, defaultStoreCartRelations } from "."
 import { CartService } from "../../../../services"
+import { CartUpdateProps } from "../../../../types/cart"
 import { AddressPayload } from "../../../../types/common"
+import { validator } from "../../../../utils/validator"
 import { IsType } from "../../../../utils/validators/is-type"
 import { decorateLineItemsWithTotals } from "./decorate-line-items-with-totals"
-import { EntityManager } from "typeorm";
-import { FeatureFlagDecorators } from "../../../../utils/feature-flag-decorators";
-import SalesChannelFeatureFlag from "../../../../loaders/feature-flags/sales-channels";
 
 /**
  * @oas [post] /store/carts/{id}
@@ -36,9 +35,6 @@ import SalesChannelFeatureFlag from "../../../../loaders/feature-flags/sales-cha
  *           email:
  *             type: string
  *             description: "An email to be used on the Cart."
- *          sales_channel_id:
- *             type: string
- *             description: The id of the Sales channel to update the Cart with.
  *           billing_address:
  *             description: "The Address to be used for billing purposes."
  *             anyOf:
@@ -87,22 +83,37 @@ import SalesChannelFeatureFlag from "../../../../loaders/feature-flags/sales-cha
  */
 export default async (req, res) => {
   const { id } = req.params
-  const validated = req.validatedBody as StorePostCartsCartReq
+
+  const validated = await validator(StorePostCartsCartReq, req.body)
 
   const cartService: CartService = req.scope.resolve("cartService")
-  const manager: EntityManager = req.scope.resolve("manager")
 
-  await manager.transaction(async (transactionManager) => {
-    await cartService.withTransaction(transactionManager).update(id, validated)
+  // Update the cart
+  const { shipping_address, billing_address, ...rest } = validated
 
-    const updated = await cartService.withTransaction(transactionManager).retrieve(id, {
-      relations: ["payment_sessions", "shipping_methods"],
-    })
+  const cartDataToUpdate: CartUpdateProps = { ...rest }
+  if (typeof shipping_address === "string") {
+    cartDataToUpdate.shipping_address_id = shipping_address
+  } else {
+    cartDataToUpdate.shipping_address = shipping_address
+  }
 
-    if (updated.payment_sessions?.length && !validated.region_id) {
-      await cartService.withTransaction(transactionManager).setPaymentSessions(id)
-    }
+  if (typeof billing_address === "string") {
+    cartDataToUpdate.billing_address_id = billing_address
+  } else {
+    cartDataToUpdate.billing_address = billing_address
+  }
+
+  await cartService.update(id, cartDataToUpdate)
+
+  // If the cart has payment sessions update these
+  const updated = await cartService.retrieve(id, {
+    relations: ["payment_sessions", "shipping_methods"],
   })
+
+  if (updated.payment_sessions?.length && !validated.region_id) {
+    await cartService.setPaymentSessions(id)
+  }
 
   const cart = await cartService.retrieve(id, {
     select: defaultStoreCartFields,
@@ -162,10 +173,4 @@ export class StorePostCartsCartReq {
 
   @IsOptional()
   context?: object
-
-  @FeatureFlagDecorators(SalesChannelFeatureFlag.key, [
-    IsString(),
-    IsOptional(),
-  ])
-  sales_channel_id?: string
 }

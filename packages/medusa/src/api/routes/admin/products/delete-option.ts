@@ -1,6 +1,5 @@
 import { defaultAdminProductFields, defaultAdminProductRelations } from "."
 import { ProductService } from "../../../../services"
-import { EntityManager } from "typeorm"
 
 /**
  * @oas [delete] /products/{id}/options/{option_id}
@@ -36,12 +35,7 @@ export default async (req, res) => {
 
   const productService: ProductService = req.scope.resolve("productService")
 
-  const manager: EntityManager = req.scope.resolve("manager")
-  await manager.transaction(async (transactionManager) => {
-    return await productService
-      .withTransaction(transactionManager)
-      .deleteOption(id, option_id)
-  })
+  await productService.deleteOption(id, option_id)
 
   const data = await productService.retrieve(id, {
     select: defaultAdminProductFields,

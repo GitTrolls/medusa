@@ -1,7 +1,6 @@
 import { IsEmail } from "class-validator"
 import UserService from "../../../../services/user"
 import { validator } from "../../../../utils/validator"
-import { EntityManager } from "typeorm"
 
 /**
  * @oas [post] /users/password-token
@@ -32,12 +31,7 @@ export default async (req, res) => {
   const user = await userService.retrieveByEmail(validated.email)
 
   // Should call a email service provider that sends the token to the user
-  const manager: EntityManager = req.scope.resolve("manager")
-  await manager.transaction(async (transactionManager) => {
-    return await userService
-      .withTransaction(transactionManager)
-      .generateResetPasswordToken(user.id)
-  })
+  await userService.generateResetPasswordToken(user.id)
 
   res.sendStatus(204)
 }

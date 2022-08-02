@@ -31,22 +31,17 @@ export default async (req, res) => {
   const idempotencyKeyService: IdempotencyKeyService = req.scope.resolve(
     "idempotencyKeyService"
   )
-  const manager: EntityManager = req.scope.resolve("manager")
 
   const headerKey = req.get("Idempotency-Key") || ""
 
-  let idempotencyKey!: IdempotencyKey
+  let idempotencyKey: IdempotencyKey
   try {
-    await manager.transaction(async (transactionManager) => {
-      idempotencyKey = await idempotencyKeyService
-        .withTransaction(transactionManager)
-        .initializeRequest(
-          headerKey,
-          req.method,
-          req.params,
-          req.path
-        )
-    })
+    idempotencyKey = await idempotencyKeyService.initializeRequest(
+      headerKey,
+      req.method,
+      req.params,
+      req.path
+    )
   } catch (error) {
     console.log(error)
     res.status(409).send("Failed to create idempotency key")
@@ -64,46 +59,42 @@ export default async (req, res) => {
   while (inProgress) {
     switch (idempotencyKey.recovery_point) {
       case "started": {
-        await manager.transaction(async (transactionManager) => {
-          const { key, error } = await idempotencyKeyService
-            .withTransaction(transactionManager)
-            .workStage(
-              idempotencyKey.idempotency_key,
-              async (manager: EntityManager) => {
-                const cart = await cartService.withTransaction(manager).retrieve(
-                  id,
-                  {
-                    relations: ["items", "items.adjustments"],
-                    select: [
-                      "total",
-                      "subtotal",
-                      "tax_total",
-                      "discount_total",
-                      "shipping_total",
-                      "gift_card_total",
-                    ],
-                  },
-                  { force_taxes: true }
-                )
-
-                const data = await decorateLineItemsWithTotals(cart, req, {
-                  force_taxes: true,
-                })
-
-                return {
-                  response_code: 200,
-                  response_body: { cart: data },
-                }
-              }
+        const { key, error } = await idempotencyKeyService.workStage(
+          idempotencyKey.idempotency_key,
+          async (manager: EntityManager) => {
+            const cart = await cartService.withTransaction(manager).retrieve(
+              id,
+              {
+                relations: ["items", "items.adjustments"],
+                select: [
+                  "total",
+                  "subtotal",
+                  "tax_total",
+                  "discount_total",
+                  "shipping_total",
+                  "gift_card_total",
+                ],
+              },
+              { force_taxes: true }
             )
 
-          if (error) {
-            inProgress = false
-            err = error
-          } else {
-            idempotencyKey = key
+            const data = await decorateLineItemsWithTotals(cart, req, {
+              force_taxes: true,
+            })
+
+            return {
+              response_code: 200,
+              response_body: { cart: data },
+            }
           }
-        })
+        )
+
+        if (error) {
+          inProgress = false
+          err = error
+        } else {
+          idempotencyKey = key
+        }
         break
       }
 
@@ -113,18 +104,14 @@ export default async (req, res) => {
       }
 
       default:
-        await manager.transaction(async (transactionManager) => {
-          idempotencyKey = await idempotencyKeyService
-            .withTransaction(transactionManager)
-            .update(
-              idempotencyKey.idempotency_key,
-              {
-                recovery_point: "finished",
-                response_code: 500,
-                response_body: { message: "Unknown recovery point" },
-              }
-            )
-        })
+        idempotencyKey = await idempotencyKeyService.update(
+          idempotencyKey.idempotency_key,
+          {
+            recovery_point: "finished",
+            response_code: 500,
+            response_body: { message: "Unknown recovery point" },
+          }
+        )
         break
     }
   }

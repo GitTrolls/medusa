@@ -3,7 +3,6 @@ import {
   defaultAdminOrdersFields,
   defaultAdminOrdersRelations,
 } from "../orders"
-import { EntityManager } from "typeorm"
 
 /**
  * @oas [post] /returns/{id}/cancel
@@ -30,10 +29,7 @@ export default async (req, res) => {
   const returnService: ReturnService = req.scope.resolve("returnService")
   const orderService: OrderService = req.scope.resolve("orderService")
 
-  const manager: EntityManager = req.scope.resolve("manager")
-  let result = await manager.transaction(async (transactionManager) => {
-    return await returnService.withTransaction(transactionManager).cancel(id)
-  })
+  let result = await returnService.cancel(id)
 
   if (result.swap_id) {
     const swapService = req.scope.resolve("swapService")

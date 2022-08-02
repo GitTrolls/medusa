@@ -1,7 +1,6 @@
 import { IsString } from "class-validator"
 import { defaultAdminProductFields, defaultAdminProductRelations } from "."
 import { validator } from "../../../../utils/validator"
-import { EntityManager } from "typeorm"
 
 /**
  * @oas [post] /products/{id}/metadata
@@ -46,11 +45,8 @@ export default async (req, res) => {
   )
 
   const productService = req.scope.resolve("productService")
-  const manager: EntityManager = req.scope.resolve("manager")
-  await manager.transaction(async (transactionManager) => {
-    return await productService.withTransaction(transactionManager).update(id, {
-      metadata: { [validated.key]: validated.value },
-    })
+  await productService.update(id, {
+    metadata: { [validated.key]: validated.value },
   })
 
   const product = await productService.retrieve(id, {

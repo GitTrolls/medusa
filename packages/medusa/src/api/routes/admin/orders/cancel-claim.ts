@@ -1,7 +1,6 @@
 import { MedusaError } from "medusa-core-utils"
 import { defaultAdminOrdersRelations, defaultAdminOrdersFields } from "."
 import { ClaimService, OrderService } from "../../../../services"
-import { EntityManager } from "typeorm"
 
 /**
  * @oas [post] /orders/{id}/claims/{claim_id}/cancel
@@ -39,12 +38,7 @@ export default async (req, res) => {
     )
   }
 
-  const manager: EntityManager = req.scope.resolve("manager")
-  await manager.transaction(async (transactionManager) => {
-    return await claimService
-      .withTransaction(transactionManager)
-      .cancel(claim_id)
-  })
+  await claimService.cancel(claim_id)
 
   const order = await orderService.retrieve(id, {
     select: defaultAdminOrdersFields,

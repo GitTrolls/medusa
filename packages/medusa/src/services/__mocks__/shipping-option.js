@@ -67,9 +67,6 @@ export const shippingOptions = {
 }
 
 export const ShippingOptionServiceMock = {
-  withTransaction: function () {
-    return this
-  },
   retrieve: jest.fn().mockImplementation((optionId) => {
     if (optionId === IdMap.getId("return-shipping")) {
       return Promise.resolve(shippingOptions.returnShipping)

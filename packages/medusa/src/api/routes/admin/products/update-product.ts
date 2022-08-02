@@ -13,18 +13,10 @@ import {
   ValidateNested,
 } from "class-validator"
 import { defaultAdminProductFields, defaultAdminProductRelations } from "."
-import SalesChannelFeatureFlag from "../../../../loaders/feature-flags/sales-channels"
 import { ProductStatus } from "../../../../models"
-import { PricingService, ProductService } from "../../../../services"
-import {
-  ProductSalesChannelReq,
-  ProductTagReq,
-  ProductTypeReq,
-} from "../../../../types/product"
+import { ProductService, PricingService } from "../../../../services"
 import { ProductVariantPricesUpdateReq } from "../../../../types/product-variant"
-import { FeatureFlagDecorators } from "../../../../utils/feature-flag-decorators"
 import { validator } from "../../../../utils/validator"
-import { EntityManager } from "typeorm"
 
 /**
  * @oas [post] /products/{id}
@@ -85,14 +77,6 @@ import { EntityManager } from "typeorm"
  *                   type: string
  *                 value:
  *                   description: The value of the Tag, these will be upserted.
- *                   type: string
- *         sales_channels:
- *             description: [EXPERIMENTAL] Sales channels to associate the Product with.
- *             type: array
- *             items:
- *               properties:
- *                 id:
- *                   description: The id of an existing Sales channel.
  *                   type: string
  *           options:
  *             description: The Options that the Product should have. These define on which properties the Product's Product Variants will differ.
@@ -225,21 +209,33 @@ export default async (req, res) => {
   const productService: ProductService = req.scope.resolve("productService")
   const pricingService: PricingService = req.scope.resolve("pricingService")
 
-  const manager: EntityManager = req.scope.resolve("manager")
-  await manager.transaction(async (transactionManager) => {
-    await productService
-      .withTransaction(transactionManager)
-      .update(id, validated)
-  })
+  await productService.update(id, validated)
 
   const rawProduct = await productService.retrieve(id, {
     select: defaultAdminProductFields,
     relations: defaultAdminProductRelations,
   })
-
   const [product] = await pricingService.setProductPrices([rawProduct])
 
   res.json({ product })
+}
+
+class ProductTypeReq {
+  @IsString()
+  @IsOptional()
+  id?: string
+
+  @IsString()
+  value: string
+}
+
+class ProductTagReq {
+  @IsString()
+  @IsOptional()
+  id?: string
+
+  @IsString()
+  value: string
 }
 
 class ProductVariantOptionReq {
@@ -384,14 +380,6 @@ export class AdminPostProductsProductReq {
   @ValidateNested({ each: true })
   @IsArray()
   tags?: ProductTagReq[]
-
-  @FeatureFlagDecorators(SalesChannelFeatureFlag.key, [
-    IsOptional(),
-    Type(() => ProductSalesChannelReq),
-    ValidateNested({ each: true }),
-    IsArray(),
-  ])
-  sales_channels: ProductSalesChannelReq[] | null
 
   @IsOptional()
   @Type(() => ProductVariantReq)

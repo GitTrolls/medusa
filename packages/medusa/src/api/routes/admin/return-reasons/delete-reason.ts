@@ -1,5 +1,4 @@
 import { ReturnReasonService } from "../../../../services"
-import { EntityManager } from "typeorm"
 
 /**
  * @oas [delete] /return-reasons/{id}
@@ -33,12 +32,7 @@ export default async (req, res) => {
   const returnReasonService: ReturnReasonService = req.scope.resolve(
     "returnReasonService"
   )
-  const manager: EntityManager = req.scope.resolve("manager")
-  await manager.transaction(async (transactionManager) => {
-    return await returnReasonService
-      .withTransaction(transactionManager)
-      .delete(id)
-  })
+  await returnReasonService.delete(id)
 
   res.json({
     id: id,

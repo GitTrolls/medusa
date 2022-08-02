@@ -5,7 +5,6 @@ import { PriceList } from "../../../.."
 import PriceListService from "../../../../services/price-list"
 import { AdminPriceListPricesUpdateReq } from "../../../../types/price-list"
 import { validator } from "../../../../utils/validator"
-import { EntityManager } from "typeorm"
 
 /**
  * @oas [post] /price-lists/{id}/prices/batch
@@ -78,12 +77,7 @@ export default async (req, res) => {
   const priceListService: PriceListService =
     req.scope.resolve("priceListService")
 
-  const manager: EntityManager = req.scope.resolve("manager")
-  await manager.transaction(async (transactionManager) => {
-    return await priceListService
-      .withTransaction(transactionManager)
-      .addPrices(id, validated.prices, validated.override)
-  })
+  await priceListService.addPrices(id, validated.prices, validated.override)
 
   const priceList = await priceListService.retrieve(id, {
     select: defaultAdminPriceListFields as (keyof PriceList)[],

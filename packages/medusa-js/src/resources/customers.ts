@@ -39,7 +39,7 @@ class CustomerResource extends BaseResource {
     customHeaders: Record<string, any> = {}
   ): ResponsePromise<StoreCustomersRes> {
     const path = `/store/customers/me`
-    return this.client.request("GET", path, undefined, {}, customHeaders)
+    return this.client.request("GET", path, {}, {}, customHeaders)
   }
 
   /**
@@ -73,7 +73,7 @@ class CustomerResource extends BaseResource {
         path += `?${query}`
       }
     }
-    return this.client.request("GET", path, undefined, {}, customHeaders)
+    return this.client.request("GET", path, {}, {}, customHeaders)
   }
 
   /**

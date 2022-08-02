@@ -1,5 +1,4 @@
 import PriceListService from "../../../../services/price-list"
-import { EntityManager } from "typeorm"
 
 /**
  * @oas [delete] /price-lists/{id}
@@ -32,10 +31,7 @@ export default async (req, res) => {
 
   const priceListService: PriceListService =
     req.scope.resolve("priceListService")
-  const manager: EntityManager = req.scope.resolve("manager")
-  await manager.transaction(async (transactionManager) => {
-    return await priceListService.withTransaction(transactionManager).delete(id)
-  })
+  await priceListService.delete(id)
 
   res.json({
     id,

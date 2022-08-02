@@ -1,10 +1,10 @@
-import { useAdminSalesChannel, useAdminSalesChannels } from "../../../../src"
+import { useAdminSalesChannel } from "../../../../src"
 import { renderHook } from "@testing-library/react-hooks"
 import { fixtures } from "../../../../mocks/data"
 import { createWrapper } from "../../../utils"
 
 describe("useAdminSalesChannel hook", () => {
-  test("returns a sales channel", async () => {
+  test("returns a product", async () => {
     const salesChannel = fixtures.get("sales_channel")
     const { result, waitFor } = renderHook(
       () => useAdminSalesChannel(salesChannel.id),
@@ -17,19 +17,5 @@ describe("useAdminSalesChannel hook", () => {
 
     expect(result.current.response.status).toEqual(200)
     expect(result.current.sales_channel).toEqual(salesChannel)
-  })
-})
-
-describe("useAdminSalesChannels hook", () => {
-  test("returns a list of sales channels", async () => {
-    const salesChannels = fixtures.get("sales_channels")
-    const { result, waitFor } = renderHook(() => useAdminSalesChannels(), {
-      wrapper: createWrapper(),
-    })
-
-    await waitFor(() => result.current.isSuccess)
-
-    expect(result.current.response.status).toEqual(200)
-    expect(result.current.sales_channels).toEqual(salesChannels)
   })
 })

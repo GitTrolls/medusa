@@ -29,7 +29,7 @@ export class Notification extends BaseEntity {
 
   @Index()
   @Column({ nullable: true })
-  customer_id: string | null
+  customer_id: string
 
   @ManyToOne(() => Customer)
   @JoinColumn({ name: "customer_id" })

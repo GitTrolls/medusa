@@ -1,17 +1,8 @@
-import { FlagRouter } from "../utils/flag-router"
-
 import { MedusaError } from "medusa-core-utils"
 import { EntityManager } from "typeorm"
-import { ProductVariantService, SearchService } from "."
+import { SearchService } from "."
 import { TransactionBaseService } from "../interfaces"
-import SalesChannelFeatureFlag from "../loaders/feature-flags/sales-channels"
-import {
-  Product,
-  ProductTag,
-  ProductType,
-  ProductVariant,
-  SalesChannel,
-} from "../models"
+import { Product, ProductTag, ProductType, ProductVariant } from "../models"
 import { ImageRepository } from "../repositories/image"
 import {
   FindWithoutRelationsOptions,
@@ -32,6 +23,7 @@ import {
 import { buildQuery, setMetadata } from "../utils"
 import { formatException } from "../utils/exception-formatter"
 import EventBusService from "./event-bus"
+import ProductVariantService from "./product-variant"
 
 type InjectedDependencies = {
   manager: EntityManager
@@ -44,13 +36,9 @@ type InjectedDependencies = {
   productVariantService: ProductVariantService
   searchService: SearchService
   eventBusService: EventBusService
-  featureFlagRouter: FlagRouter
 }
 
-class ProductService extends TransactionBaseService<
-  ProductService,
-  InjectedDependencies
-> {
+class ProductService extends TransactionBaseService<ProductService> {
   protected manager_: EntityManager
   protected transactionManager_: EntityManager | undefined
 
@@ -63,7 +51,6 @@ class ProductService extends TransactionBaseService<
   protected readonly productVariantService_: ProductVariantService
   protected readonly searchService_: SearchService
   protected readonly eventBus_: EventBusService
-  protected readonly featureFlagRouter_: FlagRouter
 
   static readonly IndexName = `products`
   static readonly Events = {
@@ -74,19 +61,28 @@ class ProductService extends TransactionBaseService<
 
   constructor({
     manager,
-    productOptionRepository,
     productRepository,
     productVariantRepository,
+    productOptionRepository,
     eventBusService,
     productVariantService,
     productTypeRepository,
     productTagRepository,
     imageRepository,
     searchService,
-    featureFlagRouter,
   }: InjectedDependencies) {
-    // eslint-disable-next-line prefer-rest-params
-    super(arguments[0])
+    super({
+      manager,
+      productRepository,
+      productVariantRepository,
+      productOptionRepository,
+      eventBusService,
+      productVariantService,
+      productTypeRepository,
+      productTagRepository,
+      imageRepository,
+      searchService,
+    })
 
     this.manager_ = manager
     this.productOptionRepository_ = productOptionRepository
@@ -98,7 +94,6 @@ class ProductService extends TransactionBaseService<
     this.productTagRepository_ = productTagRepository
     this.imageRepository_ = imageRepository
     this.searchService_ = searchService
-    this.featureFlagRouter_ = featureFlagRouter
   }
 
   /**
@@ -118,20 +113,21 @@ class ProductService extends TransactionBaseService<
       include_discount_prices: false,
     }
   ): Promise<Product[]> {
-    const manager = this.manager_
-    const productRepo = manager.getCustomRepository(this.productRepository_)
+    return await this.atomicPhase_(async (manager) => {
+      const productRepo = manager.getCustomRepository(this.productRepository_)
 
-    const { q, query, relations } = this.prepareListQuery_(selector, config)
-    if (q) {
-      const [products] = await productRepo.getFreeTextSearchResultsAndCount(
-        q,
-        query,
-        relations
-      )
-      return products
-    }
+      const { q, query, relations } = this.prepareListQuery_(selector, config)
+      if (q) {
+        const [products] = await productRepo.getFreeTextSearchResultsAndCount(
+          q,
+          query,
+          relations
+        )
+        return products
+      }
 
-    return await productRepo.findWithRelations(relations, query)
+      return await productRepo.findWithRelations(relations, query)
+    })
   }
 
   /**
@@ -154,20 +150,21 @@ class ProductService extends TransactionBaseService<
       include_discount_prices: false,
     }
   ): Promise<[Product[], number]> {
-    const manager = this.manager_
-    const productRepo = manager.getCustomRepository(this.productRepository_)
+    return await this.atomicPhase_(async (manager) => {
+      const productRepo = manager.getCustomRepository(this.productRepository_)
 
-    const { q, query, relations } = this.prepareListQuery_(selector, config)
+      const { q, query, relations } = this.prepareListQuery_(selector, config)
 
-    if (q) {
-      return await productRepo.getFreeTextSearchResultsAndCount(
-        q,
-        query,
-        relations
-      )
-    }
+      if (q) {
+        return await productRepo.getFreeTextSearchResultsAndCount(
+          q,
+          query,
+          relations
+        )
+      }
 
-    return await productRepo.findWithRelationsAndCount(relations, query)
+      return await productRepo.findWithRelationsAndCount(relations, query)
+    })
   }
 
   /**
@@ -176,10 +173,11 @@ class ProductService extends TransactionBaseService<
    * @return {Promise} the result of the count operation
    */
   async count(selector: Selector<Product> = {}): Promise<number> {
-    const manager = this.manager_
-    const productRepo = manager.getCustomRepository(this.productRepository_)
-    const query = buildQuery(selector)
-    return await productRepo.count(query)
+    return await this.atomicPhase_(async (manager) => {
+      const productRepo = manager.getCustomRepository(this.productRepository_)
+      const query = buildQuery(selector)
+      return await productRepo.count(query)
+    })
   }
 
   /**
@@ -196,7 +194,9 @@ class ProductService extends TransactionBaseService<
       include_discount_prices: false,
     }
   ): Promise<Product> {
-    return await this.retrieve_({ id: productId }, config)
+    return await this.atomicPhase_(async () => {
+      return await this.retrieve_({ id: productId }, config)
+    })
   }
 
   /**
@@ -210,7 +210,9 @@ class ProductService extends TransactionBaseService<
     productHandle: string,
     config: FindProductConfig = {}
   ): Promise<Product> {
-    return await this.retrieve_({ handle: productHandle }, config)
+    return await this.atomicPhase_(async () => {
+      return await this.retrieve_({ handle: productHandle }, config)
+    })
   }
 
   /**
@@ -224,7 +226,9 @@ class ProductService extends TransactionBaseService<
     externalId: string,
     config: FindProductConfig = {}
   ): Promise<Product> {
-    return await this.retrieve_({ external_id: externalId }, config)
+    return await this.atomicPhase_(async () => {
+      return await this.retrieve_({ external_id: externalId }, config)
+    })
   }
 
   /**
@@ -241,28 +245,29 @@ class ProductService extends TransactionBaseService<
       include_discount_prices: false,
     }
   ): Promise<Product> {
-    const manager = this.manager_
-    const productRepo = manager.getCustomRepository(this.productRepository_)
+    return await this.atomicPhase_(async (manager) => {
+      const productRepo = manager.getCustomRepository(this.productRepository_)
 
-    const { relations, ...query } = buildQuery(selector, config)
+      const { relations, ...query } = buildQuery(selector, config)
 
-    const product = await productRepo.findOneWithRelations(
-      relations,
-      query as FindWithoutRelationsOptions
-    )
-
-    if (!product) {
-      const selectorConstraints = Object.entries(selector)
-        .map(([key, value]) => `${key}: ${value}`)
-        .join(", ")
-
-      throw new MedusaError(
-        MedusaError.Types.NOT_FOUND,
-        `Product with ${selectorConstraints} was not found`
+      const product = await productRepo.findOneWithRelations(
+        relations,
+        query as FindWithoutRelationsOptions
       )
-    }
 
-    return product
+      if (!product) {
+        const selectorConstraints = Object.entries(selector)
+          .map(([key, value]) => `${key}: ${value}`)
+          .join(", ")
+
+        throw new MedusaError(
+          MedusaError.Types.NOT_FOUND,
+          `Product with ${selectorConstraints} was not found`
+        )
+      }
+
+      return product
+    })
   }
 
   /**
@@ -278,64 +283,37 @@ class ProductService extends TransactionBaseService<
       take: 50,
     }
   ): Promise<ProductVariant[]> {
-    const givenRelations = config.relations ?? []
-    const requiredRelations = ["variants"]
-    const relationsSet = new Set([...givenRelations, ...requiredRelations])
+    return await this.atomicPhase_(async () => {
+      const givenRelations = config.relations ?? []
+      const requiredRelations = ["variants"]
+      const relationsSet = new Set([...givenRelations, ...requiredRelations])
 
-    const product = await this.retrieve(productId, {
-      ...config,
-      relations: [...relationsSet],
-    })
-    return product.variants
-  }
-
-  async filterProductsBySalesChannel(
-    productIds: string[],
-    salesChannelId: string,
-    config: FindProductConfig = {
-      skip: 0,
-      take: 50,
-    }
-  ): Promise<Product[]> {
-    const givenRelations = config.relations ?? []
-    const requiredRelations = ["sales_channels"]
-    const relationsSet = new Set([...givenRelations, ...requiredRelations])
-
-    const products = await this.list(
-      {
-        id: productIds,
-      },
-      {
+      const product = await this.retrieve(productId, {
         ...config,
         relations: [...relationsSet],
-      }
-    )
-    const productSalesChannelsMap = new Map<string, SalesChannel[]>(
-      products.map((product) => [product.id, product.sales_channels])
-    )
-    return products.filter((product) => {
-      return productSalesChannelsMap
-        .get(product.id)
-        ?.some((sc) => sc.id === salesChannelId)
+      })
+      return product.variants
     })
   }
 
   async listTypes(): Promise<ProductType[]> {
-    const manager = this.manager_
-    const productTypeRepository = manager.getCustomRepository(
-      this.productTypeRepository_
-    )
+    return await this.atomicPhase_(async (manager) => {
+      const productTypeRepository = manager.getCustomRepository(
+        this.productTypeRepository_
+      )
 
-    return await productTypeRepository.find({})
+      return await productTypeRepository.find({})
+    })
   }
 
   async listTagsByUsage(count = 10): Promise<ProductTag[]> {
-    const manager = this.manager_
-    const productTagRepo = manager.getCustomRepository(
-      this.productTagRepository_
-    )
+    return await this.atomicPhase_(async (manager) => {
+      const productTagRepo = manager.getCustomRepository(
+        this.productTagRepository_
+      )
 
-    return await productTagRepo.listTagsByUsage(count)
+      return await productTagRepo.listTagsByUsage(count)
+    })
   }
 
   /**
@@ -357,14 +335,7 @@ class ProductService extends TransactionBaseService<
         this.productOptionRepository_
       )
 
-      const {
-        options,
-        tags,
-        type,
-        images,
-        sales_channels: salesChannels,
-        ...rest
-      } = productObject
+      const { options, tags, type, images, ...rest } = productObject
 
       if (!rest.thumbnail && images?.length) {
         rest.thumbnail = images[0]
@@ -390,28 +361,11 @@ class ProductService extends TransactionBaseService<
           product.type_id = (await productTypeRepo.upsertType(type))?.id || null
         }
 
-        if (
-          this.featureFlagRouter_.isFeatureEnabled(SalesChannelFeatureFlag.key)
-        ) {
-          if (typeof salesChannels !== "undefined") {
-            product.sales_channels = []
-            if (salesChannels?.length) {
-              const salesChannelIds = salesChannels?.map((sc) => sc.id)
-              product.sales_channels = salesChannelIds?.map(
-                (id) => ({ id } as SalesChannel)
-              )
-            }
-          }
-        }
-
         product = await productRepo.save(product)
 
         product.options = await Promise.all(
           (options ?? []).map(async (option) => {
-            const res = optionRepo.create({
-              ...option,
-              product_id: product.id,
-            })
+            const res = optionRepo.create({ ...option, product_id: product.id })
             await optionRepo.save(res)
             return res
           })
@@ -459,36 +413,11 @@ class ProductService extends TransactionBaseService<
       )
       const imageRepo = manager.getCustomRepository(this.imageRepository_)
 
-      const relations = ["variants", "tags", "images"]
-
-      if (
-        this.featureFlagRouter_.isFeatureEnabled(SalesChannelFeatureFlag.key)
-      ) {
-        if (typeof update.sales_channels !== "undefined") {
-          relations.push("sales_channels")
-        }
-      } else {
-        if (typeof update.sales_channels !== "undefined") {
-          throw new MedusaError(
-            MedusaError.Types.INVALID_DATA,
-            "the property sales_channels should no appears as part of the payload"
-          )
-        }
-      }
-
       const product = await this.retrieve(productId, {
-        relations,
+        relations: ["variants", "tags", "images"],
       })
 
-      const {
-        variants,
-        metadata,
-        images,
-        tags,
-        type,
-        sales_channels: salesChannels,
-        ...rest
-      } = update
+      const { variants, metadata, images, tags, type, ...rest } = update
 
       if (!product.thumbnail && !update.thumbnail && images?.length) {
         product.thumbnail = images[0]
@@ -508,20 +437,6 @@ class ProductService extends TransactionBaseService<
 
       if (tags) {
         product.tags = await productTagRepo.upsertTags(tags)
-      }
-
-      if (
-        this.featureFlagRouter_.isFeatureEnabled(SalesChannelFeatureFlag.key)
-      ) {
-        if (typeof salesChannels !== "undefined") {
-          product.sales_channels = []
-          if (salesChannels?.length) {
-            const salesChannelIds = salesChannels?.map((sc) => sc.id)
-            product.sales_channels = salesChannelIds?.map(
-              (id) => ({ id } as SalesChannel)
-            )
-          }
-        }
       }
 
       if (variants) {

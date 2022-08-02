@@ -12,7 +12,6 @@ import { defaultAdminProductFields, defaultAdminProductRelations } from "."
 import { ProductService, ProductVariantService } from "../../../../services"
 import { ProductVariantPricesCreateReq } from "../../../../types/product-variant"
 import { validator } from "../../../../utils/validator"
-import { EntityManager } from "typeorm"
 
 /**
  * @oas [post] /products/{id}/variants
@@ -136,12 +135,7 @@ export default async (req, res) => {
   )
   const productService: ProductService = req.scope.resolve("productService")
 
-  const manager: EntityManager = req.scope.resolve("manager")
-  await manager.transaction(async (transactionManager) => {
-    return await productVariantService
-      .withTransaction(transactionManager)
-      .create(id, validated)
-  })
+  await productVariantService.create(id, validated)
 
   const product = await productService.retrieve(id, {
     select: defaultAdminProductFields,

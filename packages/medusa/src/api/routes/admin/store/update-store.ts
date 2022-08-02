@@ -1,7 +1,6 @@
 import { IsArray, IsOptional, IsString, IsObject } from "class-validator"
 import { StoreService } from "../../../../services"
 import { validator } from "../../../../utils/validator"
-import { EntityManager } from "typeorm"
 
 /**
  * @oas [post] /store
@@ -46,12 +45,7 @@ export default async (req, res) => {
 
   const storeService: StoreService = req.scope.resolve("storeService")
 
-  const manager: EntityManager = req.scope.resolve("manager")
-  const store = await manager.transaction(async (transactionManager) => {
-    return await storeService
-      .withTransaction(transactionManager)
-      .update(validatedBody)
-  })
+  const store = await storeService.update(validatedBody)
 
   res.status(200).json({ store })
 }

@@ -20,7 +20,7 @@ export default (app) => {
   return app
 }
 
-export const defaultStoreReturnReasonFields: (keyof ReturnReason)[] = [
+export const defaultStoreReturnReasonFields = [
   "id",
   "value",
   "label",
@@ -31,7 +31,7 @@ export const defaultStoreReturnReasonFields: (keyof ReturnReason)[] = [
   "deleted_at",
 ]
 
-export const defaultStoreReturnReasonRelations: (keyof ReturnReason)[] = [
+export const defaultStoreReturnReasonRelations = [
   "parent_return_reason",
   "return_reason_children",
 ]

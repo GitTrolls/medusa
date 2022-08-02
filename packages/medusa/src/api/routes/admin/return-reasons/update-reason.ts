@@ -5,7 +5,6 @@ import {
 } from "."
 import { ReturnReasonService } from "../../../../services"
 import { validator } from "../../../../utils/validator"
-import { EntityManager } from "typeorm"
 
 /**
  * @oas [post] /return-reasons/{id}
@@ -50,12 +49,7 @@ export default async (req, res) => {
     "returnReasonService"
   )
 
-  const manager: EntityManager = req.scope.resolve("manager")
-  await manager.transaction(async (transactionManager) => {
-    return await returnReasonService
-      .withTransaction(transactionManager)
-      .update(id, validated)
-  })
+  await returnReasonService.update(id, validated)
 
   const reason = await returnReasonService.retrieve(id, {
     select: defaultAdminReturnReasonsFields,
@@ -79,5 +73,5 @@ export class AdminPostReturnReasonsReasonReq {
   description?: string
 
   @IsOptional()
-  metadata?: Record<string, unknown>
+  metadata?: object
 }

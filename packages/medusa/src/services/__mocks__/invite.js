@@ -1,8 +1,4 @@
 export const InviteServiceMock = {
-  withTransaction: function () {
-    return this
-  },
-
   list: jest.fn().mockImplementation((selector, config) => {
     return Promise.resolve({})
   }),

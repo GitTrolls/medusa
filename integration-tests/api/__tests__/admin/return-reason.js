@@ -1,4 +1,6 @@
+const { match } = require("assert")
 const path = require("path")
+const { RepositoryNotTreeError } = require("typeorm")
 
 const setupServer = require("../../../helpers/setup-server")
 const { useApi } = require("../../../helpers/use-api")
@@ -15,7 +17,7 @@ describe("/admin/return-reasons", () => {
   beforeAll(async () => {
     const cwd = path.resolve(path.join(__dirname, "..", ".."))
     dbConnection = await initDb({ cwd })
-    medusaProcess = await setupServer({ cwd, verbose: false })
+    medusaProcess = await setupServer({ cwd })
   })
 
   afterAll(async () => {

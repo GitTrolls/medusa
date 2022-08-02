@@ -3,7 +3,6 @@ import _ from "lodash"
 import { UserRoles } from "../../../../models/user"
 import UserService from "../../../../services/user"
 import { validator } from "../../../../utils/validator"
-import { EntityManager } from "typeorm"
 
 /**
  * @oas [post] /users
@@ -52,12 +51,7 @@ export default async (req, res) => {
   const userService: UserService = req.scope.resolve("userService")
   const data = _.omit(validated, ["password"])
 
-  const manager: EntityManager = req.scope.resolve("manager")
-  const user = await manager.transaction(async (transactionManager) => {
-    return await userService
-      .withTransaction(transactionManager)
-      .create(data, validated.password)
-  })
+  const user = await userService.create(data, validated.password)
 
   res.status(200).json({ user: _.omit(user, ["password_hash"]) })
 }

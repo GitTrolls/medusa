@@ -1,5 +1,4 @@
 import { StoreService } from "../../../../services"
-import { EntityManager } from "typeorm"
 
 /**
  * @oas [delete] /store/currencies/{code}
@@ -25,12 +24,6 @@ export default async (req, res) => {
   const { currency_code } = req.params
 
   const storeService: StoreService = req.scope.resolve("storeService")
-  const manager: EntityManager = req.scope.resolve("manager")
-  const data = await manager.transaction(async (transactionManager) => {
-    return await storeService
-      .withTransaction(transactionManager)
-      .removeCurrency(currency_code)
-  })
-
+  const data = await storeService.removeCurrency(currency_code)
   res.status(200).json({ store: data })
 }

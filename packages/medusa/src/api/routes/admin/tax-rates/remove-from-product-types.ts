@@ -4,7 +4,6 @@ import { IsArray, IsOptional } from "class-validator"
 import { TaxRate } from "../../../.."
 import { TaxRateService } from "../../../../services"
 import { validator } from "../../../../utils/validator"
-import { EntityManager } from "typeorm"
 
 /**
  * @oas [delete] /tax-rates/:id/product-types/batch
@@ -39,12 +38,7 @@ export default async (req, res) => {
 
   const rateService: TaxRateService = req.scope.resolve("taxRateService")
 
-  const manager: EntityManager = req.scope.resolve("manager")
-  await manager.transaction(async (transactionManager) => {
-    return await rateService
-      .withTransaction(transactionManager)
-      .removeFromProductType(req.params.id, value.product_types)
-  })
+  await rateService.removeFromProductType(req.params.id, value.product_types)
 
   const config = getRetrieveConfig(
     query.fields as (keyof TaxRate)[],

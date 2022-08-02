@@ -12,7 +12,6 @@ import { validator } from "../../../../utils/validator"
 import { defaultAdminCustomersRelations } from "."
 import { Type } from "class-transformer"
 import { FindParams } from "../../../../types/common"
-import { EntityManager } from "typeorm"
 
 /**
  * @oas [post] /customers/{id}
@@ -84,12 +83,7 @@ export default async (req, res) => {
     )
   }
 
-  const manager: EntityManager = req.scope.resolve("manager")
-  await manager.transaction(async (transactionManager) => {
-    return await customerService
-      .withTransaction(transactionManager)
-      .update(id, validatedBody)
-  })
+  await customerService.update(id, validatedBody)
 
   let expandFields: string[] = []
   if (validatedQuery.expand) {
