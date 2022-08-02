@@ -1,7 +1,6 @@
 import { MedusaError } from "medusa-core-utils"
 import { defaultAdminOrdersRelations, defaultAdminOrdersFields } from "."
 import { OrderService, SwapService } from "../../../../services"
-import { EntityManager } from "typeorm"
 
 /**
  * @oas [post] /orders/{id}/swaps/{swap_id}/cancel
@@ -39,10 +38,7 @@ export default async (req, res) => {
     )
   }
 
-  const manager: EntityManager = req.scope.resolve("manager")
-  await manager.transaction(async (transactionManager) => {
-    return await swapService.withTransaction(transactionManager).cancel(swap_id)
-  })
+  await swapService.cancel(swap_id)
 
   const order = await orderService.retrieve(id, {
     select: defaultAdminOrdersFields,

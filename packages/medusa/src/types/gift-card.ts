@@ -19,7 +19,5 @@ export type CreateGiftCardTransactionInput = {
   gift_card_id: string
   order_id: string
   amount: number
-  created_at?: Date
-  is_taxable?: boolean
-  tax_rate?: number | null
+  created_at: Date
 }

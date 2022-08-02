@@ -20,7 +20,6 @@ import { DraftOrder } from "../../../.."
 import { DraftOrderService } from "../../../../services"
 import { AddressPayload } from "../../../../types/common"
 import { validator } from "../../../../utils/validator"
-import { EntityManager } from "typeorm"
 /**
  * @oas [post] /draft-orders
  * operationId: "PostDraftOrders"
@@ -128,15 +127,7 @@ export default async (req, res) => {
 
   const draftOrderService: DraftOrderService =
     req.scope.resolve("draftOrderService")
-
-  const manager: EntityManager = req.scope.resolve("manager")
-  let draftOrder: DraftOrder = await manager.transaction(
-    async (transactionManager) => {
-      return await draftOrderService
-        .withTransaction(transactionManager)
-        .create(value)
-    }
-  )
+  let draftOrder: DraftOrder = await draftOrderService.create(value)
 
   draftOrder = await draftOrderService.retrieve(draftOrder.id, {
     relations: defaultAdminDraftOrdersRelations,

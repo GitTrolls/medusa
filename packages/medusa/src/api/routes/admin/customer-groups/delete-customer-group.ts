@@ -1,6 +1,5 @@
 import { CustomerGroupService } from "../../../../services"
 import { Request, Response } from "express"
-import { EntityManager } from "typeorm"
 
 /**
  * @oas [delete] /customer-groups/{id}
@@ -36,12 +35,7 @@ export default async (req: Request, res: Response) => {
     "customerGroupService"
   )
 
-  const manager: EntityManager = req.scope.resolve("manager")
-  await manager.transaction(async (transactionManager) => {
-    return await customerGroupService
-      .withTransaction(transactionManager)
-      .delete(id)
-  })
+  await customerGroupService.delete(id)
 
   res.json({
     id: id,

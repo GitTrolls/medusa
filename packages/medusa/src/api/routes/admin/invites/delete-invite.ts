@@ -1,5 +1,4 @@
 import InviteService from "../../../../services/invite"
-import { EntityManager } from "typeorm"
 
 /**
  * @oas [delete] /invites/{invite_id}
@@ -19,10 +18,7 @@ export default async (req, res) => {
   const { invite_id } = req.params
 
   const inviteService: InviteService = req.scope.resolve("inviteService")
-  const manager: EntityManager = req.scope.resolve("manager")
-  await manager.transaction(async (transactionManager) => {
-    await inviteService.withTransaction(transactionManager).delete(invite_id)
-  })
+  await inviteService.delete(invite_id)
 
   res.status(200).send({
     id: invite_id,

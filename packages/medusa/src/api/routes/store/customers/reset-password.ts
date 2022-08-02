@@ -2,7 +2,6 @@ import { IsEmail, IsString } from "class-validator"
 import jwt, { JwtPayload } from "jsonwebtoken"
 import CustomerService from "../../../../services/customer"
 import { validator } from "../../../../utils/validator"
-import { EntityManager } from "typeorm"
 
 /**
  * @oas [post] /customers/reset-password
@@ -45,13 +44,8 @@ export default async (req, res) => {
     return
   }
 
-  const manager: EntityManager = req.scope.resolve("manager")
-  await manager.transaction(async (transactionManager) => {
-    return await customerService
-      .withTransaction(transactionManager)
-      .update(customer.id, {
-        password: validated.password,
-      })
+  await customerService.update(customer.id, {
+    password: validated.password,
   })
 
   customer = await customerService.retrieve(customer.id)

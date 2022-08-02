@@ -4,7 +4,6 @@ import { defaultStoreCustomersFields, defaultStoreCustomersRelations } from "."
 import CustomerService from "../../../../services/customer"
 import { AddressCreatePayload } from "../../../../types/common"
 import { validator } from "../../../../utils/validator"
-import { EntityManager } from "typeorm"
 
 /**
  * @oas [post] /customers/me/addresses
@@ -45,14 +44,8 @@ export default async (req, res) => {
 
   const customerService: CustomerService = req.scope.resolve("customerService")
 
-  const manager: EntityManager = req.scope.resolve("manager")
-  await manager.transaction(async (transactionManager) => {
-    return await customerService
-      .withTransaction(transactionManager)
-      .addAddress(id, validated.address)
-  })
-
-  const customer = await customerService.retrieve(id, {
+  let customer = await customerService.addAddress(id, validated.address)
+  customer = await customerService.retrieve(id, {
     relations: defaultStoreCustomersRelations,
     select: defaultStoreCustomersFields,
   })

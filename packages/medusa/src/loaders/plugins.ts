@@ -1,37 +1,37 @@
-import { aliasTo, asClass, asFunction, asValue } from "awilix"
-import { Express } from "express"
-import fs from "fs"
-import { sync as existsSync } from "fs-exists-cached"
 import glob from "glob"
-import _ from "lodash"
-import { createRequireFromPath } from "medusa-core-utils"
-import {
-  BaseService as LegacyBaseService,
-  FileService,
-  FulfillmentService,
-  OauthService,
-  PaymentService,
-} from "medusa-interfaces"
-import path from "path"
+import { Express } from "express"
 import { EntitySchema } from "typeorm"
 import {
+  BaseService as LegacyBaseService,
+  PaymentService,
+  FulfillmentService,
+  NotificationService,
+  FileService,
+  OauthService,
+  SearchService,
+} from "medusa-interfaces"
+import { createRequireFromPath } from "medusa-core-utils"
+import _ from "lodash"
+import path from "path"
+import fs from "fs"
+import { asValue, asClass, asFunction, aliasTo } from "awilix"
+import { sync as existsSync } from "fs-exists-cached"
+import {
   AbstractTaxService,
-  isBatchJobStrategy,
   isFileService,
-  isNotificationService,
-  isPriceSelectionStrategy,
-  isSearchService,
   isTaxCalculationStrategy,
   TransactionBaseService as BaseService,
 } from "../interfaces"
-import { MiddlewareService } from "../services"
+import formatRegistrationName from "../utils/format-registration-name"
 import {
   ClassConstructor,
   ConfigModule,
   Logger,
   MedusaContainer,
 } from "../types/global"
-import formatRegistrationName from "../utils/format-registration-name"
+import { MiddlewareService } from "../services"
+import { isBatchJobStrategy } from "../interfaces/batch-job-strategy"
+import { isPriceSelectionStrategy } from "../interfaces/price-selection-strategy"
 import logger from "./logger"
 
 type Options = {
@@ -392,7 +392,7 @@ export async function registerServices(
           ).singleton(),
           [`fp_${loaded.identifier}`]: aliasTo(name),
         })
-      } else if (isNotificationService(loaded.prototype)) {
+      } else if (loaded.prototype instanceof NotificationService) {
         container.registerAdd(
           "notificationProviders",
           asFunction((cradle) => new loaded(cradle, pluginDetails.options))
@@ -418,7 +418,7 @@ export async function registerServices(
           ),
           [`fileService`]: aliasTo(name),
         })
-      } else if (isSearchService(loaded.prototype)) {
+      } else if (loaded.prototype instanceof SearchService) {
         // Add the service directly to the container in order to make simple
         // resolution if we already know which search provider we need to use
         container.register({

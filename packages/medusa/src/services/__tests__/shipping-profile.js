@@ -1,5 +1,12 @@
+import { In } from "typeorm"
 import { IdMap, MockRepository, MockManager } from "medusa-test-utils"
 import ShippingProfileService from "../shipping-profile"
+//import { ShippingProfileModelMock } from "../../models/__mocks__/shipping-profile"
+//import { ProductServiceMock, products } from "../__mocks__/product"
+//import {
+//  ShippingOptionServiceMock,
+//  shippingOptions,
+//} from "../__mocks__/shipping-option"
 
 describe("ShippingProfileService", () => {
   describe("retrieve", () => {
@@ -195,9 +202,6 @@ describe("ShippingProfileService", () => {
     }
 
     const customShippingOptionService = {
-      withTransaction: function () {
-        return this
-      },
       list: jest.fn().mockImplementation(({ cart_id }, config) => {
         if (cart_id === "cso-cart") {
           return Promise.resolve([

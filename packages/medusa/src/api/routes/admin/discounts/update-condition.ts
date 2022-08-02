@@ -1,12 +1,11 @@
 import { IsOptional, IsString } from "class-validator"
 import { defaultAdminDiscountsFields, defaultAdminDiscountsRelations } from "."
-import { Discount } from "../../../../models"
+import { Discount } from "../../../../models/discount"
 import { DiscountService } from "../../../../services"
 import DiscountConditionService from "../../../../services/discount-condition"
 import { AdminUpsertConditionsReq } from "../../../../types/discount"
 import { getRetrieveConfig } from "../../../../utils/get-query-config"
 import { validator } from "../../../../utils/validator"
-import { EntityManager } from "typeorm"
 /**
  * @oas [post] /discounts/{discount_id}/conditions/{condition_id}
  * operationId: "PostDiscountsDiscountConditionsCondition"
@@ -83,12 +82,7 @@ export default async (req, res) => {
     id: condition.id,
   }
 
-  const manager: EntityManager = req.scope.resolve("manager")
-  await manager.transaction(async (transactionManager) => {
-    return await conditionService
-      .withTransaction(transactionManager)
-      .upsertCondition(updateObj)
-  })
+  await conditionService.upsertCondition(updateObj)
 
   const config = getRetrieveConfig<Discount>(
     defaultAdminDiscountsFields,

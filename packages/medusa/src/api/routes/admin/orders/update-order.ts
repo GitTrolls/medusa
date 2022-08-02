@@ -13,7 +13,6 @@ import { defaultAdminOrdersFields, defaultAdminOrdersRelations } from "."
 import { OrderService } from "../../../../services"
 import { AddressPayload } from "../../../../types/common"
 import { validator } from "../../../../utils/validator"
-import { EntityManager } from "typeorm"
 
 /**
  * @oas [post] /orders/{id}
@@ -53,17 +52,17 @@ import { EntityManager } from "typeorm"
  *             type: string
  *           payment_method:
  *             description:
- *             type: Record<string, unknown>
+ *             type: object
  *             properties:
  *               provider_id:
  *                 type: string
  *                 description: id of the payment provider
  *               data:
  *                 description: Data relevant for the given payment method
- *                 type: Record<string, unknown>
+ *                 type: object
  *           shipping_method:
  *             description: The Shipping Method used for shipping the order.
- *             type: Record<string, unknown>
+ *             type: object
  *             properties:
  *               provider_id:
  *                 type: string
@@ -75,7 +74,7 @@ import { EntityManager } from "typeorm"
  *                 type: integer
  *                 description: The price of the shipping.
  *               data:
- *                 type: Record<string, unknown>
+ *                 type: object
  *                 description: Data relevant to the specific shipping method.
  *               items:
  *                 type: array
@@ -103,12 +102,7 @@ export default async (req, res) => {
 
   const orderService: OrderService = req.scope.resolve("orderService")
 
-  const manager: EntityManager = req.scope.resolve("manager")
-  await manager.transaction(async (transactionManager) => {
-    return await orderService
-      .withTransaction(transactionManager)
-      .update(id, value)
-  })
+  await orderService.update(id, value)
 
   const order = await orderService.retrieve(id, {
     select: defaultAdminOrdersFields,
@@ -135,7 +129,7 @@ export class AdminPostOrdersOrderReq {
 
   @IsArray()
   @IsOptional()
-  items?: Record<string, unknown>[]
+  items?: object[]
 
   @IsString()
   @IsOptional()
@@ -143,7 +137,7 @@ export class AdminPostOrdersOrderReq {
 
   @IsArray()
   @IsOptional()
-  discounts?: Record<string, unknown>[]
+  discounts?: object[]
 
   @IsString()
   @IsOptional()
@@ -171,7 +165,7 @@ class PaymentMethod {
 
   @IsObject()
   @IsOptional()
-  data?: Record<string, unknown>
+  data?: object
 }
 
 class ShippingMethod {
@@ -189,9 +183,9 @@ class ShippingMethod {
 
   @IsObject()
   @IsOptional()
-  data?: Record<string, unknown>
+  data?: object
 
   @IsArray()
   @IsOptional()
-  items?: Record<string, unknown>[]
+  items?: object[]
 }

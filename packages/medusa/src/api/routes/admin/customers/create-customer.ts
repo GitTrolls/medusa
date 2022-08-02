@@ -1,7 +1,6 @@
 import { IsEmail, IsObject, IsOptional, IsString } from "class-validator"
 import { CustomerService } from "../../../../services"
 import { validator } from "../../../../utils/validator"
-import { EntityManager } from "typeorm"
 
 /**
  * @oas [post] /customers
@@ -31,12 +30,7 @@ export default async (req, res) => {
   const validated = await validator(AdminPostCustomersReq, req.body)
 
   const customerService: CustomerService = req.scope.resolve("customerService")
-  const manager: EntityManager = req.scope.resolve("manager")
-  const customer = await manager.transaction(async (transactionManager) => {
-    return await customerService
-      .withTransaction(transactionManager)
-      .create(validated)
-  })
+  const customer = await customerService.create(validated)
   res.status(201).json({ customer })
 }
 
