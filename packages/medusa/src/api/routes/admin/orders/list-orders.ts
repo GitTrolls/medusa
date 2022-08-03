@@ -3,6 +3,7 @@ import { pick } from "lodash"
 import { OrderService } from "../../../../services"
 import { AdminListOrdersSelector } from "../../../../types/orders"
 import { Type } from "class-transformer"
+import { Order } from "../../../../models"
 
 /**
  * @oas [get] /orders
@@ -23,6 +24,7 @@ import { Type } from "class-transformer"
  *   - (query) region_id {string} to search for.
  *   - (query) currency_code {string} to search for.
  *   - (query) tax_rate {string} to search for.
+ *   - (query) sales_chanel_id {string[]} to retrieve products in.
  *   - (query) cancelled_at {DateComparisonOperator} Date comparison for when resulting orders was cancelled, i.e. less than, greater than etc.
  *   - (query) created_at {DateComparisonOperator} Date comparison for when resulting orders was created, i.e. less than, greater than etc.
  *   - (query) updated_at {DateComparisonOperator} Date comparison for when resulting orders was updated, i.e. less than, greater than etc.
@@ -54,7 +56,7 @@ export default async (req, res) => {
     req.listConfig
   )
 
-  let data = orders
+  let data: Partial<Order>[] = orders
 
   const fields = [...select, ...relations]
   if (fields.length) {

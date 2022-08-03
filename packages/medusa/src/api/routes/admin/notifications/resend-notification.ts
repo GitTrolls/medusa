@@ -6,6 +6,8 @@ import {
 } from "."
 import { validator } from "../../../../utils/validator"
 import { NotificationService } from "../../../../services"
+import { Notification } from "../../../../models"
+import { EntityManager } from "typeorm"
 
 /**
  * @oas [post] /notifications/{id}/resend
@@ -53,10 +55,15 @@ export default async (req, res) => {
     config.to = validatedBody.to
   }
 
-  await notificationService.resend(id, config)
+  const manager: EntityManager = req.scope.resolve("manager")
+  await manager.transaction(async (transactionManager) => {
+    return await notificationService
+      .withTransaction(transactionManager)
+      .resend(id, config)
+  })
 
   const notification = await notificationService.retrieve(id, {
-    select: defaultAdminNotificationsFields,
+    select: defaultAdminNotificationsFields as (keyof Notification)[],
     relations: defaultAdminNotificationsRelations,
   })
 
