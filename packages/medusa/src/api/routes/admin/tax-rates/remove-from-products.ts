@@ -1,19 +1,51 @@
-import { pickByConfig, getRetrieveConfig } from "./utils/get-query-config"
 import { IsArray, IsOptional } from "class-validator"
+import { getRetrieveConfig, pickByConfig } from "./utils/get-query-config"
 
+import { EntityManager } from "typeorm"
 import { TaxRate } from "../../../.."
 import { TaxRateService } from "../../../../services"
 import { validator } from "../../../../utils/validator"
-import { EntityManager } from "typeorm"
 
 /**
- * @oas [delete] /tax-rates/:id/products/batch
+ * @oas [delete] /tax-rates/{id}/products/batch
  * operationId: "DeleteTaxRatesTaxRateProducts"
  * summary: "Removes Tax Rate from Products"
  * description: "Removes a Tax Rate from a list of Products"
+ * parameters:
+ *   - (path) id=* {string} ID of the tax rate.
+ *   - in: query
+ *     name: fields
+ *     description: "Which fields should be included in the result."
+ *     style: form
+ *     explode: false
+ *     schema:
+ *       type: array
+ *       items:
+ *         type: string
+ *   - in: query
+ *     name: expand
+ *     description: "Which fields should be expanded and retrieved in the result."
+ *     style: form
+ *     explode: false
+ *     schema:
+ *       type: array
+ *       items:
+ *         type: string
  * x-authenticated: true
+ * requestBody:
+ *   content:
+ *     application/json:
+ *       schema:
+ *         required:
+ *           - products
+ *         properties:
+ *           products:
+ *             type: array
+ *             description: "The IDs of the products to remove association with this tax rate"
+ *             items:
+ *               type: string
  * tags:
- *   - Tax Rates
+ *   - Tax Rate
  * responses:
  *   200:
  *     description: OK
@@ -22,9 +54,7 @@ import { EntityManager } from "typeorm"
  *         schema:
  *           properties:
  *             tax_rate:
- *               type: array
- *               items:
- *                 $ref: "#/components/schemas/tax_rate"
+ *               $ref: "#/components/schemas/tax_rate"
  */
 export default async (req, res) => {
   const value = await validator(AdminDeleteTaxRatesTaxRateProductsReq, req.body)
