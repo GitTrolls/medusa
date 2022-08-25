@@ -51,5 +51,3 @@ jobs:
           title: 'chore(docs): Generated Entities Reference (automated)'
           labels: 'type: chore'
           add-paths: docs/content/references/entities/**
-          branch: 'chore/generate-entities'
-          branch-suffix: 'timestamp'

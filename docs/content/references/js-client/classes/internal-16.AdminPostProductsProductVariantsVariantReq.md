@@ -10,7 +10,7 @@
 
 #### Defined in
 
-medusa/dist/api/routes/admin/products/update-variant.d.ts:133
+medusa/dist/api/routes/admin/products/update-variant.d.ts:125
 
 ___
 
@@ -20,7 +20,7 @@ ___
 
 #### Defined in
 
-medusa/dist/api/routes/admin/products/update-variant.d.ts:130
+medusa/dist/api/routes/admin/products/update-variant.d.ts:122
 
 ___
 
@@ -30,7 +30,7 @@ ___
 
 #### Defined in
 
-medusa/dist/api/routes/admin/products/update-variant.d.ts:128
+medusa/dist/api/routes/admin/products/update-variant.d.ts:120
 
 ___
 
@@ -40,7 +40,7 @@ ___
 
 #### Defined in
 
-medusa/dist/api/routes/admin/products/update-variant.d.ts:137
+medusa/dist/api/routes/admin/products/update-variant.d.ts:129
 
 ___
 
@@ -50,7 +50,7 @@ ___
 
 #### Defined in
 
-medusa/dist/api/routes/admin/products/update-variant.d.ts:131
+medusa/dist/api/routes/admin/products/update-variant.d.ts:123
 
 ___
 
@@ -60,7 +60,7 @@ ___
 
 #### Defined in
 
-medusa/dist/api/routes/admin/products/update-variant.d.ts:132
+medusa/dist/api/routes/admin/products/update-variant.d.ts:124
 
 ___
 
@@ -70,7 +70,7 @@ ___
 
 #### Defined in
 
-medusa/dist/api/routes/admin/products/update-variant.d.ts:136
+medusa/dist/api/routes/admin/products/update-variant.d.ts:128
 
 ___
 
@@ -80,7 +80,7 @@ ___
 
 #### Defined in
 
-medusa/dist/api/routes/admin/products/update-variant.d.ts:134
+medusa/dist/api/routes/admin/products/update-variant.d.ts:126
 
 ___
 
@@ -90,7 +90,7 @@ ___
 
 #### Defined in
 
-medusa/dist/api/routes/admin/products/update-variant.d.ts:141
+medusa/dist/api/routes/admin/products/update-variant.d.ts:133
 
 ___
 
@@ -100,7 +100,7 @@ ___
 
 #### Defined in
 
-medusa/dist/api/routes/admin/products/update-variant.d.ts:142
+medusa/dist/api/routes/admin/products/update-variant.d.ts:134
 
 ___
 
@@ -110,7 +110,7 @@ ___
 
 #### Defined in
 
-medusa/dist/api/routes/admin/products/update-variant.d.ts:140
+medusa/dist/api/routes/admin/products/update-variant.d.ts:132
 
 ___
 
@@ -120,7 +120,7 @@ ___
 
 #### Defined in
 
-medusa/dist/api/routes/admin/products/update-variant.d.ts:144
+medusa/dist/api/routes/admin/products/update-variant.d.ts:136
 
 ___
 
@@ -130,7 +130,7 @@ ___
 
 #### Defined in
 
-medusa/dist/api/routes/admin/products/update-variant.d.ts:139
+medusa/dist/api/routes/admin/products/update-variant.d.ts:131
 
 ___
 
@@ -140,7 +140,7 @@ ___
 
 #### Defined in
 
-medusa/dist/api/routes/admin/products/update-variant.d.ts:143
+medusa/dist/api/routes/admin/products/update-variant.d.ts:135
 
 ___
 
@@ -150,7 +150,7 @@ ___
 
 #### Defined in
 
-medusa/dist/api/routes/admin/products/update-variant.d.ts:127
+medusa/dist/api/routes/admin/products/update-variant.d.ts:119
 
 ___
 
@@ -160,7 +160,7 @@ ___
 
 #### Defined in
 
-medusa/dist/api/routes/admin/products/update-variant.d.ts:126
+medusa/dist/api/routes/admin/products/update-variant.d.ts:118
 
 ___
 
@@ -170,7 +170,7 @@ ___
 
 #### Defined in
 
-medusa/dist/api/routes/admin/products/update-variant.d.ts:129
+medusa/dist/api/routes/admin/products/update-variant.d.ts:121
 
 ___
 
@@ -180,7 +180,7 @@ ___
 
 #### Defined in
 
-medusa/dist/api/routes/admin/products/update-variant.d.ts:135
+medusa/dist/api/routes/admin/products/update-variant.d.ts:127
 
 ___
 
@@ -190,4 +190,4 @@ ___
 
 #### Defined in
 
-medusa/dist/api/routes/admin/products/update-variant.d.ts:138
+medusa/dist/api/routes/admin/products/update-variant.d.ts:130

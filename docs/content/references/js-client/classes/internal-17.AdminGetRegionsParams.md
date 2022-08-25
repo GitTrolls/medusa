@@ -16,7 +16,7 @@
 
 #### Defined in
 
-medusa/dist/api/routes/admin/regions/list-regions.d.ts:71
+medusa/dist/api/routes/admin/regions/list-regions.d.ts:60
 
 ___
 
@@ -26,7 +26,7 @@ ___
 
 #### Defined in
 
-medusa/dist/api/routes/admin/regions/list-regions.d.ts:73
+medusa/dist/api/routes/admin/regions/list-regions.d.ts:62
 
 ___
 
@@ -40,7 +40,7 @@ ___
 
 #### Defined in
 
-medusa/dist/api/routes/admin/regions/list-regions.d.ts:67
+medusa/dist/api/routes/admin/regions/list-regions.d.ts:56
 
 ___
 
@@ -54,7 +54,7 @@ ___
 
 #### Defined in
 
-medusa/dist/api/routes/admin/regions/list-regions.d.ts:68
+medusa/dist/api/routes/admin/regions/list-regions.d.ts:57
 
 ___
 
@@ -64,4 +64,4 @@ ___
 
 #### Defined in
 
-medusa/dist/api/routes/admin/regions/list-regions.d.ts:72
+medusa/dist/api/routes/admin/regions/list-regions.d.ts:61

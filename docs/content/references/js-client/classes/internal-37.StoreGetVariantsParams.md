@@ -44,7 +44,7 @@ ___
 
 #### Defined in
 
-medusa/dist/api/routes/store/variants/list-variants.d.ts:67
+medusa/dist/api/routes/store/variants/list-variants.d.ts:32
 
 ___
 
@@ -54,7 +54,7 @@ ___
 
 #### Defined in
 
-medusa/dist/api/routes/store/variants/list-variants.d.ts:69
+medusa/dist/api/routes/store/variants/list-variants.d.ts:34
 
 ___
 
@@ -64,7 +64,7 @@ ___
 
 #### Defined in
 
-medusa/dist/api/routes/store/variants/list-variants.d.ts:68
+medusa/dist/api/routes/store/variants/list-variants.d.ts:33
 
 ___
 
@@ -74,7 +74,7 @@ ___
 
 #### Defined in
 
-medusa/dist/api/routes/store/variants/list-variants.d.ts:71
+medusa/dist/api/routes/store/variants/list-variants.d.ts:36
 
 ___
 
@@ -84,7 +84,7 @@ ___
 
 #### Defined in
 
-medusa/dist/api/routes/store/variants/list-variants.d.ts:65
+medusa/dist/api/routes/store/variants/list-variants.d.ts:30
 
 ___
 
@@ -94,7 +94,7 @@ ___
 
 #### Defined in
 
-medusa/dist/api/routes/store/variants/list-variants.d.ts:66
+medusa/dist/api/routes/store/variants/list-variants.d.ts:31
 
 ___
 
@@ -118,4 +118,4 @@ ___
 
 #### Defined in
 
-medusa/dist/api/routes/store/variants/list-variants.d.ts:70
+medusa/dist/api/routes/store/variants/list-variants.d.ts:35

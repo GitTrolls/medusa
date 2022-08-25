@@ -10,7 +10,7 @@
 
 #### Defined in
 
-medusa/dist/api/routes/admin/regions/create-region.d.ts:71
+medusa/dist/api/routes/admin/regions/create-region.d.ts:64
 
 ___
 
@@ -20,7 +20,7 @@ ___
 
 #### Defined in
 
-medusa/dist/api/routes/admin/regions/create-region.d.ts:66
+medusa/dist/api/routes/admin/regions/create-region.d.ts:59
 
 ___
 
@@ -30,17 +30,7 @@ ___
 
 #### Defined in
 
-medusa/dist/api/routes/admin/regions/create-region.d.ts:70
-
-___
-
-### metadata
-
-• `Optional` **metadata**: `Record`<`string`, `unknown`\>
-
-#### Defined in
-
-medusa/dist/api/routes/admin/regions/create-region.d.ts:72
+medusa/dist/api/routes/admin/regions/create-region.d.ts:63
 
 ___
 
@@ -50,7 +40,7 @@ ___
 
 #### Defined in
 
-medusa/dist/api/routes/admin/regions/create-region.d.ts:65
+medusa/dist/api/routes/admin/regions/create-region.d.ts:58
 
 ___
 
@@ -60,7 +50,7 @@ ___
 
 #### Defined in
 
-medusa/dist/api/routes/admin/regions/create-region.d.ts:69
+medusa/dist/api/routes/admin/regions/create-region.d.ts:62
 
 ___
 
@@ -70,7 +60,7 @@ ___
 
 #### Defined in
 
-medusa/dist/api/routes/admin/regions/create-region.d.ts:67
+medusa/dist/api/routes/admin/regions/create-region.d.ts:60
 
 ___
 
@@ -80,4 +70,4 @@ ___
 
 #### Defined in
 
-medusa/dist/api/routes/admin/regions/create-region.d.ts:68
+medusa/dist/api/routes/admin/regions/create-region.d.ts:61

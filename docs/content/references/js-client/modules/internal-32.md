@@ -2,7 +2,6 @@
 
 ## Classes
 
-- [StoreGetCustomersCustomerOrdersPaginationParams](../classes/internal-32.StoreGetCustomersCustomerOrdersPaginationParams.md)
 - [StoreGetCustomersCustomerOrdersParams](../classes/internal-32.StoreGetCustomersCustomerOrdersParams.md)
 - [StorePostCustomersCustomerPasswordTokenReq](../classes/internal-32.StorePostCustomersCustomerPasswordTokenReq.md)
 - [StorePostCustomersCustomerReq](../classes/internal-32.StorePostCustomersCustomerReq.md)

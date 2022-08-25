@@ -2,7 +2,7 @@
 
 ## Hierarchy
 
-- `TransactionBaseService`
+- `TransactionBaseService`<[`InventoryService`](InventoryService.md)\>
 
   ↳ **`InventoryService`**
 
@@ -20,39 +20,39 @@
 
 #### Overrides
 
-TransactionBaseService.constructor
+TransactionBaseService&lt;InventoryService\&gt;.constructor
 
 #### Defined in
 
-[packages/medusa/src/services/inventory.ts:18](https://github.com/medusajs/medusa/blob/f7a63f178/packages/medusa/src/services/inventory.ts#L18)
+[packages/medusa/src/services/inventory.ts:18](https://github.com/medusajs/medusa/blob/f406c8d4/packages/medusa/src/services/inventory.ts#L18)
 
 ## Properties
 
-### \_\_configModule\_\_
+### configModule
 
-• `Protected` `Optional` `Readonly` **\_\_configModule\_\_**: `Record`<`string`, `unknown`\>
+• `Protected` `Optional` `Readonly` **configModule**: `Record`<`string`, `unknown`\>
 
 #### Inherited from
 
-TransactionBaseService.\_\_configModule\_\_
+TransactionBaseService.configModule
 
 #### Defined in
 
-[packages/medusa/src/interfaces/transaction-base-service.ts:10](https://github.com/medusajs/medusa/blob/f7a63f178/packages/medusa/src/interfaces/transaction-base-service.ts#L10)
+[packages/medusa/src/interfaces/transaction-base-service.ts:13](https://github.com/medusajs/medusa/blob/f406c8d4/packages/medusa/src/interfaces/transaction-base-service.ts#L13)
 
 ___
 
-### \_\_container\_\_
+### container
 
-• `Protected` `Readonly` **\_\_container\_\_**: `any`
+• `Protected` `Readonly` **container**: `unknown`
 
 #### Inherited from
 
-TransactionBaseService.\_\_container\_\_
+TransactionBaseService.container
 
 #### Defined in
 
-[packages/medusa/src/interfaces/transaction-base-service.ts:9](https://github.com/medusajs/medusa/blob/f7a63f178/packages/medusa/src/interfaces/transaction-base-service.ts#L9)
+[packages/medusa/src/interfaces/transaction-base-service.ts:12](https://github.com/medusajs/medusa/blob/f406c8d4/packages/medusa/src/interfaces/transaction-base-service.ts#L12)
 
 ___
 
@@ -66,7 +66,7 @@ TransactionBaseService.manager\_
 
 #### Defined in
 
-[packages/medusa/src/services/inventory.ts:15](https://github.com/medusajs/medusa/blob/f7a63f178/packages/medusa/src/services/inventory.ts#L15)
+[packages/medusa/src/services/inventory.ts:15](https://github.com/medusajs/medusa/blob/f406c8d4/packages/medusa/src/services/inventory.ts#L15)
 
 ___
 
@@ -76,7 +76,7 @@ ___
 
 #### Defined in
 
-[packages/medusa/src/services/inventory.ts:13](https://github.com/medusajs/medusa/blob/f7a63f178/packages/medusa/src/services/inventory.ts#L13)
+[packages/medusa/src/services/inventory.ts:13](https://github.com/medusajs/medusa/blob/f406c8d4/packages/medusa/src/services/inventory.ts#L13)
 
 ___
 
@@ -90,7 +90,7 @@ TransactionBaseService.transactionManager\_
 
 #### Defined in
 
-[packages/medusa/src/services/inventory.ts:16](https://github.com/medusajs/medusa/blob/f7a63f178/packages/medusa/src/services/inventory.ts#L16)
+[packages/medusa/src/services/inventory.ts:16](https://github.com/medusajs/medusa/blob/f406c8d4/packages/medusa/src/services/inventory.ts#L16)
 
 ## Methods
 
@@ -115,7 +115,7 @@ resolves to the update result.
 
 #### Defined in
 
-[packages/medusa/src/services/inventory.ts:31](https://github.com/medusajs/medusa/blob/f7a63f178/packages/medusa/src/services/inventory.ts#L31)
+[packages/medusa/src/services/inventory.ts:31](https://github.com/medusajs/medusa/blob/f406c8d4/packages/medusa/src/services/inventory.ts#L31)
 
 ___
 
@@ -154,7 +154,7 @@ TransactionBaseService.atomicPhase\_
 
 #### Defined in
 
-[packages/medusa/src/interfaces/transaction-base-service.ts:50](https://github.com/medusajs/medusa/blob/f7a63f178/packages/medusa/src/interfaces/transaction-base-service.ts#L50)
+[packages/medusa/src/interfaces/transaction-base-service.ts:53](https://github.com/medusajs/medusa/blob/f406c8d4/packages/medusa/src/interfaces/transaction-base-service.ts#L53)
 
 ___
 
@@ -181,7 +181,7 @@ true if the inventory covers the quantity
 
 #### Defined in
 
-[packages/medusa/src/services/inventory.ts:63](https://github.com/medusajs/medusa/blob/f7a63f178/packages/medusa/src/services/inventory.ts#L63)
+[packages/medusa/src/services/inventory.ts:63](https://github.com/medusajs/medusa/blob/f406c8d4/packages/medusa/src/services/inventory.ts#L63)
 
 ___
 
@@ -205,7 +205,7 @@ TransactionBaseService.shouldRetryTransaction\_
 
 #### Defined in
 
-[packages/medusa/src/interfaces/transaction-base-service.ts:31](https://github.com/medusajs/medusa/blob/f7a63f178/packages/medusa/src/interfaces/transaction-base-service.ts#L31)
+[packages/medusa/src/interfaces/transaction-base-service.ts:34](https://github.com/medusajs/medusa/blob/f406c8d4/packages/medusa/src/interfaces/transaction-base-service.ts#L34)
 
 ___
 
@@ -229,4 +229,4 @@ TransactionBaseService.withTransaction
 
 #### Defined in
 
-[packages/medusa/src/interfaces/transaction-base-service.ts:13](https://github.com/medusajs/medusa/blob/f7a63f178/packages/medusa/src/interfaces/transaction-base-service.ts#L13)
+[packages/medusa/src/interfaces/transaction-base-service.ts:16](https://github.com/medusajs/medusa/blob/f406c8d4/packages/medusa/src/interfaces/transaction-base-service.ts#L16)

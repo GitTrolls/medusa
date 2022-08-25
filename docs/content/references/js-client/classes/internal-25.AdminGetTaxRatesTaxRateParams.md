@@ -10,7 +10,7 @@
 
 #### Defined in
 
-medusa/dist/api/routes/admin/tax-rates/get-tax-rate.d.ts:42
+medusa/dist/api/routes/admin/tax-rates/get-tax-rate.d.ts:24
 
 ___
 
@@ -20,4 +20,4 @@ ___
 
 #### Defined in
 
-medusa/dist/api/routes/admin/tax-rates/get-tax-rate.d.ts:43
+medusa/dist/api/routes/admin/tax-rates/get-tax-rate.d.ts:25

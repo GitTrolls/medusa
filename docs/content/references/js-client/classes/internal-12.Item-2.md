@@ -10,7 +10,7 @@
 
 #### Defined in
 
-medusa/dist/api/routes/admin/orders/update-claim.d.ts:117
+medusa/dist/api/routes/admin/orders/update-claim.d.ts:95
 
 ___
 
@@ -20,7 +20,7 @@ ___
 
 #### Defined in
 
-medusa/dist/api/routes/admin/orders/update-claim.d.ts:120
+medusa/dist/api/routes/admin/orders/update-claim.d.ts:98
 
 ___
 
@@ -30,7 +30,7 @@ ___
 
 #### Defined in
 
-medusa/dist/api/routes/admin/orders/update-claim.d.ts:122
+medusa/dist/api/routes/admin/orders/update-claim.d.ts:100
 
 ___
 
@@ -40,7 +40,7 @@ ___
 
 #### Defined in
 
-medusa/dist/api/routes/admin/orders/update-claim.d.ts:118
+medusa/dist/api/routes/admin/orders/update-claim.d.ts:96
 
 ___
 
@@ -50,7 +50,7 @@ ___
 
 #### Defined in
 
-medusa/dist/api/routes/admin/orders/update-claim.d.ts:119
+medusa/dist/api/routes/admin/orders/update-claim.d.ts:97
 
 ___
 
@@ -60,4 +60,4 @@ ___
 
 #### Defined in
 
-medusa/dist/api/routes/admin/orders/update-claim.d.ts:121
+medusa/dist/api/routes/admin/orders/update-claim.d.ts:99

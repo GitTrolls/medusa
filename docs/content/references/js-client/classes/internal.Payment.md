@@ -48,7 +48,7 @@ ___
 
 ### canceled\_at
 
-• **canceled\_at**: `string` \| `Date`
+• **canceled\_at**: `Date`
 
 #### Defined in
 
@@ -58,7 +58,7 @@ ___
 
 ### captured\_at
 
-• **captured\_at**: `string` \| `Date`
+• **captured\_at**: `Date`
 
 #### Defined in
 

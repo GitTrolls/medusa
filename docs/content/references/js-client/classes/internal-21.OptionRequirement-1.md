@@ -10,7 +10,7 @@
 
 #### Defined in
 
-medusa/dist/api/routes/admin/shipping-options/update-shipping-option.d.ts:65
+medusa/dist/api/routes/admin/shipping-options/update-shipping-option.d.ts:57
 
 ___
 
@@ -20,7 +20,7 @@ ___
 
 #### Defined in
 
-medusa/dist/api/routes/admin/shipping-options/update-shipping-option.d.ts:63
+medusa/dist/api/routes/admin/shipping-options/update-shipping-option.d.ts:55
 
 ___
 
@@ -30,4 +30,4 @@ ___
 
 #### Defined in
 
-medusa/dist/api/routes/admin/shipping-options/update-shipping-option.d.ts:64
+medusa/dist/api/routes/admin/shipping-options/update-shipping-option.d.ts:56

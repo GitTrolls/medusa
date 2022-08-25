@@ -10,7 +10,7 @@
 
 #### Defined in
 
-medusa/dist/api/routes/admin/notes/create-note.d.ts:41
+medusa/dist/api/routes/admin/notes/create-note.d.ts:37
 
 ___
 
@@ -20,7 +20,7 @@ ___
 
 #### Defined in
 
-medusa/dist/api/routes/admin/notes/create-note.d.ts:42
+medusa/dist/api/routes/admin/notes/create-note.d.ts:38
 
 ___
 
@@ -30,4 +30,4 @@ ___
 
 #### Defined in
 
-medusa/dist/api/routes/admin/notes/create-note.d.ts:43
+medusa/dist/api/routes/admin/notes/create-note.d.ts:39

@@ -21,7 +21,7 @@ swaggerInline(
     .catch((err) => {
       console.log("Error in store")
       console.error(err)
-      process.exit(1)
+      process.exit(0)
     })
 })
 
@@ -57,7 +57,7 @@ swaggerInline(
     .catch((err) => {
       console.log("Error in admin")
       console.error(err)
-      process.exit(1)
+      process.exit(0)
     })
 })
 

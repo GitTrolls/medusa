@@ -4,7 +4,7 @@ Provides layer to manipulate product collections.
 
 ## Hierarchy
 
-- `TransactionBaseService`
+- `"medusa-interfaces"`
 
   ↳ **`ProductCollectionService`**
 
@@ -18,161 +18,36 @@ Provides layer to manipulate product collections.
 
 | Name | Type |
 | :------ | :------ |
-| `__namedParameters` | `InjectedDependencies` |
+| `__namedParameters` | `Object` |
 
 #### Overrides
 
-TransactionBaseService.constructor
+BaseService.constructor
 
 #### Defined in
 
-[packages/medusa/src/services/product-collection.ts:35](https://github.com/medusajs/medusa/blob/f7a63f178/packages/medusa/src/services/product-collection.ts#L35)
-
-## Properties
-
-### \_\_configModule\_\_
-
-• `Protected` `Optional` `Readonly` **\_\_configModule\_\_**: `Record`<`string`, `unknown`\>
-
-#### Inherited from
-
-TransactionBaseService.\_\_configModule\_\_
-
-#### Defined in
-
-[packages/medusa/src/interfaces/transaction-base-service.ts:10](https://github.com/medusajs/medusa/blob/f7a63f178/packages/medusa/src/interfaces/transaction-base-service.ts#L10)
-
-___
-
-### \_\_container\_\_
-
-• `Protected` `Readonly` **\_\_container\_\_**: `any`
-
-#### Inherited from
-
-TransactionBaseService.\_\_container\_\_
-
-#### Defined in
-
-[packages/medusa/src/interfaces/transaction-base-service.ts:9](https://github.com/medusajs/medusa/blob/f7a63f178/packages/medusa/src/interfaces/transaction-base-service.ts#L9)
-
-___
-
-### eventBus\_
-
-• `Protected` `Readonly` **eventBus\_**: [`EventBusService`](EventBusService.md)
-
-#### Defined in
-
-[packages/medusa/src/services/product-collection.ts:30](https://github.com/medusajs/medusa/blob/f7a63f178/packages/medusa/src/services/product-collection.ts#L30)
-
-___
-
-### manager\_
-
-• `Protected` **manager\_**: `EntityManager`
-
-#### Overrides
-
-TransactionBaseService.manager\_
-
-#### Defined in
-
-[packages/medusa/src/services/product-collection.ts:27](https://github.com/medusajs/medusa/blob/f7a63f178/packages/medusa/src/services/product-collection.ts#L27)
-
-___
-
-### productCollectionRepository\_
-
-• `Protected` `Readonly` **productCollectionRepository\_**: typeof `ProductCollectionRepository`
-
-#### Defined in
-
-[packages/medusa/src/services/product-collection.ts:32](https://github.com/medusajs/medusa/blob/f7a63f178/packages/medusa/src/services/product-collection.ts#L32)
-
-___
-
-### productRepository\_
-
-• `Protected` `Readonly` **productRepository\_**: typeof `ProductRepository`
-
-#### Defined in
-
-[packages/medusa/src/services/product-collection.ts:33](https://github.com/medusajs/medusa/blob/f7a63f178/packages/medusa/src/services/product-collection.ts#L33)
-
-___
-
-### transactionManager\_
-
-• `Protected` **transactionManager\_**: `undefined` \| `EntityManager`
-
-#### Overrides
-
-TransactionBaseService.transactionManager\_
-
-#### Defined in
-
-[packages/medusa/src/services/product-collection.ts:28](https://github.com/medusajs/medusa/blob/f7a63f178/packages/medusa/src/services/product-collection.ts#L28)
+[packages/medusa/src/services/product-collection.js:11](https://github.com/medusajs/medusa/blob/f406c8d4/packages/medusa/src/services/product-collection.js#L11)
 
 ## Methods
 
 ### addProducts
 
-▸ **addProducts**(`collectionId`, `productIds`): `Promise`<`ProductCollection`\>
+▸ **addProducts**(`collectionId`, `productIds`): `Promise`<`any`\>
 
 #### Parameters
 
 | Name | Type |
 | :------ | :------ |
-| `collectionId` | `string` |
-| `productIds` | `string`[] |
+| `collectionId` | `any` |
+| `productIds` | `any` |
 
 #### Returns
 
-`Promise`<`ProductCollection`\>
+`Promise`<`any`\>
 
 #### Defined in
 
-[packages/medusa/src/services/product-collection.ts:184](https://github.com/medusajs/medusa/blob/f7a63f178/packages/medusa/src/services/product-collection.ts#L184)
-
-___
-
-### atomicPhase\_
-
-▸ `Protected` **atomicPhase_**<`TResult`, `TError`\>(`work`, `isolationOrErrorHandler?`, `maybeErrorHandlerOrDontFail?`): `Promise`<`TResult`\>
-
-Wraps some work within a transactional block. If the service already has
-a transaction manager attached this will be reused, otherwise a new
-transaction manager is created.
-
-#### Type parameters
-
-| Name |
-| :------ |
-| `TResult` |
-| `TError` |
-
-#### Parameters
-
-| Name | Type | Description |
-| :------ | :------ | :------ |
-| `work` | (`transactionManager`: `EntityManager`) => `Promise`<`TResult`\> | the transactional work to be done |
-| `isolationOrErrorHandler?` | `IsolationLevel` \| (`error`: `TError`) => `Promise`<`void` \| `TResult`\> | the isolation level to be used for the work. |
-| `maybeErrorHandlerOrDontFail?` | (`error`: `TError`) => `Promise`<`void` \| `TResult`\> | Potential error handler |
-
-#### Returns
-
-`Promise`<`TResult`\>
-
-the result of the transactional work
-
-#### Inherited from
-
-TransactionBaseService.atomicPhase\_
-
-#### Defined in
-
-[packages/medusa/src/interfaces/transaction-base-service.ts:50](https://github.com/medusajs/medusa/blob/f7a63f178/packages/medusa/src/interfaces/transaction-base-service.ts#L50)
+[packages/medusa/src/services/product-collection.js:170](https://github.com/medusajs/medusa/blob/f406c8d4/packages/medusa/src/services/product-collection.js#L170)
 
 ___
 
@@ -186,7 +61,7 @@ Creates a product collection
 
 | Name | Type | Description |
 | :------ | :------ | :------ |
-| `collection` | `CreateProductCollection` | the collection to create |
+| `collection` | `any` | the collection to create |
 
 #### Returns
 
@@ -196,13 +71,13 @@ created collection
 
 #### Defined in
 
-[packages/medusa/src/services/product-collection.ts:113](https://github.com/medusajs/medusa/blob/f7a63f178/packages/medusa/src/services/product-collection.ts#L113)
+[packages/medusa/src/services/product-collection.js:104](https://github.com/medusajs/medusa/blob/f406c8d4/packages/medusa/src/services/product-collection.js#L104)
 
 ___
 
 ### delete
 
-▸ **delete**(`collectionId`): `Promise`<`void`\>
+▸ **delete**(`collectionId`): `Promise`<`any`\>
 
 Deletes a product collection idempotently
 
@@ -214,46 +89,44 @@ Deletes a product collection idempotently
 
 #### Returns
 
-`Promise`<`void`\>
+`Promise`<`any`\>
 
 empty promise
 
 #### Defined in
 
-[packages/medusa/src/services/product-collection.ts:166](https://github.com/medusajs/medusa/blob/f7a63f178/packages/medusa/src/services/product-collection.ts#L166)
+[packages/medusa/src/services/product-collection.js:152](https://github.com/medusajs/medusa/blob/f406c8d4/packages/medusa/src/services/product-collection.js#L152)
 
 ___
 
 ### list
 
-▸ **list**(`selector?`, `config?`): `Promise`<`ProductCollection`[]\>
+▸ **list**(`selector?`, `config?`): `Promise`<`any`\>
 
 Lists product collections
 
 #### Parameters
 
-| Name | Type | Default value | Description |
-| :------ | :------ | :------ | :------ |
-| `selector` | `Object` | `{}` | the query object for find |
-| `config` | `Object` | `undefined` | the config to be used for find |
-| `config.skip` | `number` | `0` | - |
-| `config.take` | `number` | `20` | - |
+| Name | Type | Description |
+| :------ | :------ | :------ |
+| `selector` | `any` | the query object for find |
+| `config` | `any` | the config to be used for find |
 
 #### Returns
 
-`Promise`<`ProductCollection`[]\>
+`Promise`<`any`\>
 
 the result of the find operation
 
 #### Defined in
 
-[packages/medusa/src/services/product-collection.ts:226](https://github.com/medusajs/medusa/blob/f7a63f178/packages/medusa/src/services/product-collection.ts#L226)
+[packages/medusa/src/services/product-collection.js:206](https://github.com/medusajs/medusa/blob/f406c8d4/packages/medusa/src/services/product-collection.js#L206)
 
 ___
 
 ### listAndCount
 
-▸ **listAndCount**(`selector?`, `config?`): `Promise`<[`ProductCollection`[], `number`]\>
+▸ **listAndCount**(`selector?`, `config?`): `Promise`<`any`\>
 
 Lists product collections and add count.
 
@@ -261,39 +134,39 @@ Lists product collections and add count.
 
 | Name | Type | Description |
 | :------ | :------ | :------ |
-| `selector` | `QuerySelector`<`ProductCollection`\> | the query object for find |
-| `config` | `FindConfig`<`ProductCollection`\> | the config to be used for find |
+| `selector` | `any` | the query object for find |
+| `config` | `any` | the config to be used for find |
 
 #### Returns
 
-`Promise`<[`ProductCollection`[], `number`]\>
+`Promise`<`any`\>
 
 the result of the find operation
 
 #### Defined in
 
-[packages/medusa/src/services/product-collection.ts:244](https://github.com/medusajs/medusa/blob/f7a63f178/packages/medusa/src/services/product-collection.ts#L244)
+[packages/medusa/src/services/product-collection.js:221](https://github.com/medusajs/medusa/blob/f406c8d4/packages/medusa/src/services/product-collection.js#L221)
 
 ___
 
 ### removeProducts
 
-▸ **removeProducts**(`collectionId`, `productIds`): `Promise`<`void`\>
+▸ **removeProducts**(`collectionId`, `productIds`): `Promise`<`any`\>
 
 #### Parameters
 
 | Name | Type |
 | :------ | :------ |
-| `collectionId` | `string` |
-| `productIds` | `string`[] |
+| `collectionId` | `any` |
+| `productIds` | `any` |
 
 #### Returns
 
-`Promise`<`void`\>
+`Promise`<`any`\>
 
 #### Defined in
 
-[packages/medusa/src/services/product-collection.ts:205](https://github.com/medusajs/medusa/blob/f7a63f178/packages/medusa/src/services/product-collection.ts#L205)
+[packages/medusa/src/services/product-collection.js:188](https://github.com/medusajs/medusa/blob/f406c8d4/packages/medusa/src/services/product-collection.js#L188)
 
 ___
 
@@ -308,7 +181,7 @@ Retrieves a product collection by id.
 | Name | Type | Description |
 | :------ | :------ | :------ |
 | `collectionId` | `string` | the id of the collection to retrieve. |
-| `config` | `FindConfig`<`ProductCollection`\> | the config of the collection to retrieve. |
+| `config` | `any` | the config of the collection to retrieve. |
 
 #### Returns
 
@@ -318,7 +191,7 @@ the collection.
 
 #### Defined in
 
-[packages/medusa/src/services/product-collection.ts:60](https://github.com/medusajs/medusa/blob/f7a63f178/packages/medusa/src/services/product-collection.ts#L60)
+[packages/medusa/src/services/product-collection.js:55](https://github.com/medusajs/medusa/blob/f406c8d4/packages/medusa/src/services/product-collection.js#L55)
 
 ___
 
@@ -333,7 +206,7 @@ Retrieves a product collection by id.
 | Name | Type | Description |
 | :------ | :------ | :------ |
 | `collectionHandle` | `string` | the handle of the collection to retrieve. |
-| `config` | `FindConfig`<`ProductCollection`\> | query config for request |
+| `config` | `any` | query config for request |
 
 #### Returns
 
@@ -343,31 +216,7 @@ the collection.
 
 #### Defined in
 
-[packages/medusa/src/services/product-collection.ts:87](https://github.com/medusajs/medusa/blob/f7a63f178/packages/medusa/src/services/product-collection.ts#L87)
-
-___
-
-### shouldRetryTransaction\_
-
-▸ `Protected` **shouldRetryTransaction_**(`err`): `boolean`
-
-#### Parameters
-
-| Name | Type |
-| :------ | :------ |
-| `err` | `Record`<`string`, `unknown`\> \| { `code`: `string`  } |
-
-#### Returns
-
-`boolean`
-
-#### Inherited from
-
-TransactionBaseService.shouldRetryTransaction\_
-
-#### Defined in
-
-[packages/medusa/src/interfaces/transaction-base-service.ts:31](https://github.com/medusajs/medusa/blob/f7a63f178/packages/medusa/src/interfaces/transaction-base-service.ts#L31)
+[packages/medusa/src/services/product-collection.js:81](https://github.com/medusajs/medusa/blob/f406c8d4/packages/medusa/src/services/product-collection.js#L81)
 
 ___
 
@@ -382,7 +231,7 @@ Updates a product collection
 | Name | Type | Description |
 | :------ | :------ | :------ |
 | `collectionId` | `string` | id of collection to update |
-| `update` | `UpdateProductCollection` | update object |
+| `update` | `any` | update object |
 
 #### Returns
 
@@ -392,28 +241,24 @@ update collection
 
 #### Defined in
 
-[packages/medusa/src/services/product-collection.ts:136](https://github.com/medusajs/medusa/blob/f7a63f178/packages/medusa/src/services/product-collection.ts#L136)
+[packages/medusa/src/services/product-collection.js:125](https://github.com/medusajs/medusa/blob/f406c8d4/packages/medusa/src/services/product-collection.js#L125)
 
 ___
 
 ### withTransaction
 
-▸ **withTransaction**(`transactionManager?`): [`ProductCollectionService`](ProductCollectionService.md)
+▸ **withTransaction**(`transactionManager`): [`ProductCollectionService`](ProductCollectionService.md)
 
 #### Parameters
 
 | Name | Type |
 | :------ | :------ |
-| `transactionManager?` | `EntityManager` |
+| `transactionManager` | `any` |
 
 #### Returns
 
 [`ProductCollectionService`](ProductCollectionService.md)
 
-#### Inherited from
-
-TransactionBaseService.withTransaction
-
 #### Defined in
 
-[packages/medusa/src/interfaces/transaction-base-service.ts:13](https://github.com/medusajs/medusa/blob/f7a63f178/packages/medusa/src/interfaces/transaction-base-service.ts#L13)
+[packages/medusa/src/services/product-collection.js:32](https://github.com/medusajs/medusa/blob/f406c8d4/packages/medusa/src/services/product-collection.js#L32)

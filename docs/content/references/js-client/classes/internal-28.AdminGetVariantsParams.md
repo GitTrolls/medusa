@@ -10,7 +10,7 @@
 
 #### Defined in
 
-medusa/dist/api/routes/admin/variants/list-variants.d.ts:38
+medusa/dist/api/routes/admin/variants/list-variants.d.ts:29
 
 ___
 
@@ -20,7 +20,7 @@ ___
 
 #### Defined in
 
-medusa/dist/api/routes/admin/variants/list-variants.d.ts:39
+medusa/dist/api/routes/admin/variants/list-variants.d.ts:30
 
 ___
 
@@ -30,4 +30,4 @@ ___
 
 #### Defined in
 
-medusa/dist/api/routes/admin/variants/list-variants.d.ts:37
+medusa/dist/api/routes/admin/variants/list-variants.d.ts:28

@@ -10,7 +10,7 @@
 
 #### Defined in
 
-medusa/dist/api/routes/store/swaps/create-swap.d.ts:82
+medusa/dist/api/routes/store/swaps/create-swap.d.ts:86
 
 ___
 
@@ -20,7 +20,7 @@ ___
 
 #### Defined in
 
-medusa/dist/api/routes/store/swaps/create-swap.d.ts:80
+medusa/dist/api/routes/store/swaps/create-swap.d.ts:84
 
 ___
 
@@ -30,7 +30,7 @@ ___
 
 #### Defined in
 
-medusa/dist/api/routes/store/swaps/create-swap.d.ts:81
+medusa/dist/api/routes/store/swaps/create-swap.d.ts:85
 
 ___
 
@@ -40,4 +40,4 @@ ___
 
 #### Defined in
 
-medusa/dist/api/routes/store/swaps/create-swap.d.ts:83
+medusa/dist/api/routes/store/swaps/create-swap.d.ts:87

@@ -10,4 +10,4 @@
 
 #### Defined in
 
-medusa/dist/api/routes/admin/sales-channels/delete-products-batch.d.ts:44
+medusa/dist/api/routes/admin/sales-channels/delete-products-batch.d.ts:27

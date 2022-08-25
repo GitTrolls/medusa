@@ -10,7 +10,7 @@
 
 #### Defined in
 
-medusa/dist/api/routes/store/products/search.d.ts:30
+medusa/dist/api/routes/store/products/search.d.ts:7
 
 ___
 
@@ -20,7 +20,7 @@ ___
 
 #### Defined in
 
-medusa/dist/api/routes/store/products/search.d.ts:29
+medusa/dist/api/routes/store/products/search.d.ts:6
 
 ___
 
@@ -30,7 +30,7 @@ ___
 
 #### Defined in
 
-medusa/dist/api/routes/store/products/search.d.ts:28
+medusa/dist/api/routes/store/products/search.d.ts:5
 
 ___
 
@@ -40,4 +40,4 @@ ___
 
 #### Defined in
 
-medusa/dist/api/routes/store/products/search.d.ts:27
+medusa/dist/api/routes/store/products/search.d.ts:4

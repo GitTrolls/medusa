@@ -10,7 +10,7 @@
 
 #### Defined in
 
-medusa/dist/api/routes/admin/price-lists/add-prices-batch.d.ts:66
+medusa/dist/api/routes/admin/price-lists/add-prices-batch.d.ts:69
 
 ___
 
@@ -20,4 +20,4 @@ ___
 
 #### Defined in
 
-medusa/dist/api/routes/admin/price-lists/add-prices-batch.d.ts:65
+medusa/dist/api/routes/admin/price-lists/add-prices-batch.d.ts:68

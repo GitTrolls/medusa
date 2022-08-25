@@ -16,7 +16,7 @@
 
 #### Defined in
 
-medusa/dist/api/routes/admin/price-lists/list-price-list-products.d.ts:148
+medusa/dist/api/routes/admin/price-lists/list-price-list-products.d.ts:59
 
 ___
 
@@ -26,7 +26,7 @@ ___
 
 #### Defined in
 
-medusa/dist/api/routes/admin/price-lists/list-price-list-products.d.ts:156
+medusa/dist/api/routes/admin/price-lists/list-price-list-products.d.ts:67
 
 ___
 
@@ -36,7 +36,7 @@ ___
 
 #### Defined in
 
-medusa/dist/api/routes/admin/price-lists/list-price-list-products.d.ts:158
+medusa/dist/api/routes/admin/price-lists/list-price-list-products.d.ts:69
 
 ___
 
@@ -46,7 +46,7 @@ ___
 
 #### Defined in
 
-medusa/dist/api/routes/admin/price-lists/list-price-list-products.d.ts:151
+medusa/dist/api/routes/admin/price-lists/list-price-list-products.d.ts:62
 
 ___
 
@@ -84,7 +84,7 @@ ___
 
 #### Defined in
 
-medusa/dist/api/routes/admin/price-lists/list-price-list-products.d.ts:152
+medusa/dist/api/routes/admin/price-lists/list-price-list-products.d.ts:63
 
 ___
 
@@ -94,7 +94,7 @@ ___
 
 #### Defined in
 
-medusa/dist/api/routes/admin/price-lists/list-price-list-products.d.ts:145
+medusa/dist/api/routes/admin/price-lists/list-price-list-products.d.ts:56
 
 ___
 
@@ -104,7 +104,7 @@ ___
 
 #### Defined in
 
-medusa/dist/api/routes/admin/price-lists/list-price-list-products.d.ts:153
+medusa/dist/api/routes/admin/price-lists/list-price-list-products.d.ts:64
 
 ___
 
@@ -142,7 +142,7 @@ ___
 
 #### Defined in
 
-medusa/dist/api/routes/admin/price-lists/list-price-list-products.d.ts:155
+medusa/dist/api/routes/admin/price-lists/list-price-list-products.d.ts:66
 
 ___
 
@@ -152,7 +152,7 @@ ___
 
 #### Defined in
 
-medusa/dist/api/routes/admin/price-lists/list-price-list-products.d.ts:146
+medusa/dist/api/routes/admin/price-lists/list-price-list-products.d.ts:57
 
 ___
 
@@ -162,7 +162,7 @@ ___
 
 #### Defined in
 
-medusa/dist/api/routes/admin/price-lists/list-price-list-products.d.ts:147
+medusa/dist/api/routes/admin/price-lists/list-price-list-products.d.ts:58
 
 ___
 
@@ -172,7 +172,7 @@ ___
 
 #### Defined in
 
-medusa/dist/api/routes/admin/price-lists/list-price-list-products.d.ts:149
+medusa/dist/api/routes/admin/price-lists/list-price-list-products.d.ts:60
 
 ___
 
@@ -182,7 +182,7 @@ ___
 
 #### Defined in
 
-medusa/dist/api/routes/admin/price-lists/list-price-list-products.d.ts:150
+medusa/dist/api/routes/admin/price-lists/list-price-list-products.d.ts:61
 
 ___
 
@@ -192,7 +192,7 @@ ___
 
 #### Defined in
 
-medusa/dist/api/routes/admin/price-lists/list-price-list-products.d.ts:154
+medusa/dist/api/routes/admin/price-lists/list-price-list-products.d.ts:65
 
 ___
 
@@ -202,4 +202,4 @@ ___
 
 #### Defined in
 
-medusa/dist/api/routes/admin/price-lists/list-price-list-products.d.ts:157
+medusa/dist/api/routes/admin/price-lists/list-price-list-products.d.ts:68

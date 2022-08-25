@@ -16,7 +16,7 @@
 
 #### Defined in
 
-medusa/dist/api/routes/admin/batch/list-batch-jobs.d.ts:244
+medusa/dist/api/routes/admin/batch/list-batch-jobs.d.ts:52
 
 ___
 
@@ -26,7 +26,7 @@ ___
 
 #### Defined in
 
-medusa/dist/api/routes/admin/batch/list-batch-jobs.d.ts:242
+medusa/dist/api/routes/admin/batch/list-batch-jobs.d.ts:50
 
 ___
 
@@ -36,7 +36,7 @@ ___
 
 #### Defined in
 
-medusa/dist/api/routes/admin/batch/list-batch-jobs.d.ts:240
+medusa/dist/api/routes/admin/batch/list-batch-jobs.d.ts:48
 
 ___
 
@@ -46,7 +46,7 @@ ___
 
 #### Defined in
 
-medusa/dist/api/routes/admin/batch/list-batch-jobs.d.ts:245
+medusa/dist/api/routes/admin/batch/list-batch-jobs.d.ts:53
 
 ___
 
@@ -60,7 +60,7 @@ ___
 
 #### Defined in
 
-medusa/dist/api/routes/admin/batch/list-batch-jobs.d.ts:233
+medusa/dist/api/routes/admin/batch/list-batch-jobs.d.ts:41
 
 ___
 
@@ -70,7 +70,7 @@ ___
 
 #### Defined in
 
-medusa/dist/api/routes/admin/batch/list-batch-jobs.d.ts:243
+medusa/dist/api/routes/admin/batch/list-batch-jobs.d.ts:51
 
 ___
 
@@ -84,7 +84,7 @@ ___
 
 #### Defined in
 
-medusa/dist/api/routes/admin/batch/list-batch-jobs.d.ts:234
+medusa/dist/api/routes/admin/batch/list-batch-jobs.d.ts:42
 
 ___
 
@@ -94,7 +94,7 @@ ___
 
 #### Defined in
 
-medusa/dist/api/routes/admin/batch/list-batch-jobs.d.ts:238
+medusa/dist/api/routes/admin/batch/list-batch-jobs.d.ts:46
 
 ___
 
@@ -108,7 +108,7 @@ ___
 
 #### Defined in
 
-medusa/dist/api/routes/admin/batch/list-batch-jobs.d.ts:231
+medusa/dist/api/routes/admin/batch/list-batch-jobs.d.ts:39
 
 ___
 
@@ -122,7 +122,7 @@ ___
 
 #### Defined in
 
-medusa/dist/api/routes/admin/batch/list-batch-jobs.d.ts:232
+medusa/dist/api/routes/admin/batch/list-batch-jobs.d.ts:40
 
 ___
 
@@ -136,7 +136,7 @@ ___
 
 #### Defined in
 
-medusa/dist/api/routes/admin/batch/list-batch-jobs.d.ts:235
+medusa/dist/api/routes/admin/batch/list-batch-jobs.d.ts:43
 
 ___
 
@@ -146,7 +146,7 @@ ___
 
 #### Defined in
 
-medusa/dist/api/routes/admin/batch/list-batch-jobs.d.ts:241
+medusa/dist/api/routes/admin/batch/list-batch-jobs.d.ts:49
 
 ___
 
@@ -156,7 +156,7 @@ ___
 
 #### Defined in
 
-medusa/dist/api/routes/admin/batch/list-batch-jobs.d.ts:239
+medusa/dist/api/routes/admin/batch/list-batch-jobs.d.ts:47
 
 ___
 
@@ -166,4 +166,4 @@ ___
 
 #### Defined in
 
-medusa/dist/api/routes/admin/batch/list-batch-jobs.d.ts:246
+medusa/dist/api/routes/admin/batch/list-batch-jobs.d.ts:54

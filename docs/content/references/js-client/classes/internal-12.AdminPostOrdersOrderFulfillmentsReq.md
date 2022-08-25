@@ -10,7 +10,7 @@
 
 #### Defined in
 
-medusa/dist/api/routes/admin/orders/create-fulfillment.d.ts:51
+medusa/dist/api/routes/admin/orders/create-fulfillment.d.ts:48
 
 ___
 
@@ -20,7 +20,7 @@ ___
 
 #### Defined in
 
-medusa/dist/api/routes/admin/orders/create-fulfillment.d.ts:53
+medusa/dist/api/routes/admin/orders/create-fulfillment.d.ts:50
 
 ___
 
@@ -30,4 +30,4 @@ ___
 
 #### Defined in
 
-medusa/dist/api/routes/admin/orders/create-fulfillment.d.ts:52
+medusa/dist/api/routes/admin/orders/create-fulfillment.d.ts:49

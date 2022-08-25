@@ -10,7 +10,7 @@
 
 #### Defined in
 
-medusa/dist/api/routes/admin/draft-orders/create-line-item.d.ts:51
+medusa/dist/api/routes/admin/draft-orders/create-line-item.d.ts:48
 
 ___
 
@@ -20,7 +20,7 @@ ___
 
 #### Defined in
 
-medusa/dist/api/routes/admin/draft-orders/create-line-item.d.ts:50
+medusa/dist/api/routes/admin/draft-orders/create-line-item.d.ts:47
 
 ___
 
@@ -30,7 +30,7 @@ ___
 
 #### Defined in
 
-medusa/dist/api/routes/admin/draft-orders/create-line-item.d.ts:47
+medusa/dist/api/routes/admin/draft-orders/create-line-item.d.ts:44
 
 ___
 
@@ -40,7 +40,7 @@ ___
 
 #### Defined in
 
-medusa/dist/api/routes/admin/draft-orders/create-line-item.d.ts:48
+medusa/dist/api/routes/admin/draft-orders/create-line-item.d.ts:45
 
 ___
 
@@ -50,4 +50,4 @@ ___
 
 #### Defined in
 
-medusa/dist/api/routes/admin/draft-orders/create-line-item.d.ts:49
+medusa/dist/api/routes/admin/draft-orders/create-line-item.d.ts:46

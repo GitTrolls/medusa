@@ -10,7 +10,7 @@
 
 #### Defined in
 
-medusa/dist/api/routes/admin/discounts/update-condition.d.ts:60
+medusa/dist/api/routes/admin/discounts/update-condition.d.ts:53
 
 ___
 
@@ -20,4 +20,4 @@ ___
 
 #### Defined in
 
-medusa/dist/api/routes/admin/discounts/update-condition.d.ts:61
+medusa/dist/api/routes/admin/discounts/update-condition.d.ts:54
