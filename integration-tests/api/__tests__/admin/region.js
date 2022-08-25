@@ -27,18 +27,23 @@ describe("/admin/regions", () => {
 
   describe("Remove region from country on delete", () => {
     beforeEach(async () => {
-      await adminSeeder(dbConnection)
-      const manager = dbConnection.manager
-      await manager.insert(Region, {
-        id: "test-region",
-        name: "Test Region",
-        currency_code: "usd",
-        tax_rate: 0,
-      })
+      try {
+        await adminSeeder(dbConnection)
+        const manager = dbConnection.manager
+        await manager.insert(Region, {
+          id: "test-region",
+          name: "Test Region",
+          currency_code: "usd",
+          tax_rate: 0,
+        })
 
-      await manager.query(
-        `UPDATE "country" SET region_id='test-region' WHERE iso_2 = 'us'`
-      )
+        await manager.query(
+          `UPDATE "country" SET region_id='test-region' WHERE iso_2 = 'us'`
+        )
+      } catch (err) {
+        console.log(err)
+        throw err
+      }
     })
 
     afterEach(async () => {
@@ -157,17 +162,20 @@ describe("/admin/regions", () => {
           console.log(err)
         })
 
-      expect(response.data.regions).toEqual([
-        expect.objectContaining({
-          id: "test-region-updated-1",
-        }),
-        expect.objectContaining({
-          id: "test-region",
-        }),
-        expect.objectContaining({
-          id: "test-region-updated",
-        }),
-      ])
+      expect(response.data.regions).toHaveLength(3)
+      expect(response.data.regions).toEqual(
+        expect.arrayContaining([
+          expect.objectContaining({
+            id: "test-region-updated-1",
+          }),
+          expect.objectContaining({
+            id: "test-region",
+          }),
+          expect.objectContaining({
+            id: "test-region-updated",
+          }),
+        ])
+      )
       expect(response.status).toEqual(200)
     })
 
@@ -184,32 +192,40 @@ describe("/admin/regions", () => {
           console.log(err)
         })
 
-      expect(response.data.regions).toEqual([
-        expect.objectContaining({
-          id: "test-region",
-        }),
-        expect.objectContaining({
-          id: "test-region-updated",
-        }),
-      ])
+      expect(response.data.regions).toHaveLength(2)
+      expect(response.data.regions).toEqual(
+        expect.arrayContaining([
+          expect.objectContaining({
+            id: "test-region",
+          }),
+          expect.objectContaining({
+            id: "test-region-updated",
+          }),
+        ])
+      )
       expect(response.status).toEqual(200)
     })
   })
 
   describe("DELETE /admin/regions/:id", () => {
     beforeEach(async () => {
-      await adminSeeder(dbConnection)
-      const manager = dbConnection.manager
-      await manager.insert(Region, {
-        id: "test-region",
-        name: "Test Region",
-        currency_code: "usd",
-        tax_rate: 0,
-      })
+      try {
+        await adminSeeder(dbConnection)
+        const manager = dbConnection.manager
+        await manager.insert(Region, {
+          id: "test-region",
+          name: "Test Region",
+          currency_code: "usd",
+          tax_rate: 0,
+        })
 
-      await manager.query(
-        `UPDATE "country" SET region_id='test-region' WHERE iso_2 = 'us'`
-      )
+        await manager.query(
+          `UPDATE "country" SET region_id='test-region' WHERE iso_2 = 'us'`
+        )
+      } catch (err) {
+        console.log(err)
+        throw err
+      }
     })
 
     afterEach(async () => {

@@ -25,8 +25,13 @@ describe("Order Totals", () => {
 
   beforeAll(async () => {
     const cwd = path.resolve(path.join(__dirname, "..", ".."))
-    dbConnection = await initDb({ cwd })
-    medusaProcess = await setupServer({ cwd })
+    try {
+      dbConnection = await initDb({ cwd })
+      medusaProcess = await setupServer({ cwd })
+    } catch (error) {
+      console.log(error)
+      throw error
+    }
   })
 
   afterAll(async () => {
@@ -89,13 +94,16 @@ describe("Order Totals", () => {
       headers: { Authorization: `Bearer test_token` },
     })
 
-    expect(data.order.gift_card_transactions).toEqual([
-      expect.objectContaining({
-        amount: 160000,
-        is_taxable: false,
-        tax_rate: null,
-      }),
-    ])
+    expect(data.order.gift_card_transactions).toHaveLength(1)
+    expect(data.order.gift_card_transactions).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({
+          amount: 160000,
+          is_taxable: false,
+          tax_rate: null,
+        }),
+      ])
+    )
     expect(data.order.gift_card_total).toEqual(160000)
     expect(data.order.gift_card_tax_total).toEqual(0)
     expect(data.order.total).toEqual(59000)
@@ -151,13 +159,16 @@ describe("Order Totals", () => {
       headers: { Authorization: `Bearer test_token` },
     })
 
-    expect(data.order.gift_card_transactions).toEqual([
-      expect.objectContaining({
-        amount: 160000,
-        is_taxable: true,
-        tax_rate: 25,
-      }),
-    ])
+    expect(data.order.gift_card_transactions).toHaveLength(1)
+    expect(data.order.gift_card_transactions).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({
+          amount: 160000,
+          is_taxable: true,
+          tax_rate: 25,
+        }),
+      ])
+    )
     expect(data.order.gift_card_total).toEqual(160000)
     expect(data.order.gift_card_tax_total).toEqual(40000)
     expect(data.order.tax_total).toEqual(3800)

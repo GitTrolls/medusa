@@ -28,8 +28,13 @@ describe("/admin/customers", () => {
 
   describe("GET /admin/customers", () => {
     beforeEach(async () => {
-      await adminSeeder(dbConnection)
-      await customerSeeder(dbConnection)
+      try {
+        await adminSeeder(dbConnection)
+        await customerSeeder(dbConnection)
+      } catch (err) {
+        console.log(err)
+        throw err
+      }
     })
 
     afterEach(async () => {
@@ -159,7 +164,12 @@ describe("/admin/customers", () => {
 
   describe("POST /admin/customers", () => {
     beforeEach(async () => {
-      await adminSeeder(dbConnection)
+      try {
+        await adminSeeder(dbConnection)
+      } catch (err) {
+        console.log(err)
+        throw err
+      }
     })
 
     afterEach(async () => {
@@ -203,8 +213,13 @@ describe("/admin/customers", () => {
 
   describe("POST /admin/customers/:id", () => {
     beforeEach(async () => {
-      await adminSeeder(dbConnection)
-      await customerSeeder(dbConnection)
+      try {
+        await adminSeeder(dbConnection)
+        await customerSeeder(dbConnection)
+      } catch (err) {
+        console.log(err)
+        throw err
+      }
     })
 
     afterEach(async () => {
@@ -353,8 +368,13 @@ describe("/admin/customers", () => {
 
   describe("GET /admin/customers/:id", () => {
     beforeEach(async () => {
-      await adminSeeder(dbConnection)
-      await customerSeeder(dbConnection)
+      try {
+        await adminSeeder(dbConnection)
+        await customerSeeder(dbConnection)
+      } catch (err) {
+        console.log(err)
+        throw err
+      }
     })
 
     afterEach(async () => {

@@ -32,7 +32,12 @@ describe("Cart Totals Calculations", () => {
   })
 
   beforeEach(async () => {
-    await adminSeeder(dbConnection)
+    try {
+      await adminSeeder(dbConnection)
+    } catch (err) {
+      console.log(err)
+      throw err
+    }
   })
 
   afterEach(async () => {

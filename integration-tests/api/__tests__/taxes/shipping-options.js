@@ -32,7 +32,12 @@ describe("Shipping Options Totals Calculations", () => {
   })
 
   beforeEach(async () => {
-    await adminSeeder(dbConnection)
+    try {
+      await adminSeeder(dbConnection)
+    } catch (err) {
+      console.log(err)
+      throw err
+    }
   })
 
   afterEach(async () => {
@@ -64,13 +69,16 @@ describe("Shipping Options Totals Calculations", () => {
       },
     })
 
-    expect(res.data.shipping_options).toEqual([
-      expect.objectContaining({
-        id: so.id,
-        amount: 100,
-        price_incl_tax: 110,
-      }),
-    ])
+    expect(res.data.shipping_options).toHaveLength(1)
+    expect(res.data.shipping_options).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({
+          id: so.id,
+          amount: 100,
+          price_incl_tax: 110,
+        }),
+      ])
+    )
   })
 
   it("gets correct shipping prices", async () => {
@@ -93,12 +101,15 @@ describe("Shipping Options Totals Calculations", () => {
 
     const res = await api.get(`/store/shipping-options?region_id=${region.id}`)
 
-    expect(res.data.shipping_options).toEqual([
-      expect.objectContaining({
-        id: so.id,
-        amount: 100,
-        price_incl_tax: 110,
-      }),
-    ])
+    expect(res.data.shipping_options).toHaveLength(1)
+    expect(res.data.shipping_options).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({
+          id: so.id,
+          amount: 100,
+          price_incl_tax: 110,
+        }),
+      ])
+    )
   })
 })

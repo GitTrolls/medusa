@@ -32,8 +32,13 @@ describe("/admin/shipping-options", () => {
 
   describe("POST /admin/shipping-options/:id", () => {
     beforeEach(async () => {
-      await adminSeeder(dbConnection)
-      await shippingOptionSeeder(dbConnection)
+      try {
+        await adminSeeder(dbConnection)
+        await shippingOptionSeeder(dbConnection)
+      } catch (err) {
+        console.error(err)
+        throw err
+      }
     })
 
     afterEach(async () => {
@@ -249,35 +254,40 @@ describe("/admin/shipping-options", () => {
     let payload
 
     beforeEach(async () => {
-      await adminSeeder(dbConnection)
-      await shippingOptionSeeder(dbConnection)
+      try {
+        await adminSeeder(dbConnection)
+        await shippingOptionSeeder(dbConnection)
 
-      const api = useApi()
-      await api.post(
-        `/admin/regions/region`,
-        {
-          fulfillment_providers: ["test-ful"],
-        },
-        {
-          headers: {
-            Authorization: "Bearer test_token",
+        const api = useApi()
+        await api.post(
+          `/admin/regions/region`,
+          {
+            fulfillment_providers: ["test-ful"],
           },
+          {
+            headers: {
+              Authorization: "Bearer test_token",
+            },
+          }
+        )
+
+        const manager = dbConnection.manager
+        const defaultProfile = await manager.findOne(ShippingProfile, {
+          type: "default",
+        })
+
+        payload = {
+          name: "Test option",
+          amount: 100,
+          price_type: "flat_rate",
+          region_id: "region",
+          provider_id: "test-ful",
+          data: {},
+          profile_id: defaultProfile.id,
         }
-      )
-
-      const manager = dbConnection.manager
-      const defaultProfile = await manager.findOne(ShippingProfile, {
-        type: "default",
-      })
-
-      payload = {
-        name: "Test option",
-        amount: 100,
-        price_type: "flat_rate",
-        region_id: "region",
-        provider_id: "test-ful",
-        data: {},
-        profile_id: defaultProfile.id,
+      } catch (err) {
+        console.error(err)
+        throw err
       }
     })
 
@@ -375,8 +385,13 @@ describe("/admin/shipping-options", () => {
   })
   describe("GET /admin/shipping-options", () => {
     beforeEach(async () => {
-      await adminSeeder(dbConnection)
-      await shippingOptionSeeder(dbConnection)
+      try {
+        await adminSeeder(dbConnection)
+        await shippingOptionSeeder(dbConnection)
+      } catch (err) {
+        console.error(err)
+        throw err
+      }
     })
 
     afterEach(async () => {

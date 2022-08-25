@@ -27,7 +27,12 @@ describe("/store/carts (draft-orders)", () => {
 
   describe("POST /admin/draft-order", () => {
     beforeEach(async () => {
-      await draftOrderSeeder(dbConnection)
+      try {
+        await draftOrderSeeder(dbConnection)
+      } catch (err) {
+        console.log(err)
+        throw err
+      }
     })
 
     afterEach(async () => {

@@ -25,8 +25,13 @@ describe("/admin/collections", () => {
 
   describe("/admin/collections/:id", () => {
     beforeEach(async () => {
-      await adminSeeder(dbConnection)
-      await productSeeder(dbConnection)
+      try {
+        await adminSeeder(dbConnection)
+        await productSeeder(dbConnection)
+      } catch (err) {
+        console.log(err)
+        throw err
+      }
     })
 
     afterEach(async () => {
@@ -123,8 +128,13 @@ describe("/admin/collections", () => {
 
   describe("/admin/collections", () => {
     beforeEach(async () => {
-      await adminSeeder(dbConnection)
-      await productSeeder(dbConnection)
+      try {
+        await adminSeeder(dbConnection)
+        await productSeeder(dbConnection)
+      } catch (err) {
+        console.log(err)
+        throw err
+      }
     })
 
     afterEach(async () => {

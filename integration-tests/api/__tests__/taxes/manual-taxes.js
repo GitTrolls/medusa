@@ -6,8 +6,6 @@ const { initDb, useDb } = require("../../../helpers/use-db")
 
 const {
   simpleProductTaxRateFactory,
-  simpleShippingTaxRateFactory,
-  simpleShippingOptionFactory,
   simpleCartFactory,
   simpleRegionFactory,
   simpleProductFactory,
@@ -26,8 +24,12 @@ describe("Manual Cart Taxes", () => {
 
   beforeAll(async () => {
     const cwd = path.resolve(path.join(__dirname, "..", ".."))
-    dbConnection = await initDb({ cwd })
-    medusaProcess = await setupServer({ cwd })
+    try {
+      dbConnection = await initDb({ cwd })
+      medusaProcess = await setupServer({ cwd })
+    } catch (error) {
+      console.log(error)
+    }
   })
 
   afterAll(async () => {
