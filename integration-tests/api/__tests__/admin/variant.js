@@ -28,8 +28,13 @@ describe("/admin/products", () => {
 
   describe("GET /admin/product-variants", () => {
     beforeEach(async () => {
-      await productSeeder(dbConnection)
-      await adminSeeder(dbConnection)
+      try {
+        await productSeeder(dbConnection)
+        await adminSeeder(dbConnection)
+      } catch (err) {
+        console.log(err)
+        throw err
+      }
     })
 
     afterEach(async () => {

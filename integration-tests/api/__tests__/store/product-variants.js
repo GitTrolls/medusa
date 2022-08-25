@@ -26,25 +26,30 @@ describe("/store/variants", () => {
 
   describe("GET /store/variants", () => {
     beforeEach(async () => {
-      await productSeeder(dbConnection)
+      try {
+        await productSeeder(dbConnection)
 
-      await simpleProductFactory(
-        dbConnection,
-        {
-          title: "prod",
-          variants: [
-            {
-              title: "test1",
-              inventory_quantity: 10,
-            },
-            {
-              title: "test2",
-              inventory_quantity: 12,
-            },
-          ],
-        },
-        100
-      )
+        await simpleProductFactory(
+          dbConnection,
+          {
+            title: "prod",
+            variants: [
+              {
+                title: "test1",
+                inventory_quantity: 10,
+              },
+              {
+                title: "test2",
+                inventory_quantity: 12,
+              },
+            ],
+          },
+          100
+        )
+      } catch (err) {
+        console.log(err)
+        throw err
+      }
     })
 
     afterEach(async () => {
@@ -164,25 +169,30 @@ describe("/store/variants", () => {
 
   describe("GET /store/variants advanced pricing", () => {
     beforeEach(async () => {
-      await storeProductSeeder(dbConnection)
+      try {
+        await storeProductSeeder(dbConnection)
 
-      await simpleProductFactory(
-        dbConnection,
-        {
-          title: "prod",
-          variants: [
-            {
-              title: "test1",
-              inventory_quantity: 10,
-            },
-            {
-              title: "test2",
-              inventory_quantity: 12,
-            },
-          ],
-        },
-        100
-      )
+        await simpleProductFactory(
+          dbConnection,
+          {
+            title: "prod",
+            variants: [
+              {
+                title: "test1",
+                inventory_quantity: 10,
+              },
+              {
+                title: "test2",
+                inventory_quantity: 12,
+              },
+            ],
+          },
+          100
+        )
+      } catch (err) {
+        console.log(err)
+        throw err
+      }
     })
 
     afterEach(async () => {

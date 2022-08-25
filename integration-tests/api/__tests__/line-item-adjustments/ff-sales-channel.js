@@ -20,13 +20,17 @@ describe("Line Item - Sales Channel", () => {
 
   beforeAll(async () => {
     const cwd = path.resolve(path.join(__dirname, "..", ".."))
-    const [process, connection] = await startServerWithEnvironment({
-      cwd,
-      env: { MEDUSA_FF_SALES_CHANNELS: true },
-      verbose: false,
-    })
-    dbConnection = connection
-    medusaProcess = process
+    try {
+      const [process, connection] = await startServerWithEnvironment({
+        cwd,
+        env: { MEDUSA_FF_SALES_CHANNELS: true },
+        verbose: false,
+      })
+      dbConnection = connection
+      medusaProcess = process
+    } catch (error) {
+      console.log(error)
+    }
   })
 
   afterAll(async () => {
@@ -36,48 +40,53 @@ describe("Line Item - Sales Channel", () => {
   })
 
   beforeEach(async () => {
-    await simpleProductFactory(dbConnection, {
-      id: "test-product-in-sales-channel",
-      title: "test product belonging to a channel",
-      sales_channels: [
-        {
+    try {
+      await simpleProductFactory(dbConnection, {
+        id: "test-product-in-sales-channel",
+        title: "test product belonging to a channel",
+        sales_channels: [
+          {
+            id: "main-sales-channel",
+            name: "Main sales channel",
+            description: "Main sales channel",
+            is_disabled: false,
+          },
+        ],
+        variants: [
+          {
+            id: "test-variant-sales-channel",
+            title: "test variant in sales channel",
+            product_id: "test-product-in-sales-channel",
+            inventory_quantity: 1000,
+            prices: [
+              {
+                currency: "usd",
+                amount: 59,
+              },
+            ],
+          },
+        ],
+      })
+
+      await simpleProductFactory(dbConnection, {
+        id: "test-product-no-sales-channel",
+        variants: [
+          {
+            id: "test-variant-no-sales-channel",
+          },
+        ],
+      })
+
+      await simpleCartFactory(dbConnection, {
+        id: "test-cart-with-sales-channel",
+        sales_channel: {
           id: "main-sales-channel",
-          name: "Main sales channel",
-          description: "Main sales channel",
-          is_disabled: false,
         },
-      ],
-      variants: [
-        {
-          id: "test-variant-sales-channel",
-          title: "test variant in sales channel",
-          product_id: "test-product-in-sales-channel",
-          inventory_quantity: 1000,
-          prices: [
-            {
-              currency: "usd",
-              amount: 59,
-            },
-          ],
-        },
-      ],
-    })
-
-    await simpleProductFactory(dbConnection, {
-      id: "test-product-no-sales-channel",
-      variants: [
-        {
-          id: "test-variant-no-sales-channel",
-        },
-      ],
-    })
-
-    await simpleCartFactory(dbConnection, {
-      id: "test-cart-with-sales-channel",
-      sales_channel: {
-        id: "main-sales-channel",
-      },
-    })
+      })
+    } catch (err) {
+      console.log(err)
+      throw err
+    }
   })
 
   afterEach(async () => {

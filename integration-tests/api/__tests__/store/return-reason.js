@@ -28,13 +28,18 @@ describe("/store/return-reasons", () => {
     let rrId
 
     beforeEach(async () => {
-      const created = dbConnection.manager.create(ReturnReason, {
-        value: "wrong_size",
-        label: "Wrong size",
-      })
+      try {
+        const created = dbConnection.manager.create(ReturnReason, {
+          value: "wrong_size",
+          label: "Wrong size",
+        })
 
-      const result = await dbConnection.manager.save(created)
-      rrId = result.id
+        const result = await dbConnection.manager.save(created)
+        rrId = result.id
+      } catch (err) {
+        console.log(err)
+        throw err
+      }
     })
 
     afterEach(async () => {
@@ -68,30 +73,35 @@ describe("/store/return-reasons", () => {
     let rrId_2
 
     beforeEach(async () => {
-      const created = dbConnection.manager.create(ReturnReason, {
-        value: "wrong_size",
-        label: "Wrong size",
-      })
+      try {
+        const created = dbConnection.manager.create(ReturnReason, {
+          value: "wrong_size",
+          label: "Wrong size",
+        })
 
-      const result = await dbConnection.manager.save(created)
-      rrId = result.id
+        const result = await dbConnection.manager.save(created)
+        rrId = result.id
 
-      const created_child = dbConnection.manager.create(ReturnReason, {
-        value: "too_big",
-        label: "Too Big",
-        parent_return_reason_id: rrId,
-      })
+        const created_child = dbConnection.manager.create(ReturnReason, {
+          value: "too_big",
+          label: "Too Big",
+          parent_return_reason_id: rrId,
+        })
 
-      const result_child = await dbConnection.manager.save(created_child)
-      rrId_1 = result_child.id
+        const result_child = await dbConnection.manager.save(created_child)
+        rrId_1 = result_child.id
 
-      const created_2 = dbConnection.manager.create(ReturnReason, {
-        value: "too_big_1",
-        label: "Too Big 1",
-      })
+        const created_2 = dbConnection.manager.create(ReturnReason, {
+          value: "too_big_1",
+          label: "Too Big 1",
+        })
 
-      const result_2 = await dbConnection.manager.save(created_2)
-      rrId_2 = result_2.id
+        const result_2 = await dbConnection.manager.save(created_2)
+        rrId_2 = result_2.id
+      } catch (err) {
+        console.log(err)
+        throw err
+      }
     })
 
     afterEach(async () => {
@@ -108,22 +118,25 @@ describe("/store/return-reasons", () => {
 
       expect(response.status).toEqual(200)
 
-      expect(response.data.return_reasons).toEqual([
-        expect.objectContaining({
-          id: rrId,
-          value: "wrong_size",
-          return_reason_children: [
-            expect.objectContaining({
-              id: rrId_1,
-              value: "too_big",
-            }),
-          ],
-        }),
-        expect.objectContaining({
-          id: rrId_2,
-          value: "too_big_1",
-        }),
-      ])
+      expect(response.data.return_reasons).toHaveLength(2)
+      expect(response.data.return_reasons).toEqual(
+        expect.arrayContaining([
+          expect.objectContaining({
+            id: rrId,
+            value: "wrong_size",
+            return_reason_children: [
+              expect.objectContaining({
+                id: rrId_1,
+                value: "too_big",
+              }),
+            ],
+          }),
+          expect.objectContaining({
+            id: rrId_2,
+            value: "too_big_1",
+          }),
+        ])
+      )
     })
   })
 })

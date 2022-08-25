@@ -28,28 +28,32 @@ describe("/admin/gift-cards", () => {
   describe("GET /admin/gift-cards", () => {
     beforeEach(async () => {
       const manager = dbConnection.manager
-
-      await adminSeeder(dbConnection)
-      await manager.insert(Region, {
-        id: "test-region",
-        name: "Test Region",
-        currency_code: "usd",
-        tax_rate: 0,
-      })
-      await manager.insert(GiftCard, {
-        id: "gift_test",
-        code: "GC_TEST",
-        value: 20000,
-        balance: 20000,
-        region_id: "test-region",
-      })
-      await manager.insert(GiftCard, {
-        id: "another_gift_test",
-        code: "CARD_TEST",
-        value: 200000,
-        balance: 200000,
-        region_id: "test-region",
-      })
+      try {
+        await adminSeeder(dbConnection)
+        await manager.insert(Region, {
+          id: "test-region",
+          name: "Test Region",
+          currency_code: "usd",
+          tax_rate: 0,
+        })
+        await manager.insert(GiftCard, {
+          id: "gift_test",
+          code: "GC_TEST",
+          value: 20000,
+          balance: 20000,
+          region_id: "test-region",
+        })
+        await manager.insert(GiftCard, {
+          id: "another_gift_test",
+          code: "CARD_TEST",
+          value: 200000,
+          balance: 200000,
+          region_id: "test-region",
+        })
+      } catch (err) {
+        console.log(err)
+        throw err
+      }
     })
 
     afterEach(async () => {
@@ -132,21 +136,25 @@ describe("/admin/gift-cards", () => {
   describe("POST /admin/gift-cards", () => {
     beforeEach(async () => {
       const manager = dbConnection.manager
-
-      await adminSeeder(dbConnection)
-      await manager.insert(Region, {
-        id: "region",
-        name: "Test Region",
-        currency_code: "usd",
-        tax_rate: 0,
-      })
-      await manager.insert(GiftCard, {
-        id: "gift_test",
-        code: "GC_TEST",
-        value: 20000,
-        balance: 20000,
-        region_id: "region",
-      })
+      try {
+        await adminSeeder(dbConnection)
+        await manager.insert(Region, {
+          id: "region",
+          name: "Test Region",
+          currency_code: "usd",
+          tax_rate: 0,
+        })
+        await manager.insert(GiftCard, {
+          id: "gift_test",
+          code: "GC_TEST",
+          value: 20000,
+          balance: 20000,
+          region_id: "region",
+        })
+      } catch (err) {
+        console.log(err)
+        throw err
+      }
     })
 
     afterEach(async () => {

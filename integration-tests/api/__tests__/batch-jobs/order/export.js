@@ -47,9 +47,14 @@ describe("Batchjob with type order-export", () => {
   })
 
   beforeEach(async () => {
-    await adminSeeder(dbConnection)
-    await userSeeder(dbConnection)
-    await orderSeeder(dbConnection)
+    try {
+      await adminSeeder(dbConnection)
+      await userSeeder(dbConnection)
+      await orderSeeder(dbConnection)
+    } catch (e) {
+      console.log(e)
+      throw e
+    }
   })
 
   afterEach(async () => {

@@ -31,15 +31,20 @@ describe("/admin/returns", () => {
     let rrId
 
     beforeEach(async () => {
-      await adminSeeder(dbConnection)
-      await orderSeeder(dbConnection)
+      try {
+        await adminSeeder(dbConnection)
+        await orderSeeder(dbConnection)
 
-      const created = dbConnection.manager.create(ReturnReason, {
-        value: "too_big",
-        label: "Too Big",
-      })
-      const resultRR = await dbConnection.manager.save(created)
-      rrId = resultRR.id
+        const created = dbConnection.manager.create(ReturnReason, {
+          value: "too_big",
+          label: "Too Big",
+        })
+        const resultRR = await dbConnection.manager.save(created)
+        rrId = resultRR.id
+      } catch (err) {
+        console.log(err)
+        throw err
+      }
     })
 
     afterEach(async () => {
@@ -226,9 +231,9 @@ describe("/admin/returns", () => {
               },
             ],
             return_shipping: {
-              option_id: "test-option",
-              price: 0,
-            },
+                option_id: "test-option",
+                price: 0,
+            }
           },
           {
             headers: {
