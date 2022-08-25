@@ -205,7 +205,6 @@ describe("CartCompletionStrategy", () => {
           idempotencyKeyService: idempotencyKeyServiceMock,
           orderService: orderServiceMock,
           swapService: swapServiceMock,
-          manager: MockManager
         })
 
         const val = await completionStrat.complete(cart.id, idempotencyKey, {})

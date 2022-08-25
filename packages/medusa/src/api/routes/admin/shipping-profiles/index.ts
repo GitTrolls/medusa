@@ -31,7 +31,7 @@ export default (app) => {
   return app
 }
 
-export const defaultAdminShippingProfilesFields: (keyof ShippingProfile)[] = [
+export const defaultAdminShippingProfilesFields = [
   "id",
   "name",
   "type",
@@ -43,8 +43,10 @@ export const defaultAdminShippingProfilesFields: (keyof ShippingProfile)[] = [
 
 export type AdminDeleteShippingProfileRes = DeleteResponse
 
-export const defaultAdminShippingProfilesRelations: (keyof ShippingProfile)[] =
-  ["products", "shipping_options"]
+export const defaultAdminShippingProfilesRelations = [
+  "products",
+  "shipping_options",
+]
 
 export type AdminShippingProfilesRes = {
   shipping_profile: ShippingProfile

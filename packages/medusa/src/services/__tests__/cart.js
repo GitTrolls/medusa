@@ -61,8 +61,6 @@ describe("CartService", () => {
         undefined,
         {
           where: { id: IdMap.getId("emptyCart") },
-          select: undefined,
-          relations: undefined,
         }
       )
     })

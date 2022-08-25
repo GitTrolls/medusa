@@ -23,7 +23,7 @@ type InjectedDependencies = {
   strategyResolverService: StrategyResolverService
 }
 
-class BatchJobService extends TransactionBaseService {
+class BatchJobService extends TransactionBaseService<BatchJobService> {
   static readonly Events = {
     CREATED: "batch.created",
     UPDATED: "batch.updated",

@@ -10,16 +10,15 @@ import {
   FileService,
   FulfillmentService,
   OauthService,
+  PaymentService,
 } from "medusa-interfaces"
 import path from "path"
 import { EntitySchema } from "typeorm"
 import {
   AbstractTaxService,
   isBatchJobStrategy,
-  isCartCompletionStrategy,
   isFileService,
   isNotificationService,
-  isPaymentService,
   isPriceSelectionStrategy,
   isSearchService,
   isTaxCalculationStrategy,
@@ -180,22 +179,6 @@ export function registerStrategies(
         } else {
           logger.warn(
             `Cannot register ${file}. A tax calculation strategy is already registered`
-          )
-        }
-        break
-      }
-
-      case isCartCompletionStrategy(module.prototype): {
-        if (!("cartCompletionStrategy" in registeredServices)) {
-          container.register({
-            cartCompletionStrategy: asFunction(
-              (cradle) => new module(cradle, pluginDetails.options)
-            ).singleton(),
-          })
-          registeredServices["cartCompletionStrategy"] = file
-        } else {
-          logger.warn(
-            `Cannot register ${file}. A cart completion strategy is already registered`
           )
         }
         break
@@ -366,7 +349,7 @@ export async function registerServices(
         throw new Error(message)
       }
 
-      if (isPaymentService(loaded.prototype)) {
+      if (loaded.prototype instanceof PaymentService) {
         // Register our payment providers to paymentProviders
         container.registerAdd(
           "paymentProviders",

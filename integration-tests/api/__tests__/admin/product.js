@@ -34,13 +34,8 @@ describe("/admin/products", () => {
 
   describe("GET /admin/products", () => {
     beforeEach(async () => {
-      try {
-        await productSeeder(dbConnection)
-        await adminSeeder(dbConnection)
-      } catch (err) {
-        console.log(err)
-        throw err
-      }
+      await productSeeder(dbConnection)
+      await adminSeeder(dbConnection)
     })
 
     afterEach(async () => {
@@ -165,19 +160,16 @@ describe("/admin/products", () => {
         })
 
       expect(response.status).toEqual(200)
-      expect(response.data.products).toHaveLength(2)
-      expect(response.data.products).toEqual(
-        expect.arrayContaining([
-          expect.objectContaining({
-            id: "test-product_filtering_1",
-            status: "proposed",
-          }),
-          expect.objectContaining({
-            id: "test-product_filtering_2",
-            status: "published",
-          }),
-        ])
-      )
+      expect(response.data.products).toEqual([
+        expect.objectContaining({
+          id: "test-product_filtering_1",
+          status: "proposed",
+        }),
+        expect.objectContaining({
+          id: "test-product_filtering_2",
+          status: "published",
+        }),
+      ])
 
       for (const notExpect of notExpected) {
         expect(response.data.products).toEqual(
@@ -207,19 +199,16 @@ describe("/admin/products", () => {
         })
 
       expect(response.status).toEqual(200)
-      expect(response.data.products).toHaveLength(2)
-      expect(response.data.products).toEqual(
-        expect.arrayContaining([
-          expect.objectContaining({
-            id: "test-product_filtering_1",
-            status: "proposed",
-          }),
-          expect.objectContaining({
-            id: "test-product_filtering_2",
-            status: "published",
-          }),
-        ])
-      )
+      expect(response.data.products).toEqual([
+        expect.objectContaining({
+          id: "test-product_filtering_1",
+          status: "proposed",
+        }),
+        expect.objectContaining({
+          id: "test-product_filtering_2",
+          status: "published",
+        }),
+      ])
 
       for (const notExpect of notExpected) {
         expect(response.data.products).toEqual(
@@ -243,14 +232,11 @@ describe("/admin/products", () => {
 
       expect(response.status).toEqual(200)
       expect(response.data.count).toEqual(1)
-      expect(response.data.products).toHaveLength(1)
-      expect(response.data.products).toEqual(
-        expect.arrayContaining([
-          expect.objectContaining({
-            id: "test-product_filtering_4",
-          }),
-        ])
-      )
+      expect(response.data.products).toEqual([
+        expect.objectContaining({
+          id: "test-product_filtering_4",
+        }),
+      ])
     })
 
     it("returns a list of products with free text query and limit", async () => {
@@ -331,14 +317,11 @@ describe("/admin/products", () => {
         })
 
       expect(response.status).toEqual(200)
-      expect(response.data.products).toHaveLength(1)
-      expect(response.data.products).toEqual(
-        expect.arrayContaining([
-          expect.objectContaining({
-            id: "test-product_filtering_4",
-          }),
-        ])
-      )
+      expect(response.data.products).toEqual([
+        expect.objectContaining({
+          id: "test-product_filtering_4",
+        }),
+      ])
     })
 
     it("returns a list of products in collection", async () => {
@@ -360,19 +343,16 @@ describe("/admin/products", () => {
         })
 
       expect(response.status).toEqual(200)
-      expect(response.data.products).toHaveLength(2)
-      expect(response.data.products).toEqual(
-        expect.arrayContaining([
-          expect.objectContaining({
-            id: "test-product_filtering_1",
-            collection_id: "test-collection1",
-          }),
-          expect.objectContaining({
-            id: "test-product_filtering_3",
-            collection_id: "test-collection1",
-          }),
-        ])
-      )
+      expect(response.data.products).toEqual([
+        expect.objectContaining({
+          id: "test-product_filtering_1",
+          collection_id: "test-collection1",
+        }),
+        expect.objectContaining({
+          id: "test-product_filtering_3",
+          collection_id: "test-collection1",
+        }),
+      ])
 
       for (const notExpect of notExpected) {
         expect(response.data.products).toEqual(
@@ -446,16 +426,13 @@ describe("/admin/products", () => {
         })
 
       expect(response.status).toEqual(200)
-      expect(response.data.products).toHaveLength(1)
-      expect(response.data.products).toEqual(
-        expect.arrayContaining([
-          expect.objectContaining({
-            id: "test-product_filtering_3",
-            collection_id: "test-collection1",
-            tags: [expect.objectContaining({ id: "tag4" })],
-          }),
-        ])
-      )
+      expect(response.data.products).toEqual([
+        expect.objectContaining({
+          id: "test-product_filtering_3",
+          collection_id: "test-collection1",
+          tags: [expect.objectContaining({ id: "tag4" })],
+        }),
+      ])
 
       for (const notExpect of notExpectedCollections) {
         expect(response.data.products).toEqual(
@@ -870,13 +847,8 @@ describe("/admin/products", () => {
 
   describe("POST /admin/products", () => {
     beforeEach(async () => {
-      try {
-        await productSeeder(dbConnection)
-        await adminSeeder(dbConnection)
-      } catch (err) {
-        console.log(err)
-        throw err
-      }
+      await productSeeder(dbConnection)
+      await adminSeeder(dbConnection)
     })
 
     afterEach(async () => {
@@ -1445,13 +1417,8 @@ describe("/admin/products", () => {
 
   describe("GET /admin/products/:id/variants", () => {
     beforeEach(async () => {
-      try {
-        await productSeeder(dbConnection)
-        await adminSeeder(dbConnection)
-      } catch (err) {
-        console.log(err)
-        throw err
-      }
+      await productSeeder(dbConnection)
+      await adminSeeder(dbConnection)
     })
 
     afterEach(async () => {
@@ -1499,14 +1466,9 @@ describe("/admin/products", () => {
 
   describe("updates a variant's default prices (ignores prices associated with a Price List)", () => {
     beforeEach(async () => {
-      try {
-        await productSeeder(dbConnection)
-        await adminSeeder(dbConnection)
-        await priceListSeeder(dbConnection)
-      } catch (err) {
-        console.log(err)
-        throw err
-      }
+      await productSeeder(dbConnection)
+      await adminSeeder(dbConnection)
+      await priceListSeeder(dbConnection)
     })
 
     afterEach(async () => {
@@ -1775,13 +1737,8 @@ describe("/admin/products", () => {
 
   describe("testing for soft-deletion + uniqueness on handles, collection and variant properties", () => {
     beforeEach(async () => {
-      try {
-        await productSeeder(dbConnection)
-        await adminSeeder(dbConnection)
-      } catch (err) {
-        console.log(err)
-        throw err
-      }
+      await productSeeder(dbConnection)
+      await adminSeeder(dbConnection)
     })
 
     afterEach(async () => {
@@ -2274,13 +2231,8 @@ describe("/admin/products", () => {
 
   describe("GET /admin/products/tag-usage", () => {
     beforeEach(async () => {
-      try {
-        await productSeeder(dbConnection)
-        await adminSeeder(dbConnection)
-      } catch (err) {
-        console.log(err)
-        throw err
-      }
+      await productSeeder(dbConnection)
+      await adminSeeder(dbConnection)
     })
 
     afterEach(async () => {

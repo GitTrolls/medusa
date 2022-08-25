@@ -1,5 +1,3 @@
-import { isDefined } from "./is-defined";
-
 export function removeUndefinedProperties<T extends object>(inputObj: T): T {
   const removeProperties = (obj: T) => {
     const res = {} as T
@@ -19,13 +17,13 @@ export function removeUndefinedProperties<T extends object>(inputObj: T): T {
 }
 
 function removeUndefinedDeeply(input: unknown): any {
-  if (isDefined(input)) {
+  if (typeof input !== "undefined") {
     if (input === null || input === "null") {
       return null
     } else if (Array.isArray(input)) {
       return input.map((item) => {
         return removeUndefinedDeeply(item)
-      }).filter(v => isDefined(v))
+      }).filter(v => typeof v !== "undefined")
     } else if (Object.prototype.toString.call(input) === '[object Date]') {
       return input
     } else if (typeof input === "object") {

@@ -3,8 +3,6 @@ import { IsNumber, IsOptional } from "class-validator"
 import { ReturnService } from "../../../../services"
 import { Type } from "class-transformer"
 import { validator } from "../../../../utils/validator"
-import { FindConfig } from "../../../../types/common"
-import { Return } from "../../../../models"
 
 /**
  * @oas [get] /returns
@@ -49,7 +47,7 @@ export default async (req, res) => {
     skip: validated.offset,
     take: validated.limit,
     order: { created_at: "DESC" },
-  } as FindConfig<Return>
+  }
 
   const returns = await returnService.list(selector, { ...listConfig })
 

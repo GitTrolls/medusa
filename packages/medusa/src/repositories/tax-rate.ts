@@ -16,7 +16,6 @@ import { ShippingTaxRate } from "../models/shipping-tax-rate"
 import { Product } from "../models/product"
 import { ShippingMethod } from "../models/shipping-method"
 import { TaxRateListByConfig } from "../types/tax-rate"
-import { isDefined } from "../utils"
 
 const resolveableFields = [
   "product_count",
@@ -31,7 +30,7 @@ export class TaxRateRepository extends Repository<TaxRate> {
     const cleanOptions = findOptions
 
     const resolverFields: string[] = []
-    if (isDefined(findOptions.select)) {
+    if (typeof findOptions.select !== "undefined") {
       let selectableCols: (keyof TaxRate)[] = []
       for (const k of findOptions.select) {
         if (!resolveableFields.includes(k)) {
@@ -236,7 +235,7 @@ export class TaxRateRepository extends Repository<TaxRate> {
       .leftJoin(Product, "prod", "prod.type_id = pttr.product_type_id")
       .where("prod.id = :productId", { productId })
 
-    if (isDefined(config.region_id)) {
+    if (typeof config.region_id !== "undefined") {
       productRates.andWhere("txr.region_id = :regionId", {
         regionId: config.region_id,
       })

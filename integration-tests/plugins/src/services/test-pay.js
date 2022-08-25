@@ -1,10 +1,10 @@
-import { AbstractPaymentService } from "@medusajs/medusa"
+import { PaymentService } from "medusa-interfaces"
 
-class TestPayService extends AbstractPaymentService {
+class TestPayService extends PaymentService {
   static identifier = "test-pay"
 
-  constructor(_) {
-    super(_)
+  constructor() {
+    super()
   }
 
   async getStatus(paymentData) {

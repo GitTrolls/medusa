@@ -1,11 +1,9 @@
-import glob from "glob"
 import path from "path"
+import glob from "glob"
 
-import { trackFeatureFlag } from "medusa-telemetry"
 import { FlagSettings } from "../../types/feature-flags"
-import { Logger } from "../../types/global"
 import { FlagRouter } from "../../utils/flag-router"
-import { isDefined } from "../../utils"
+import { Logger } from "../../types/global"
 
 const isTruthy = (val: string | boolean | undefined): boolean => {
   if (typeof val === "string") {
@@ -29,34 +27,40 @@ export default (
   const flagConfig: Record<string, boolean> = {}
   for (const flag of supportedFlags) {
     // eslint-disable-next-line @typescript-eslint/no-var-requires
-    const flagSettings: FlagSettings = require(flag).default
-    if (!flagSettings) {
+    const importedModule = require(flag)
+    if (!importedModule.default) {
       continue
     }
 
-    flagConfig[flagSettings.key] = isTruthy(flagSettings.default_val)
+    const flagSettings: FlagSettings = importedModule.default
 
-    let from
-    if (isDefined(process.env[flagSettings.env_key])) {
-      from = "environment"
-      flagConfig[flagSettings.key] = isTruthy(process.env[flagSettings.env_key])
-    } else if (isDefined(projectConfigFlags[flagSettings.key])) {
-      from = "project config"
-      flagConfig[flagSettings.key] = isTruthy(
-        projectConfigFlags[flagSettings.key]
-      )
-    }
-
-    if (logger && from) {
-      logger.info(
-        `Using flag ${flagSettings.env_key} from ${from} with value ${
-          flagConfig[flagSettings.key]
-        }`
-      )
-    }
-
-    if (flagConfig[flagSettings.key]) {
-      trackFeatureFlag(flagSettings.key)
+    switch (true) {
+      case typeof process.env[flagSettings.env_key] !== "undefined":
+        if (logger) {
+          logger.info(
+            `Using flag ${flagSettings.env_key} from environment with value ${
+              process.env[flagSettings.env_key]
+            }`
+          )
+        }
+        flagConfig[flagSettings.key] = isTruthy(
+          process.env[flagSettings.env_key]
+        )
+        break
+      case typeof projectConfigFlags[flagSettings.key] !== "undefined":
+        if (logger) {
+          logger.info(
+            `Using flag ${flagSettings.key} from project config with value ${
+              projectConfigFlags[flagSettings.key]
+            }`
+          )
+        }
+        flagConfig[flagSettings.key] = isTruthy(
+          projectConfigFlags[flagSettings.key]
+        )
+        break
+      default:
+        flagConfig[flagSettings.key] = flagSettings.default_val
     }
   }
 

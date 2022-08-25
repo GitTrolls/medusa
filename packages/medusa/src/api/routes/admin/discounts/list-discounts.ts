@@ -14,7 +14,6 @@ import { Discount } from "../../../.."
 import DiscountService from "../../../../services/discount"
 import { FindConfig } from "../../../../types/common"
 import { validator } from "../../../../utils/validator"
-import { isDefined } from "../../../../utils"
 
 /**
  * @oas [get] /discounts
@@ -85,7 +84,7 @@ export default async (req, res) => {
   const filterableFields = _.omit(validated, ["limit", "offset", "expand"])
 
   const [discounts, count] = await discountService.listAndCount(
-    pickBy(filterableFields, (val) => isDefined(val)),
+    pickBy(filterableFields, (val) => typeof val !== "undefined"),
     listConfig
   )
 

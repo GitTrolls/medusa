@@ -19,14 +19,14 @@ type InjectedDependencies = {
 }
 type NotificationProviderKey = `noti_${string}`
 
-class NotificationService extends TransactionBaseService {
+class NotificationService extends TransactionBaseService<NotificationService> {
   protected manager_: EntityManager
   protected transactionManager_: EntityManager | undefined
 
   protected subscribers_ = {}
   protected attachmentGenerator_: unknown = null
   protected readonly container_: InjectedDependencies & {
-    [key in `${NotificationProviderKey}`]: AbstractNotificationService
+    [key in `${NotificationProviderKey}`]: AbstractNotificationService<never>
   }
   protected readonly logger_: Logger
   protected readonly notificationRepository_: typeof NotificationRepository
@@ -151,7 +151,7 @@ class NotificationService extends TransactionBaseService {
    * @param id - the id of the provider
    * @return the notification provider
    */
-  protected retrieveProvider_(id: string): AbstractNotificationService {
+  protected retrieveProvider_(id: string): AbstractNotificationService<never> {
     try {
       return this.container_[`noti_${id}`]
     } catch (err) {

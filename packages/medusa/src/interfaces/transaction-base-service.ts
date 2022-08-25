@@ -1,31 +1,34 @@
 import { EntityManager } from "typeorm"
 import { IsolationLevel } from "typeorm/driver/types/IsolationLevel"
 
-export abstract class TransactionBaseService {
+export abstract class TransactionBaseService<
+  TChild extends TransactionBaseService<TChild, TContainer>,
+  TContainer = unknown
+> {
   protected abstract manager_: EntityManager
   protected abstract transactionManager_: EntityManager | undefined
 
   protected constructor(
-    protected readonly __container__: any,
-    protected readonly __configModule__?: Record<string, unknown>
+    protected readonly container: TContainer,
+    protected readonly configModule?: Record<string, unknown>
   ) {}
 
-  withTransaction(transactionManager?: EntityManager): this {
+  withTransaction(transactionManager?: EntityManager): this | TChild {
     if (!transactionManager) {
       return this
     }
 
     const cloned = new (<any>this.constructor)(
       {
-        ...this.__container__,
+        ...this.container,
         manager: transactionManager,
       },
-      this.__configModule__
+      this.configModule
     )
 
     cloned.transactionManager_ = transactionManager
 
-    return cloned
+    return cloned as TChild
   }
 
   protected shouldRetryTransaction_(

@@ -5,7 +5,6 @@ import { CustomerService } from "../../services"
 import { FindConfig } from "../../types/common"
 import { validator } from "../../utils/validator"
 import { Customer } from "../../models/customer"
-import { isDefined } from "../../utils"
 
 const listAndCount = async (
   scope,
@@ -34,7 +33,7 @@ const listAndCount = async (
   ])
 
   const [customers, count] = await customerService.listAndCount(
-    pickBy(filterableFields, (val) => isDefined(val)),
+    pickBy(filterableFields, (val) => typeof val !== "undefined"),
     listConfig
   )
 

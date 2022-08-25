@@ -44,7 +44,7 @@ import { buildQuery, setMetadata } from "../utils"
  * Provides layer to manipulate discounts.
  * @implements {BaseService}
  */
-class DiscountService extends TransactionBaseService {
+class DiscountService extends TransactionBaseService<DiscountService> {
   protected manager_: EntityManager
   protected transactionManager_: EntityManager | undefined
 

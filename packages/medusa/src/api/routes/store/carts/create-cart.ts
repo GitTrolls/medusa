@@ -1,6 +1,7 @@
 import { CartService, LineItemService, RegionService } from "../../../../services"
 import {
   IsArray,
+  IsBoolean,
   IsInt,
   IsNotEmpty,
   IsOptional,
@@ -18,7 +19,6 @@ import SalesChannelFeatureFlag from "../../../../loaders/feature-flags/sales-cha
 import { Type } from "class-transformer"
 import { decorateLineItemsWithTotals } from "./decorate-line-items-with-totals"
 import reqIp from "request-ip"
-import { isDefined } from "../../../../utils";
 
 /**
  * @oas [post] /carts
@@ -91,9 +91,9 @@ export default async (req, res) => {
   const entityManager: EntityManager = req.scope.resolve("manager")
   const featureFlagRouter: FlagRouter = req.scope.resolve("featureFlagRouter")
 
-  let regionId!: string
-  if (isDefined(validated.region_id)) {
-    regionId = validated.region_id as string
+  let regionId: string
+  if (typeof validated.region_id !== "undefined") {
+    regionId = validated.region_id
   } else {
     const regions = await regionService.list({})
 

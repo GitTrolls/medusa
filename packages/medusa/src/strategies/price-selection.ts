@@ -7,7 +7,6 @@ import {
 } from "../interfaces/price-selection-strategy"
 import { MoneyAmountRepository } from "../repositories/money-amount"
 import { EntityManager } from "typeorm"
-import { isDefined } from "../utils"
 
 class PriceSelectionStrategy extends AbstractPriceSelectionStrategy {
   private moneyAmountRepository_: typeof MoneyAmountRepository
@@ -104,7 +103,8 @@ class PriceSelectionStrategy extends AbstractPriceSelectionStrategy {
 }
 
 const isValidQuantity = (price, quantity): boolean =>
-  (isDefined(quantity) && isValidPriceWithQuantity(price, quantity)) ||
+  (typeof quantity !== "undefined" &&
+    isValidPriceWithQuantity(price, quantity)) ||
   (typeof quantity === "undefined" && isValidPriceWithoutQuantity(price))
 
 const isValidPriceWithoutQuantity = (price): boolean =>

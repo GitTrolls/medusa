@@ -1,6 +1,25 @@
 import { MedusaError } from "medusa-core-utils"
 import { Brackets, EntityManager } from "typeorm"
+import CustomerService from "./customer"
+import { OrderRepository } from "../repositories/order"
+import PaymentProviderService from "./payment-provider"
+import ShippingOptionService from "./shipping-option"
+import ShippingProfileService from "./shipping-profile"
+import DiscountService from "./discount"
+import FulfillmentProviderService from "./fulfillment-provider"
+import FulfillmentService from "./fulfillment"
+import LineItemService from "./line-item"
+import TotalsService from "./totals"
+import RegionService from "./region"
+import CartService from "./cart"
+import { AddressRepository } from "../repositories/address"
+import GiftCardService from "./gift-card"
+import DraftOrderService from "./draft-order"
+import InventoryService from "./inventory"
+import EventBusService from "./event-bus"
 import { TransactionBaseService } from "../interfaces"
+import { buildQuery, setMetadata } from "../utils"
+import { FindConfig, QuerySelector, Selector } from "../types/common"
 import {
   Address,
   ClaimOrder,
@@ -11,37 +30,17 @@ import {
   Order,
   OrderStatus,
   Payment,
-  PaymentSession,
   PaymentStatus,
   Return,
   Swap,
   TrackingLink,
 } from "../models"
-import { AddressRepository } from "../repositories/address"
-import { OrderRepository } from "../repositories/order"
-import { FindConfig, QuerySelector, Selector } from "../types/common"
+import { UpdateOrderInput } from "../types/orders"
+import { CreateShippingMethodDto } from "../types/shipping-options"
 import {
   CreateFulfillmentOrder,
   FulFillmentItemType,
 } from "../types/fulfillment"
-import { UpdateOrderInput } from "../types/orders"
-import { CreateShippingMethodDto } from "../types/shipping-options"
-import { buildQuery, setMetadata } from "../utils"
-import CartService from "./cart"
-import CustomerService from "./customer"
-import DiscountService from "./discount"
-import DraftOrderService from "./draft-order"
-import EventBusService from "./event-bus"
-import FulfillmentService from "./fulfillment"
-import FulfillmentProviderService from "./fulfillment-provider"
-import GiftCardService from "./gift-card"
-import InventoryService from "./inventory"
-import LineItemService from "./line-item"
-import PaymentProviderService from "./payment-provider"
-import RegionService from "./region"
-import ShippingOptionService from "./shipping-option"
-import ShippingProfileService from "./shipping-profile"
-import TotalsService from "./totals"
 
 type InjectedDependencies = {
   manager: EntityManager
@@ -64,7 +63,7 @@ type InjectedDependencies = {
   eventBusService: EventBusService
 }
 
-class OrderService extends TransactionBaseService {
+class OrderService extends TransactionBaseService<OrderService> {
   static readonly Events = {
     GIFT_CARD_CREATED: "order.gift_card_created",
     PAYMENT_CAPTURED: "order.payment_captured",
@@ -182,11 +181,6 @@ class OrderService extends TransactionBaseService {
     )
   }
 
-  /**
-   * @param {Object} selector - the query object for find
-   * @param {Object} config - the config to be used for find
-   * @return {Promise} the result of the find operation
-   */
   async listAndCount(
     selector: QuerySelector<Order>,
     config: FindConfig<Order> = {
@@ -484,10 +478,10 @@ class OrderService extends TransactionBaseService {
    */
   async createFromCart(cartId: string): Promise<Order | never> {
     return await this.atomicPhase_(async (manager) => {
-      const cartServiceTx = this.cartService_.withTransaction(manager)
-      const inventoryServiceTx = this.inventoryService_.withTransaction(manager)
+      const cartService = this.cartService_.withTransaction(manager)
+      const inventoryService = this.inventoryService_.withTransaction(manager)
 
-      const cart = await cartServiceTx.retrieve(cartId, {
+      const cart = await cartService.retrieve(cartId, {
         select: ["subtotal", "total"],
         relations: [
           "region",
@@ -497,8 +491,6 @@ class OrderService extends TransactionBaseService {
           "discounts.rule",
           "gift_cards",
           "shipping_methods",
-          "items",
-          "items.adjustments",
         ],
       })
 
@@ -513,7 +505,7 @@ class OrderService extends TransactionBaseService {
 
       for (const item of cart.items) {
         try {
-          await inventoryServiceTx.confirmInventory(
+          await inventoryService.confirmInventory(
             item.variant_id,
             item.quantity
           )
@@ -523,7 +515,7 @@ class OrderService extends TransactionBaseService {
               .withTransaction(manager)
               .cancelPayment(payment)
           }
-          await cartServiceTx.update(cart.id, { payment_authorized_at: null })
+          await cartService.update(cart.id, { payment_authorized_at: null })
           throw err
         }
       }
@@ -539,6 +531,7 @@ class OrderService extends TransactionBaseService {
       // Would be the case if a discount code is applied that covers the item
       // total
       if (total !== 0) {
+        // Throw if payment method does not exist
         if (!payment) {
           throw new MedusaError(
             MedusaError.Types.INVALID_ARGUMENT,
@@ -550,6 +543,7 @@ class OrderService extends TransactionBaseService {
           .withTransaction(manager)
           .getStatus(payment)
 
+        // If payment status is not authorized, we throw
         if (paymentStatus !== "authorized") {
           throw new MedusaError(
             MedusaError.Types.INVALID_ARGUMENT,
@@ -625,16 +619,13 @@ class OrderService extends TransactionBaseService {
           .updateShippingMethod(method.id, { order_id: result.id })
       }
 
-      const lineItemServiceTx = this.lineItemService_.withTransaction(manager)
+      const lineItemService = this.lineItemService_.withTransaction(manager)
       for (const item of cart.items) {
-        await lineItemServiceTx.update(item.id, { order_id: result.id })
+        await lineItemService.update(item.id, { order_id: result.id })
       }
 
       for (const item of cart.items) {
-        await inventoryServiceTx.adjustInventory(
-          item.variant_id,
-          -item.quantity
-        )
+        await inventoryService.adjustInventory(item.variant_id, -item.quantity)
       }
 
       await this.eventBus_
@@ -644,7 +635,7 @@ class OrderService extends TransactionBaseService {
           no_notification: result.no_notification,
         })
 
-      await cartServiceTx.update(cart.id, { completed_at: new Date() })
+      await cartService.update(cart.id, { completed_at: new Date() })
 
       return result
     })
@@ -707,8 +698,6 @@ class OrderService extends TransactionBaseService {
           no_notification: evaluatedNoNotification,
         })
 
-      const lineItemServiceTx = this.lineItemService_.withTransaction(manager)
-
       order.fulfillment_status = FulfillmentStatus.SHIPPED
       for (const item of order.items) {
         const shipped = shipmentRes.items.find((si) => si.item_id === item.id)
@@ -718,7 +707,7 @@ class OrderService extends TransactionBaseService {
             order.fulfillment_status = FulfillmentStatus.PARTIALLY_SHIPPED
           }
 
-          await lineItemServiceTx.update(item.id, {
+          await this.lineItemService_.withTransaction(manager).update(item.id, {
             shipped_quantity: shippedQty,
           })
         } else {
@@ -851,9 +840,6 @@ class OrderService extends TransactionBaseService {
         .withTransaction(manager)
         .createShippingMethod(optionId, data ?? {}, { order, ...config })
 
-      const shippingOptionServiceTx =
-        this.shippingOptionService_.withTransaction(manager)
-
       const methods = [newMethod]
       if (shipping_methods.length) {
         for (const sm of shipping_methods) {
@@ -861,7 +847,9 @@ class OrderService extends TransactionBaseService {
             sm.shipping_option.profile_id ===
             newMethod.shipping_option.profile_id
           ) {
-            await shippingOptionServiceTx.deleteShippingMethods(sm)
+            await this.shippingOptionService_
+              .withTransaction(manager)
+              .deleteShippingMethods(sm)
           } else {
             methods.push(sm)
           }
@@ -940,10 +928,9 @@ class OrderService extends TransactionBaseService {
         order.no_notification = no_notification ?? false
       }
 
-      const lineItemServiceTx = this.lineItemService_.withTransaction(manager)
       if (update.items) {
         for (const item of items as LineItem[]) {
-          await lineItemServiceTx.create({
+          await this.lineItemService_.withTransaction(manager).create({
             ...item,
             order_id: orderId,
           })
@@ -1018,15 +1005,16 @@ class OrderService extends TransactionBaseService {
       throwErrorIf(order.swaps, notCanceled, "swaps")
       throwErrorIf(order.claims, notCanceled, "claims")
 
-      const inventoryServiceTx = this.inventoryService_.withTransaction(manager)
       for (const item of order.items) {
-        await inventoryServiceTx.adjustInventory(item.variant_id, item.quantity)
+        await this.inventoryService_
+          .withTransaction(manager)
+          .adjustInventory(item.variant_id, item.quantity)
       }
 
-      const paymentProviderServiceTx =
-        this.paymentProviderService_.withTransaction(manager)
       for (const p of order.payments) {
-        await paymentProviderServiceTx.cancelPayment(p)
+        await this.paymentProviderService_
+          .withTransaction(manager)
+          .cancelPayment(p)
       }
 
       order.status = OrderStatus.CANCELED
@@ -1064,13 +1052,11 @@ class OrderService extends TransactionBaseService {
         )
       }
 
-      const paymentProviderServiceTx =
-        this.paymentProviderService_.withTransaction(manager)
-
       const payments: Payment[] = []
       for (const p of order.payments) {
         if (p.captured_at === null) {
-          const result = await paymentProviderServiceTx
+          const result = await this.paymentProviderService_
+            .withTransaction(manager)
             .capturePayment(p)
             .catch((err) => {
               this.eventBus_
@@ -1266,13 +1252,14 @@ class OrderService extends TransactionBaseService {
       const evaluatedNoNotification =
         no_notification !== undefined ? no_notification : order.no_notification
 
-      const eventBusTx = this.eventBus_.withTransaction(manager)
       for (const fulfillment of fulfillments) {
-        await eventBusTx.emit(OrderService.Events.FULFILLMENT_CREATED, {
-          id: orderId,
-          fulfillment_id: fulfillment.id,
-          no_notification: evaluatedNoNotification,
-        })
+        await this.eventBus_
+          .withTransaction(manager)
+          .emit(OrderService.Events.FULFILLMENT_CREATED, {
+            id: orderId,
+            fulfillment_id: fulfillment.id,
+            no_notification: evaluatedNoNotification,
+          })
       }
 
       return result

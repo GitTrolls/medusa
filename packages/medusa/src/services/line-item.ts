@@ -14,7 +14,6 @@ import { LineItem } from "../models/line-item"
 import LineItemAdjustmentService from "./line-item-adjustment"
 import { Cart } from "../models/cart"
 import { LineItemAdjustment } from "../models/line-item-adjustment"
-import { FindConfig } from "../types/common"
 
 type InjectedDependencies = {
   manager: EntityManager
@@ -90,11 +89,7 @@ class LineItemService extends BaseService {
 
   async list(
     selector,
-    config: FindConfig<LineItem> = {
-      skip: 0,
-      take: 50,
-      order: { created_at: "DESC" },
-    }
+    config = { skip: 0, take: 50, order: { created_at: "DESC" } }
   ): Promise<LineItem[]> {
     const manager = this.manager_
     const lineItemRepo = manager.getCustomRepository(this.lineItemRepository_)

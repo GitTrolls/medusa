@@ -16,7 +16,7 @@ type InjectedDependencies = {
  * Can authenticate a user based on email password combination
  * @extends BaseService
  */
-class AuthService extends TransactionBaseService {
+class AuthService extends TransactionBaseService<AuthService> {
   protected manager_: EntityManager
   protected transactionManager_: EntityManager | undefined
   protected readonly userService_: UserService
