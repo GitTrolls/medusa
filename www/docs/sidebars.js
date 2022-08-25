@@ -543,6 +543,58 @@ module.exports = {
         }
       ]
     },
+    {
+      type: "category",
+      collapsed: false,
+      label: "Gift Cards",
+      items: [
+        {
+          type: "doc",
+          id: "user-guide/gift-cards/index"
+        }
+      ]
+    },
+    {
+      type: "category",
+      collapsed: false,
+      label: "Price Lists",
+      items: [
+        {
+          type: "doc",
+          id: "user-guide/price-lists/index"
+        }
+      ]
+    },
+    {
+      type: "category",
+      collapsed: false,
+      label: "Regions",
+      items: [
+        {
+          type: "doc",
+          id: "user-guide/regions/index"
+        },
+        {
+          type: "doc",
+          id: "user-guide/regions/manage"
+        }
+      ]
+    },
+    {
+      type: "category",
+      collapsed: false,
+      label: "Taxes",
+      items: [
+        {
+          type: "doc",
+          id: "user-guide/taxes/index"
+        },
+        {
+          type: "doc",
+          id: "user-guide/taxes/manage"
+        }
+      ]
+    },
   ],
   servicesSidebar: [
     {
