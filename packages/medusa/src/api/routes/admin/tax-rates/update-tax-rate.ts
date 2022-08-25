@@ -7,7 +7,6 @@ import { TaxRate } from "../../../.."
 import { TaxRateService } from "../../../../services"
 import { omit } from "lodash"
 import { validator } from "../../../../utils/validator"
-import { isDefined } from "../../../../utils"
 
 /**
  * @oas [post] /tax-rates/{id}
@@ -94,11 +93,11 @@ export default async (req, res) => {
       omit(value, ["products", "product_types", "shipping_options"])
     )
 
-    if (isDefined(value.products)) {
+    if (typeof value.products !== "undefined") {
       await txRateService.addToProduct(req.params.id, value.products, true)
     }
 
-    if (isDefined(value.product_types)) {
+    if (typeof value.product_types !== "undefined") {
       await txRateService.addToProductType(
         req.params.id,
         value.product_types,
@@ -106,7 +105,7 @@ export default async (req, res) => {
       )
     }
 
-    if (isDefined(value.shipping_options)) {
+    if (typeof value.shipping_options !== "undefined") {
       await txRateService.addToShippingOption(
         req.params.id,
         value.shipping_options,

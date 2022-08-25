@@ -22,7 +22,6 @@ import { Product } from "../../../../models"
 import { defaultStoreProductsRelations } from "."
 import { optionalBooleanMapper } from "../../../../utils/validators/is-boolean"
 import { validator } from "../../../../utils/validator"
-import { isDefined } from "../../../../utils"
 
 /**
  * @oas [get] /products
@@ -179,7 +178,7 @@ export default async (req, res) => {
   }
 
   const [rawProducts, count] = await productService.listAndCount(
-    pickBy(filterableFields, (val) => isDefined(val)),
+    pickBy(filterableFields, (val) => typeof val !== "undefined"),
     listConfig
   )
 

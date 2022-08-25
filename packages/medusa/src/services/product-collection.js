@@ -1,71 +1,65 @@
 import { MedusaError } from "medusa-core-utils"
-import { Brackets, EntityManager, ILike } from "typeorm"
-import { TransactionBaseService } from "../interfaces"
-import { ProductCollection } from "../models"
-import { ProductRepository } from "../repositories/product"
-import { ProductCollectionRepository } from "../repositories/product-collection"
-import { ExtendedFindConfig, FindConfig, QuerySelector } from "../types/common"
-import {
-  CreateProductCollection,
-  UpdateProductCollection,
-} from "../types/product-collection"
-import { buildQuery, setMetadata } from "../utils"
+import { BaseService } from "medusa-interfaces"
+import { Brackets, ILike } from "typeorm"
 import { formatException } from "../utils/exception-formatter"
-import EventBusService from "./event-bus"
-
-type InjectedDependencies = {
-  manager: EntityManager
-  eventBusService: EventBusService
-  productRepository: typeof ProductRepository
-  productCollectionRepository: typeof ProductCollectionRepository
-}
 
 /**
  * Provides layer to manipulate product collections.
+ * @extends BaseService
  */
-class ProductCollectionService extends TransactionBaseService {
-  protected manager_: EntityManager
-  protected transactionManager_: EntityManager | undefined
-
-  protected readonly eventBus_: EventBusService
-
-  protected readonly productCollectionRepository_: typeof ProductCollectionRepository
-  protected readonly productRepository_: typeof ProductRepository
-
+class ProductCollectionService extends BaseService {
   constructor({
     manager,
     productCollectionRepository,
     productRepository,
     eventBusService,
-  }: InjectedDependencies) {
-    super({
-      manager,
-      productCollectionRepository,
-      productRepository,
-      eventBusService,
-    })
+  }) {
+    super()
+
+    /** @private @const {EntityManager} */
     this.manager_ = manager
 
+    /** @private @const {ProductCollectionRepository} */
     this.productCollectionRepository_ = productCollectionRepository
+
+    /** @private @const {ProductRepository} */
     this.productRepository_ = productRepository
+
+    /** @private @const {EventBus} */
     this.eventBus_ = eventBusService
+  }
+
+  withTransaction(transactionManager) {
+    if (!transactionManager) {
+      return this
+    }
+
+    const cloned = new ProductCollectionService({
+      manager: transactionManager,
+      productCollectionRepository: this.productCollectionRepository_,
+      productRepository: this.productRepository_,
+      eventBusService: this.eventBus_,
+    })
+
+    cloned.transactionManager_ = transactionManager
+
+    return cloned
   }
 
   /**
    * Retrieves a product collection by id.
-   * @param collectionId - the id of the collection to retrieve.
-   * @param config - the config of the collection to retrieve.
-   * @return the collection.
+   * @param {string} collectionId - the id of the collection to retrieve.
+   * @param {Object} config - the config of the collection to retrieve.
+   * @return {Promise<ProductCollection>} the collection.
    */
-  async retrieve(
-    collectionId: string,
-    config: FindConfig<ProductCollection> = {}
-  ): Promise<ProductCollection> {
+  async retrieve(collectionId, config = {}) {
     const collectionRepo = this.manager_.getCustomRepository(
       this.productCollectionRepository_
     )
 
-    const query = buildQuery({ id: collectionId }, config)
+    const validatedId = this.validateId_(collectionId)
+
+    const query = this.buildQuery_({ id: validatedId }, config)
     const collection = await collectionRepo.findOne(query)
 
     if (!collection) {
@@ -80,19 +74,16 @@ class ProductCollectionService extends TransactionBaseService {
 
   /**
    * Retrieves a product collection by id.
-   * @param collectionHandle - the handle of the collection to retrieve.
-   * @param config - query config for request
-   * @return the collection.
+   * @param {string} collectionHandle - the handle of the collection to retrieve.
+   * @param {object} config - query config for request
+   * @return {Promise<ProductCollection>} the collection.
    */
-  async retrieveByHandle(
-    collectionHandle: string,
-    config: FindConfig<ProductCollection> = {}
-  ): Promise<ProductCollection> {
+  async retrieveByHandle(collectionHandle, config = {}) {
     const collectionRepo = this.manager_.getCustomRepository(
       this.productCollectionRepository_
     )
 
-    const query = buildQuery({ handle: collectionHandle }, config)
+    const query = this.buildQuery_({ handle: collectionHandle }, config)
     const collection = await collectionRepo.findOne(query)
 
     if (!collection) {
@@ -107,13 +98,11 @@ class ProductCollectionService extends TransactionBaseService {
 
   /**
    * Creates a product collection
-   * @param collection - the collection to create
-   * @return created collection
+   * @param {object} collection - the collection to create
+   * @return {Promise<ProductCollection>} created collection
    */
-  async create(
-    collection: CreateProductCollection
-  ): Promise<ProductCollection> {
-    return await this.atomicPhase_(async (manager) => {
+  async create(collection) {
+    return this.atomicPhase_(async (manager) => {
       const collectionRepo = manager.getCustomRepository(
         this.productCollectionRepository_
       )
@@ -129,15 +118,12 @@ class ProductCollectionService extends TransactionBaseService {
 
   /**
    * Updates a product collection
-   * @param collectionId - id of collection to update
-   * @param update - update object
-   * @return update collection
+   * @param {string} collectionId - id of collection to update
+   * @param {object} update - update object
+   * @return {Promise<ProductCollection>} update collection
    */
-  async update(
-    collectionId: string,
-    update: UpdateProductCollection
-  ): Promise<ProductCollection> {
-    return await this.atomicPhase_(async (manager) => {
+  async update(collectionId, update) {
+    return this.atomicPhase_(async (manager) => {
       const collectionRepo = manager.getCustomRepository(
         this.productCollectionRepository_
       )
@@ -147,7 +133,7 @@ class ProductCollectionService extends TransactionBaseService {
       const { metadata, ...rest } = update
 
       if (metadata) {
-        collection.metadata = setMetadata(collection, metadata)
+        collection.metadata = this.setMetadata_(collection, metadata)
       }
 
       for (const [key, value] of Object.entries(rest)) {
@@ -160,11 +146,11 @@ class ProductCollectionService extends TransactionBaseService {
 
   /**
    * Deletes a product collection idempotently
-   * @param collectionId - id of collection to delete
-   * @return empty promise
+   * @param {string} collectionId - id of collection to delete
+   * @return {Promise} empty promise
    */
-  async delete(collectionId: string): Promise<void> {
-    return await this.atomicPhase_(async (manager) => {
+  async delete(collectionId) {
+    return this.atomicPhase_(async (manager) => {
       const productCollectionRepo = manager.getCustomRepository(
         this.productCollectionRepository_
       )
@@ -181,11 +167,8 @@ class ProductCollectionService extends TransactionBaseService {
     })
   }
 
-  async addProducts(
-    collectionId: string,
-    productIds: string[]
-  ): Promise<ProductCollection> {
-    return await this.atomicPhase_(async (manager) => {
+  async addProducts(collectionId, productIds) {
+    return this.atomicPhase_(async (manager) => {
       const productRepo = manager.getCustomRepository(this.productRepository_)
 
       try {
@@ -202,11 +185,8 @@ class ProductCollectionService extends TransactionBaseService {
     })
   }
 
-  async removeProducts(
-    collectionId: string,
-    productIds: string[]
-  ): Promise<void> {
-    return await this.atomicPhase_(async (manager) => {
+  async removeProducts(collectionId, productIds) {
+    return this.atomicPhase_(async (manager) => {
       const productRepo = manager.getCustomRepository(this.productRepository_)
 
       const { id } = await this.retrieve(collectionId, { select: ["id"] })
@@ -219,32 +199,26 @@ class ProductCollectionService extends TransactionBaseService {
 
   /**
    * Lists product collections
-   * @param selector - the query object for find
-   * @param config - the config to be used for find
-   * @return the result of the find operation
+   * @param {Object} selector - the query object for find
+   * @param {Object} config - the config to be used for find
+   * @return {Promise} the result of the find operation
    */
-  async list(
-    selector = {},
-    config = { skip: 0, take: 20 }
-  ): Promise<ProductCollection[]> {
+  async list(selector = {}, config = { skip: 0, take: 20 }) {
     const productCollectionRepo = this.manager_.getCustomRepository(
       this.productCollectionRepository_
     )
 
-    const query = buildQuery(selector, config)
+    const query = this.buildQuery_(selector, config)
     return await productCollectionRepo.find(query)
   }
 
   /**
    * Lists product collections and add count.
-   * @param selector - the query object for find
-   * @param config - the config to be used for find
-   * @return the result of the find operation
+   * @param {Object} selector - the query object for find
+   * @param {Object} config - the config to be used for find
+   * @return {Promise} the result of the find operation
    */
-  async listAndCount(
-    selector: QuerySelector<ProductCollection> = {},
-    config: FindConfig<ProductCollection> = { skip: 0, take: 20 }
-  ): Promise<[ProductCollection[], number]> {
+  async listAndCount(selector = {}, config = { skip: 0, take: 20 }) {
     const productCollectionRepo = this.manager_.getCustomRepository(
       this.productCollectionRepository_
     )
@@ -255,12 +229,7 @@ class ProductCollectionService extends TransactionBaseService {
       delete selector.q
     }
 
-    const query = buildQuery(
-      selector,
-      config
-    ) as ExtendedFindConfig<ProductCollection> & {
-      where: (qb: any) => void
-    }
+    const query = this.buildQuery_(selector, config)
 
     if (q) {
       const where = query.where
@@ -270,7 +239,7 @@ class ProductCollectionService extends TransactionBaseService {
       delete where.created_at
       delete where.updated_at
 
-      query.where = (qb): void => {
+      query.where = (qb) => {
         qb.where(where)
 
         qb.andWhere(

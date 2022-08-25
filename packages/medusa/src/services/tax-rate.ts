@@ -16,7 +16,6 @@ import {
   TaxRateListByConfig,
   UpdateTaxRateInput,
 } from "../types/tax-rate"
-import { isDefined } from "../utils"
 
 class TaxRateService extends BaseService {
   private manager_: EntityManager
@@ -123,7 +122,7 @@ class TaxRateService extends BaseService {
       const taxRate = await this.retrieve(id)
 
       for (const [k, v] of Object.entries(data)) {
-        if (isDefined(v)) {
+        if (typeof v !== "undefined") {
           taxRate[k] = v
         }
       }

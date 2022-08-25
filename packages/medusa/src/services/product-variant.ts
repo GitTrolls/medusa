@@ -27,7 +27,6 @@ import {
   ProductVariantPrice,
   UpdateProductVariantInput,
 } from "../types/product-variant"
-import { isDefined } from "../utils"
 
 /**
  * Provides layer to manipulate product variants.
@@ -360,7 +359,7 @@ class ProductVariantService extends BaseService {
   /**
    * Updates a variant's prices.
    * Deletes any prices that are not in the update object, and is not associated with a price list.
-   * @param variantId - the id of variant
+   * @param variantId - the id of variant variant
    * @param prices - the update prices
    * @returns {Promise<void>} empty promise
    */
@@ -752,7 +751,7 @@ class ProductVariantService extends BaseService {
     config: FindConfig<ProductVariant>
   ): { query: FindWithRelationsOptions; relations: string[]; q?: string } {
     let q: string | undefined
-    if (isDefined(selector.q)) {
+    if (typeof selector.q !== "undefined") {
       q = selector.q
       delete selector.q
     }

@@ -7,13 +7,13 @@ import { ISearchService } from "../interfaces"
 
 type InjectedDependencies = {
   eventBusService: EventBusService
-  searchService: ISearchService
+  searchService: ISearchService<never>
   productService: ProductService
 }
 
 class SearchIndexingSubscriber {
   private readonly eventBusService_: EventBusService
-  private readonly searchService_: ISearchService
+  private readonly searchService_: ISearchService<never>
   private readonly productService_: ProductService
 
   constructor({

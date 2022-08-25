@@ -20,11 +20,14 @@ type InjectedDependencies = {
   manager: EntityManager
   batchJobService: BatchJobService
   productService: ProductService
-  fileService: IFileService
+  fileService: IFileService<never>
   featureFlagRouter: FlagRouter
 }
 
-export default class ProductExportStrategy extends AbstractBatchJobStrategy {
+export default class ProductExportStrategy extends AbstractBatchJobStrategy<
+  ProductExportStrategy,
+  InjectedDependencies
+> {
   public static identifier = "product-export-strategy"
   public static batchType = "product-export"
 
@@ -33,7 +36,7 @@ export default class ProductExportStrategy extends AbstractBatchJobStrategy {
 
   protected readonly batchJobService_: BatchJobService
   protected readonly productService_: ProductService
-  protected readonly fileService_: IFileService
+  protected readonly fileService_: IFileService<never>
   protected readonly featureFlagRouter_: FlagRouter
 
   protected readonly defaultRelations_ = [

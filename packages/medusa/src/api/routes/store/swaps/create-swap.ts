@@ -114,7 +114,7 @@ export default async (req, res) => {
   const returnService: ReturnService = req.scope.resolve("returnService")
 
   let inProgress = true
-  let err: unknown = false
+  let err = false
 
   while (inProgress) {
     switch (idempotencyKey.recovery_point) {

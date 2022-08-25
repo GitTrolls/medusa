@@ -17,8 +17,4 @@ export const setTelemetryEnabled = (enabled = true) => {
   telemeter.setTelemetryEnabled(enabled)
 }
 
-export function trackFeatureFlag(flag) {
-  telemeter.trackFeatureFlag(flag)
-}
-
 export { default as Telemeter } from "./telemeter"

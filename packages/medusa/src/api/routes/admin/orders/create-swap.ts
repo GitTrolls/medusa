@@ -148,7 +148,7 @@ export default async (req, res) => {
   res.setHeader("Idempotency-Key", idempotencyKey.idempotency_key)
 
   let inProgress = true
-  let err: unknown = false
+  let err = false
 
   while (inProgress) {
     switch (idempotencyKey.recovery_point) {

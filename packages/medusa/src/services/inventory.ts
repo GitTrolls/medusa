@@ -9,7 +9,7 @@ type InventoryServiceProps = {
   manager: EntityManager
   productVariantService: ProductVariantService
 }
-class InventoryService extends TransactionBaseService {
+class InventoryService extends TransactionBaseService<InventoryService> {
   protected readonly productVariantService_: ProductVariantService
 
   protected manager_: EntityManager

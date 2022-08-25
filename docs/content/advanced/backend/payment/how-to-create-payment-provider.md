@@ -47,9 +47,9 @@ These methods are used at different points in the Checkout flow as well as when 
 The first step to create a payment provider is to create a file in `src/services` with the following content:
 
 ```jsx
-import { AbstractPaymentService } from "@medusajs/medusa"
+import { PaymentService } from "medusa-interfaces"
 
-class MyPaymentService extends AbstractPaymentService {
+class MyPaymentService extends PaymentService {
 
 }
 

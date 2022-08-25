@@ -30,7 +30,8 @@ export type UploadStreamDescriptorType = {
   [x: string]: unknown
 }
 
-export interface IFileService extends TransactionBaseService {
+export interface IFileService<T extends TransactionBaseService<any>>
+  extends TransactionBaseService<T> {
   /**
    * upload file to fileservice
    * @param file Multer file from express multipart/form-data
@@ -68,9 +69,9 @@ export interface IFileService extends TransactionBaseService {
    * */
   getPresignedDownloadUrl(fileData: GetUploadedFileType): Promise<string>
 }
-export abstract class AbstractFileService
-  extends TransactionBaseService
-  implements IFileService
+export abstract class AbstractFileService<T extends TransactionBaseService<any>>
+  extends TransactionBaseService<T>
+  implements IFileService<T>
 {
   abstract upload(
     fileData: Express.Multer.File

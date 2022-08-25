@@ -69,6 +69,5 @@ export type UpdateShippingOptionInput = {
   requirements?: ShippingOptionRequirement[]
   region_id?: string
   provider_id?: string
-  profile_id?: string
   data?: string
 }

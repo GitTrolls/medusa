@@ -29,7 +29,7 @@ type InjectedDependencies = {
  * Allows retrieval of prices.
  * @extends BaseService
  */
-class PricingService extends TransactionBaseService {
+class PricingService extends TransactionBaseService<PricingService> {
   protected manager_: EntityManager
   protected transactionManager_: EntityManager | undefined
   protected readonly regionService: RegionService
@@ -64,7 +64,7 @@ class PricingService extends TransactionBaseService {
     context: PriceSelectionContext
   ): Promise<PricingContext> {
     let automaticTaxes = false
-    let taxRate: number | null = null
+    let taxRate = null
     let currencyCode = context.currency_code
 
     if (context.region_id) {

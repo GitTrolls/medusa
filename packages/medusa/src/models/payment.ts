@@ -16,8 +16,6 @@ import { Order } from "./order"
 import { Swap } from "./swap"
 import { generateEntityId } from "../utils/generate-entity-id"
 
-@Index(["cart_id"], { where: "canceled_at IS NOT NULL" })
-@Index("UniquePaymentActive", ["cart_id"], { where: "canceled_at IS NULL", unique: true, })
 @Entity()
 export class Payment extends BaseEntity {
   @Index()
@@ -32,7 +30,7 @@ export class Payment extends BaseEntity {
   @Column({ nullable: true })
   cart_id: string
 
-  @ManyToOne(() => Cart)
+  @OneToOne(() => Cart)
   @JoinColumn({ name: "cart_id" })
   cart: Cart
 
@@ -40,10 +38,7 @@ export class Payment extends BaseEntity {
   @Column({ nullable: true })
   order_id: string
 
-  @ManyToOne(
-    () => Order,
-    (order) => order.payments
-  )
+  @ManyToOne(() => Order, (order) => order.payments)
   @JoinColumn({ name: "order_id" })
   order: Order
 
@@ -68,10 +63,10 @@ export class Payment extends BaseEntity {
   data: Record<string, unknown>
 
   @Column({ type: resolveDbType("timestamptz"), nullable: true })
-  captured_at: Date | string
+  captured_at: Date
 
   @Column({ type: resolveDbType("timestamptz"), nullable: true })
-  canceled_at: Date | string
+  canceled_at: Date
 
   @DbAwareColumn({ type: "jsonb", nullable: true })
   metadata: Record<string, unknown>

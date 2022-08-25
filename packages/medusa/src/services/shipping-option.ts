@@ -19,14 +19,14 @@ import {
   UpdateShippingOptionInput,
   CreateShippingOptionInput,
 } from "../types/shipping-options"
-import { buildQuery, isDefined, setMetadata } from "../utils"
+import { buildQuery, setMetadata } from "../utils"
 import FulfillmentProviderService from "./fulfillment-provider"
 import RegionService from "./region"
 
 /**
  * Provides layer to manipulate profiles.
  */
-class ShippingOptionService extends TransactionBaseService {
+class ShippingOptionService extends TransactionBaseService<ShippingOptionService> {
   protected readonly providerService_: FulfillmentProviderService
   protected readonly regionService_: RegionService
   protected readonly requirementRepository_: typeof ShippingOptionRequirementRepository
@@ -252,7 +252,7 @@ class ShippingOptionService extends TransactionBaseService {
    */
   async createShippingMethod(
     optionId: string,
-    data: Record<string, unknown>,
+    data: object,
     config: CreateShippingMethodDto
   ): Promise<ShippingMethod> {
     return await this.atomicPhase_(async (manager) => {
@@ -262,7 +262,7 @@ class ShippingOptionService extends TransactionBaseService {
 
       const methodRepo = manager.getCustomRepository(this.methodRepository_)
 
-      if (isDefined(config.cart)) {
+      if (typeof config.cart !== "undefined") {
         await this.validateCartOption(option, config.cart)
       }
 
@@ -414,7 +414,7 @@ class ShippingOptionService extends TransactionBaseService {
         )
       }
 
-      if (isDefined(data.requirements)) {
+      if (typeof data.requirements !== "undefined") {
         const acc: ShippingOptionRequirement[] = []
         for (const r of data.requirements) {
           const validated = await this.validateRequirement_(r)
@@ -500,7 +500,7 @@ class ShippingOptionService extends TransactionBaseService {
         relations: ["requirements"],
       })
 
-      if (isDefined(update.metadata)) {
+      if (typeof update.metadata !== "undefined") {
         option.metadata = await setMetadata(option, update.metadata)
       }
 
@@ -511,14 +511,14 @@ class ShippingOptionService extends TransactionBaseService {
         )
       }
 
-      if (isDefined(update.is_return)) {
+      if (typeof update.is_return !== "undefined") {
         throw new MedusaError(
           MedusaError.Types.NOT_ALLOWED,
           "is_return cannot be changed after creation"
         )
       }
 
-      if (isDefined(update.requirements)) {
+      if (typeof update.requirements !== "undefined") {
         const acc: ShippingOptionRequirement[] = []
         for (const r of update.requirements) {
           const validated = await this.validateRequirement_(r, optionId)
@@ -562,7 +562,7 @@ class ShippingOptionService extends TransactionBaseService {
         option.requirements = acc
       }
 
-      if (isDefined(update.price_type)) {
+      if (typeof update.price_type !== "undefined") {
         option.price_type = await this.validatePriceType_(
           update.price_type,
           option
@@ -572,15 +572,18 @@ class ShippingOptionService extends TransactionBaseService {
         }
       }
 
-      if (isDefined(update.amount) && option.price_type !== "calculated") {
+      if (
+        typeof update.amount !== "undefined" &&
+        option.price_type !== "calculated"
+      ) {
         option.amount = update.amount
       }
 
-      if (isDefined(update.name)) {
+      if (typeof update.name !== "undefined") {
         option.name = update.name
       }
 
-      if (isDefined(update.admin_only)) {
+      if (typeof update.admin_only !== "undefined") {
         option.admin_only = update.admin_only
       }
 
@@ -678,7 +681,7 @@ class ShippingOptionService extends TransactionBaseService {
    */
   async getPrice_(
     option: ShippingOption,
-    data: Record<string, unknown>,
+    data: object,
     cart: Cart | Order | undefined
   ): Promise<number> {
     if (option.price_type === "calculated") {

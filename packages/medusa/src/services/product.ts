@@ -29,7 +29,7 @@ import {
   ProductOptionInput,
   UpdateProductInput,
 } from "../types/product"
-import { buildQuery, isDefined, setMetadata } from "../utils"
+import { buildQuery, setMetadata } from "../utils"
 import { formatException } from "../utils/exception-formatter"
 import EventBusService from "./event-bus"
 
@@ -47,7 +47,10 @@ type InjectedDependencies = {
   featureFlagRouter: FlagRouter
 }
 
-class ProductService extends TransactionBaseService {
+class ProductService extends TransactionBaseService<
+  ProductService,
+  InjectedDependencies
+> {
   protected manager_: EntityManager
   protected transactionManager_: EntityManager | undefined
 
@@ -390,7 +393,7 @@ class ProductService extends TransactionBaseService {
         if (
           this.featureFlagRouter_.isFeatureEnabled(SalesChannelFeatureFlag.key)
         ) {
-          if (isDefined(salesChannels)) {
+          if (typeof salesChannels !== "undefined") {
             product.sales_channels = []
             if (salesChannels?.length) {
               const salesChannelIds = salesChannels?.map((sc) => sc.id)
@@ -461,11 +464,11 @@ class ProductService extends TransactionBaseService {
       if (
         this.featureFlagRouter_.isFeatureEnabled(SalesChannelFeatureFlag.key)
       ) {
-        if (isDefined(update.sales_channels)) {
+        if (typeof update.sales_channels !== "undefined") {
           relations.push("sales_channels")
         }
       } else {
-        if (isDefined(update.sales_channels)) {
+        if (typeof update.sales_channels !== "undefined") {
           throw new MedusaError(
             MedusaError.Types.INVALID_DATA,
             "the property sales_channels should no appears as part of the payload"
@@ -510,7 +513,7 @@ class ProductService extends TransactionBaseService {
       if (
         this.featureFlagRouter_.isFeatureEnabled(SalesChannelFeatureFlag.key)
       ) {
-        if (isDefined(salesChannels)) {
+        if (typeof salesChannels !== "undefined") {
           product.sales_channels = []
           if (salesChannels?.length) {
             const salesChannelIds = salesChannels?.map((sc) => sc.id)
@@ -655,14 +658,10 @@ class ProductService extends TransactionBaseService {
 
       await productOptionRepo.save(option)
 
-      const productVariantServiceTx =
-        this.productVariantService_.withTransaction(manager)
       for (const variant of product.variants) {
-        await productVariantServiceTx.addOptionValue(
-          variant.id,
-          option.id,
-          "Default Value"
-        )
+        this.productVariantService_
+          .withTransaction(manager)
+          .addOptionValue(variant.id, option.id, "Default Value")
       }
 
       const result = await this.retrieve(productId)

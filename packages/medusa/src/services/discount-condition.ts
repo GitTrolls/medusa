@@ -27,7 +27,7 @@ type InjectedDependencies = {
  * Provides layer to manipulate discount conditions.
  * @implements {BaseService}
  */
-class DiscountConditionService extends TransactionBaseService {
+class DiscountConditionService extends TransactionBaseService<DiscountConditionService> {
   protected readonly discountConditionRepository_: typeof DiscountConditionRepository
   protected readonly eventBus_: EventBusService
 

@@ -4,7 +4,8 @@ import { ProductExportBatchJob } from "../strategies/batch-jobs/product"
 import { BatchJobService } from "../services"
 import { BatchJob } from "../models"
 
-export interface IBatchJobStrategy extends TransactionBaseService {
+export interface IBatchJobStrategy<T extends TransactionBaseService<never>>
+  extends TransactionBaseService<T> {
   /**
    * Method for preparing a batch job for processing
    */
@@ -29,9 +30,12 @@ export interface IBatchJobStrategy extends TransactionBaseService {
   buildTemplate(): Promise<string>
 }
 
-export abstract class AbstractBatchJobStrategy
-  extends TransactionBaseService
-  implements IBatchJobStrategy
+export abstract class AbstractBatchJobStrategy<
+    T extends TransactionBaseService<never, TContainer>,
+    TContainer = unknown
+  >
+  extends TransactionBaseService<T, TContainer>
+  implements IBatchJobStrategy<T>
 {
   static identifier: string
   static batchType: string
@@ -109,6 +113,6 @@ export abstract class AbstractBatchJobStrategy
 
 export function isBatchJobStrategy(
   object: unknown
-): object is IBatchJobStrategy {
+): object is IBatchJobStrategy<never> {
   return object instanceof AbstractBatchJobStrategy
 }
