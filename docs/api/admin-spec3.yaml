@@ -1618,8 +1618,7 @@ paths:
   '/discounts/{discount_id}/conditions':
     post:
       operationId: PostDiscountsDiscountConditions
-      summary: Create a DiscountCondition
-      description: >-
+      summary: >-
         Creates a DiscountCondition. Only one of `products`, `product_types`,
         `product_collections`, `product_tags`, and `customer_groups` should be
         provided.
@@ -1645,6 +1644,7 @@ paths:
             the result.
           schema:
             type: string
+      description: Creates a DiscountCondition
       requestBody:
         content:
           application/json:
@@ -2098,8 +2098,7 @@ paths:
                     $ref: '#/components/schemas/discount_condition'
     post:
       operationId: PostDiscountsDiscountConditionsCondition
-      summary: Update a DiscountCondition
-      description: >-
+      summary: >-
         Updates a DiscountCondition. Only one of `products`, `product_types`,
         `product_collections`, `product_tags`, and `customer_groups` should be
         provided.
@@ -2131,6 +2130,7 @@ paths:
             the result.
           schema:
             type: string
+      description: Updates a DiscountCondition
       requestBody:
         content:
           application/json:
@@ -3061,9 +3061,9 @@ paths:
                     $ref: '#/components/schemas/gift_card'
     post:
       operationId: PostGiftCardsGiftCard
-      summary: Update a Gift Card
+      summary: Create a Gift Card
       description: >-
-        Update a Gift Card that can redeemed by its unique code. The Gift Card
+        Creates a Gift Card that can redeemed by its unique code. The Gift Card
         is only valid within 1 region.
       x-authenticated: true
       parameters:
@@ -14205,10 +14205,10 @@ components:
           type: string
           description: The date with timezone at which the resource was deleted.
           format: date-time
-    shipping_method_tax_line:
-      title: Shipping Method Tax Line
-      description: Shipping Method Tax Line
-      x-resourceId: shipping_method_tax_line
+    sales_channel_tax_line:
+      title: Sales Channel
+      description: A Sales Channel
+      x-resourceId: sales_channel_tax_line
       required:
         - shipping_method_id
         - rate
@@ -14318,7 +14318,7 @@ components:
           type: array
           description: Available if the relation `tax_lines` is expanded.
           items:
-            $ref: '#/components/schemas/shipping_method_tax_line'
+            $ref: '#/components/schemas/tax_line'
         price:
           description: >-
             The amount to charge for the Shipping Method. The currency of the
