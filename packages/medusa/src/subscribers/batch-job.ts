@@ -34,13 +34,9 @@ class BatchJobSubscriber {
       batchJob.type
     )
 
-    try {
-      await batchJobStrategy.preProcessBatchJob(batchJob.id)
-      await this.batchJobService_.setPreProcessingDone(batchJob.id)
-    } catch (e) {
-      await this.batchJobService_.setFailed(batchJob.id)
-      throw e
-    }
+    await batchJobStrategy.preProcessBatchJob(batchJob.id)
+
+    await this.batchJobService_.setPreProcessingDone(batchJob.id)
   }
 
   processBatchJob = async (data): Promise<void> => {
@@ -52,13 +48,9 @@ class BatchJobSubscriber {
 
     await this.batchJobService_.setProcessing(batchJob.id)
 
-    try {
-      await batchJobStrategy.processJob(batchJob.id)
-      await this.batchJobService_.complete(batchJob.id)
-    } catch (e) {
-      await this.batchJobService_.setFailed(batchJob.id)
-      throw e
-    }
+    await batchJobStrategy.processJob(batchJob.id)
+
+    await this.batchJobService_.complete(batchJob.id)
   }
 }
 
