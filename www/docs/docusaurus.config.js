@@ -65,11 +65,6 @@ module.exports = {
           label: "Docs"
         },
         {
-          type: "docSidebar",
-          sidebarId: "userGuideSidebar",
-          label: "User Guide"
-        },
-        {
           type: 'dropdown',
           label: 'REST API Reference',
           items: [
@@ -228,8 +223,7 @@ module.exports = {
             expandResponses: "200,204",
             generatedPayloadSamplesMaxDepth: 4,
             showObjectSchemaExamples: true,
-            requiredPropsFirst: true,
-            hideRequestPayloadSample: true
+            requiredPropsFirst: true
           }
         }
       },
