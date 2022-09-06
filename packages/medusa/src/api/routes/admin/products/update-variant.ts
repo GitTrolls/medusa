@@ -310,7 +310,6 @@ export class AdminPostProductsProductVariantsVariantReq {
   metadata?: object
 
   @IsArray()
-  @IsOptional()
   @ValidateNested({ each: true })
   @Type(() => ProductVariantPricesUpdateReq)
   prices: ProductVariantPricesUpdateReq[]
