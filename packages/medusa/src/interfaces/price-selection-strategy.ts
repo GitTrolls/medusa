@@ -1,7 +1,6 @@
 import { EntityManager } from "typeorm"
 import { MoneyAmount } from ".."
 import { PriceListType } from "../types/price-list"
-import { TaxServiceRate } from "../types/tax-service"
 
 export interface IPriceSelectionStrategy {
   /**
@@ -56,7 +55,6 @@ export type PriceSelectionContext = {
   region_id?: string
   currency_code?: string
   include_discount_prices?: boolean
-  tax_rates?: TaxServiceRate[]
 }
 
 enum DefaultPriceType {
@@ -69,9 +67,7 @@ export const PriceType = { ...DefaultPriceType, ...PriceListType }
 
 export type PriceSelectionResult = {
   originalPrice: number | null
-  originalPriceIncludesTax?: boolean | null
   calculatedPrice: number | null
-  calculatedPriceIncludesTax?: boolean | null
   calculatedPriceType?: PriceType
   prices: MoneyAmount[] // prices is an array of all possible price for the input customer and region prices
 }

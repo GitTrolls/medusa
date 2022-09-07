@@ -1,3 +1,6 @@
+import { FindConfig } from "./common"
+import { Region } from "../models"
+
 export type UpdateRegionInput = {
   name?: string
   currency_code?: string
@@ -9,7 +12,6 @@ export type UpdateRegionInput = {
   payment_providers?: string[]
   fulfillment_providers?: string[]
   countries?: string[]
-  includes_tax?: boolean
   metadata?: Record<string, unknown>
 }
 
@@ -21,6 +23,5 @@ export type CreateRegionInput = {
   payment_providers: string[]
   fulfillment_providers: string[]
   countries: string[]
-  includes_tax?: boolean
   metadata?: Record<string, unknown>
 }
