@@ -1,7 +1,6 @@
 import { IdMap } from "medusa-test-utils"
 import { request } from "../../../../../helpers/test-request"
 import { SalesChannelServiceMock } from "../../../../../services/__mocks__/sales-channel"
-import SalesChannelFeatureFlag from "../../../../../loaders/feature-flags/sales-channels";
 
 describe("POST /admin/sales-channels/:id/products/batch", () => {
   describe("add product to a sales channel", () => {
@@ -22,7 +21,7 @@ describe("POST /admin/sales-channels/:id/products/batch", () => {
           payload: {
             product_ids: [{ id: "sales_channel_1_product_1" }],
           },
-          flags: [SalesChannelFeatureFlag],
+          flags: ["sales_channels"],
         }
       )
     })
