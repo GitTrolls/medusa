@@ -15,7 +15,6 @@ export type ShippingMethodFactoryData = {
   price?: number
   shipping_option: string | ShippingOptionFactoryData
   tax_lines?: ShippingMethodTaxLine[]
-  includes_tax?: boolean
 }
 
 export const simpleShippingMethodFactory = async (
@@ -48,7 +47,6 @@ export const simpleShippingMethodFactory = async (
     shipping_option_id: shippingOptionId,
     data: data.data || {},
     price: typeof data.price !== "undefined" ? data.price : 500,
-    includes_tax: data.includes_tax,
   })
 
   const shippingMethod = await manager.save(toSave)

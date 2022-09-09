@@ -164,9 +164,8 @@ class OrderService extends TransactionBaseService {
     const orderRepo = this.manager_.getCustomRepository(this.orderRepository_)
     const query = buildQuery(selector, config)
 
-    const { select, relations, totalsToSelect } = this.transformQueryForTotals(
-      config
-    )
+    const { select, relations, totalsToSelect } =
+      this.transformQueryForTotals(config)
 
     if (select && select.length) {
       query.select = select
@@ -234,9 +233,8 @@ class OrderService extends TransactionBaseService {
       }
     }
 
-    const { select, relations, totalsToSelect } = this.transformQueryForTotals(
-      config
-    )
+    const { select, relations, totalsToSelect } =
+      this.transformQueryForTotals(config)
 
     if (select && select.length) {
       query.select = select
@@ -254,9 +252,7 @@ class OrderService extends TransactionBaseService {
     return [orders, count]
   }
 
-  protected transformQueryForTotals(
-    config: FindConfig<Order>
-  ): {
+  protected transformQueryForTotals(config: FindConfig<Order>): {
     relations: string[] | undefined
     select: FindConfig<Order>["select"]
     totalsToSelect: FindConfig<Order>["select"]
@@ -337,9 +333,8 @@ class OrderService extends TransactionBaseService {
   ): Promise<Order> {
     const orderRepo = this.manager_.getCustomRepository(this.orderRepository_)
 
-    const { select, relations, totalsToSelect } = this.transformQueryForTotals(
-      config
-    )
+    const { select, relations, totalsToSelect } =
+      this.transformQueryForTotals(config)
 
     const query = {
       where: { id: orderId },
@@ -378,9 +373,8 @@ class OrderService extends TransactionBaseService {
   ): Promise<Order> {
     const orderRepo = this.manager_.getCustomRepository(this.orderRepository_)
 
-    const { select, relations, totalsToSelect } = this.transformQueryForTotals(
-      config
-    )
+    const { select, relations, totalsToSelect } =
+      this.transformQueryForTotals(config)
 
     const query = {
       where: { cart_id: cartId },
@@ -418,9 +412,8 @@ class OrderService extends TransactionBaseService {
   ): Promise<Order> {
     const orderRepo = this.manager_.getCustomRepository(this.orderRepository_)
 
-    const { select, relations, totalsToSelect } = this.transformQueryForTotals(
-      config
-    )
+    const { select, relations, totalsToSelect } =
+      this.transformQueryForTotals(config)
 
     const query = {
       where: { external_id: externalId },
@@ -858,9 +851,8 @@ class OrderService extends TransactionBaseService {
         .withTransaction(manager)
         .createShippingMethod(optionId, data ?? {}, { order, ...config })
 
-      const shippingOptionServiceTx = this.shippingOptionService_.withTransaction(
-        manager
-      )
+      const shippingOptionServiceTx =
+        this.shippingOptionService_.withTransaction(manager)
 
       const methods = [newMethod]
       if (shipping_methods.length) {
@@ -1031,9 +1023,8 @@ class OrderService extends TransactionBaseService {
         await inventoryServiceTx.adjustInventory(item.variant_id, item.quantity)
       }
 
-      const paymentProviderServiceTx = this.paymentProviderService_.withTransaction(
-        manager
-      )
+      const paymentProviderServiceTx =
+        this.paymentProviderService_.withTransaction(manager)
       for (const p of order.payments) {
         await paymentProviderServiceTx.cancelPayment(p)
       }
@@ -1073,9 +1064,8 @@ class OrderService extends TransactionBaseService {
         )
       }
 
-      const paymentProviderServiceTx = this.paymentProviderService_.withTransaction(
-        manager
-      )
+      const paymentProviderServiceTx =
+        this.paymentProviderService_.withTransaction(manager)
 
       const payments: Payment[] = []
       for (const p of order.payments) {
@@ -1228,7 +1218,7 @@ class OrderService extends TransactionBaseService {
       const fulfillments = await this.fulfillmentService_
         .withTransaction(manager)
         .createFulfillment(
-          (order as unknown) as CreateFulfillmentOrder,
+          order as unknown as CreateFulfillmentOrder,
           itemsToFulfill,
           {
             metadata,
@@ -1439,23 +1429,17 @@ class OrderService extends TransactionBaseService {
     for (const totalField of totalsFields) {
       switch (totalField) {
         case "shipping_total": {
-          order.shipping_total = await this.totalsService_.getShippingTotal(
-            order
-          )
+          order.shipping_total = this.totalsService_.getShippingTotal(order)
           break
         }
         case "gift_card_total": {
-          const giftCardBreakdown = await this.totalsService_.getGiftCardTotal(
-            order
-          )
+          const giftCardBreakdown = this.totalsService_.getGiftCardTotal(order)
           order.gift_card_total = giftCardBreakdown.total
           order.gift_card_tax_total = giftCardBreakdown.tax_total
           break
         }
         case "discount_total": {
-          order.discount_total = await this.totalsService_.getDiscountTotal(
-            order
-          )
+          order.discount_total = this.totalsService_.getDiscountTotal(order)
           break
         }
         case "tax_total": {
@@ -1463,7 +1447,7 @@ class OrderService extends TransactionBaseService {
           break
         }
         case "subtotal": {
-          order.subtotal = await this.totalsService_.getSubtotal(order)
+          order.subtotal = this.totalsService_.getSubtotal(order)
           break
         }
         case "total": {
@@ -1487,48 +1471,36 @@ class OrderService extends TransactionBaseService {
           break
         }
         case "items.refundable": {
-          const items: LineItem[] = []
-          for (const item of order.items) {
-            items.push({
-              ...item,
-              refundable: await this.totalsService_.getLineItemRefund(order, {
-                ...item,
-                quantity: item.quantity - (item.returned_quantity || 0),
-              } as LineItem),
-            } as LineItem)
-          }
-          order.items = items
+          order.items = order.items.map((i) => ({
+            ...i,
+            refundable: this.totalsService_.getLineItemRefund(order, {
+              ...i,
+              quantity: i.quantity - (i.returned_quantity || 0),
+            } as LineItem),
+          })) as LineItem[]
           break
         }
         case "swaps.additional_items.refundable": {
           for (const s of order.swaps) {
-            const items: LineItem[] = []
-            for (const item of s.additional_items) {
-              items.push({
-                ...item,
-                refundable: await this.totalsService_.getLineItemRefund(order, {
-                  ...item,
-                  quantity: item.quantity - (item.returned_quantity || 0),
-                } as LineItem),
-              } as LineItem)
-            }
-            s.additional_items = items
+            s.additional_items = s.additional_items.map((i) => ({
+              ...i,
+              refundable: this.totalsService_.getLineItemRefund(order, {
+                ...i,
+                quantity: i.quantity - (i.returned_quantity || 0),
+              } as LineItem),
+            })) as LineItem[]
           }
           break
         }
         case "claims.additional_items.refundable": {
           for (const c of order.claims) {
-            const items: LineItem[] = []
-            for (const item of c.additional_items) {
-              items.push({
-                ...item,
-                refundable: await this.totalsService_.getLineItemRefund(order, {
-                  ...item,
-                  quantity: item.quantity - (item.returned_quantity || 0),
-                } as LineItem),
-              } as LineItem)
-            }
-            c.additional_items = items
+            c.additional_items = c.additional_items.map((i) => ({
+              ...i,
+              refundable: this.totalsService_.getLineItemRefund(order, {
+                ...i,
+                quantity: i.quantity - (i.returned_quantity || 0),
+              } as LineItem),
+            })) as LineItem[]
           }
           break
         }

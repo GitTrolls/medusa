@@ -1,8 +1,6 @@
 import _ from "lodash"
 import { IdMap, MockRepository, MockManager } from "medusa-test-utils"
 import ShippingOptionService from "../shipping-option"
-import { FlagRouter } from "../../utils/flag-router";
-import TaxInclusivePricingFeatureFlag from "../../loaders/feature-flags/tax-inclusive-pricing";
 
 describe("ShippingOptionService", () => {
   describe("retrieve", () => {
@@ -15,7 +13,6 @@ describe("ShippingOptionService", () => {
     const optionService = new ShippingOptionService({
       manager: MockManager,
       shippingOptionRepository,
-      featureFlagRouter: new FlagRouter({}),
     })
 
     it("successfully gets shipping option", async () => {
@@ -63,7 +60,6 @@ describe("ShippingOptionService", () => {
       shippingOptionRepository,
       shippingOptionRequirementRepository,
       fulfillmentProviderService,
-      featureFlagRouter: new FlagRouter({}),
     })
 
     beforeEach(() => {
@@ -218,7 +214,6 @@ describe("ShippingOptionService", () => {
     const optionService = new ShippingOptionService({
       manager: MockManager,
       shippingOptionRepository,
-      featureFlagRouter: new FlagRouter({}),
     })
 
     beforeEach(() => {
@@ -267,7 +262,6 @@ describe("ShippingOptionService", () => {
       manager: MockManager,
       shippingOptionRepository,
       shippingOptionRequirementRepository,
-      featureFlagRouter: new FlagRouter({}),
     })
 
     beforeEach(() => {
@@ -317,7 +311,6 @@ describe("ShippingOptionService", () => {
     const optionService = new ShippingOptionService({
       manager: MockManager,
       shippingOptionRequirementRepository,
-      featureFlagRouter: new FlagRouter({}),
     })
 
     beforeEach(() => {
@@ -370,7 +363,6 @@ describe("ShippingOptionService", () => {
       shippingOptionRequirementRepository,
       fulfillmentProviderService,
       regionService,
-      featureFlagRouter: new FlagRouter({}),
     })
 
     beforeEach(() => {
@@ -534,7 +526,6 @@ describe("ShippingOptionService", () => {
       shippingOptionRepository,
       totalsService,
       fulfillmentProviderService: providerService,
-      featureFlagRouter: new FlagRouter({}),
     })
 
     beforeEach(() => {
@@ -595,70 +586,6 @@ describe("ShippingOptionService", () => {
         })
       ).rejects.toThrow(
         "The Cart does not satisfy the shipping option's requirements"
-      )
-    })
-  })
-
-  describe("[MEDUSA_FF_TAX_INCLUSIVE_PRICING] createShippingMethod", () => {
-    const option = (id) => ({
-      id,
-      region_id: IdMap.getId("region"),
-      price_type: "flat_rate",
-      amount: 10,
-      includes_tax: true,
-      data: {
-        something: "yes",
-      },
-      requirements: [
-        {
-          type: "min_subtotal",
-          amount: 100,
-        },
-      ],
-    })
-    const shippingOptionRepository = MockRepository({
-      findOne: (q) => {
-        switch (q.where.id) {
-          default:
-            return Promise.resolve(option(q.where.id))
-        }
-      },
-    })
-    const shippingMethodRepository = MockRepository({ create: (r) => r })
-    const totalsService = {
-      getSubtotal: (c) => {
-        return c.subtotal
-      },
-    }
-
-    const providerService = {
-      validateFulfillmentData: jest
-        .fn()
-        .mockImplementation((r) => Promise.resolve(r.data)),
-      getPrice: (d) => d.price,
-    }
-
-    const optionService = new ShippingOptionService({
-      manager: MockManager,
-      shippingMethodRepository,
-      shippingOptionRepository,
-      totalsService,
-      fulfillmentProviderService: providerService,
-      featureFlagRouter: new FlagRouter({
-        [TaxInclusivePricingFeatureFlag.key]: true
-      }),
-    })
-
-    beforeEach(() => {
-      jest.clearAllMocks()
-    })
-
-    it("should create a shipping method that also includes the taxes",  async () => {
-      await optionService.createShippingMethod("random_id", {}, { price: 10 })
-      expect(shippingMethodRepository.save).toHaveBeenCalledWith(
-        expect.objectContaining({
-          includes_tax: true
-        })
       )
     })
   })

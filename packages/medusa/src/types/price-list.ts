@@ -126,19 +126,12 @@ export type CreatePriceListInput = {
   customer_groups?: { id: string }[]
   starts_at?: Date
   ends_at?: Date
-  includes_tax?: boolean
 }
 
 export type UpdatePriceListInput = Partial<
   Pick<
     PriceList,
-    | "name"
-    | "description"
-    | "starts_at"
-    | "ends_at"
-    | "status"
-    | "type"
-    | "includes_tax"
+    "name" | "description" | "starts_at" | "ends_at" | "status" | "type"
   >
 > & {
   prices?: AdminPriceListPricesUpdateReq[]

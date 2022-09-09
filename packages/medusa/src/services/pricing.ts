@@ -1,24 +1,21 @@
-import { MedusaError } from "medusa-core-utils"
 import { EntityManager } from "typeorm"
+import { MedusaError } from "medusa-core-utils"
 import { ProductVariantService, RegionService, TaxProviderService } from "."
+import { Product, ProductVariant, ShippingOption } from "../models"
+import { TaxServiceRate } from "../types/tax-service"
+import {
+  ProductVariantPricing,
+  TaxedPricing,
+  PricingContext,
+  PricedProduct,
+  PricedShippingOption,
+  PricedVariant,
+} from "../types/pricing"
 import { TransactionBaseService } from "../interfaces"
 import {
   IPriceSelectionStrategy,
   PriceSelectionContext,
 } from "../interfaces/price-selection-strategy"
-import TaxInclusivePricingFeatureFlag from "../loaders/feature-flags/tax-inclusive-pricing"
-import { Product, ProductVariant, ShippingOption } from "../models"
-import {
-  PricedProduct,
-  PricedShippingOption,
-  PricedVariant,
-  PricingContext,
-  ProductVariantPricing,
-  TaxedPricing,
-} from "../types/pricing"
-import { TaxServiceRate } from "../types/tax-service"
-import { calculatePriceTaxAmount } from "../utils"
-import { FlagRouter } from "../utils/flag-router"
 
 type InjectedDependencies = {
   manager: EntityManager
@@ -26,7 +23,6 @@ type InjectedDependencies = {
   taxProviderService: TaxProviderService
   regionService: RegionService
   priceSelectionStrategy: IPriceSelectionStrategy
-  featureFlagRouter: FlagRouter
 }
 
 /**
@@ -40,7 +36,6 @@ class PricingService extends TransactionBaseService {
   protected readonly taxProviderService: TaxProviderService
   protected readonly priceSelectionStrategy: IPriceSelectionStrategy
   protected readonly productVariantService: ProductVariantService
-  protected readonly featureFlagRouter: FlagRouter
 
   constructor({
     manager,
@@ -48,7 +43,6 @@ class PricingService extends TransactionBaseService {
     taxProviderService,
     regionService,
     priceSelectionStrategy,
-    featureFlagRouter,
   }: InjectedDependencies) {
     // eslint-disable-next-line prefer-rest-params
     super(arguments[0])
@@ -58,7 +52,6 @@ class PricingService extends TransactionBaseService {
     this.taxProviderService = taxProviderService
     this.priceSelectionStrategy = priceSelectionStrategy
     this.productVariantService = productVariantService
-    this.featureFlagRouter = featureFlagRouter
   }
 
   /**
@@ -122,43 +115,17 @@ class PricingService extends TransactionBaseService {
     }
 
     if (variantPricing.calculated_price !== null) {
-      const includesTax = !!(
-        this.featureFlagRouter.isFeatureEnabled(
-          TaxInclusivePricingFeatureFlag.key
-        ) && variantPricing.calculated_price_includes_tax
-      )
-      taxedPricing.calculated_tax = Math.round(
-        calculatePriceTaxAmount({
-          price: variantPricing.calculated_price,
-          taxRate: rate,
-          includesTax,
-        })
-      )
-
+      const taxAmount = Math.round(variantPricing.calculated_price * rate)
+      taxedPricing.calculated_tax = taxAmount
       taxedPricing.calculated_price_incl_tax =
-        variantPricing.calculated_price_includes_tax
-          ? variantPricing.calculated_price
-          : variantPricing.calculated_price + taxedPricing.calculated_tax
+        variantPricing.calculated_price + taxAmount
     }
 
     if (variantPricing.original_price !== null) {
-      const includesTax = !!(
-        this.featureFlagRouter.isFeatureEnabled(
-          TaxInclusivePricingFeatureFlag.key
-        ) && variantPricing.original_price_includes_tax
-      )
-      taxedPricing.original_tax = Math.round(
-        calculatePriceTaxAmount({
-          price: variantPricing.original_price,
-          taxRate: rate,
-          includesTax,
-        })
-      )
-
+      const taxAmount = Math.round(variantPricing.original_price * rate)
+      taxedPricing.original_tax = taxAmount
       taxedPricing.original_price_incl_tax =
-        variantPricing.original_price_includes_tax
-          ? variantPricing.original_price
-          : variantPricing.original_price + taxedPricing.original_tax
+        variantPricing.original_price + taxAmount
     }
 
     return taxedPricing
@@ -170,9 +137,6 @@ class PricingService extends TransactionBaseService {
     context: PricingContext
   ): Promise<ProductVariantPricing> {
     const transactionManager = this.transactionManager_ ?? this.manager_
-
-    context.price_selection.tax_rates = taxRates
-
     const pricing = await this.priceSelectionStrategy
       .withTransaction(transactionManager)
       .calculateVariantPrice(variantId, context.price_selection)
@@ -182,8 +146,6 @@ class PricingService extends TransactionBaseService {
       original_price: pricing.originalPrice,
       calculated_price: pricing.calculatedPrice,
       calculated_price_type: pricing.calculatedPriceType,
-      original_price_includes_tax: pricing.originalPriceIncludesTax,
-      calculated_price_includes_tax: pricing.calculatedPriceIncludesTax,
       original_price_incl_tax: null,
       calculated_price_incl_tax: null,
       original_tax: null,
@@ -456,29 +418,14 @@ class PricingService extends TransactionBaseService {
       },
       0
     )
+    const tax = Math.round(price * rate)
+    const total = price + tax
 
-    const includesTax =
-      this.featureFlagRouter.isFeatureEnabled(
-        TaxInclusivePricingFeatureFlag.key
-      ) && shippingOption.includes_tax
-
-    const taxAmount = Math.round(
-      calculatePriceTaxAmount({
-        taxRate: rate,
-        price,
-        includesTax,
-      })
-    )
-    const totalInclTax = includesTax ? price : price + taxAmount
-
-    const result: PricedShippingOption = {
+    return {
       ...shippingOption,
-      price_incl_tax: totalInclTax,
+      price_incl_tax: total,
       tax_rates: shippingOptionRates,
-      tax_amount: taxAmount,
     }
-
-    return result
   }
 
   /**
