@@ -10,49 +10,45 @@
  */
 
 module.exports = {
-  docsSidebar: [
+  tutorialSidebar: [
     {
-      type: "category",
-      label: "Getting Started",
-      items: [
-        {
-          type: "doc",
-          id: "homepage",
-          label: "Overview",
-        },
-        {
-          type: "doc",
-          id: "introduction",
-          label: "Introduction",
-        },
-        {
-          type: "doc",
-          id: "quickstart/quick-start",
-          label: "Quickstart Guide",
-        },
-        {
-          type: "doc",
-          id: "usage",
-        },
-      ]
+      type: "doc",
+      id: "homepage",
+      label: "Overview",
+    },
+    {
+      type: "doc",
+      id: "introduction",
+      label: "Introduction",
+    },
+    {
+      type: "doc",
+      id: "quickstart/quick-start",
+      label: "Quickstart Guide",
+    },
+    {
+      type: "doc",
+      id: "usage",
     },
     {
       type: "category",
-      label: "Setup & Deployment",
+      collapsed: false,
+      label: "Usage Guides",
       items: [
         {
           type: "doc",
           id: "tutorial/set-up-your-development-environment",
-          label: "Set Up Dev Environment"
+          label: "Set Up your Development Environment"
         },
         {
           type: "doc",
           id: "usage/configurations",
-          label: "Configure Server"
+          label: "Configure your Server"
         },
         {
           type: "category",
-          label: "Storefronts",
+          collapsed: true,
+          label: "Storefront Quickstart",
           items: [
             {
               type: "doc",
@@ -150,106 +146,168 @@ module.exports = {
             },
           ],
         },
-        {
-          type: "category",
-          label: 'Upgrade Guides',
-          collapsed: true,
-          link: {
-            type: 'doc',
-            id: 'advanced/backend/upgrade-guides/index'
-          },
-          items: [
-            {
-              type: "doc",
-              id: "advanced/backend/upgrade-guides/1-3-0",
-              label: "v1.3.0"
-            },
-            {
-              type: "doc",
-              id: "advanced/backend/upgrade-guides/1-3-6",
-              label: "v1.3.6"
-            },
-            {
-              type: "doc",
-              id: "advanced/backend/upgrade-guides/1-3-8",
-              label: "v1.3.8"
-            },
-          ]
-        },
       ]
     },
     {
       type: "category",
-      label: "How-to Guides",
+      label: "Advanced Guide",
+      collapsed: false,
       items: [
         {
-          type: "doc",
-          id: "advanced/backend/endpoints/add-storefront",
-          label: "Create Endpoint for Storefront"
-        },
-        {
-          type: "doc",
-          id: "advanced/backend/endpoints/add-admin",
-          label: "Create Endpoint for Admin"
-        },
-        {
-          type: "doc",
-          id: "advanced/backend/services/create-service",
-          label: "Create a Service"
-        },
-        {
-          type: "doc",
-          id: "advanced/backend/subscribers/create-subscriber",
-          label: "Create a Subscriber"
-        },
-        {
-          type: "doc",
-          id: "advanced/backend/entities/index",
-          label: "Create an Entity"
-        },
-        {
-          type: "doc",
-          id: "advanced/backend/shipping/add-fulfillment-provider",
-          label: "Create a Fulfillment Provider"
-        },
-        {
-          type: "doc",
-          id: "advanced/backend/payment/how-to-create-payment-provider",
-          label: "Create a Payment Provider"
-        },
-        {
-          type: "doc",
-          id: "advanced/backend/notification/how-to-create-notification-provider",
-          label: "Create a Notification Provider"
-        },
-        {
-          type: "doc",
-          id: "advanced/backend/plugins/create",
-          label: "Create a Plugin"
-        },
-        {
-          type: "doc",
-          id: "advanced/backend/migrations/index",
-          label: "Create a Migration"
-        },
-        {
-          type: "doc",
-          id: "advanced/backend/cron-jobs/create",
-          label: "Create a Cron Job"
+          type: "category",
+          label: "Medusa Server",
+          collapsed: true,
+          items: [
+            {
+              type: "category",
+              label: 'Endpoints',
+              collapsed: true,
+              items: [
+                {
+                  type: "doc",
+                  id: "advanced/backend/endpoints/add-storefront",
+                  label: "Create Endpoint for Storefront"
+                },
+                {
+                  type: "doc",
+                  id: "advanced/backend/endpoints/add-admin",
+                  label: "Create Endpoint for Admin"
+                },
+              ]
+            },
+            {
+              type: "doc",
+              id: "advanced/backend/services/create-service",
+              label: "Create a Service"
+            },
+            {
+              type: "category",
+              label: 'Subscribers',
+              collapsed: true,
+              items: [
+                {
+                  type: "doc",
+                  id: "advanced/backend/subscribers/create-subscriber",
+                  label: "Create a Subscriber"
+                },
+                {
+                  type: "doc",
+                  id: "advanced/backend/subscribers/events-list",
+                  label: "List of Events"
+                },
+              ]
+            },
+            {
+              type: "doc",
+              id: "advanced/backend/entities",
+              label: "Entities"
+            },
+            {
+              type: "category",
+              label: 'Shipping',
+              collapsed: true,
+              items: [
+                {
+                  type: "doc",
+                  id: "advanced/backend/shipping/overview",
+                  label: "Architecture Overview"
+                },
+                {
+                  type: "doc",
+                  id: "advanced/backend/shipping/add-fulfillment-provider",
+                  label: "Create a Fulfillment Provider"
+                }
+              ]
+            },
+            {
+              type: "category",
+              label: 'Payment',
+              collapsed: true,
+              items: [
+                {
+                  type: "doc",
+                  id: "advanced/backend/payment/overview",
+                  label: "Architecture Overview"
+                },
+                {
+                  type: "doc",
+                  id: "advanced/backend/payment/how-to-create-payment-provider",
+                  label: "Create a Payment Provider"
+                },
+              ]
+            },
+            {
+              type: "category",
+              label: "Notification",
+              collapsed: true,
+              items: [
+                {
+                  type: "doc",
+                  id: "advanced/backend/notification/overview"
+                },
+                {
+                  type: "doc",
+                  id: "advanced/backend/notification/how-to-create-notification-provider",
+                  label: "Create a Notification Provider"
+                }
+              ]
+            },
+            {
+              type: "category",
+              label: "Plugins",
+              collapsed: true,
+              items: [
+                {
+                  type: "doc",
+                  id: "advanced/backend/plugins/overview",
+                  label: "Overview"
+                },
+                {
+                  type: "doc",
+                  id: "advanced/backend/plugins/create",
+                }
+              ]
+            },
+            {
+              type: "doc",
+              id: "advanced/backend/migrations",
+              label: "Migrations"
+            },
+            {
+              type: "category",
+              label: 'Upgrade Guides',
+              collapsed: true,
+              link: {
+                type: 'doc',
+                id: 'advanced/backend/upgrade-guides/index'
+              },
+              items: [
+                {
+                  type: "doc",
+                  id: "advanced/backend/upgrade-guides/1-3-0",
+                  label: "v1.3.0"
+                },
+                {
+                  type: "doc",
+                  id: "advanced/backend/upgrade-guides/1-3-6",
+                  label: "v1.3.6"
+                },
+              ]
+            },
+          ]
         },
         {
           type: "category",
           label: "Storefront",
+          collapsed: true,
           items: [
             {
               type: "doc",
-              id: "guides/carts-in-medusa",
-              label: "Implement Cart"
+              id: "advanced/storefront/how-to-implement-checkout-flow",
             },
             {
               type: "doc",
-              id: "advanced/storefront/how-to-implement-checkout-flow",
-              label: "Implement Checkout"
+              id: "guides/carts-in-medusa",
             },
           ]
         }
@@ -257,58 +315,8 @@ module.exports = {
     },
     {
       type: "category",
-      label: "Conceptual Guides",
-      items: [
-        {
-          type: "doc",
-          id: "advanced/backend/entities/overview",
-          label: "Entities"
-        },
-        {
-          type: "doc",
-          id: "advanced/backend/services/overview",
-          label: "Services"
-        },
-        {
-          type: "doc",
-          id: "advanced/backend/subscribers/overview",
-          label: "Subscribers"
-        },
-        {
-          type: "doc",
-          id: "advanced/backend/shipping/overview",
-          label: "Shipping Architecture"
-        },
-        {
-          type: "doc",
-          id: "advanced/backend/payment/overview",
-          label: "Payment Architecture"
-        },
-        {
-          type: "doc",
-          id: "advanced/backend/notification/overview",
-          label: "Notification Architecture"
-        },
-        {
-          type: "doc",
-          id: "advanced/backend/plugins/overview",
-          label: "Plugins"
-        },
-        {
-          type: "doc",
-          id: "advanced/backend/migrations/overview",
-          label: "Migrations"
-        },
-        {
-          type: "doc",
-          id: "advanced/backend/batch-jobs/index",
-          label: "Batch Jobs"
-        },
-      ]
-    },
-    {
-      type: "category",
       label: "Integrations",
+      collapsed: false,
       items: [
         {
           type: "category",
@@ -336,7 +344,7 @@ module.exports = {
                 {
                   type: "doc",
                   id: "add-plugins/contentful/customize-contentful",
-                  label: "Customize Integration",
+                  label: "Customize Contentful Integration",
                 },
               ]
             },
@@ -450,7 +458,7 @@ module.exports = {
         {
           type: "doc",
           id: "troubleshooting/missing-payment-providers",
-          label: "Payment provider missing",
+          label: "Payment provider (Stripe) not showing in checkout",
         },
         {
           type: "doc",
@@ -475,40 +483,14 @@ module.exports = {
       ],
     },
     {
-      type: "category",
-      label: "References",
-      items: [
-        {
-          type: "doc",
-          id: "cli/reference",
-          label: "CLI Reference",
-        },
-        {
-          type: "doc",
-          id: "contribution-guidelines",
-          label: "Contribution Guidelines",
-        },
-        {
-          type: "ref",
-          id: "references/entities/classes/Address",
-          label: "Entities Reference",
-        },
-        {
-          type: "doc",
-          id: "advanced/backend/subscribers/events-list",
-          label: "Events Reference"
-        },
-        {
-          type: "ref",
-          id: "js-client/overview",
-          label: "JS Client Reference",
-        },
-        {
-          type: "ref",
-          id: "references/services/classes/AuthService",
-          label: "Services Reference",
-        },
-      ]
+      type: "doc",
+      id: "cli/reference",
+      label: "CLI Reference",
+    },
+    {
+      type: "doc",
+      id: "contribution-guidelines",
+      label: "Contribution Guidelines",
     },
   ],
   userGuideSidebar: [
