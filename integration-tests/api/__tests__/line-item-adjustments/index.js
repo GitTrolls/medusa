@@ -33,9 +33,9 @@ describe("Line Item Adjustments", () => {
   })
 
   describe("Tests database constraints", () => {
-    let cart
-    let discount
-    const lineItemId = "line-test"
+    let cart,
+      discount,
+      lineItemId = "line-test"
     beforeEach(async () => {
       await cartSeeder(dbConnection)
       discount = await simpleDiscountFactory(dbConnection, {
@@ -113,7 +113,7 @@ describe("Line Item Adjustments", () => {
             })
           }
 
-          await expect(createLineItemWithAdjustment()).resolves.toEqual(
+          expect(createLineItemWithAdjustment()).resolves.toEqual(
             expect.anything()
           )
         })
@@ -131,7 +131,7 @@ describe("Line Item Adjustments", () => {
             })
           }
 
-          await expect(createAdjustmentNullDiscount()).resolves.toEqual(
+          expect(createAdjustmentNullDiscount()).resolves.toEqual(
             expect.anything()
           )
         })
@@ -155,8 +155,7 @@ describe("Line Item Adjustments", () => {
               discount_id: null,
             })
           }
-
-          await expect(createAdjustmentsNullDiscount()).resolves.toEqual(
+          expect(createAdjustmentsNullDiscount()).resolves.toEqual(
             expect.anything()
           )
         })
@@ -185,7 +184,7 @@ describe("Line Item Adjustments", () => {
             })
           }
 
-          await expect(createAdjustment()).resolves.toEqual(expect.anything())
+          expect(createAdjustment()).resolves.toEqual(expect.anything())
         })
       })
 
@@ -200,7 +199,7 @@ describe("Line Item Adjustments", () => {
               discount_id: discount.id,
             })
 
-          await expect(createDuplicateAdjustment()).rejects.toEqual(
+          expect(createDuplicateAdjustment()).rejects.toEqual(
             expect.objectContaining({ code: "23505" })
           )
         })

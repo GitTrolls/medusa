@@ -3,17 +3,11 @@ import { Region } from "../../../.."
 import { DeleteResponse, PaginatedResponse } from "../../../../types/common"
 import middlewares from "../../../middlewares"
 import "reflect-metadata"
-import { FlagRouter } from "../../../../utils/flag-router"
-import TaxInclusivePricingFeatureFlag from "../../../../loaders/feature-flags/tax-inclusive-pricing"
 
 const route = Router()
 
-export default (app, featureFlagRouter: FlagRouter) => {
+export default (app) => {
   app.use("/regions", route)
-
-  if (featureFlagRouter.isFeatureEnabled(TaxInclusivePricingFeatureFlag.key)) {
-    defaultAdminRegionFields.push("includes_tax")
-  }
 
   route.get("/", middlewares.wrap(require("./list-regions").default))
   route.get("/:region_id", middlewares.wrap(require("./get-region").default))
