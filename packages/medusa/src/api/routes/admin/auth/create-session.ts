@@ -10,7 +10,7 @@ import { validator } from "../../../../utils/validator"
 /**
  * @oas [post] /auth
  * operationId: "PostAuth"
- * summary: "User Login"
+ * summary: "Authenticate a User"
  * x-authenticated: false
  * description: "Logs a User in and authorizes them to manage Store settings."
  * parameters:

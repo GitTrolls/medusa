@@ -8,7 +8,7 @@ import { validator } from "../../../../utils/validator"
 /**
  * @oas [get] /collections
  * operationId: "GetCollections"
- * summary: "List Collections"
+ * summary: "List Product Collections"
  * description: "Retrieve a list of Product Collection."
  * parameters:
  *   - (query) offset=0 {integer} The number of collections to skip before starting to collect the collections set

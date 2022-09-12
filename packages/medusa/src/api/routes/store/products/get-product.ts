@@ -11,7 +11,7 @@ import { validator } from "../../../../utils/validator"
 /**
  * @oas [get] /products/{id}
  * operationId: GetProductsProduct
- * summary: Get a Product
+ * summary: Retrieves a Product
  * description: "Retrieves a Product."
  * parameters:
  *   - (path) id=* {string} The id of the Product.

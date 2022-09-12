@@ -2,7 +2,7 @@ import { PaymentProviderService } from "../../../../services"
 /**
  * @oas [get] /store/payment-providers
  * operationId: "GetStorePaymentProviders"
- * summary: "List Payment Providers"
+ * summary: "Retrieve configured Payment Providers"
  * description: "Retrieves the configured Payment Providers"
  * x-authenticated: true
  * x-codeSamples:

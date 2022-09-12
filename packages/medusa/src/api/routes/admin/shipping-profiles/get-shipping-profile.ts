@@ -8,7 +8,7 @@ import { ShippingProfileService } from "../../../../services"
 /**
  * @oas [get] /shipping-profiles/{id}
  * operationId: "GetShippingProfilesProfile"
- * summary: "Get a Shipping Profile"
+ * summary: "Retrieve a Shipping Profile"
  * description: "Retrieves a Shipping Profile."
  * x-authenticated: true
  * parameters:

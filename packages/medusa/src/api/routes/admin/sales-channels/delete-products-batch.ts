@@ -9,7 +9,7 @@ import { Type } from "class-transformer"
 /**
  * @oas [delete] /sales-channels/{id}/products/batch
  * operationId: "DeleteSalesChannelsChannelProductsBatch"
- * summary: "Delete Products"
+ * summary: "Remove a list of products from a sales channel"
  * description: "Remove a list of products from a sales channel."
  * x-authenticated: true
  * parameters:

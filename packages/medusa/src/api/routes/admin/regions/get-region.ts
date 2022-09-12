@@ -5,7 +5,7 @@ import RegionService from "../../../../services/region"
 /**
  * @oas [get] /regions/{id}
  * operationId: "GetRegionsRegion"
- * summary: "Get a Region"
+ * summary: "Retrieve a Region"
  * description: "Retrieves a Region."
  * x-authenticated: true
  * parameters:

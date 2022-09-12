@@ -4,7 +4,7 @@ import ShippingProfileService from "../../../../services/shipping-profile"
 /**
  * @oas [get] /shipping-options/{cart_id}
  * operationId: GetShippingOptionsCartId
- * summary: List for Cart
+ * summary: Retrieve Shipping Options for Cart
  * description: "Retrieves a list of Shipping Options available to a cart."
  * parameters:
  *   - (path) cart_id {string} The id of the Cart.

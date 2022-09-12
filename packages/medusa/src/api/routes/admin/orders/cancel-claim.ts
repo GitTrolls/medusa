@@ -7,7 +7,7 @@ import { MedusaError } from "medusa-core-utils"
 /**
  * @oas [post] /orders/{id}/claims/{claim_id}/cancel
  * operationId: "PostOrdersClaimCancel"
- * summary: "Cancel a Claim"
+ * summary: "Cancels a Claim"
  * description: "Cancels a Claim"
  * x-authenticated: true
  * parameters:

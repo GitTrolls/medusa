@@ -4,7 +4,7 @@ import { EntityManager } from "typeorm"
 /**
  * @oas [delete] /store/currencies/{code}
  * operationId: "DeleteStoreCurrenciesCode"
- * summary: "Delete a Currency Code"
+ * summary: "Remove a Currency Code"
  * description: "Removes a Currency Code from the available currencies."
  * x-authenticated: true
  * parameters:

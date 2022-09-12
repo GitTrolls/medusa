@@ -32,14 +32,6 @@ module.exports = {
     ]
   ],
   themeConfig: {
-    announcementBar: {
-      id: 'release-1-3-8',
-      content:
-        'New Release! Version 1.3.8 of Medusa is out now! Read all about it <a href="https://github.com/medusajs/medusa/releases/tag/v1.3.8">here</a>.',
-      backgroundColor: '#7C53FF',
-      textColor: '#fff',
-      isCloseable: false,
-    },
     colorMode: {
       defaultMode: 'light',
       disableSwitch: false,
@@ -69,7 +61,7 @@ module.exports = {
       items: [
         {
           type: "docSidebar",
-          sidebarId: "docsSidebar",
+          sidebarId: "tutorialSidebar",
           label: "Docs"
         },
         {
@@ -100,6 +92,40 @@ module.exports = {
               </a>`
             },
           ],
+        },
+        {
+          type: 'dropdown',
+          label: 'References',
+          items: [
+            {
+              to: "cli/reference",
+              label: "CLI Reference",
+            },
+            {
+              type: "docSidebar",
+              sidebarId: "entitiesSidebar",
+              label: "Entities Reference",
+            },
+            {
+              to: "advanced/backend/subscribers/events-list",
+              label: "Events Reference",
+            },
+            {
+              type: "docSidebar",
+              sidebarId: "jsClientSidebar",
+              label: "JS Client Reference",
+            },
+            {
+              type: "docSidebar",
+              sidebarId: "servicesSidebar",
+              label: "Services Reference",
+            },
+          ]
+        },
+        {
+          href: "https://github.com/medusajs/medusa/issues/new?assignees=&labels=type%3A+docs&template=docs.yml",
+          position: 'right',
+          label: 'Report an Issue'
         },
         {
           href: "https://github.com/medusajs/medusa",
@@ -151,18 +177,6 @@ module.exports = {
       ],
       copyright: `© ${new Date().getFullYear()} Medusa`,
     },
-    sidebarFooter: [
-      {
-        href: "https://github.com/medusajs/medusa/issues/new?assignees=&labels=type%3A+docs&template=docs.yml",
-        label: 'Report an Issue',
-        className: 'alert-icon',
-      },
-      {
-        href: "https://medusajs.com/",
-        label: 'Go to medusajs.com',
-        className: 'topright-icon',
-      },
-    ],
   },
   presets: [
     [

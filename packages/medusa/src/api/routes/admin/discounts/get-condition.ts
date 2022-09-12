@@ -14,7 +14,7 @@ import { validator } from "../../../../utils/validator"
 /**
  * @oas [get] /discounts/{discount_id}/conditions/{condition_id}
  * operationId: "GetDiscountsDiscountConditionsCondition"
- * summary: "Get a Condition"
+ * summary: "Gets a DiscountCondition"
  * description: "Gets a DiscountCondition"
  * x-authenticated: true
  * parameters:

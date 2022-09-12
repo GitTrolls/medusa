@@ -6,7 +6,7 @@ import PriceListService from "../../../../services/price-list"
 /**
  * @oas [get] /price-lists/{id}
  * operationId: "GetPriceListsPriceList"
- * summary: "Get a Price List"
+ * summary: "Retrieve a Price List"
  * description: "Retrieves a Price List."
  * x-authenticated: true
  * parameters:

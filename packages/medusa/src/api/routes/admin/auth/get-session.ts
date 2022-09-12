@@ -4,7 +4,7 @@ import _ from "lodash"
 /**
  * @oas [get] /auth
  * operationId: "GetAuth"
- * summary: "Get Current User"
+ * summary: "Get Session"
  * x-authenticated: true
  * description: "Gets the currently logged in User."
  * x-codeSamples:

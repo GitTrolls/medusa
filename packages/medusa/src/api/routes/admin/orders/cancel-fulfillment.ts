@@ -7,7 +7,7 @@ import { MedusaError } from "medusa-core-utils"
 /**
  * @oas [post] /orders/{id}/fulfillments/{fulfillment_id}/cancel
  * operationId: "PostOrdersOrderFulfillmentsCancel"
- * summary: "Cancels a Fulfilmment"
+ * summary: "Cancels a fulfilmment"
  * description: "Registers a Fulfillment as canceled."
  * x-authenticated: true
  * parameters:

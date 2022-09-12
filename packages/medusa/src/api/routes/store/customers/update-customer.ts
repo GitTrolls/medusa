@@ -10,7 +10,7 @@ import { EntityManager } from "typeorm"
 /**
  * @oas [post] /customers/me
  * operationId: PostCustomersCustomer
- * summary: Update Customer
+ * summary: Update Customer details
  * description: "Updates a Customer's saved details."
  * x-authenticated: true
  * requestBody:

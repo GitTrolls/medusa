@@ -5,7 +5,7 @@ import { OrderService } from "../../../../services"
 /**
  * @oas [get] /orders/cart/{cart_id}
  * operationId: GetOrdersOrderCartId
- * summary: Get by Cart ID
+ * summary: Retrieves Order by Cart id
  * description: "Retrieves an Order by the id of the Cart that was used to create the Order."
  * parameters:
  *   - (path) cart_id=* {string} The ID of Cart.

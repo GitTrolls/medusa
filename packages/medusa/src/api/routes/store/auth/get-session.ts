@@ -2,7 +2,7 @@ import CustomerService from "../../../../services/customer"
 /**
  * @oas [get] /auth
  * operationId: "GetAuth"
- * summary: "Get Current Customer"
+ * summary: "Get Session"
  * description: "Gets the currently logged in Customer."
  * x-authenticated: true
  * x-codeSamples:

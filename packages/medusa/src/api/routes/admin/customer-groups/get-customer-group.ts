@@ -6,7 +6,7 @@ import { FindParams } from "../../../../types/common"
 /**
  * @oas [get] /customer-groups/{id}
  * operationId: "GetCustomerGroupsGroup"
- * summary: "Get a Customer Group"
+ * summary: "Retrieve a CustomerGroup"
  * description: "Retrieves a Customer Group."
  * x-authenticated: true
  * parameters:

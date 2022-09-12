@@ -12,7 +12,7 @@ import { validator } from "../../../../utils/validator"
 /**
  * @oas [get] /variants/{variant_id}
  * operationId: GetVariantsVariant
- * summary: Get a Product Variant
+ * summary: Retrieve a Product Variant
  * description: "Retrieves a Product Variant by id"
  * parameters:
  *   - (path) variant_id=* {string} The id of the Product Variant.

@@ -6,7 +6,7 @@ import { validator } from "../../../../utils/validator"
 /**
  * @oas [post] /apps/authorizations
  * operationId: "PostApps"
- * summary: "Generate Token for App"
+ * summary: "Generates a token for an application."
  * description: "Generates a token for an application."
  * x-authenticated: true
  * requestBody:

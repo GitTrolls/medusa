@@ -8,7 +8,7 @@ import { validator } from "../../../../utils/validator"
 /**
  * @oas [get] /tax-rates/{id}
  * operationId: "GetTaxRatesTaxRate"
- * summary: "Get a Tax Rate"
+ * summary: "Get Tax Rate"
  * description: "Retrieves a TaxRate"
  * parameters:
  *   - (path) id=* {string} ID of the tax rate.

@@ -6,7 +6,7 @@ import { validator } from "../../../../utils/validator"
 /**
  * @oas [get] /customers/{id}
  * operationId: "GetCustomersCustomer"
- * summary: "Get a Customer"
+ * summary: "Retrieve a Customer"
  * description: "Retrieves a Customer."
  * x-authenticated: true
  * parameters:

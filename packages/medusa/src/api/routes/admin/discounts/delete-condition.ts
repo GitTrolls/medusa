@@ -12,7 +12,7 @@ import { validator } from "../../../../utils/validator"
 /**
  * @oas [delete] /discounts/{discount_id}/conditions/{condition_id}
  * operationId: "DeleteDiscountsDiscountConditionsCondition"
- * summary: "Delete a Condition"
+ * summary: "Delete a DiscountCondition"
  * description: "Deletes a DiscountCondition"
  * x-authenticated: true
  * parameters:

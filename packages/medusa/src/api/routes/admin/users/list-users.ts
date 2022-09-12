@@ -3,7 +3,7 @@ import UserService from "../../../../services/user"
 /**
  * @oas [get] /users
  * operationId: "GetUsers"
- * summary: "List Users"
+ * summary: "Retrieve all users"
  * description: "Retrieves all users."
  * x-authenticated: true
  * x-codeSamples:

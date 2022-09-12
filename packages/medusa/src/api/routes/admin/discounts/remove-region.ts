@@ -6,7 +6,7 @@ import { EntityManager } from "typeorm"
 /**
  * @oas [delete] /discounts/{id}/regions/{region_id}
  * operationId: "DeleteDiscountsDiscountRegionsRegion"
- * summary: "Remove Region"
+ * summary: "Remove Region availability"
  * x-authenticated: true
  * description: "Removes a Region from the list of Regions that a Discount can be used in."
  * parameters:

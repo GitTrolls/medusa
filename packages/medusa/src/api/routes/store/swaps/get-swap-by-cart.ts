@@ -2,7 +2,7 @@ import SwapService from "../../../../services/swap"
 /**
  * @oas [get] /swaps/{cart_id}
  * operationId: GetSwapsSwapCartId
- * summary: Get by Cart ID
+ * summary: Retrieve Swap by Cart id
  * description: "Retrieves a Swap by the id of the Cart used to confirm the Swap."
  * parameters:
  *   - (path) cart_id {string} The id of the Cart

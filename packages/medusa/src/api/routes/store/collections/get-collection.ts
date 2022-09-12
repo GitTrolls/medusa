@@ -2,7 +2,7 @@ import ProductCollectionService from "../../../../services/product-collection"
 /**
  * @oas [get] /collections/{id}
  * operationId: "GetCollectionsCollection"
- * summary: "Get a Collection"
+ * summary: "Retrieve a Product Collection"
  * description: "Retrieves a Product Collection."
  * parameters:
  *   - (path) id=* {string} The id of the Product Collection

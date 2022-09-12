@@ -9,7 +9,7 @@ import { Type } from "class-transformer"
 /**
  * @oas [post] /sales-channels/{id}/products/batch
  * operationId: "PostSalesChannelsChannelProductsBatch"
- * summary: "Add Products"
+ * summary: "Assign a batch of product to a sales channel"
  * description: "Assign a batch of product to a sales channel."
  * x-authenticated: true
  * parameters:

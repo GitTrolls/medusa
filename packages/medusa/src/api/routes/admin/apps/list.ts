@@ -3,7 +3,7 @@ import { OauthService } from "../../../../services"
 /**
  * @oas [get] /apps
  * operationId: "GetApps"
- * summary: "List Applications"
+ * summary: "List applications"
  * description: "Retrieve a list of applications."
  * x-authenticated: true
  * x-codeSamples:

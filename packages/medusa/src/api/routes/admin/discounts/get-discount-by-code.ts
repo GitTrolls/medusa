@@ -8,7 +8,7 @@ import { validator } from "../../../../utils/validator"
 /**
  * @oas [get] /discounts/code/{code}
  * operationId: "GetDiscountsDiscountCode"
- * summary: "Get Discount by Code"
+ * summary: "Retrieve a Discount by code"
  * description: "Retrieves a Discount by its discount code"
  * x-authenticated: true
  * parameters:

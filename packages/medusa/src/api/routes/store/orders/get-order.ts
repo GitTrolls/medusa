@@ -5,7 +5,7 @@ import { OrderService } from "../../../../services"
 /**
  * @oas [get] /orders/{id}
  * operationId: GetOrdersOrder
- * summary: Get an Order
+ * summary: Retrieves an Order
  * description: "Retrieves an Order"
  * parameters:
  *   - (path) id=* {string} The id of the Order.

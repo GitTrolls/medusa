@@ -8,7 +8,7 @@ import { validator } from "../../../../utils/validator"
 /**
  * @oas [post] /orders/{id}/claims/{claim_id}/fulfillments
  * operationId: "PostOrdersOrderClaimsClaimFulfillments"
- * summary: "Create Claim Fulfillment"
+ * summary: "Create a Claim Fulfillment"
  * description: "Creates a Fulfillment for a Claim."
  * x-authenticated: true
  * parameters:

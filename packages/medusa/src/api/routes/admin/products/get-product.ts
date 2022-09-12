@@ -3,7 +3,7 @@ import { PricingService, ProductService } from "../../../../services"
 /**
  * @oas [get] /products/{id}
  * operationId: "GetProductsProduct"
- * summary: "Get a Product"
+ * summary: "Retrieve a Product"
  * description: "Retrieves a Product."
  * x-authenticated: true
  * parameters:

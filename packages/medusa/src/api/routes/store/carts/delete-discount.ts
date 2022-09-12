@@ -7,7 +7,7 @@ import { decorateLineItemsWithTotals } from "./decorate-line-items-with-totals"
  * @oas [delete] /carts/{id}/discounts/{code}
  * operationId: DeleteCartsCartDiscountsDiscount
  * description: "Removes a Discount from a Cart."
- * summary: "Remove Discount"
+ * summary: "Remove Discount from Cart"
  * parameters:
  *   - (path) id=* {string} The id of the Cart.
  *   - (path) code=* {string} The unique Discount code.

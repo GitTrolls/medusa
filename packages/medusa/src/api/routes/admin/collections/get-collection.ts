@@ -5,7 +5,7 @@ import { defaultAdminCollectionsRelations } from "."
 /**
  * @oas [get] /collections/{id}
  * operationId: "GetCollectionsCollection"
- * summary: "Get a Collection"
+ * summary: "Retrieve a Product Collection"
  * description: "Retrieves a Product Collection."
  * x-authenticated: true
  * parameters:

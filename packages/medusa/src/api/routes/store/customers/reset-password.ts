@@ -8,7 +8,7 @@ import { EntityManager } from "typeorm"
 /**
  * @oas [post] /customers/password-reset
  * operationId: PostCustomersResetPassword
- * summary: Reset Password
+ * summary: Resets Customer password
  * description: "Resets a Customer's password using a password token created by a previous /password-token request."
  * requestBody:
  *   content:

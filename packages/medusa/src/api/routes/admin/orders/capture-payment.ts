@@ -6,7 +6,7 @@ import { EntityManager } from "typeorm"
 /**
  * @oas [post] /orders/{id}/capture
  * operationId: "PostOrdersOrderCapture"
- * summary: "Capture Order's Payment"
+ * summary: "Capture an Order"
  * description: "Captures all the Payments associated with an Order."
  * x-authenticated: true
  * parameters:

@@ -12,7 +12,7 @@ import { removeUndefinedProperties } from "../../../../utils"
 /**
  * @oas [get] /sales-channels
  * operationId: "GetSalesChannels"
- * summary: "List Sales Channels"
+ * summary: "List sales channels"
  * description: "Retrieves a list of sales channels"
  * x-authenticated: true
  * parameters:

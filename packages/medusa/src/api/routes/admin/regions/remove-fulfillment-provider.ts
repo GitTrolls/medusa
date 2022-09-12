@@ -6,7 +6,7 @@ import RegionService from "../../../../services/region"
 /**
  * @oas [delete] /regions/{id}/fulfillment-providers/{provider_id}
  * operationId: "PostRegionsRegionFulfillmentProvidersProvider"
- * summary: "Del. Fulfillment Provider"
+ * summary: "Remove Fulfillment Provider"
  * description: "Removes a Fulfillment Provider."
  * x-authenticated: true
  * parameters:

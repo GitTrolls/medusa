@@ -6,7 +6,7 @@ import { EntityManager } from "typeorm"
 /**
  * @oas [post] /collections
  * operationId: "PostCollections"
- * summary: "Create a Collection"
+ * summary: "Create a Product Collection"
  * description: "Creates a Product Collection."
  * x-authenticated: true
  * requestBody:

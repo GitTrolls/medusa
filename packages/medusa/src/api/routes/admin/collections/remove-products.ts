@@ -7,7 +7,7 @@ import ProductCollectionService from "../../../../services/product-collection"
 /**
  * @oas [delete] /collections/{id}/products/batch
  * operationId: "DeleteProductsFromCollection"
- * summary: "Remove Product"
+ * summary: "Removes products associated with a Product Collection"
  * description: "Removes products associated with a Product Collection"
  * x-authenticated: true
  * parameters:
