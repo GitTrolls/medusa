@@ -12,7 +12,7 @@ import { DiscountConditionJoinTableForeignKey } from "@medusajs/medusa/dist/repo
 import faker from "faker"
 import { Connection } from "typeorm"
 
-export type DiscountConditionFactoryData = {
+export type DiscuntConditionFactoryData = {
   id?: string
   rule_id: string
   type: DiscountConditionType
@@ -67,7 +67,7 @@ const getJoinTableResourceIdentifiers = (type: string) => {
 
 export const simpleDiscountConditionFactory = async (
   connection: Connection,
-  data: DiscountConditionFactoryData,
+  data: DiscuntConditionFactoryData,
   seed?: number
 ): Promise<void> => {
   if (typeof seed !== "undefined") {

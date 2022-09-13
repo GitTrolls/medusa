@@ -1,24 +1,21 @@
 import {
-  IsArray,
-  IsBoolean,
-  IsEnum,
-  IsOptional,
-  IsString,
-  ValidateNested,
-} from "class-validator"
-import {
   AdminPriceListPricesCreateReq,
   CreatePriceListInput,
   PriceListStatus,
   PriceListType,
 } from "../../../../types/price-list"
+import {
+  IsArray,
+  IsEnum,
+  IsOptional,
+  IsString,
+  ValidateNested,
+} from "class-validator"
 
-import { Type } from "class-transformer"
-import { Request } from "express"
 import { EntityManager } from "typeorm"
-import TaxInclusivePricingFeatureFlag from "../../../../loaders/feature-flags/tax-inclusive-pricing"
 import PriceListService from "../../../../services/price-list"
-import { FeatureFlagDecorators } from "../../../../utils/feature-flag-decorators"
+import { Request } from "express"
+import { Type } from "class-transformer"
 
 /**
  * @oas [post] /price-lists
@@ -101,9 +98,6 @@ import { FeatureFlagDecorators } from "../../../../utils/feature-flag-decorators
  *                 id:
  *                   description: The ID of a customer group
  *                   type: string
- *           includes_tax:
- *              description: "[EXPERIMENTAL] Tax included in prices of price list"
- *              type: boolean
  * x-codeSamples:
  *   - lang: JavaScript
  *     label: JS Client
@@ -221,10 +215,4 @@ export class AdminPostPriceListsPriceListReq {
   @Type(() => CustomerGroup)
   @ValidateNested({ each: true })
   customer_groups?: CustomerGroup[]
-
-  @FeatureFlagDecorators(TaxInclusivePricingFeatureFlag.key, [
-    IsOptional(),
-    IsBoolean(),
-  ])
-  includes_tax?: boolean
 }

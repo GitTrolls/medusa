@@ -250,9 +250,11 @@ describe("/admin/swaps", () => {
         data: {},
       })
       await api.post("/store/carts/cart-test/payment-sessions")
-      await api.post("/store/carts/cart-test/payment-session", {
+      const TEST = await api.post("/store/carts/cart-test/payment-session", {
         provider_id: "test-pay",
       })
+
+      console.log("Testing, ", TEST.data.cart.items[0])
 
       // ********* COMPLETE CART *********
       const completedOrder = await api.post("/store/carts/cart-test/complete")
