@@ -1,9 +1,5 @@
 import { IdMap } from "medusa-test-utils"
 import TotalsService from "../totals"
-import { FlagRouter } from "../../utils/flag-router"
-
-import TaxInclusivePricingFeatureFlag from "../../loaders/feature-flags/tax-inclusive-pricing"
-import { calculatePriceTaxAmount } from "../../utils"
 
 const discounts = {
   total10Percent: {
@@ -87,21 +83,11 @@ const applyDiscount = (cart, discount) => {
 const calculateAdjustment = (cart, lineItem, discount) => {
   let amount = discount.rule.value * lineItem.quantity
 
-  const taxAmountIncludedInPrice = !lineItem.includes_tax
-    ? 0
-    : Math.round(
-        calculatePriceTaxAmount({
-          price: lineItem.unit_price,
-          taxRate: cart.tax_rate / 100,
-          includesTax: lineItem.includes_tax,
-        })
-      )
-  let price = lineItem.unit_price - taxAmountIncludedInPrice
-  const lineItemPrice = price * lineItem.quantity
+  let lineItemPrice = lineItem.unit_price * lineItem.quantity
 
   if (discount.rule.type === "fixed" && discount.rule.allocation === "total") {
     let subtotal = cart.items.reduce(
-      (total, item) => total + price * item.quantity,
+      (total, item) => total + item.unit_price * item.quantity,
       0
     )
     const nominator = Math.min(discount.rule.value, subtotal)
@@ -113,20 +99,13 @@ const calculateAdjustment = (cart, lineItem, discount) => {
 }
 
 describe("TotalsService", () => {
-  const getTaxLinesMock = jest.fn(() => Promise.resolve([{ id: "line1" }]))
-  const featureFlagRouter = new FlagRouter({
-    [TaxInclusivePricingFeatureFlag.key]: false,
-  })
-
   const container = {
     taxProviderService: {
-      withTransaction: function() {
+      withTransaction: function () {
         return this
       },
-      getTaxLines: getTaxLinesMock,
     },
     taxCalculationStrategy: {},
-    featureFlagRouter,
   }
 
   describe("getAllocationItemDiscounts", () => {
@@ -299,7 +278,7 @@ describe("TotalsService", () => {
     it("calculate total percentage discount", async () => {
       discountCart.discounts.push(discounts.total10Percent)
       let cart = applyDiscount(discountCart, discounts.total10Percent)
-      res = await totalsService.getDiscountTotal(cart)
+      res = totalsService.getDiscountTotal(cart)
 
       expect(res).toEqual(28)
     })
@@ -309,7 +288,7 @@ describe("TotalsService", () => {
     it("calculate item fixed discount", async () => {
       discountCart.discounts.push(discounts.item2Fixed)
       let cart = applyDiscount(discountCart, discounts.item2Fixed)
-      res = await totalsService.getDiscountTotal(cart)
+      res = totalsService.getDiscountTotal(cart)
 
       expect(res).toEqual(40)
     })
@@ -317,7 +296,7 @@ describe("TotalsService", () => {
     it("calculate item percentage discount", async () => {
       discountCart.discounts.push(discounts.item10Percent)
       let cart = applyDiscount(discountCart, discounts.item10Percent)
-      res = await totalsService.getDiscountTotal(cart)
+      res = totalsService.getDiscountTotal(cart)
 
       expect(res).toEqual(28)
     })
@@ -325,26 +304,26 @@ describe("TotalsService", () => {
     it("calculate total fixed discount", async () => {
       discountCart.discounts.push(discounts.total10Fixed)
       let cart = applyDiscount(discountCart, discounts.total10Fixed)
-      res = await totalsService.getDiscountTotal(cart)
+      res = totalsService.getDiscountTotal(cart)
 
       expect(res).toEqual(10)
     })
 
     it("ignores discount if expired", async () => {
       discountCart.discounts.push(discounts.expiredDiscount)
-      res = await totalsService.getDiscountTotal(discountCart)
+      res = totalsService.getDiscountTotal(discountCart)
 
       expect(res).toEqual(0)
     })
 
     it("returns 0 if no discounts are applied", async () => {
-      res = await totalsService.getDiscountTotal(discountCart)
+      res = totalsService.getDiscountTotal(discountCart)
 
       expect(res).toEqual(0)
     })
 
     it("returns 0 if no items are in cart", async () => {
-      res = await totalsService.getDiscountTotal({
+      res = totalsService.getDiscountTotal({
         items: [],
         discounts: [discounts.total10Fixed],
       })
@@ -406,7 +385,7 @@ describe("TotalsService", () => {
     })
 
     it("calculates refund", async () => {
-      res = await totalsService.getRefundTotal(orderToRefund, [
+      res = totalsService.getRefundTotal(orderToRefund, [
         {
           id: "line2",
           unit_price: 100,
@@ -468,7 +447,7 @@ describe("TotalsService", () => {
     it("calculates refund with item fixed discount", async () => {
       orderToRefund.discounts.push(discounts.item2Fixed)
       let order = applyDiscount(orderToRefund, discounts.item2Fixed)
-      res = await totalsService.getRefundTotal(order, [
+      res = totalsService.getRefundTotal(order, [
         {
           id: "line2",
           unit_price: 100,
@@ -488,7 +467,7 @@ describe("TotalsService", () => {
     it("calculates refund with item percentage discount", async () => {
       orderToRefund.discounts.push(discounts.item10Percent)
       let order = applyDiscount(orderToRefund, discounts.item10Percent)
-      res = await totalsService.getRefundTotal(order, [
+      res = totalsService.getRefundTotal(order, [
         {
           id: "line2",
           unit_price: 100,
@@ -506,9 +485,8 @@ describe("TotalsService", () => {
     })
 
     it("throws if line items to return is not in order", async () => {
-      let errMsg
-      await totalsService
-        .getRefundTotal(orderToRefund, [
+      const work = () =>
+        totalsService.getRefundTotal(orderToRefund, [
           {
             id: "notInOrder",
             unit_price: 123,
@@ -520,213 +498,14 @@ describe("TotalsService", () => {
             quantity: 1,
           },
         ])
-        .catch((e) => (errMsg = e.message))
 
-      expect(errMsg).toBe("Line item does not exist on order")
-    })
-  })
-
-  describe("[MEDUSA_FF_TAX_INCLUSIVE_PRICING] getRefundTotal", () => {
-    let res
-    const totalsService = new TotalsService({
-      ...container,
-      featureFlagRouter: new FlagRouter({
-        [TaxInclusivePricingFeatureFlag.key]: true,
-      }),
-    })
-
-    const orderToRefund = {
-      id: "refund-order",
-      tax_rate: 25,
-      items: [
-        {
-          id: "line",
-          unit_price: 125,
-          includes_tax: true,
-          allow_discounts: true,
-          variant: {
-            id: "variant",
-            product_id: "testp1",
-          },
-          quantity: 10,
-          returned_quantity: 0,
-        },
-        {
-          id: "line2",
-          unit_price: 100,
-          allow_discounts: true,
-          variant: {
-            id: "variant",
-            product_id: "testp2",
-          },
-          quantity: 10,
-          returned_quantity: 0,
-          metadata: {},
-        },
-        {
-          id: "non-discount",
-          unit_price: 100,
-          allow_discounts: false,
-          variant: {
-            id: "variant",
-            product_id: "testp2",
-          },
-          quantity: 1,
-          returned_quantity: 0,
-          metadata: {},
-        },
-      ],
-      region_id: "fr",
-      discounts: [],
-    }
-
-    beforeEach(() => {
-      jest.clearAllMocks()
-      orderToRefund.discounts = []
-    })
-
-    it("calculates refund", async () => {
-      res = await totalsService.getRefundTotal(orderToRefund, [
-        {
-          id: "line2",
-          unit_price: 100,
-          allow_discounts: true,
-          variant: {
-            id: "variant",
-            product_id: "product2",
-          },
-          quantity: 10,
-          returned_quantity: 0,
-          metadata: {},
-        },
-      ])
-
-      expect(res).toEqual(1250)
-    })
-
-    it("calculates refund with line that includes tax", async () => {
-      res = await totalsService.getRefundTotal(orderToRefund, [
-        {
-          id: "line",
-          unit_price: 125,
-          includes_tax: true,
-          allow_discounts: true,
-          variant: {
-            id: "variant",
-            product_id: "product2",
-          },
-          quantity: 10,
-          returned_quantity: 0,
-          metadata: {},
-        },
-      ])
-
-      expect(res).toEqual(1250)
-    })
-
-    it("calculates refund with item fixed discount", async () => {
-      orderToRefund.discounts.push(discounts.item2Fixed)
-      let order = applyDiscount(orderToRefund, discounts.item2Fixed)
-      res = await totalsService.getRefundTotal(order, [
-        {
-          id: "line2",
-          unit_price: 100,
-          allow_discounts: true,
-          variant: {
-            id: "variant",
-            product_id: "testp2",
-          },
-          quantity: 10,
-          returned_quantity: 0,
-        },
-      ])
-
-      expect(res).toEqual(1225)
-    })
-
-    it("calculates refund with item fixed discount and a line that includes tax", async () => {
-      orderToRefund.discounts.push(discounts.item2Fixed)
-      let order = applyDiscount(orderToRefund, discounts.item2Fixed)
-      res = await totalsService.getRefundTotal(order, [
-        {
-          id: "line",
-          unit_price: 125,
-          includes_tax: true,
-          allow_discounts: true,
-          variant: {
-            id: "variant",
-            product_id: "testp2",
-          },
-          quantity: 10,
-          returned_quantity: 0,
-        },
-      ])
-
-      expect(res).toEqual(1225)
-    })
-
-    it("calculates refund with item percentage discount", async () => {
-      orderToRefund.discounts.push(discounts.item10Percent)
-      let order = applyDiscount(orderToRefund, discounts.item10Percent)
-      res = await totalsService.getRefundTotal(order, [
-        {
-          id: "line2",
-          unit_price: 100,
-          allow_discounts: true,
-          variant: {
-            id: "variant",
-            product_id: "testp2",
-          },
-          quantity: 10,
-          returned_quantity: 0,
-        },
-      ])
-
-      expect(res).toEqual(1125)
-    })
-
-    it("calculates refund with item percentage discount and a line that includes tax", async () => {
-      orderToRefund.discounts.push(discounts.item10Percent)
-      let order = applyDiscount(orderToRefund, discounts.item10Percent)
-      res = await totalsService.getRefundTotal(order, [
-        {
-          id: "line",
-          unit_price: 125,
-          includes_tax: true,
-          allow_discounts: true,
-          variant: {
-            id: "variant",
-            product_id: "testp2",
-          },
-          quantity: 10,
-          returned_quantity: 0,
-        },
-      ])
-
-      expect(res).toEqual(1125)
+      expect(work).toThrow("Line item does not exist on order")
     })
   })
 
   describe("getShippingTotal", () => {
-    const getTaxLinesMock = jest.fn(() =>
-      Promise.resolve([
-        { shipping_method_id: IdMap.getId("expensiveShipping") },
-      ])
-    )
-    const calculateMock = jest.fn(() => Promise.resolve(20))
-
-    const totalsService = new TotalsService({
-      ...container,
-      taxProviderService: {
-        withTransaction: function() {
-          return this
-        },
-        getTaxLines: getTaxLinesMock,
-      },
-      taxCalculationStrategy: {
-        calculate: calculateMock,
-      },
-    })
+    let res
+    const totalsService = new TotalsService(container)
 
     beforeEach(() => {
       jest.clearAllMocks()
@@ -736,7 +515,7 @@ describe("TotalsService", () => {
       const order = {
         shipping_methods: [
           {
-            id: IdMap.getId("expensiveShipping"),
+            _id: IdMap.getId("expensiveShipping"),
             name: "Expensive Shipping",
             price: 100,
             provider_id: "default_provider",
@@ -747,12 +526,11 @@ describe("TotalsService", () => {
           },
         ],
       }
-      const total = await totalsService.getShippingTotal(order)
+      res = totalsService.getShippingTotal(order)
 
-      expect(total).toEqual(100)
+      expect(res).toEqual(100)
     })
   })
-
   describe("getTaxTotal", () => {
     let res
     let totalsService
@@ -763,7 +541,7 @@ describe("TotalsService", () => {
 
     const cradle = {
       taxProviderService: {
-        withTransaction: function() {
+        withTransaction: function () {
           return this
         },
         getTaxLines: getTaxLinesMock,
@@ -771,7 +549,6 @@ describe("TotalsService", () => {
       taxCalculationStrategy: {
         calculate: calculateMock,
       },
-      featureFlagRouter,
     }
 
     beforeEach(() => {
@@ -820,14 +597,13 @@ describe("TotalsService", () => {
 
       expect(res).toEqual(20)
 
-      expect(getAllocationMapMock).toHaveBeenCalledTimes(2)
-      expect(getAllocationMapMock).toHaveBeenNthCalledWith(1, order, {})
+      expect(getAllocationMapMock).toHaveBeenCalledTimes(1)
+      expect(getAllocationMapMock).toHaveBeenCalledWith(order, {})
 
       expect(getTaxLinesMock).toHaveBeenCalledTimes(0)
 
-      expect(calculateMock).toHaveBeenCalledTimes(3)
-      expect(calculateMock).toHaveBeenNthCalledWith(
-        3,
+      expect(calculateMock).toHaveBeenCalledTimes(1)
+      expect(calculateMock).toHaveBeenCalledWith(
         order.items,
         [{ id: "orderline1" }],
         {
@@ -876,15 +652,11 @@ describe("TotalsService", () => {
 
       expect(res).toEqual(20)
 
-      expect(getAllocationMapMock).toHaveBeenCalledTimes(2)
-      expect(getAllocationMapMock).toHaveBeenNthCalledWith(2, order, {
-        exclude_discounts: undefined,
-        exclude_gift_cards: true,
-      })
+      expect(getAllocationMapMock).toHaveBeenCalledTimes(1)
+      expect(getAllocationMapMock).toHaveBeenCalledWith(order, {})
 
-      expect(getTaxLinesMock).toHaveBeenCalledTimes(2)
-      expect(getTaxLinesMock).toHaveBeenNthCalledWith(
-        2,
+      expect(getTaxLinesMock).toHaveBeenCalledTimes(1)
+      expect(getTaxLinesMock).toHaveBeenCalledWith(
         [{ quantity: 2, unit_price: 20 }],
         {
           shipping_address: order.shipping_address,
@@ -952,139 +724,6 @@ describe("TotalsService", () => {
       expect(getTaxTotalMock).toHaveBeenCalledWith(order, undefined)
 
       expect(res).toEqual(175)
-    })
-  })
-
-  describe("[MEDUSA_FF_TAX_INCLUSIVE_PRICING] getTotal", () => {
-    let res
-    const totalsService = new TotalsService({
-      ...container,
-      featureFlagRouter: new FlagRouter({
-        [TaxInclusivePricingFeatureFlag.key]: true,
-      }),
-    })
-
-    beforeEach(() => {
-      jest.clearAllMocks()
-    })
-
-    it("calculates total", async () => {
-      const order = {
-        region: {
-          tax_rate: 25,
-        },
-        items: [
-          {
-            unit_price: 20,
-            quantity: 2,
-          },
-          {
-            unit_price: 25,
-            quantity: 2,
-            includes_tax: true,
-          },
-        ],
-        shipping_methods: [
-          {
-            _id: IdMap.getId("expensiveShipping"),
-            name: "Expensive Shipping",
-            price: 100,
-            provider_id: "default_provider",
-            profile_id: IdMap.getId("default"),
-            data: {
-              extra: "hi",
-            },
-          },
-        ],
-      }
-      const getTaxTotalMock = jest.fn(() => Promise.resolve(45))
-      totalsService.getTaxTotal = getTaxTotalMock
-      res = await totalsService.getTotal(order)
-
-      expect(getTaxTotalMock).toHaveBeenCalledTimes(1)
-      expect(getTaxTotalMock).toHaveBeenCalledWith(order, undefined)
-
-      expect(res).toEqual(185)
-    })
-  })
-
-  describe("[MEDUSA_FF_TAX_INCLUSIVE_PRICING] getShippingTotal ", () => {
-    const shippingMethodData = {
-      id: IdMap.getId("expensiveShipping"),
-      name: "Expensive Shipping",
-      price: 120,
-      tax_lines: [{ shipping_method_id: IdMap.getId("expensiveShipping") }],
-      provider_id: "default_provider",
-      profile_id: IdMap.getId("default"),
-      data: {
-        extra: "hi",
-      },
-    }
-    const calculateMock = jest.fn(() => Promise.resolve(20))
-    const totalsService = new TotalsService({
-      ...container,
-      taxCalculationStrategy: {
-        calculate: calculateMock,
-      },
-      featureFlagRouter: new FlagRouter({
-        [TaxInclusivePricingFeatureFlag.key]: true,
-      }),
-    })
-
-    beforeEach(() => {
-      jest.clearAllMocks()
-    })
-
-    it("calculates total with tax lines and being tax inclusive", async () => {
-      const order = {
-        object: "order",
-        shipping_methods: [
-          {
-            ...shippingMethodData,
-            includes_tax: true,
-          },
-        ],
-      }
-
-      const total = await totalsService.getShippingTotal(order)
-
-      expect(total).toEqual(100)
-    })
-
-    it("calculates total with tax lines and not being tax inclusive", async () => {
-      const order = {
-        object: "order",
-        shipping_methods: [
-          {
-            ...shippingMethodData,
-            price: 100,
-            includes_tax: false,
-          },
-        ],
-      }
-
-      const total = await totalsService.getShippingTotal(order)
-
-      expect(total).toEqual(100)
-    })
-
-    it("calculates total with the old system and not being tax inclusive", async () => {
-      const order = {
-        object: "order",
-        tax_rate: 20,
-        shipping_methods: [
-          {
-            ...shippingMethodData,
-            price: 100,
-            includes_tax: false,
-            tax_lines: [],
-          },
-        ],
-      }
-
-      const total = await totalsService.getShippingTotal(order)
-
-      expect(total).toEqual(100)
     })
   })
 })

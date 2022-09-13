@@ -21,12 +21,11 @@ import {
   ImportJobContext,
   InjectedProps,
   OperationType,
-  ProductImportBatchJob,
   ProductImportCsvSchema,
   TBuiltProductImportLine,
   TParsedProductImportRowData,
 } from "./types"
-import { BatchJob, SalesChannel } from "../../../models"
+import { SalesChannel } from "../../../models"
 import { FlagRouter } from "../../../utils/flag-router"
 import { transformProductData, transformVariantData } from "./utils"
 import SalesChannelFeatureFlag from "../../../loaders/feature-flags/sales-channels"
@@ -136,10 +135,7 @@ class ProductImportStrategy extends AbstractBatchJobStrategy {
   async getImportInstructions(
     csvData: TParsedProductImportRowData[]
   ): Promise<Record<OperationType, TParsedProductImportRowData[]>> {
-    const transactionManager = this.transactionManager_ ?? this.manager_
-    const shippingProfile = await this.shippingProfileService_
-      .withTransaction(transactionManager)
-      .retrieveDefault()
+    const shippingProfile = await this.shippingProfileService_.retrieveDefault()
 
     const seenProducts = {}
 
@@ -228,64 +224,43 @@ class ProductImportStrategy extends AbstractBatchJobStrategy {
    * @param batchJobId - An id of a job that is being preprocessed.
    */
   async preProcessBatchJob(batchJobId: string): Promise<void> {
-    const transactionManager = this.transactionManager_ ?? this.manager_
-    const batchJob = await this.batchJobService_
-      .withTransaction(transactionManager)
-      .retrieve(batchJobId)
+    const batchJob = await this.batchJobService_.retrieve(batchJobId)
 
     const csvFileKey = (batchJob.context as ImportJobContext).fileKey
     const csvStream = await this.fileService_.getDownloadStream({
       fileKey: csvFileKey,
     })
 
-    let builtData: Record<string, string>[]
-    try {
-      const parsedData = await this.csvParser_.parse(csvStream)
-      builtData = await this.csvParser_.buildData(parsedData)
-    } catch (e) {
-      throw new MedusaError(
-        MedusaError.Types.INVALID_DATA,
-        "The csv file parsing failed due to: " + e.message
-      )
-    }
+    const parsedData = await this.csvParser_.parse(csvStream)
+    const builtData = await this.csvParser_.buildData(parsedData)
 
     const ops = await this.getImportInstructions(builtData)
 
     await this.uploadImportOpsFile(batchJobId, ops)
 
-    let totalOperationCount = 0
-    const operationsCounts = {}
-    Object.keys(ops).forEach((key) => {
-      operationsCounts[key] = ops[key].length
-      totalOperationCount += ops[key].length
-    })
-
-    await this.batchJobService_
-      .withTransaction(transactionManager)
-      .update(batchJobId, {
-        result: {
-          advancement_count: 0,
-          // number of update/create operations to execute
-          count: totalOperationCount,
-          operations: operationsCounts,
-          stat_descriptors: [
-            {
-              key: "product-import-count",
-              name: "Products/variants to import",
-              message: `There will be ${
-                ops[OperationType.ProductCreate].length
-              } products created (${
-                ops[OperationType.ProductUpdate].length
-              }  updated).
+    await this.batchJobService_.update(batchJobId, {
+      result: {
+        advancement_count: 0,
+        // number of update/create operations to execute
+        count: Object.keys(ops).reduce((acc, k) => acc + ops[k].length, 0),
+        stat_descriptors: [
+          {
+            key: "product-import-count",
+            name: "Products/variants to import",
+            message: `There will be ${
+              ops[OperationType.ProductCreate].length
+            } products created (${
+              ops[OperationType.ProductUpdate].length
+            }  updated).
              ${
                ops[OperationType.VariantCreate].length
              } variants will be created and ${
-                ops[OperationType.VariantUpdate].length
-              } updated`,
-            },
-          ],
-        },
-      })
+              ops[OperationType.VariantUpdate].length
+            } updated`,
+          },
+        ],
+      },
+    })
   }
 
   /**
@@ -295,17 +270,13 @@ class ProductImportStrategy extends AbstractBatchJobStrategy {
    * @param batchJobId - An id of a batch job that is being processed.
    */
   async processJob(batchJobId: string): Promise<void> {
-    return await this.atomicPhase_(async (manager) => {
-      const batchJob = (await this.batchJobService_
-        .withTransaction(manager)
-        .retrieve(batchJobId)) as ProductImportBatchJob
+    return await this.atomicPhase_(async () => {
+      await this.createProducts(batchJobId)
+      await this.updateProducts(batchJobId)
+      await this.createVariants(batchJobId)
+      await this.updateVariants(batchJobId)
 
-      await this.createProducts(batchJob)
-      await this.updateProducts(batchJob)
-      await this.createVariants(batchJob)
-      await this.updateVariants(batchJob)
-
-      await this.finalize(batchJob)
+      this.finalize(batchJobId)
     })
   }
 
@@ -355,17 +326,12 @@ class ProductImportStrategy extends AbstractBatchJobStrategy {
   /**
    * Method creates products using `ProductService` and parsed data from a CSV row.
    *
-   * @param batchJob - The current batch job being processed.
+   * @param batchJobId - An id of the current batch job being processed.
    */
-  private async createProducts(batchJob: ProductImportBatchJob): Promise<void> {
-    if (!batchJob.result.operations[OperationType.ProductCreate]) {
-      return
-    }
-
+  private async createProducts(batchJobId: string): Promise<void> {
     const transactionManager = this.transactionManager_ ?? this.manager_
-
     const productOps = await this.downloadImportOpsFile(
-      batchJob.id,
+      batchJobId,
       OperationType.ProductCreate
     )
 
@@ -396,23 +362,19 @@ class ProductImportStrategy extends AbstractBatchJobStrategy {
         ProductImportStrategy.throwDescriptiveError(productOp, e.message)
       }
 
-      await this.updateProgress(batchJob.id)
+      this.updateProgress(batchJobId)
     }
   }
 
   /**
    * Method updates existing products in the DB using a CSV row data.
    *
-   * @param batchJob - The current batch job being processed.
+   * @param batchJobId - An id of the current batch job being processed.
    */
-  private async updateProducts(batchJob: ProductImportBatchJob): Promise<void> {
-    if (!batchJob.result.operations[OperationType.ProductUpdate]) {
-      return
-    }
-
+  private async updateProducts(batchJobId: string): Promise<void> {
     const transactionManager = this.transactionManager_ ?? this.manager_
     const productOps = await this.downloadImportOpsFile(
-      batchJob.id,
+      batchJobId,
       OperationType.ProductUpdate
     )
 
@@ -443,7 +405,7 @@ class ProductImportStrategy extends AbstractBatchJobStrategy {
         ProductImportStrategy.throwDescriptiveError(productOp, e.message)
       }
 
-      await this.updateProgress(batchJob.id)
+      this.updateProgress(batchJobId)
     }
   }
 
@@ -451,17 +413,13 @@ class ProductImportStrategy extends AbstractBatchJobStrategy {
    * Method creates product variants from a CSV data.
    * Method also handles processing of variant options.
    *
-   * @param batchJob - The current batch job being processed.
+   * @param batchJobId - An id of the current batch job being processed.
    */
-  private async createVariants(batchJob: ProductImportBatchJob): Promise<void> {
-    if (!batchJob.result.operations[OperationType.VariantCreate]) {
-      return
-    }
-
+  private async createVariants(batchJobId: string): Promise<void> {
     const transactionManager = this.transactionManager_ ?? this.manager_
 
     const variantOps = await this.downloadImportOpsFile(
-      batchJob.id,
+      batchJobId,
       OperationType.VariantCreate
     )
 
@@ -494,7 +452,7 @@ class ProductImportStrategy extends AbstractBatchJobStrategy {
           .withTransaction(transactionManager)
           .create(product!, variant as unknown as CreateProductVariantInput)
 
-        await this.updateProgress(batchJob.id)
+        this.updateProgress(batchJobId)
       } catch (e) {
         ProductImportStrategy.throwDescriptiveError(variantOp, e.message)
       }
@@ -504,17 +462,13 @@ class ProductImportStrategy extends AbstractBatchJobStrategy {
   /**
    * Method updates product variants from a CSV data.
    *
-   * @param batchJob - The current batch job being processed.
+   * @param batchJobId - An id of the current batch job being processed.
    */
-  private async updateVariants(batchJob: ProductImportBatchJob): Promise<void> {
-    if (!batchJob.result.operations[OperationType.VariantUpdate]) {
-      return
-    }
-
+  private async updateVariants(batchJobId: string): Promise<void> {
     const transactionManager = this.transactionManager_ ?? this.manager_
 
     const variantOps = await this.downloadImportOpsFile(
-      batchJob.id,
+      batchJobId,
       OperationType.VariantUpdate
     )
 
@@ -539,7 +493,7 @@ class ProductImportStrategy extends AbstractBatchJobStrategy {
         ProductImportStrategy.throwDescriptiveError(variantOp, e.message)
       }
 
-      await this.updateProgress(batchJob.id)
+      this.updateProgress(batchJobId)
     }
   }
 
@@ -553,13 +507,10 @@ class ProductImportStrategy extends AbstractBatchJobStrategy {
     variantOp,
     productId: string
   ): Promise<void> {
-    const transactionManager = this.transactionManager_ ?? this.manager_
     const productOptions = variantOp["variant.options"] || []
 
-    const productServiceTx =
-      this.productService_.withTransaction(transactionManager)
     for (const o of productOptions) {
-      const option = await productServiceTx.retrieveOptionByTitle(
+      const option = await this.productService_.retrieveOptionByTitle(
         o._title,
         productId
       )
@@ -585,7 +536,7 @@ class ProductImportStrategy extends AbstractBatchJobStrategy {
         const { writeStream, promise } = await this.fileService_
           .withTransaction(transactionManager)
           .getUploadStreamDescriptor({
-            name: ProductImportStrategy.buildFilename(batchJobId, op),
+            name: `imports/products/ops/${batchJobId}-${op}`,
             ext: "json",
           })
 
@@ -615,9 +566,7 @@ class ProductImportStrategy extends AbstractBatchJobStrategy {
     const readableStream = await this.fileService_
       .withTransaction(transactionManager)
       .getDownloadStream({
-        fileKey: ProductImportStrategy.buildFilename(batchJobId, op, {
-          appendExt: ".json",
-        }),
+        fileKey: `imports/products/ops/${batchJobId}-${op}.json`,
       })
 
     return await new Promise((resolve) => {
@@ -642,13 +591,10 @@ class ProductImportStrategy extends AbstractBatchJobStrategy {
   protected async deleteOpsFiles(batchJobId: string): Promise<void> {
     const transactionManager = this.transactionManager_ ?? this.manager_
 
-    const fileServiceTx = this.fileService_.withTransaction(transactionManager)
-    for (const op of Object.values(OperationType)) {
+    for (const op of Object.keys(OperationType)) {
       try {
-        await fileServiceTx.delete({
-          fileKey: ProductImportStrategy.buildFilename(batchJobId, op, {
-            appendExt: ".json",
-          }),
+        this.fileService_.withTransaction(transactionManager).delete({
+          fileKey: `imports/products/ops/-${batchJobId}-${op}`,
         })
       } catch (e) {
         // noop
@@ -660,26 +606,22 @@ class ProductImportStrategy extends AbstractBatchJobStrategy {
    * Update count of processed data in the batch job `result` column
    * and cleanup temp JSON files.
    *
-   * @param batchJob - The current batch job being processed.
+   * @param batchJobId - An id of the current batch job being processed.
    */
-  private async finalize(batchJob: BatchJob): Promise<void> {
-    const transactionManager = this.transactionManager_ ?? this.manager_
+  private async finalize(batchJobId: string): Promise<void> {
+    const batchJob = await this.batchJobService_.retrieve(batchJobId)
 
-    delete this.processedCounter[batchJob.id]
+    delete this.processedCounter[batchJobId]
 
-    await this.batchJobService_
-      .withTransaction(transactionManager)
-      .update(batchJob.id, {
-        result: { advancement_count: batchJob.result.count },
-      })
+    await this.batchJobService_.update(batchJobId, {
+      result: { advancement_count: batchJob.result.count },
+    })
 
     const { fileKey } = batchJob.context as ImportJobContext
 
-    await this.fileService_
-      .withTransaction(transactionManager)
-      .delete({ fileKey })
+    await this.fileService_.delete({ fileKey })
 
-    await this.deleteOpsFiles(batchJob.id)
+    await this.deleteOpsFiles(batchJobId)
   }
 
   /**
@@ -697,22 +639,11 @@ class ProductImportStrategy extends AbstractBatchJobStrategy {
       return
     }
 
-    await this.batchJobService_
-      .withTransaction(this.transactionManager_ ?? this.manager_)
-      .update(batchJobId, {
-        result: {
-          advancement_count: newCount,
-        },
-      })
-  }
-
-  private static buildFilename(
-    batchJobId: string,
-    operation: string,
-    { appendExt }: { appendExt?: string } = { appendExt: undefined }
-  ): string {
-    const filename = `imports/products/ops/${batchJobId}-${operation}`
-    return appendExt ? filename + appendExt : filename
+    await this.batchJobService_.update(batchJobId, {
+      result: {
+        advancement_count: newCount,
+      },
+    })
   }
 }
 
@@ -744,7 +675,7 @@ const CSVSchema: ProductImportCsvSchema = {
     { name: "Product Height", mapTo: "product.height" },
     { name: "Product HS Code", mapTo: "product.hs_code" },
     { name: "Product Origin Country", mapTo: "product.origin_country" },
-    { name: "Product MID Code", mapTo: "product.mid_code" },
+    { name: "Product Mid Code", mapTo: "product.mid_code" },
     { name: "Product Material", mapTo: "product.material" },
     // PRODUCT-COLLECTION
     { name: "Product Collection Title", mapTo: "product.collection.title" },
@@ -781,7 +712,7 @@ const CSVSchema: ProductImportCsvSchema = {
     { name: "Variant Height", mapTo: "variant.height" },
     { name: "Variant HS Code", mapTo: "variant.hs_code" },
     { name: "Variant Origin Country", mapTo: "variant.origin_country" },
-    { name: "Variant MID Code", mapTo: "variant.mid_code" },
+    { name: "Variant Mid Code", mapTo: "variant.mid_code" },
     { name: "Variant Material", mapTo: "variant.material" },
 
     // ==== DYNAMIC FIELDS ====
@@ -845,6 +776,7 @@ const CSVSchema: ProductImportCsvSchema = {
         }
 
         const regionName = key.split(" ")[1]
+
         ;(
           builtLine["variant.prices"] as Record<string, string | number>[]
         ).push({
@@ -870,6 +802,7 @@ const CSVSchema: ProductImportCsvSchema = {
         }
 
         const currency = key.split(" ")[1]
+
         ;(
           builtLine["variant.prices"] as Record<string, string | number>[]
         ).push({

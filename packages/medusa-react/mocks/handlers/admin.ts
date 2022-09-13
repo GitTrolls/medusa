@@ -1,4 +1,5 @@
 import { rest } from "msw"
+import { body } from "msw/lib/types/context"
 import { fixtures } from "../data"
 
 export const adminHandlers = [
@@ -113,8 +114,8 @@ export const adminHandlers = [
       ctx.json({
         collection: {
           ...fixtures.get("product_collection"),
-          products: [fixtures.get("product")],
-        },
+          products: [fixtures.get("product")]
+        }
       })
     )
   }),
@@ -125,7 +126,7 @@ export const adminHandlers = [
       ctx.json({
         id: req.params.id,
         object: "product-collection",
-        removed_products: [fixtures.get("product").id],
+        removed_products: [fixtures.get("product").id]
       })
     )
   }),
@@ -891,7 +892,7 @@ export const adminHandlers = [
         discount_condition: {
           ...fixtures
             .get("discount")
-            .rule.conditions.find((c) => c.id === req.params.conditionId),
+            .rule.conditions.find(c => c.id === req.params.conditionId),
         },
       })
     )
@@ -1763,27 +1764,6 @@ export const adminHandlers = [
       ctx.status(200),
       ctx.json({
         sales_channel: fixtures.get("sales_channel"),
-      })
-    )
-  }),
-
-  rest.get("/admin/currencies", (req, res, ctx) => {
-    return res(
-      ctx.status(200),
-      ctx.json({
-        count: 1,
-        limit: 20,
-        offset: 20,
-        currencies: fixtures.list("currency", 1),
-      })
-    )
-  }),
-
-  rest.post("/admin/currencies/:code", (req, res, ctx) => {
-    return res(
-      ctx.status(200),
-      ctx.json({
-        currency: { ...fixtures.get("currency"), ...(req.body as any) },
       })
     )
   }),
