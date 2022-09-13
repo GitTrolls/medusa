@@ -1,6 +1,6 @@
 delete:
   operationId: DeleteCustomerGroupsCustomerGroup
-  summary: Delete a Customer Group
+  summary: Delete a CustomerGroup
   description: Deletes a CustomerGroup.
   x-authenticated: true
   parameters:
@@ -56,7 +56,7 @@ delete:
       $ref: ../components/responses/500_error.yaml
 get:
   operationId: GetCustomerGroupsGroup
-  summary: Get a Customer Group
+  summary: Retrieve a CustomerGroup
   description: Retrieves a Customer Group.
   x-authenticated: true
   parameters:
@@ -113,7 +113,7 @@ get:
       $ref: ../components/responses/500_error.yaml
 post:
   operationId: PostCustomerGroupsGroup
-  summary: Update a Customer Group
+  summary: Update a CustomerGroup
   description: Update a CustomerGroup.
   x-authenticated: true
   parameters:

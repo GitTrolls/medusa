@@ -1,5 +1,5 @@
 post:
-  summary: Registers a Payment
+  summary: Registers a payment for a Draft Order
   operationId: PostDraftOrdersDraftOrderRegisterPayment
   description: Registers a payment for a Draft Order.
   x-authenticated: true

@@ -1,6 +1,6 @@
 delete:
   operationId: DeleteSalesChannelsSalesChannel
-  summary: Delete a Sales Channel
+  summary: Delete a sales channel
   description: Deletes the sales channel.
   x-authenticated: true
   parameters:
@@ -56,7 +56,7 @@ delete:
       $ref: ../components/responses/500_error.yaml
 get:
   operationId: GetSalesChannelsSalesChannel
-  summary: Get a Sales Channel
+  summary: Retrieve a sales channel
   description: Retrieves the sales channel.
   x-authenticated: true
   parameters:

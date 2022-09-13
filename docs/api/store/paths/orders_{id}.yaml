@@ -1,6 +1,6 @@
 get:
   operationId: GetOrdersOrder
-  summary: Get an Order
+  summary: Retrieves an Order
   description: Retrieves an Order
   parameters:
     - in: path

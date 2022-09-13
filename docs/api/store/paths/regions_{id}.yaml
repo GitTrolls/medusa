@@ -1,6 +1,6 @@
 get:
   operationId: GetRegionsRegion
-  summary: Get a Region
+  summary: Retrieves a Region
   description: Retrieves a Region.
   parameters:
     - in: path
