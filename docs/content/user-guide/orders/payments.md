@@ -1,5 +1,6 @@
 ---
 sidebar_position: 3
+sidebar_label: Manage Payments
 ---
 
 # Manage Order's Payments
@@ -11,6 +12,8 @@ In this document, you’ll learn how to manage an order’s payment, including c
 When a customer places an order, using the payment provider they choose during checkout, they authorize the payment.
 
 The payment isn’t automatically captured. You must capture it manually from the Medusa admin.
+
+---
 
 ## Capture Payment
 
@@ -25,6 +28,8 @@ To capture an order’s payment:
 1. Open the order details page.
 2. Scroll to the Payment section.
 3. Click on the Capture Payment button.
+
+---
 
 ## Refund Payment
 
