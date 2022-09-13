@@ -15,7 +15,6 @@ import {
 import { FindProductConfig } from "../../../types/product"
 import { FlagRouter } from "../../../utils/flag-router"
 import SalesChannelFeatureFlag from "../../../loaders/feature-flags/sales-channels"
-import { csvCellContentFormatter } from "../../../utils"
 
 type InjectedDependencies = {
   manager: EntityManager
@@ -427,16 +426,10 @@ export default class ProductExportStrategy extends AbstractBatchJobStrategy {
       const variantLineData: string[] = []
       for (const [, columnSchema] of this.columnDescriptors.entries()) {
         if (columnSchema.entityName === "product") {
-          const formattedContent = csvCellContentFormatter(
-            columnSchema.accessor(product)
-          )
-          variantLineData.push(formattedContent)
+          variantLineData.push(columnSchema.accessor(product))
         }
         if (columnSchema.entityName === "variant") {
-          const formattedContent = csvCellContentFormatter(
-            columnSchema.accessor(variant)
-          )
-          variantLineData.push(formattedContent)
+          variantLineData.push(columnSchema.accessor(variant))
         }
       }
       outputLineData.push(variantLineData.join(this.DELIMITER_) + this.NEWLINE_)
@@ -468,12 +461,6 @@ export default class ProductExportStrategy extends AbstractBatchJobStrategy {
    * The number of item of a relation can vary between 0-Infinity and therefore the number of columns
    * that will be added to the export correspond to that number
    * @param products - The main entity to get the relation shape from
-   * @return ({
-   *   optionColumnCount: number
-   *   imageColumnCount: number
-   *   salesChannelsColumnCount: number
-   *   pricesData: Set<string>
-   * })
    * @private
    */
   private getProductRelationsDynamicColumnsShape(products: Product[]): {

@@ -415,7 +415,7 @@ class ReturnService extends TransactionBaseService {
         }
       } else {
         // Merchant hasn't specified refund amount so we calculate it
-        toRefund = await this.totalsService_.getRefundTotal(order, returnLines)
+        toRefund = this.totalsService_.getRefundTotal(order, returnLines)
       }
 
       const method = data.shipping_method
@@ -469,7 +469,7 @@ class ReturnService extends TransactionBaseService {
           )
 
         const calculationContext =
-          await this.totalsService_.getCalculationContext(order)
+          this.totalsService_.getCalculationContext(order)
 
         const taxLines = await this.taxProviderService_
           .withTransaction(manager)

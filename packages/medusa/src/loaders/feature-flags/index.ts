@@ -14,8 +14,6 @@ const isTruthy = (val: string | boolean | undefined): boolean => {
   return !!val
 }
 
-export const featureFlagRouter = new FlagRouter({})
-
 export default (
   configModule: { featureFlags?: Record<string, string | boolean> } = {},
   logger?: Logger,
@@ -62,9 +60,5 @@ export default (
     }
   }
 
-  for (const flag of Object.keys(flagConfig)) {
-    featureFlagRouter.setFlag(flag, flagConfig[flag])
-  }
-
-  return featureFlagRouter
+  return new FlagRouter(flagConfig)
 }

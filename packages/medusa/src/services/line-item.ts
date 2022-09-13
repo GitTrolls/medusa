@@ -2,23 +2,21 @@ import { MedusaError } from "medusa-core-utils"
 import { BaseService } from "medusa-interfaces"
 import { EntityManager } from "typeorm"
 import { DeepPartial } from "typeorm/common/DeepPartial"
-import TaxInclusivePricingFeatureFlag from "../loaders/feature-flags/tax-inclusive-pricing"
-import { LineItemTaxLine } from "../models"
-import { Cart } from "../models/cart"
-import { LineItem } from "../models/line-item"
-import { LineItemAdjustment } from "../models/line-item-adjustment"
-import { CartRepository } from "../repositories/cart"
 import { LineItemRepository } from "../repositories/line-item"
 import { LineItemTaxLineRepository } from "../repositories/line-item-tax-line"
-import { FindConfig } from "../types/common"
-import { FlagRouter } from "../utils/flag-router"
 import {
   PricingService,
   ProductService,
-  ProductVariantService,
   RegionService,
+  ProductVariantService,
 } from "./index"
+import { CartRepository } from "../repositories/cart"
+import { LineItem } from "../models/line-item"
 import LineItemAdjustmentService from "./line-item-adjustment"
+import { Cart } from "../models/cart"
+import { LineItemAdjustment } from "../models/line-item-adjustment"
+import { FindConfig } from "../types/common"
+import { LineItemTaxLine } from "../models"
 
 type InjectedDependencies = {
   manager: EntityManager
@@ -30,7 +28,6 @@ type InjectedDependencies = {
   pricingService: PricingService
   regionService: RegionService
   lineItemAdjustmentService: LineItemAdjustmentService
-  featureFlagRouter: FlagRouter
 }
 
 /**
@@ -44,9 +41,7 @@ class LineItemService extends BaseService {
   protected readonly cartRepository_: typeof CartRepository
   protected readonly productVariantService_: ProductVariantService
   protected readonly productService_: ProductService
-  protected readonly pricingService_: PricingService
   protected readonly regionService_: RegionService
-  protected readonly featureFlagRouter_: FlagRouter
   protected readonly lineItemAdjustmentService_: LineItemAdjustmentService
 
   constructor({
@@ -59,7 +54,6 @@ class LineItemService extends BaseService {
     regionService,
     cartRepository,
     lineItemAdjustmentService,
-    featureFlagRouter,
   }: InjectedDependencies) {
     super()
 
@@ -72,7 +66,6 @@ class LineItemService extends BaseService {
     this.regionService_ = regionService
     this.cartRepository_ = cartRepository
     this.lineItemAdjustmentService_ = lineItemAdjustmentService
-    this.featureFlagRouter_ = featureFlagRouter
   }
 
   withTransaction(transactionManager: EntityManager): LineItemService {
@@ -90,7 +83,6 @@ class LineItemService extends BaseService {
       regionService: this.regionService_,
       cartRepository: this.cartRepository_,
       lineItemAdjustmentService: this.lineItemAdjustmentService_,
-      featureFlagRouter: this.featureFlagRouter_,
     })
 
     cloned.transactionManager_ = transactionManager
@@ -205,7 +197,6 @@ class LineItemService extends BaseService {
     quantity: number,
     context: {
       unit_price?: number
-      includes_tax?: boolean
       metadata?: Record<string, unknown>
       customer_id?: string
       cart?: Cart
@@ -225,9 +216,6 @@ class LineItemService extends BaseService {
         ])
 
         let unit_price = Number(context.unit_price) < 0 ? 0 : context.unit_price
-
-        let unitPriceIncludesTax = false
-
         let shouldMerge = false
 
         if (context.unit_price === undefined || context.unit_price === null) {
@@ -240,10 +228,7 @@ class LineItemService extends BaseService {
               customer_id: context?.customer_id,
               include_discount_prices: true,
             })
-
-          unitPriceIncludesTax = !!variantPricing.calculated_price_includes_tax
-
-          unit_price = variantPricing.calculated_price ?? undefined
+          unit_price = variantPricing.calculated_price
         }
 
         const rawLineItem: Partial<LineItem> = {
@@ -257,14 +242,6 @@ class LineItemService extends BaseService {
           is_giftcard: variant.product.is_giftcard,
           metadata: context?.metadata || {},
           should_merge: shouldMerge,
-        }
-
-        if (
-          this.featureFlagRouter_.isFeatureEnabled(
-            TaxInclusivePricingFeatureFlag.key
-          )
-        ) {
-          rawLineItem.includes_tax = unitPriceIncludesTax
         }
 
         const lineItemRepo = transactionManager.getCustomRepository(

@@ -30,6 +30,7 @@
 - [ProductService](classes/ProductService.md)
 - [ProductTypeService](classes/ProductTypeService.md)
 - [ProductVariantService](classes/ProductVariantService.md)
+- [QueryBuilderService](classes/QueryBuilderService.md)
 - [RegionService](classes/RegionService.md)
 - [ReturnReasonService](classes/ReturnReasonService.md)
 - [ReturnService](classes/ReturnService.md)
