@@ -1,6 +1,6 @@
 delete:
   operationId: DeleteCollectionsCollection
-  summary: Delete a Collection
+  summary: Delete a Product Collection
   description: Deletes a Product Collection.
   x-authenticated: true
   parameters:
@@ -56,7 +56,7 @@ delete:
       $ref: ../components/responses/500_error.yaml
 get:
   operationId: GetCollectionsCollection
-  summary: Get a Collection
+  summary: Retrieve a Product Collection
   description: Retrieves a Product Collection.
   x-authenticated: true
   parameters:
@@ -103,7 +103,7 @@ get:
       $ref: ../components/responses/500_error.yaml
 post:
   operationId: PostCollectionsCollection
-  summary: Update a Collection
+  summary: Update a Product Collection
   description: Updates a Product Collection.
   x-authenticated: true
   parameters:
