@@ -1,6 +1,6 @@
 post:
   operationId: PostPriceListsPriceList
-  summary: Create a Price List
+  summary: Creates a Price List
   description: Creates a Price List
   x-authenticated: true
   requestBody:

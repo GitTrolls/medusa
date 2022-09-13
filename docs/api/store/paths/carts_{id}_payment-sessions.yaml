@@ -1,6 +1,6 @@
 post:
   operationId: PostCartsCartPaymentSessions
-  summary: Create Payment Sessions
+  summary: Initialize Payment Sessions
   description: >-
     Creates Payment Sessions for each of the available Payment Providers in the
     Cart's Region.
