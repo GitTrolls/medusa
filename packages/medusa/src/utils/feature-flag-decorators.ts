@@ -1,5 +1,9 @@
+ import { getConfigFile } from "medusa-core-utils"
 import { Column, ColumnOptions, Entity, EntityOptions } from "typeorm"
-import { featureFlagRouter } from "../loaders/feature-flags"
+import featureFlagsLoader from "../loaders/feature-flags"
+import path from "path"
+import { ConfigModule } from "../types/global"
+import { FlagRouter } from "./flag-router"
 
  /**
   * If that file is required in a non node environment then the setImmediate timer does not exists.
@@ -24,6 +28,8 @@ export function FeatureFlagColumn(
 ): PropertyDecorator {
   return function (target, propertyName) {
     setImmediate_((): any => {
+      const featureFlagRouter = getFeatureFlagRouter()
+
       if (!featureFlagRouter.isFeatureEnabled(featureFlag)) {
         return
       }
@@ -39,6 +45,8 @@ export function FeatureFlagDecorators(
 ): PropertyDecorator {
   return function (target, propertyName) {
     setImmediate_((): any => {
+      const featureFlagRouter = getFeatureFlagRouter()
+
       if (!featureFlagRouter.isFeatureEnabled(featureFlag)) {
         return
       }
@@ -57,8 +65,19 @@ export function FeatureFlagEntity(
 ): ClassDecorator {
   return function (target: Function): void {
     target["isFeatureEnabled"] = function (): boolean {
+      const featureFlagRouter = getFeatureFlagRouter()
+
       return featureFlagRouter.isFeatureEnabled(featureFlag)
     }
     Entity(name, options)(target)
   }
+}
+
+function getFeatureFlagRouter(): FlagRouter {
+  const { configModule } = getConfigFile(
+    path.resolve("."),
+    `medusa-config`
+  ) as { configModule: ConfigModule }
+
+  return featureFlagsLoader(configModule)
 }
