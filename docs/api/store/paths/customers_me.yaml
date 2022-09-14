@@ -1,6 +1,6 @@
 get:
   operationId: GetCustomersCustomer
-  summary: Get a Customer
+  summary: Retrieves a Customer
   description: >-
     Retrieves a Customer - the Customer must be logged in to retrieve their
     details.
@@ -41,7 +41,7 @@ get:
       $ref: ../components/responses/500_error.yaml
 post:
   operationId: PostCustomersCustomer
-  summary: Update Customer
+  summary: Update Customer details
   description: Updates a Customer's saved details.
   x-authenticated: true
   requestBody:

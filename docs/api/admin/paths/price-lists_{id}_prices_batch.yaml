@@ -1,6 +1,6 @@
 post:
   operationId: PostPriceListsPriceListPricesBatch
-  summary: Update Prices
+  summary: Batch update prices for a Price List
   description: Batch update prices for a Price List
   x-authenticated: true
   parameters:
@@ -93,7 +93,7 @@ post:
       $ref: ../components/responses/500_error.yaml
 delete:
   operationId: DeletePriceListsPriceListPricesBatch
-  summary: Delete Prices
+  summary: Batch delete prices that belong to a Price List
   description: Batch delete prices that belong to a Price List
   x-authenticated: true
   parameters:

@@ -1,6 +1,6 @@
 delete:
   operationId: DeleteNotesNote
-  summary: Delete a Note
+  summary: Deletes a Note
   description: Deletes a Note.
   x-authenticated: true
   parameters:
@@ -56,7 +56,7 @@ delete:
       $ref: ../components/responses/500_error.yaml
 get:
   operationId: GetNotesNote
-  summary: Get a Note
+  summary: Get Note
   description: Retrieves a single note using its id
   x-authenticated: true
   parameters:
@@ -103,7 +103,7 @@ get:
       $ref: ../components/responses/500_error.yaml
 post:
   operationId: PostNotesNote
-  summary: Update a Note
+  summary: Updates a Note
   x-authenticated: true
   description: Updates a Note associated with some resource
   parameters:

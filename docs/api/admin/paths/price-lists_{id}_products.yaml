@@ -1,6 +1,6 @@
 get:
   operationId: GetPriceListsPriceListProducts
-  summary: List Products
+  summary: List Product in a Price List
   description: Retrieves a list of Product that are part of a Price List
   x-authenticated: true
   parameters:

@@ -1,7 +1,7 @@
 delete:
   operationId: DeleteCartsCartDiscountsDiscount
   description: Removes a Discount from a Cart.
-  summary: Remove Discount
+  summary: Remove Discount from Cart
   parameters:
     - in: path
       name: id

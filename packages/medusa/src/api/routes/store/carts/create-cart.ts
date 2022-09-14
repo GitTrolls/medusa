@@ -1,7 +1,4 @@
-import { EntityManager } from "typeorm"
-import { MedusaError } from "medusa-core-utils"
-import reqIp from "request-ip"
-import { Type } from "class-transformer"
+import { CartService, LineItemService, RegionService } from "../../../../services"
 import {
   IsArray,
   IsInt,
@@ -10,20 +7,18 @@ import {
   IsString,
   ValidateNested,
 } from "class-validator"
+import { defaultStoreCartFields, defaultStoreCartRelations, } from "."
 
-import {
-  CartService,
-  LineItemService,
-  RegionService,
-} from "../../../../services"
-import { defaultStoreCartFields, defaultStoreCartRelations } from "."
-import { Cart } from "../../../../models"
-import { FeatureFlagDecorators } from "../../../../utils/feature-flag-decorators"
+import { Cart } from "../../../../models";
+import { EntityManager } from "typeorm"
+import { FeatureFlagDecorators } from "../../../../utils/feature-flag-decorators";
 import { FlagRouter } from "../../../../utils/flag-router"
-import SalesChannelFeatureFlag from "../../../../loaders/feature-flags/sales-channels"
+import { MedusaError } from "medusa-core-utils"
+import SalesChannelFeatureFlag from "../../../../loaders/feature-flags/sales-channels";
+import { Type } from "class-transformer"
 import { decorateLineItemsWithTotals } from "./decorate-line-items-with-totals"
-import { CartCreateProps } from "../../../../types/cart"
-import { isDefined } from "../../../../utils"
+import reqIp from "request-ip"
+import { isDefined } from "../../../../utils";
 
 /**
  * @oas [post] /carts
@@ -136,31 +131,16 @@ export default async (req, res) => {
     regionId = regions[0].id
   }
 
-  const toCreate: Partial<CartCreateProps> = {
-    region_id: regionId,
-    sales_channel_id: validated.sales_channel_id,
-    context: {
-      ...reqContext,
-      ...validated.context,
-    },
-  }
-
-  if (req.user && req.user.customer_id) {
-    const customerService = req.scope.resolve("customerService")
-    const customer = await customerService.retrieve(req.user.customer_id)
-    toCreate["customer_id"] = customer.id
-    toCreate["email"] = customer.email
-  }
-
-  if (validated.country_code) {
-    toCreate["shipping_address"] = {
-      country_code: validated.country_code.toLowerCase(),
-    }
-  }
-
   let cart: Cart
   await entityManager.transaction(async (manager) => {
-    cart = await cartService.withTransaction(manager).create(toCreate)
+    cart = await cartService.withTransaction(manager).create({
+      ...validated,
+      context: {
+        ...reqContext,
+        ...validated.context,
+      },
+      region_id: regionId,
+     })
 
     if (validated.items) {
       await Promise.all(

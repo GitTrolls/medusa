@@ -1,6 +1,6 @@
 delete:
   operationId: PostRegionsRegionFulfillmentProvidersProvider
-  summary: Del. Fulfillment Provider
+  summary: Remove Fulfillment Provider
   description: Removes a Fulfillment Provider.
   x-authenticated: true
   parameters:
