@@ -372,13 +372,11 @@ class BatchJobService extends TransactionBaseService {
     data: CreateBatchJobInput,
     req: Request
   ): Promise<CreateBatchJobInput | never> {
-    return await this.atomicPhase_(async (transactionManager) => {
+    return await this.atomicPhase_(async () => {
       const batchStrategy = this.strategyResolver_.resolveBatchJobByType(
         data.type
       )
-      return await batchStrategy
-        .withTransaction(transactionManager)
-        .prepareBatchJobForProcessing(data, req)
+      return await batchStrategy.prepareBatchJobForProcessing(data, req)
     })
   }
 }

@@ -8,14 +8,12 @@ import faker from "faker"
 import { Connection } from "typeorm"
 
 export type ShippingOptionFactoryData = {
-  id?: string
   name?: string
   region_id: string
   is_return?: boolean
   is_giftcard?: boolean
   price?: number
   price_type?: ShippingOptionPriceType
-  includes_tax?: boolean
   data?: object
 }
 
@@ -37,8 +35,8 @@ export const simpleShippingOptionFactory = async (
     type: ShippingProfileType.GIFT_CARD,
   })
 
-  const shippingOptionData = {
-    id: data.id ?? `simple-so-${Math.random() * 1000}`,
+  const created = manager.create(ShippingOption, {
+    id: `simple-so-${Math.random() * 1000}`,
     name: data.name || "Test Method",
     is_return: data.is_return ?? false,
     region_id: data.region_id,
@@ -47,15 +45,7 @@ export const simpleShippingOptionFactory = async (
     price_type: data.price_type ?? ShippingOptionPriceType.FLAT_RATE,
     data: data.data ?? {},
     amount: typeof data.price !== "undefined" ? data.price : 500,
-  }
-
-  // This is purposefully managed out of the original object for the purpose of separating the data linked to a feature flag
-  // MEDUSA_FF_TAX_INCLUSIVE_PRICING
-  const { includes_tax } = data
-  if (typeof includes_tax !== "undefined") {
-    shippingOptionData["includes_tax"] = includes_tax
-  }
-
-  const created = manager.create(ShippingOption, shippingOptionData)
-  return await manager.save(created)
+  })
+  const option = await manager.save(created)
+  return option
 }

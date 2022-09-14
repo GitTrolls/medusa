@@ -1,8 +1,5 @@
 import { IdMap, MockManager, MockRepository } from "medusa-test-utils"
 import DiscountService from "../discount"
-import { FlagRouter } from "../../utils/flag-router"
-
-const featureFlagRouter = new FlagRouter({})
 
 describe("DiscountService", () => {
   describe("create", () => {
@@ -26,7 +23,6 @@ describe("DiscountService", () => {
       discountRepository,
       discountRuleRepository,
       regionService,
-      featureFlagRouter,
     })
 
     beforeEach(() => {
@@ -164,7 +160,6 @@ describe("DiscountService", () => {
     const discountService = new DiscountService({
       manager: MockManager,
       discountRepository,
-      featureFlagRouter,
     })
 
     beforeEach(() => {
@@ -208,7 +203,6 @@ describe("DiscountService", () => {
     const discountService = new DiscountService({
       manager: MockManager,
       discountRepository,
-      featureFlagRouter,
     })
 
     beforeEach(() => {
@@ -254,7 +248,6 @@ describe("DiscountService", () => {
       discountRepository,
       discountRuleRepository,
       regionService,
-      featureFlagRouter,
     })
 
     beforeEach(() => {
@@ -352,7 +345,6 @@ describe("DiscountService", () => {
       discountRepository,
       discountRuleRepository,
       regionService,
-      featureFlagRouter,
     })
 
     beforeEach(() => {
@@ -426,7 +418,6 @@ describe("DiscountService", () => {
       discountRepository,
       discountRuleRepository,
       regionService,
-      featureFlagRouter,
     })
 
     beforeEach(() => {
@@ -475,7 +466,6 @@ describe("DiscountService", () => {
       discountRepository,
       discountRuleRepository,
       regionService,
-      featureFlagRouter,
     })
 
     beforeEach(() => {
@@ -519,7 +509,6 @@ describe("DiscountService", () => {
     const discountService = new DiscountService({
       manager: MockManager,
       discountRepository,
-      featureFlagRouter,
     })
 
     beforeEach(() => {
@@ -599,7 +588,6 @@ describe("DiscountService", () => {
       manager: MockManager,
       discountRepository,
       totalsService,
-      featureFlagRouter,
     })
 
     beforeEach(() => {
@@ -775,7 +763,6 @@ describe("DiscountService", () => {
     beforeEach(async () => {
       discountService = new DiscountService({
         manager: MockManager,
-        featureFlagRouter,
       })
       const hasReachedLimitMock = jest.fn().mockImplementation(() => false)
       const isDisabledMock = jest.fn().mockImplementation(() => false)
@@ -905,9 +892,7 @@ describe("DiscountService", () => {
   })
 
   describe("hasReachedLimit", () => {
-    const discountService = new DiscountService({
-      featureFlagRouter,
-    })
+    const discountService = new DiscountService({})
 
     it("returns true if discount limit is reached", () => {
       const discount = {
@@ -951,9 +936,7 @@ describe("DiscountService", () => {
   })
 
   describe("isDisabled", () => {
-    const discountService = new DiscountService({
-      featureFlagRouter,
-    })
+    const discountService = new DiscountService({})
 
     it("returns false if discount not disabled", async () => {
       const discount = {
@@ -989,9 +972,7 @@ describe("DiscountService", () => {
   })
 
   describe("hasNotStarted", () => {
-    const discountService = new DiscountService({
-      featureFlagRouter,
-    })
+    const discountService = new DiscountService({})
 
     it("returns true if discount has a future starts_at date", async () => {
       const discount = {
@@ -1027,9 +1008,7 @@ describe("DiscountService", () => {
   })
 
   describe("hasExpired", () => {
-    const discountService = new DiscountService({
-      featureFlagRouter,
-    })
+    const discountService = new DiscountService({})
 
     it("returns false if discount has a future ends_at date", async () => {
       const discount = {
@@ -1089,7 +1068,6 @@ describe("DiscountService", () => {
 
     const discountService = new DiscountService({
       manager: MockManager,
-      featureFlagRouter,
     })
     discountService.retrieve = retrieveMock
 
@@ -1203,7 +1181,6 @@ describe("DiscountService", () => {
       manager: MockManager,
       discountConditionRepository,
       customerService,
-      featureFlagRouter,
     })
 
     it("returns false on undefined customer id", async () => {

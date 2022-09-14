@@ -1,7 +1,6 @@
 import { IdMap } from "medusa-test-utils"
 import { request } from "../../../../../helpers/test-request"
 import { SalesChannelServiceMock } from "../../../../../services/__mocks__/sales-channel"
-import SalesChannelFeatureFlag from "../../../../../loaders/feature-flags/sales-channels";
 
 describe("GET /admin/sales-channels/", () => {
   describe("successfully list the sales channel", () => {
@@ -17,7 +16,7 @@ describe("GET /admin/sales-channels/", () => {
               userId: IdMap.getId("admin_user"),
             },
           },
-          flags: [SalesChannelFeatureFlag],
+          flags: ["sales_channels"],
         }
       )
     })
