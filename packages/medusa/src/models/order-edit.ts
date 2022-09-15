@@ -64,7 +64,6 @@ export class OrderEdit extends SoftDeletableEntity {
   difference_due: number
 
   items: LineItem[]
-  removed_items: LineItem[]
 
   @BeforeInsert()
   private beforeInsert(): void {
@@ -154,10 +153,5 @@ export class OrderEdit extends SoftDeletableEntity {
  *     type: array
  *     description: Computed line items from the changes.
  *     items:
- *       $ref: "#/components/schemas/line_item"
- *   removed_items:
- *     type: array
- *     description: Computed line items from the changes that have been marked as deleted.
- *     removed_items:
  *       $ref: "#/components/schemas/line_item"
  */
