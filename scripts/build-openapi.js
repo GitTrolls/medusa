@@ -28,11 +28,6 @@ swaggerInline(
       process.exit(1)
     })
 })
-.catch((err) => {
-  console.log("Error in store")
-  console.error(err)
-  process.exit(1)
-});
 
 swaggerInline(
   ["./packages/medusa/src/models", "./packages/medusa/src/api/middlewares" , "./packages/medusa/src/api/routes/store"],
@@ -52,11 +47,6 @@ swaggerInline(
   } else {
     console.log('No errors occurred while generating Store API Reference');
   }
-})
-.catch((err) => {
-  console.log("Error in store")
-  console.error(err)
-  process.exit(1)
 })
 
 // Admin API
@@ -80,11 +70,6 @@ swaggerInline(
       process.exit(1)
     })
 })
-.catch((err) => {
-  console.log("Error in admin")
-  console.error(err)
-  process.exit(1)
-})
 
 swaggerInline(
   ["./packages/medusa/src/models", "./packages/medusa/src/api/middlewares" , "./packages/medusa/src/api/routes/admin"],
@@ -105,9 +90,4 @@ swaggerInline(
   } else {
     console.log('No errors occurred while generating Admin API Reference');
   }
-})
-.catch((err) => {
-  console.log("Error in admin")
-  console.error(err)
-  process.exit(1)
 })

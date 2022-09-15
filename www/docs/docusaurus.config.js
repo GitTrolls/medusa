@@ -216,11 +216,6 @@ module.exports = {
             showObjectSchemaExamples: true,
             requiredPropsFirst: true,
             hideRequestPayloadSample: true
-          },
-          theme: {
-            sidebar: {
-              width: '250px'
-            }
           }
         }
       },

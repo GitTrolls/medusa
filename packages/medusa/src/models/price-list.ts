@@ -122,9 +122,8 @@ export class PriceList extends SoftDeletableEntity {
  *     description: The Money Amounts that are associated with the Price List. Available if the relation `prices` is expanded.
  *     type: array
  *     items:
- *       oneOf:
- *         - $ref: "#/components/schemas/money_amount"
- *         - $ref: "#/components/schemas/customer_group"
+ *       $ref: "#/components/schemas/money_amount"
+ *       $ref: "#/components/schemas/customer_group"
  *   includes_tax:
  *     description: "[EXPERIMENTAL] Does the price list prices include tax"
  *     type: boolean
