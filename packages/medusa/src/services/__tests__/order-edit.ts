@@ -1,16 +1,7 @@
 import { IdMap, MockManager, MockRepository } from "medusa-test-utils"
-import {
-  EventBusService,
-  LineItemService,
-  OrderEditService,
-  OrderService,
-  TotalsService,
-} from "../index"
+import { OrderEditService, OrderService } from "../index"
 import { OrderEditItemChangeType } from "../../models"
 import { OrderServiceMock } from "../__mocks__/order"
-import { EventBusServiceMock } from "../__mocks__/event-bus"
-import { LineItemServiceMock } from "../__mocks__/line-item"
-import { TotalsServiceMock } from "../__mocks__/totals"
 
 const orderEditWithChanges = {
   id: IdMap.getId("order-edit-with-changes"),
@@ -57,25 +48,6 @@ const orderEditWithChanges = {
   ],
 }
 
-const lineItemServiceMock = {
-  ...LineItemServiceMock,
-  list: jest.fn().mockImplementation(() => {
-    return Promise.resolve([
-      {
-        id: IdMap.getId("line-item-1"),
-      },
-      {
-        id: IdMap.getId("line-item-2"),
-      },
-    ])
-  }),
-  retrieve: jest.fn().mockImplementation((id) => {
-    return Promise.resolve({
-      id,
-    })
-  }),
-}
-
 describe("OrderEditService", () => {
   const orderEditRepository = MockRepository({
     findOneWithRelations: (relations, query) => {
@@ -85,21 +57,12 @@ describe("OrderEditService", () => {
 
       return {}
     },
-    create: (data) => {
-      return {
-        ...orderEditWithChanges,
-        ...data,
-      }
-    },
   })
 
   const orderEditService = new OrderEditService({
     manager: MockManager,
     orderEditRepository,
     orderService: OrderServiceMock as unknown as OrderService,
-    eventBusService: EventBusServiceMock as unknown as EventBusService,
-    totalsService: TotalsServiceMock as unknown as TotalsService,
-    lineItemService: lineItemServiceMock as unknown as LineItemService,
   })
 
   it("should retrieve an order edit and call the repository with the right arguments", async () => {
@@ -114,10 +77,12 @@ describe("OrderEditService", () => {
   })
 
   it("should compute the items from the changes and attach them to the orderEdit", async () => {
-    const { items, removedItems } = await orderEditService.computeLineItems(
+    const orderEdit = await orderEditService.retrieve(
       IdMap.getId("order-edit-with-changes")
     )
-
+    const { items, removedItems } = await orderEditService.computeLineItems(
+      orderEdit.id
+    )
     expect(items.length).toBe(2)
     expect(items).toEqual(
       expect.arrayContaining([
@@ -137,28 +102,6 @@ describe("OrderEditService", () => {
           id: IdMap.getId("line-item-1"),
         }),
       ])
-    )
-  })
-
-  it("should create an order edit and call the repository with the right arguments as well as the event bus service", async () => {
-    const data = {
-      order_id: IdMap.getId("order-edit-order-id"),
-      internal_note: "internal note",
-    }
-    await orderEditService.create(data, {
-      loggedInUserId: IdMap.getId("admin_user"),
-    })
-
-    expect(orderEditRepository.create).toHaveBeenCalledTimes(1)
-    expect(orderEditRepository.create).toHaveBeenCalledWith({
-      order_id: data.order_id,
-      internal_note: data.internal_note,
-      created_by: IdMap.getId("admin_user"),
-    })
-    expect(EventBusServiceMock.emit).toHaveBeenCalledTimes(1)
-    expect(EventBusServiceMock.emit).toHaveBeenCalledWith(
-      OrderEditService.Events.CREATED,
-      { id: expect.any(String) }
     )
   })
 })
