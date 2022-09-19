@@ -1,6 +1,9 @@
 import { Router } from "express"
-import middlewares, { transformQuery } from "../../../middlewares"
-import { EmptyQueryParams } from "../../../../types/common"
+import middlewares, {
+  transformBody,
+  transformQuery,
+} from "../../../middlewares"
+import { DeleteResponse, EmptyQueryParams } from "../../../../types/common"
 import { isFeatureFlagEnabled } from "../../../middlewares/feature-flag-enabled"
 import OrderEditingFeatureFlag from "../../../../loaders/feature-flags/order-editing"
 import {
@@ -8,6 +11,7 @@ import {
   defaultOrderEditRelations,
 } from "../../../../types/order-edit"
 import { OrderEdit } from "../../../../models"
+import { AdminPostOrderEditsReq } from "./create-order-edit"
 
 const route = Router()
 
@@ -16,6 +20,12 @@ export default (app) => {
     "/order-edits",
     isFeatureFlagEnabled(OrderEditingFeatureFlag.key),
     route
+  )
+
+  route.post(
+    "/",
+    transformBody(AdminPostOrderEditsReq),
+    middlewares.wrap(require("./create-order-edit").default)
   )
 
   route.get(
@@ -28,9 +38,14 @@ export default (app) => {
     middlewares.wrap(require("./get-order-edit").default)
   )
 
+  route.delete("/:id", middlewares.wrap(require("./delete-order-edit").default))
+
   return app
 }
 
-export type AdminOrdersEditsRes = {
+export type AdminOrderEditsRes = {
   order_edit: OrderEdit
 }
+export type AdminOrderEditDeleteRes = DeleteResponse
+
+export * from "./create-order-edit"
