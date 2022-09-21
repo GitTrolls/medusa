@@ -1687,12 +1687,13 @@ This section holds all events related to sales channels.
 
 :::note
 
-As of Medusa v1.3.5, Sales Channels are available but guarded by a feature flag. To use Sales Channels either:
+As of Medusa v1.3.5, Sales Channels are available but guarded by a feature flag. To use Sales Channels, add the following environment variable:
 
-1. Enable the `MEDUSA_FF_SALES_CHANNELS` environment variable;
-2. Or enable the `sales_channels` key in the Medusa server's settings.
+```bash
+MEDUSA_FF_SALES_CHANNELS=true
+```
 
-You can learn more about enabling it in the [feature flags](../feature-flags/toggle.md) documentation.
+Then, run the [migrations](../migrations/overview.md#how-to-run-migrations).
 
 :::
 
