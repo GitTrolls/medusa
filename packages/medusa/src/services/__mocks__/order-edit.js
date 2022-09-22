@@ -19,6 +19,29 @@ export const orderEdits = {
   },
 }
 
+const computeLineItems = (orderEdit) => ({
+  ...orderEdit,
+  items: [
+    {
+      id: IdMap.getId("existingLine"),
+      title: "merge line",
+      description: "This is a new line",
+      thumbnail: "test-img-yeah.com/thumb",
+      content: {
+        unit_price: 123,
+        variant: {
+          id: IdMap.getId("can-cover"),
+        },
+        product: {
+          id: IdMap.getId("validId"),
+        },
+        quantity: 1,
+      },
+      quantity: 10,
+    },
+  ],
+  removedItems: [],
+})
 export const orderEditServiceMock = {
   withTransaction: function () {
     return this
@@ -27,10 +50,64 @@ export const orderEditServiceMock = {
     if (orderId === IdMap.getId("testCreatedOrder")) {
       return Promise.resolve(orderEdits.testCreatedOrder)
     }
+    if (orderId === IdMap.getId("testDeclineOrderEdit")) {
+      return Promise.resolve({
+        ...orderEdits.testCreatedOrder,
+        id: IdMap.getId("testDeclineOrderEdit"),
+        declined_reason: "Wrong size",
+        declined_at: new Date(),
+      })
+    }
+    if (orderId === IdMap.getId("testRequestOrder")) {
+      return Promise.resolve({
+        ...orderEdits.testCreatedOrder,
+        id: IdMap.getId("testRequestOrder"),
+        requested_by: IdMap.getId("admin_user"),
+        requested_at: new Date(),
+      })
+    }
     return Promise.resolve(undefined)
   }),
   computeLineItems: jest.fn().mockImplementation((orderEdit) => {
-    return Promise.resolve(orderEdit)
+    return Promise.resolve(computeLineItems(orderEdit))
+  }),
+  create: jest.fn().mockImplementation((data, context) => {
+    return Promise.resolve({
+      order_id: data.order_id,
+      internal_note: data.internal_note,
+      created_by: context.loggedInUserId,
+    })
+  }),
+  decline: jest.fn().mockImplementation((id, reason, userId) => {
+    return Promise.resolve({
+      id,
+      declined_reason: reason,
+      declined_by: userId,
+      declined_at: new Date(),
+    })
+  }),
+  getTotals: jest.fn().mockImplementation(() => {
+    return Promise.resolve({})
+  }),
+  delete: jest.fn().mockImplementation((_) => {
+    return Promise.resolve()
+  }),
+  decorateLineItemsAndTotals: jest.fn().mockImplementation((orderEdit) => {
+    const withLineItems = computeLineItems(orderEdit)
+    return Promise.resolve({
+      ...withLineItems,
+    })
+  }),
+  deleteItemChange: jest.fn().mockImplementation((_) => {
+    return Promise.resolve()
+  }),
+  requestConfirmation: jest.fn().mockImplementation((orderEditId, userId) => {
+    return Promise.resolve({
+      ...orderEdits.testCreatedOrder,
+      id: orderEditId,
+      requested_at: new Date(),
+      requested_by: userId,
+    })
   }),
 }
 

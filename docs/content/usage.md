@@ -1,7 +1,5 @@
 # Collected Usage Information
 
-<!-- vale docs.We = NO -->
-
 This document gives an overview of Medusa’s optional collected usage information, how it helps Medusa become a better platform, and how developers can opt out of this feature.
 
 ## Overview
@@ -50,5 +48,3 @@ Or, you can run the following command in the root of your Medusa server project 
 ```bash
 medusa telemetry --disable
 ```
-
-<!-- vale docs.We = YES -->
