@@ -28,65 +28,54 @@ export default class DefaultSearchService extends AbstractSearchService {
     this.manager_ = manager
   }
 
-  async createIndex(indexName: string, options: unknown): Promise<void> {
+  createIndex(indexName: string, options: unknown): void {
     this.logger_.warn(
       "This is an empty method: createIndex must be overridden by a child class"
     )
   }
 
-  async getIndex(indexName: string): Promise<void> {
+  getIndex(indexName: string): void {
     this.logger_.warn(
       "This is an empty method: getIndex must be overridden by a child class"
     )
   }
 
-  async addDocuments(
-    indexName: string,
-    documents: unknown,
-    type: string
-  ): Promise<void> {
+  addDocuments(indexName: string, documents: unknown, type: string): void {
     this.logger_.warn(
       "This is an empty method: addDocuments must be overridden by a child class"
     )
   }
 
-  async replaceDocuments(
-    indexName: string,
-    documents: unknown,
-    type: string
-  ): Promise<void> {
+  replaceDocuments(indexName: string, documents: unknown, type: string): void {
     this.logger_.warn(
       "This is an empty method: replaceDocuments must be overridden by a child class"
     )
   }
 
-  async deleteDocument(
-    indexName: string,
-    document_id: string | number
-  ): Promise<void> {
+  deleteDocument(indexName: string, document_id: string | number): void {
     this.logger_.warn(
       "This is an empty method: deleteDocument must be overridden by a child class"
     )
   }
 
-  async deleteAllDocuments(indexName: string): Promise<void> {
+  deleteAllDocuments(indexName: string): void {
     this.logger_.warn(
       "This is an empty method: deleteAllDocuments must be overridden by a child class"
     )
   }
 
-  async search(
+  search(
     indexName: string,
     query: unknown,
     options: unknown
-  ): Promise<{ hits: unknown[] }> {
+  ): { hits: unknown[] } {
     this.logger_.warn(
       "This is an empty method: search must be overridden a the child class"
     )
     return { hits: [] }
   }
 
-  async updateSettings(indexName: string, settings: unknown): Promise<void> {
+  updateSettings(indexName: string, settings: unknown): void {
     this.logger_.warn(
       "This is an empty method: updateSettings must be overridden by a child class"
     )

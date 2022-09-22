@@ -69,15 +69,6 @@ export const storeHandlers = [
     )
   }),
 
-  rest.post("/store/order-edits/:id/decline", (req, res, ctx) => {
-    return res(
-      ctx.status(200),
-      ctx.json({
-        order_edit: {...fixtures.get("order_edit"), declined_reason: req.body.declined_reason, status: 'declined'},
-      })
-    )
-  }),
-
   rest.get("/store/orders/:id", (req, res, ctx) => {
     return res(
       ctx.status(200),

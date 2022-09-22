@@ -34,5 +34,5 @@ export default async function ({ port, directory }) {
     return { dbConnection, server }
   }
 
-  const { dbConnection, server } = await start()
+  let { dbConnection, server } = await start()
 }
