@@ -176,10 +176,6 @@ module.exports = {
             },
           ]
         },
-        {
-          type: "doc",
-          id: "usage/local-development",
-        },
       ]
     },
     {
@@ -238,11 +234,6 @@ module.exports = {
         },
         {
           type: "doc",
-          id: "advanced/backend/feature-flags/toggle",
-          label: "Toggle Feature Flags"
-        },
-        {
-          type: "doc",
           id: "advanced/backend/cron-jobs/create",
           label: "Create a Cron Job"
         },
@@ -270,11 +261,6 @@ module.exports = {
               type: "doc",
               id: "advanced/admin/import-products",
               label: "Import Products"
-            },
-            {
-              type: "doc",
-              id: "advanced/backend/taxes/manual-calculation",
-              label: "Calculate Taxes Manually"
             },
           ]
         },
@@ -328,11 +314,6 @@ module.exports = {
           type: "doc",
           id: "advanced/backend/batch-jobs/index",
           label: "Batch Jobs"
-        },
-        {
-          type: "doc",
-          id: "advanced/backend/taxes/inclusive-pricing",
-          label: "Tax Inclusive Pricing"
         },
       ]
     },
@@ -514,6 +495,11 @@ module.exports = {
           label: "CLI Reference",
         },
         {
+          type: "doc",
+          id: "contribution-guidelines",
+          label: "Contribution Guidelines",
+        },
+        {
           type: "ref",
           id: "references/entities/classes/Address",
           label: "Entities Reference",
@@ -534,11 +520,6 @@ module.exports = {
           label: "Services Reference",
         },
       ]
-    },
-    {
-      type: "doc",
-      id: "contribution-guidelines",
-      label: "Contribution Guidelines",
     },
   ],
   userGuideSidebar: [

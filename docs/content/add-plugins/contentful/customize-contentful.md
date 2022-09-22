@@ -227,13 +227,13 @@ export const query = graphql`
 To test this out, run your Medusa server by running this command in its directory:
 
 ```bash
-npm run start
+npm start
 ```
 
 Then run the Gatsby storefront by running this command in its directory:
 
 ```bash
-npm run start
+npm start
 ```
 
 This runs the Gatsby storefront on `localhost:8000`. Go to the storefront in your browser and open the About page. You should see the Rich Text content you added.
