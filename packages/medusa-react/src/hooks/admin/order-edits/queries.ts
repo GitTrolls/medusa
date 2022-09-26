@@ -1,4 +1,4 @@
-import { AdminOrderEditsRes } from "@medusajs/medusa"
+import { AdminOrdersEditsRes } from "@medusajs/medusa"
 import { queryKeysFactory } from "../../utils"
 import { UseQueryOptionsWrapper } from "../../../types"
 import { Response } from "@medusajs/medusa-js"
@@ -13,7 +13,7 @@ type OrderEditQueryKeys = typeof adminOrderEditsKeys
 export const useAdminOrderEdit = (
   id: string,
   options?: UseQueryOptionsWrapper<
-    Response<AdminOrderEditsRes>,
+    Response<AdminOrdersEditsRes>,
     Error,
     ReturnType<OrderEditQueryKeys["detail"]>
   >

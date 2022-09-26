@@ -2092,7 +2092,8 @@ class CartService extends TransactionBaseService {
         }
 
         const updatedCart = await cartRepo.save(cart)
-        await this.eventBus_
+
+        this.eventBus_
           .withTransaction(transactionManager)
           .emit(CartService.Events.UPDATED, updatedCart)
 
