@@ -114,14 +114,16 @@ describe("[MEDUSA_FF_ORDER_EDITING] /store/order-edits", () => {
 
       await simpleLineItemFactory(dbConnection, {
         id: lineItemUpdateId,
-        order_id: orderEdit.order_id,
+        order_id: null,
         variant_id: product1.variants[0].id,
+        unit_price: 1000,
         quantity: 2,
       })
       await simpleLineItemFactory(dbConnection, {
         id: lineItemCreateId,
-        order_id: orderEdit.order_id,
+        order_id: null,
         variant_id: product3.variants[0].id,
+        unit_price: 100,
         quantity: 2,
       })
 
@@ -168,6 +170,13 @@ describe("[MEDUSA_FF_ORDER_EDITING] /store/order-edits", () => {
           removed_items: expect.arrayContaining([
             expect.objectContaining({ id: lineItemId2, quantity: 1 }),
           ]),
+          shipping_total: 0,
+          gift_card_total: 0,
+          gift_card_tax_total: 0,
+          discount_total: 0,
+          tax_total: 0,
+          total: 2200,
+          subtotal: 2200,
         })
       )
 
@@ -175,6 +184,93 @@ describe("[MEDUSA_FF_ORDER_EDITING] /store/order-edits", () => {
       expect(response.data.order_edit.created_by).not.toBeDefined()
       expect(response.data.order_edit.canceled_by).not.toBeDefined()
       expect(response.data.order_edit.confirmed_by).not.toBeDefined()
+    })
+  })
+
+  describe("POST /store/order-edits/:id/decline", () => {
+    let declineableOrderEdit
+    let declinedOrderEdit
+    let confirmedOrderEdit
+    beforeEach(async () => {
+      await adminSeeder(dbConnection)
+
+      declineableOrderEdit = await simpleOrderEditFactory(dbConnection, {
+        id: IdMap.getId("order-edit-1"),
+        created_by: "admin_user",
+        requested_at: new Date(),
+      })
+
+      declinedOrderEdit = await simpleOrderEditFactory(dbConnection, {
+        id: IdMap.getId("order-edit-2"),
+        created_by: "admin_user",
+        declined_reason: "wrong size",
+        declined_at: new Date(),
+      })
+
+      confirmedOrderEdit = await simpleOrderEditFactory(dbConnection, {
+        id: IdMap.getId("order-edit-3"),
+        created_by: "admin_user",
+        confirmed_at: new Date(),
+      })
+    })
+
+    afterEach(async () => {
+      const db = useDb()
+      return await db.teardown()
+    })
+
+    it("declines an order edit", async () => {
+      const api = useApi()
+      const result = await api.post(
+        `/store/order-edits/${declineableOrderEdit.id}/decline`,
+        {
+          declined_reason: "wrong color",
+        }
+      )
+
+      expect(result.status).toEqual(200)
+      expect(result.data.order_edit).toEqual(
+        expect.objectContaining({
+          status: "declined",
+          declined_reason: "wrong color",
+        })
+      )
+    })
+
+    it("fails to decline an already declined order edit", async () => {
+      const api = useApi()
+      const result = await api.post(
+        `/store/order-edits/${declinedOrderEdit.id}/decline`,
+        {
+          declined_reason: "wrong color",
+        }
+      )
+
+      expect(result.status).toEqual(200)
+      expect(result.data.order_edit).toEqual(
+        expect.objectContaining({
+          id: declinedOrderEdit.id,
+          status: "declined",
+          declined_reason: "wrong size",
+          declined_at: expect.any(String),
+        })
+      )
+    })
+
+    it("fails to decline an already confirmed order edit", async () => {
+      expect.assertions(2)
+
+      const api = useApi()
+      await api
+        .post(`/store/order-edits/${confirmedOrderEdit.id}/decline`, {
+          declined_reason: "wrong color",
+        })
+        .catch((err) => {
+          expect(err.response.status).toEqual(400)
+          expect(err.response.data.message).toEqual(
+            `Cannot decline an order edit with status confirmed.`
+          )
+        })
     })
   })
 })
