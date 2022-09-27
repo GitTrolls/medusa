@@ -140,8 +140,7 @@ class PriceListService extends TransactionBaseService {
         const priceList = await priceListRepo.save(entity)
 
         if (prices) {
-          const prices_ = await this.addCurrencyFromRegion(prices)
-          await moneyAmountRepo.addPriceListPrices(priceList.id, prices_)
+          await moneyAmountRepo.addPriceListPrices(priceList.id, prices)
         }
 
         if (customer_groups) {
@@ -508,9 +507,7 @@ class PriceListService extends TransactionBaseService {
     const prices_: typeof prices = []
 
     const regionServiceTx = this.regionService_.withTransaction(this.manager_)
-    for (const price of prices) {
-      const p = { ...price }
-
+    for (const p of prices) {
       if (p.region_id) {
         const region = await regionServiceTx.retrieve(p.region_id)
 

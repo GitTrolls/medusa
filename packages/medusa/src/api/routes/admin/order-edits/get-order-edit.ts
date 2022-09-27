@@ -59,8 +59,10 @@ export default async (req: Request, res: Response) => {
   const { id } = req.params
   const retrieveConfig = req.retrieveConfig
 
-  let orderEdit = await orderEditService.retrieve(id, retrieveConfig)
-  orderEdit = await orderEditService.decorateTotals(orderEdit)
+  const orderEdit = await orderEditService.retrieve(id, retrieveConfig)
+  const { items, removedItems } = await orderEditService.computeLineItems(id)
+  orderEdit.items = items
+  orderEdit.removed_items = removedItems
 
   return res.json({ order_edit: orderEdit })
 }

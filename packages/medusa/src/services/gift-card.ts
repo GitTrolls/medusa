@@ -32,7 +32,6 @@ type InjectedDependencies = {
  */
 class GiftCardService extends TransactionBaseService {
   protected readonly giftCardRepository_: typeof GiftCardRepository
-  // eslint-disable-next-line max-len
   protected readonly giftCardTransactionRepo_: typeof GiftCardTransactionRepository
   protected readonly regionService_: RegionService
   protected readonly eventBus_: EventBusService
