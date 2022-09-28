@@ -5,7 +5,6 @@ import {
   StorePostCustomersCustomerPasswordTokenReq,
   StorePostCustomersCustomerReq,
   StorePostCustomersReq,
-  StorePostCustomersResetPasswordReq,
 } from "@medusajs/medusa"
 import qs from "qs"
 import { ResponsePromise } from "../typings"
@@ -84,7 +83,7 @@ class CustomerResource extends BaseResource {
    * @return {ResponsePromise<StoreCustomersRes>}
    */
   resetPassword(
-    payload: StorePostCustomersResetPasswordReq,
+    payload: StorePostCustomersCustomerPasswordTokenReq,
     customHeaders: Record<string, any> = {}
   ): ResponsePromise<StoreCustomersRes> {
     const path = `/store/customers/password-reset`

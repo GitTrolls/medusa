@@ -55,7 +55,7 @@ export type Selector<TEntity> = {
     | DateComparisonOperator
     | StringComparisonOperator
     | NumericalComparisonOperator
-    | FindOperator<TEntity[key][] | string | string[]>
+    | FindOperator<TEntity[key][] | string[]>
 }
 
 export type TotalField =
