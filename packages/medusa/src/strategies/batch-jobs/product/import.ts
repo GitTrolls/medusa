@@ -104,7 +104,7 @@ class ProductImportStrategy extends AbstractBatchJobStrategy {
     this.regionService_ = regionService
   }
 
-  async buildTemplate(): Promise<string> {
+  buildTemplate(): Promise<string> {
     throw new Error("Not implemented!")
   }
 
@@ -802,13 +802,9 @@ const CSVSchema: ProductImportCsvSchema = {
         if (typeof value === "undefined" || value === null) {
           return builtLine
         }
-
-        const options = builtLine["product.options"] as Record<
-          string,
-          string | number
-        >[]
-
-        options.push({ title: value })
+        ;(
+          builtLine["product.options"] as Record<string, string | number>[]
+        ).push({ title: value })
 
         return builtLine
       },
@@ -828,12 +824,9 @@ const CSVSchema: ProductImportCsvSchema = {
           return builtLine
         }
 
-        const options = builtLine["variant.options"] as Record<
-          string,
-          string | number
-        >[]
-
-        options.push({
+        ;(
+          builtLine["variant.options"] as Record<string, string | number>[]
+        ).push({
           value,
           _title: context.line[key.slice(0, -6) + " Name"],
         })
@@ -924,13 +917,12 @@ const SalesChannelsSchema: ProductImportCsvSchema = {
         if (typeof value === "undefined" || value === null) {
           return builtLine
         }
-
-        const channels = builtLine["product.sales_channels"] as Record<
-          string,
-          string | number
-        >[]
-
-        channels.push({
+        ;(
+          builtLine["product.sales_channels"] as Record<
+            string,
+            string | number
+          >[]
+        ).push({
           name: value,
         })
 
@@ -947,13 +939,12 @@ const SalesChannelsSchema: ProductImportCsvSchema = {
         if (typeof value === "undefined" || value === null) {
           return builtLine
         }
-
-        const channels = builtLine["product.sales_channels"] as Record<
-          string,
-          string | number
-        >[]
-
-        channels.push({
+        ;(
+          builtLine["product.sales_channels"] as Record<
+            string,
+            string | number
+          >[]
+        ).push({
           id: value,
         })
 

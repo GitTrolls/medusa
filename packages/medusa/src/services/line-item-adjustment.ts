@@ -1,6 +1,6 @@
 import { MedusaError } from "medusa-core-utils"
 import { BaseService } from "medusa-interfaces"
-import { EntityManager, In } from "typeorm"
+import { EntityManager } from "typeorm"
 import {
   Cart,
   DiscountRuleType,
@@ -73,8 +73,9 @@ class LineItemAdjustmentService extends BaseService {
     id: string,
     config: FindConfig<LineItemAdjustment> = {}
   ): Promise<LineItemAdjustment> {
-    const lineItemAdjustmentRepo: LineItemAdjustmentRepository =
-      this.manager_.getCustomRepository(this.lineItemAdjustmentRepo_)
+    const lineItemAdjustmentRepo: LineItemAdjustmentRepository = this.manager_.getCustomRepository(
+      this.lineItemAdjustmentRepo_
+    )
 
     const query = this.buildQuery_({ id }, config)
     const lineItemAdjustment = await lineItemAdjustmentRepo.findOne(query)
@@ -96,8 +97,9 @@ class LineItemAdjustmentService extends BaseService {
    */
   async create(data: Partial<LineItemAdjustment>): Promise<LineItemAdjustment> {
     return await this.atomicPhase_(async (manager: EntityManager) => {
-      const lineItemAdjustmentRepo: LineItemAdjustmentRepository =
-        manager.getCustomRepository(this.lineItemAdjustmentRepo_)
+      const lineItemAdjustmentRepo: LineItemAdjustmentRepository = manager.getCustomRepository(
+        this.lineItemAdjustmentRepo_
+      )
 
       const lineItemAdjustment = lineItemAdjustmentRepo.create(data)
 
@@ -116,8 +118,9 @@ class LineItemAdjustmentService extends BaseService {
     data: Partial<LineItemAdjustment>
   ): Promise<LineItemAdjustment> {
     return await this.atomicPhase_(async (manager: EntityManager) => {
-      const lineItemAdjustmentRepo: LineItemAdjustmentRepository =
-        manager.getCustomRepository(this.lineItemAdjustmentRepo_)
+      const lineItemAdjustmentRepo: LineItemAdjustmentRepository = manager.getCustomRepository(
+        this.lineItemAdjustmentRepo_
+      )
 
       const lineItemAdjustment = await this.retrieve(id)
 
@@ -159,28 +162,28 @@ class LineItemAdjustmentService extends BaseService {
 
   /**
    * Deletes line item adjustments matching a selector
-   * @param selectorOrIds - the query object for find or the line item adjustment id
+   * @param selectorOrId - the query object for find or the line item adjustment id
    * @return the result of the delete operation
    */
   async delete(
-    selectorOrIds: string | string[] | FilterableLineItemAdjustmentProps
+    selectorOrId: string | FilterableLineItemAdjustmentProps
   ): Promise<void> {
     return this.atomicPhase_(async (manager) => {
-      const lineItemAdjustmentRepo: LineItemAdjustmentRepository =
-        manager.getCustomRepository(this.lineItemAdjustmentRepo_)
+      const lineItemAdjustmentRepo: LineItemAdjustmentRepository = manager.getCustomRepository(
+        this.lineItemAdjustmentRepo_
+      )
 
-      if (typeof selectorOrIds === "string" || Array.isArray(selectorOrIds)) {
-        const ids =
-          typeof selectorOrIds === "string" ? [selectorOrIds] : selectorOrIds
-        return await lineItemAdjustmentRepo.delete({ id: In(ids) })
+      if (typeof selectorOrId === "string") {
+        return await this.delete({ id: selectorOrId })
       }
 
-      const query = this.buildQuery_(selectorOrIds)
+      const query = this.buildQuery_(selectorOrId)
 
       const lineItemAdjustments = await lineItemAdjustmentRepo.find(query)
 
       await lineItemAdjustmentRepo.remove(lineItemAdjustments)
-      return
+
+      return Promise.resolve()
     })
   }
 
@@ -299,7 +302,7 @@ class LineItemAdjustmentService extends BaseService {
     }
 
     return await Promise.all(
-      cart.items.map(async (li) => this.createAdjustmentForLineItem(cart, li))
+      cart.items.map((li) => this.createAdjustmentForLineItem(cart, li))
     )
   }
 }
