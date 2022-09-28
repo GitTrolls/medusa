@@ -24,7 +24,6 @@
 - [NoteService](classes/NoteService.md)
 - [NotificationService](classes/NotificationService.md)
 - [OauthService](classes/OauthService.md)
-- [OrderEditService](classes/OrderEditService.md)
 - [OrderService](classes/OrderService.md)
 - [PaymentProviderService](classes/PaymentProviderService.md)
 - [PricingService](classes/PricingService.md)
