@@ -9,8 +9,6 @@ import {
 import middlewares, { transformQuery } from "../../../middlewares"
 import { AdminGetOrdersParams } from "./list-orders"
 import { FlagRouter } from "../../../../utils/flag-router"
-import SalesChannelFeatureFlag from "../../../../loaders/feature-flags/sales-channels"
-import OrderEditingFeatureFlag from "../../../../loaders/feature-flags/order-editing"
 
 const route = Router()
 
@@ -18,12 +16,8 @@ export default (app, featureFlagRouter: FlagRouter) => {
   app.use("/orders", route)
 
   const relations = [...defaultAdminOrdersRelations]
-  if (featureFlagRouter.isFeatureEnabled(SalesChannelFeatureFlag.key)) {
+  if (featureFlagRouter.isFeatureEnabled("sales_channels")) {
     relations.push("sales_channel")
-  }
-
-  if (featureFlagRouter.isFeatureEnabled(OrderEditingFeatureFlag.key)) {
-    relations.push("edits")
   }
 
   /**

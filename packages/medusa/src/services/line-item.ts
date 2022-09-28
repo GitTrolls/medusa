@@ -1,23 +1,24 @@
 import { MedusaError } from "medusa-core-utils"
 import { BaseService } from "medusa-interfaces"
-import { EntityManager, In } from "typeorm"
+import { EntityManager } from "typeorm"
 import { DeepPartial } from "typeorm/common/DeepPartial"
-
+import TaxInclusivePricingFeatureFlag from "../loaders/feature-flags/tax-inclusive-pricing"
+import { LineItemTaxLine } from "../models"
+import { Cart } from "../models/cart"
+import { LineItem } from "../models/line-item"
+import { LineItemAdjustment } from "../models/line-item-adjustment"
 import { CartRepository } from "../repositories/cart"
 import { LineItemRepository } from "../repositories/line-item"
 import { LineItemTaxLineRepository } from "../repositories/line-item-tax-line"
-import { Cart, LineItemTaxLine, LineItem, LineItemAdjustment } from "../models"
-import { FindConfig, Selector } from "../types/common"
+import { FindConfig } from "../types/common"
 import { FlagRouter } from "../utils/flag-router"
-import LineItemAdjustmentService from "./line-item-adjustment"
-import OrderEditingFeatureFlag from "../loaders/feature-flags/order-editing"
-import TaxInclusivePricingFeatureFlag from "../loaders/feature-flags/tax-inclusive-pricing"
 import {
   PricingService,
   ProductService,
   ProductVariantService,
   RegionService,
 } from "./index"
+import LineItemAdjustmentService from "./line-item-adjustment"
 
 type InjectedDependencies = {
   manager: EntityManager
@@ -98,7 +99,7 @@ class LineItemService extends BaseService {
   }
 
   async list(
-    selector: Selector<LineItem>,
+    selector,
     config: FindConfig<LineItem> = {
       skip: 0,
       take: 50,
@@ -207,7 +208,6 @@ class LineItemService extends BaseService {
       includes_tax?: boolean
       metadata?: Record<string, unknown>
       customer_id?: string
-      order_edit_id?: string
       cart?: Cart
     } = {}
   ): Promise<LineItem> {
@@ -265,12 +265,6 @@ class LineItemService extends BaseService {
           )
         ) {
           rawLineItem.includes_tax = unitPriceIncludesTax
-        }
-
-        if (
-          this.featureFlagRouter_.isFeatureEnabled(OrderEditingFeatureFlag.key)
-        ) {
-          rawLineItem.order_edit_id = context.order_edit_id || null
         }
 
         const lineItemRepo = transactionManager.getCustomRepository(
@@ -368,77 +362,6 @@ class LineItemService extends BaseService {
     )
 
     return itemTaxLineRepo.create(args)
-  }
-
-  async cloneTo(
-    ids: string | string[],
-    data: DeepPartial<LineItem> = {},
-    options: { setOriginalLineItemId?: boolean } = {
-      setOriginalLineItemId: true,
-    }
-  ): Promise<LineItem[]> {
-    ids = typeof ids === "string" ? [ids] : ids
-    return await this.atomicPhase_(async (manager) => {
-      let lineItems: DeepPartial<LineItem>[] = await this.list(
-        {
-          id: In(ids as string[]),
-        },
-        {
-          relations: ["tax_lines", "adjustments"],
-        }
-      )
-
-      const lineItemRepository = manager.getCustomRepository(
-        this.lineItemRepository_
-      )
-
-      const {
-        order_id,
-        swap_id,
-        claim_order_id,
-        cart_id,
-        order_edit_id,
-        ...lineItemData
-      } = data
-
-      if (
-        !order_id &&
-        !swap_id &&
-        !claim_order_id &&
-        !cart_id &&
-        !order_edit_id
-      ) {
-        throw new MedusaError(
-          MedusaError.Types.INVALID_DATA,
-          "Unable to clone a line item that is not attached to at least one of: order_edit, order, swap, claim or cart."
-        )
-      }
-
-      lineItems = lineItems.map((item) => ({
-        ...item,
-        ...lineItemData,
-        id: undefined,
-        order_id,
-        swap_id,
-        claim_order_id,
-        cart_id,
-        order_edit_id,
-        original_item_id: options?.setOriginalLineItemId ? item.id : undefined,
-        tax_lines: item.tax_lines?.map((tax_line) => ({
-          ...tax_line,
-          id: undefined,
-          item_id: undefined,
-        })),
-        adjustments: item.adjustments?.map((adj) => ({
-          ...adj,
-          id: undefined,
-          item_id: undefined,
-        })),
-      }))
-
-      const clonedLineItemEntities = lineItemRepository.create(lineItems)
-      return await lineItemRepository.save(clonedLineItemEntities)
-    })
   }
 }
 
