@@ -440,7 +440,7 @@ export class AdminPostOrdersOrderClaimsReq {
 
   @IsObject()
   @IsOptional()
-  metadata?: Record<string, unknown>
+  metadata?: object
 }
 
 class ReturnShipping {

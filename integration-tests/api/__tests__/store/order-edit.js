@@ -21,6 +21,12 @@ const { OrderEditItemChangeType } = require("@medusajs/medusa")
 
 jest.setTimeout(30000)
 
+const adminHeaders = {
+  headers: {
+    Authorization: "Bearer test_token",
+  },
+}
+
 describe("[MEDUSA_FF_ORDER_EDITING] /store/order-edits", () => {
   let medusaProcess
   let dbConnection
@@ -87,13 +93,6 @@ describe("[MEDUSA_FF_ORDER_EDITING] /store/order-edits", () => {
             fulfilled_quantity: 1,
             shipped_quantity: 1,
             unit_price: 1000,
-            tax_lines: [
-              {
-                rate: 10,
-                code: "code1",
-                name: "code1",
-              },
-            ],
           },
           {
             id: lineItemId2,
@@ -102,13 +101,6 @@ describe("[MEDUSA_FF_ORDER_EDITING] /store/order-edits", () => {
             fulfilled_quantity: 1,
             shipped_quantity: 1,
             unit_price: 1000,
-            tax_lines: [
-              {
-                rate: 10,
-                code: "code2",
-                name: "code2",
-              },
-            ],
           },
         ],
       })
@@ -122,16 +114,14 @@ describe("[MEDUSA_FF_ORDER_EDITING] /store/order-edits", () => {
 
       await simpleLineItemFactory(dbConnection, {
         id: lineItemUpdateId,
-        order_id: null,
+        order_id: orderEdit.order_id,
         variant_id: product1.variants[0].id,
-        unit_price: 1000,
         quantity: 2,
       })
       await simpleLineItemFactory(dbConnection, {
         id: lineItemCreateId,
-        order_id: null,
+        order_id: orderEdit.order_id,
         variant_id: product3.variants[0].id,
-        unit_price: 100,
         quantity: 2,
       })
 
@@ -170,147 +160,21 @@ describe("[MEDUSA_FF_ORDER_EDITING] /store/order-edits", () => {
       expect(response.data.order_edit).toEqual(
         expect.objectContaining({
           id: orderEditId,
-          items: expect.arrayContaining([]),
-          changes: expect.arrayContaining([
-            expect.objectContaining({
-              type: "item_add",
-              order_edit_id: orderEditId,
-              original_line_item_id: null,
-              line_item_id: lineItemCreateId,
-              line_item: expect.any(Object),
-              original_line_item: null,
-            }),
-            expect.objectContaining({
-              type: "item_update",
-              order_edit_id: orderEditId,
-              original_line_item_id: lineItemId1,
-              line_item_id: lineItemUpdateId,
-              line_item: expect.any(Object),
-              original_line_item: expect.any(Object),
-            }),
-            expect.objectContaining({
-              type: "item_remove",
-              order_edit_id: orderEditId,
-              original_line_item_id: lineItemId2,
-              line_item_id: null,
-              line_item: null,
-              original_line_item: expect.any(Object),
-            }),
+          requested_by: null,
+          items: expect.arrayContaining([
+            expect.objectContaining({ id: lineItemCreateId, quantity: 2 }),
+            expect.objectContaining({ id: lineItemId1, quantity: 2 }),
           ]),
-          // Items are cloned during the creation which explain why it is 0 for a fake order edit since it does
-          // not use the logic of the service. Must be check in another test
-          shipping_total: 0,
-          gift_card_total: 0,
-          gift_card_tax_total: 0,
-          discount_total: 0,
-          tax_total: 0,
-          total: 0,
-          subtotal: 0,
+          removed_items: expect.arrayContaining([
+            expect.objectContaining({ id: lineItemId2, quantity: 1 }),
+          ]),
         })
       )
+
       expect(response.data.order_edit.internal_note).not.toBeDefined()
       expect(response.data.order_edit.created_by).not.toBeDefined()
       expect(response.data.order_edit.canceled_by).not.toBeDefined()
       expect(response.data.order_edit.confirmed_by).not.toBeDefined()
-    })
-
-    it("fails to get an order edit with disallowed fields query params", async () => {
-      const api = useApi()
-
-      const err = await api
-        .get(`/store/order-edits/${orderEditId}?fields=internal_note,order_id`)
-        .catch((e) => e)
-
-      expect(err.response.data.message).toBe(
-        "Fields [internal_note] are not valid"
-      )
-    })
-  })
-
-  describe("POST /store/order-edits/:id/decline", () => {
-    let declineableOrderEdit
-    let declinedOrderEdit
-    let confirmedOrderEdit
-    beforeEach(async () => {
-      await adminSeeder(dbConnection)
-
-      declineableOrderEdit = await simpleOrderEditFactory(dbConnection, {
-        id: IdMap.getId("order-edit-1"),
-        created_by: "admin_user",
-        requested_at: new Date(),
-      })
-
-      declinedOrderEdit = await simpleOrderEditFactory(dbConnection, {
-        id: IdMap.getId("order-edit-2"),
-        created_by: "admin_user",
-        declined_reason: "wrong size",
-        declined_at: new Date(),
-      })
-
-      confirmedOrderEdit = await simpleOrderEditFactory(dbConnection, {
-        id: IdMap.getId("order-edit-3"),
-        created_by: "admin_user",
-        confirmed_at: new Date(),
-      })
-    })
-
-    afterEach(async () => {
-      const db = useDb()
-      return await db.teardown()
-    })
-
-    it("declines an order edit", async () => {
-      const api = useApi()
-      const result = await api.post(
-        `/store/order-edits/${declineableOrderEdit.id}/decline`,
-        {
-          declined_reason: "wrong color",
-        }
-      )
-
-      expect(result.status).toEqual(200)
-      expect(result.data.order_edit).toEqual(
-        expect.objectContaining({
-          status: "declined",
-          declined_reason: "wrong color",
-        })
-      )
-    })
-
-    it("fails to decline an already declined order edit", async () => {
-      const api = useApi()
-      const result = await api.post(
-        `/store/order-edits/${declinedOrderEdit.id}/decline`,
-        {
-          declined_reason: "wrong color",
-        }
-      )
-
-      expect(result.status).toEqual(200)
-      expect(result.data.order_edit).toEqual(
-        expect.objectContaining({
-          id: declinedOrderEdit.id,
-          status: "declined",
-          declined_reason: "wrong size",
-          declined_at: expect.any(String),
-        })
-      )
-    })
-
-    it("fails to decline an already confirmed order edit", async () => {
-      expect.assertions(2)
-
-      const api = useApi()
-      await api
-        .post(`/store/order-edits/${confirmedOrderEdit.id}/decline`, {
-          declined_reason: "wrong color",
-        })
-        .catch((err) => {
-          expect(err.response.status).toEqual(400)
-          expect(err.response.data.message).toEqual(
-            `Cannot decline an order edit with status confirmed.`
-          )
-        })
     })
   })
 })

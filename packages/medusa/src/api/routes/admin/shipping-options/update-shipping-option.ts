@@ -178,7 +178,7 @@ export class AdminPostShippingOptionsOptionReq {
 
   @IsObject()
   @IsOptional()
-  metadata?: Record<string, unknown>
+  metadata?: object
 
   @FeatureFlagDecorators(TaxInclusivePricingFeatureFlag.key, [
     IsOptional(),

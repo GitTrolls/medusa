@@ -96,7 +96,12 @@ class BatchJobService extends TransactionBaseService {
     eventBusService,
     strategyResolverService,
   }: InjectedDependencies) {
-    super(arguments[0])
+    super({
+      manager,
+      batchJobRepository,
+      eventBusService,
+      strategyResolverService,
+    })
 
     this.manager_ = manager
     this.batchJobRepository_ = batchJobRepository
