@@ -58,6 +58,7 @@ You can do that by sending the following request to the [Upload Files](https://d
 <TabItem value="client" label="Medusa JS Client" default>
 
 ```jsx
+// using JS Client
 medusa.admin.uploads.create(file) //file is an instance of File
 .then(({ uploads }) => {
   const key = uploads[0].key;
@@ -68,6 +69,7 @@ medusa.admin.uploads.create(file) //file is an instance of File
 <TabItem value="fetch" label="Fetch API">
 
 ```jsx
+// using Fetch API
 const formData = new FormData();
 formData.append('files', file); //file is an instance of File
 
@@ -88,6 +90,7 @@ fetch(`<YOUR_SERVER>/admin/uploads`, {
 <TabItem value="curl" label="cURL">
 
 ```bash
+# using cURL
 curl --location --request POST '<YOUR_SERVER>/admin/uploads' \
   --header 'Authorization: Bearer {api_token}' \
   --header 'Content-Type: text/csv' \
@@ -109,6 +112,7 @@ You can do that by sending the following request to the [Create a Batch Job](htt
 <TabItem value="client" label="Medusa JS Client" default>
 
 ```jsx
+// using JS Client
 medusa.admin.batchJobs.create({
   type: 'product-import',
   context: {
@@ -125,6 +129,7 @@ medusa.admin.batchJobs.create({
 <TabItem value="fetch" label="Fetch API">
 
 ```jsx
+// using Fetch API
 fetch(`<YOUR_SERVER>/admin/batch-jobs`, {
   method: 'POST',
   headers: {
@@ -148,6 +153,7 @@ fetch(`<YOUR_SERVER>/admin/batch-jobs`, {
 <TabItem value="curl" label="cURL">
 
 ```bash
+# using cURL
 curl --location --request POST '<YOUR_SERVER>/admin/batch-jobs' \
 --header 'Authorization: Bearer {api_token}' \
 --header 'Content-Type: application/json' \
@@ -188,6 +194,7 @@ You can retrieve all the details of the batch job, including its status and the 
 <TabItem value="client" label="Medusa JS Client" default>
 
 ```jsx
+// using JS Client
 medusa.admin.batchJobs.retrieve(batchJobId)
 .then(( batch_job ) => {
   console.log(batch_job.status, batch_job.result);
@@ -198,6 +205,7 @@ medusa.admin.batchJobs.retrieve(batchJobId)
 <TabItem value="fetch" label="Fetch API">
 
 ```jsx
+// using Fetch API
 fetch(`<YOUR_SERVER>/admin/batch-jobs/${batchJobId}`)
 .then((response) => response.json())
 .then(({ batch_job }) => {
@@ -209,6 +217,7 @@ fetch(`<YOUR_SERVER>/admin/batch-jobs/${batchJobId}`)
 <TabItem value="curl" label="cURL">
 
 ```bash
+# using cURL
 curl --location --request GET '<YOUR_SERVER>/admin/batch-jobs/<BATCH_JOB_ID>' \
 --header 'Authorization: Bearer {api_token}'
 # <BATCH_JOB_ID> is the ID of the batch job
@@ -247,6 +256,7 @@ To confirm a batch job send the following request:
 <TabItem value="client" label="Medusa JS Client" default>
 
 ```jsx
+// using JS Client
 medusa.admin.batchJobs.confirm(batchJobId)
 .then(( batch_job ) => {
   console.log(batch_job.status);
@@ -257,6 +267,7 @@ medusa.admin.batchJobs.confirm(batchJobId)
 <TabItem value="fetch" label="Fetch API">
 
 ```jsx
+// using Fetch API
 fetch(`<YOUR_SERVER>/admin/batch-jobs/${batchJobId}/confirm`, {
   method: 'POST'
 })
@@ -270,6 +281,7 @@ fetch(`<YOUR_SERVER>/admin/batch-jobs/${batchJobId}/confirm`, {
 <TabItem value="curl" label="cURL">
 
 ```bash
+# using cURL
 curl --location --request POST '<YOUR_SERVER>/admin/batch-jobs/<BATCH_JOB_ID>/confirm' \
 --header 'Authorization: Bearer {api_token}'
 # <BATCH_JOB_ID> is the ID of the batch job
