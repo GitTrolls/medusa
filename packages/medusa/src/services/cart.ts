@@ -1838,9 +1838,6 @@ class CartService extends TransactionBaseService {
           relations: ["countries"],
         })
 
-      const lineItemServiceTx =
-        this.lineItemService_.withTransaction(transactionManager)
-
       cart.items = (
         await Promise.all(
           cart.items.map(async (item) => {
@@ -1859,19 +1856,21 @@ class CartService extends TransactionBaseService {
               availablePrice !== undefined &&
               availablePrice.calculatedPrice !== null
             ) {
-              return lineItemServiceTx.update(item.id, {
-                has_shipping: false,
-                unit_price: availablePrice.calculatedPrice,
-              })
+              return this.lineItemService_
+                .withTransaction(transactionManager)
+                .update(item.id, {
+                  has_shipping: false,
+                  unit_price: availablePrice.calculatedPrice,
+                })
             } else {
-              await lineItemServiceTx.delete(item.id)
+              await this.lineItemService_
+                .withTransaction(transactionManager)
+                .delete(item.id)
               return
             }
           })
         )
-      )
-        .flat()
-        .filter((item): item is LineItem => !!item)
+      ).filter((item): item is LineItem => !!item)
     }
   }
 
@@ -2093,7 +2092,8 @@ class CartService extends TransactionBaseService {
         }
 
         const updatedCart = await cartRepo.save(cart)
-        await this.eventBus_
+
+        this.eventBus_
           .withTransaction(transactionManager)
           .emit(CartService.Events.UPDATED, updatedCart)
 

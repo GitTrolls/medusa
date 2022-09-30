@@ -34,6 +34,11 @@ export default (app) => {
     "/",
     middlewares.wrap(require("./get-sales-channel").default)
   )
+  salesChannelRouter.post(
+    "/",
+    transformBody(AdminPostSalesChannelsSalesChannelReq),
+    middlewares.wrap(require("./update-sales-channel").default)
+  )
   salesChannelRouter.delete(
     "/",
     middlewares.wrap(require("./delete-sales-channel").default)
