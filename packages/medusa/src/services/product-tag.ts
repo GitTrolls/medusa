@@ -1,34 +1,50 @@
 import { MedusaError } from "medusa-core-utils"
+import { BaseService } from "medusa-interfaces"
 import { EntityManager, ILike, SelectQueryBuilder } from "typeorm"
-import { ProductTag } from "../models"
+import { ProductTag } from "../models/product-tag"
 import { ProductTagRepository } from "../repositories/product-tag"
 import { FindConfig } from "../types/common"
 import { FilterableProductTagProps } from "../types/product"
-import { TransactionBaseService } from "../interfaces"
-import { buildQuery } from "../utils"
 
 type ProductTagConstructorProps = {
   manager: EntityManager
   productTagRepository: typeof ProductTagRepository
 }
 
-class ProductTagService extends TransactionBaseService {
-  protected manager_: EntityManager
-  protected transactionManager_: EntityManager | undefined
-
-  protected readonly tagRepo_: typeof ProductTagRepository
+/**
+ * Provides layer to manipulate product tags.
+ * @extends BaseService
+ */
+class ProductTagService extends BaseService {
+  private manager_: EntityManager
+  private tagRepo_: typeof ProductTagRepository
 
   constructor({ manager, productTagRepository }: ProductTagConstructorProps) {
-    super(arguments[0])
+    super()
     this.manager_ = manager
     this.tagRepo_ = productTagRepository
   }
 
+  withTransaction(transactionManager: EntityManager): ProductTagService {
+    if (!transactionManager) {
+      return this
+    }
+
+    const cloned = new ProductTagService({
+      manager: transactionManager,
+      productTagRepository: this.tagRepo_,
+    })
+
+    cloned.transactionManager_ = transactionManager
+
+    return cloned
+  }
+
   /**
    * Retrieves a product tag by id.
-   * @param tagId - the id of the product tag to retrieve
-   * @param config - the config to retrieve the tag by
-   * @return the collection.
+   * @param {string} tagId - the id of the product tag to retrieve
+   * @param {Object} config - the config to retrieve the tag by
+   * @return {Promise<ProductTag>} the collection.
    */
   async retrieve(
     tagId: string,
@@ -36,7 +52,7 @@ class ProductTagService extends TransactionBaseService {
   ): Promise<ProductTag> {
     const tagRepo = this.manager_.getCustomRepository(this.tagRepo_)
 
-    const query = buildQuery({ id: tagId }, config)
+    const query = this.buildQuery_({ id: tagId }, config)
     const tag = await tagRepo.findOne(query)
 
     if (!tag) {
@@ -51,8 +67,8 @@ class ProductTagService extends TransactionBaseService {
 
   /**
    * Creates a product tag
-   * @param tag - the product tag to create
-   * @return created product tag
+   * @param {object} tag - the product tag to create
+   * @return {Promise<ProductTag>} created product tag
    */
   async create(tag: Partial<ProductTag>): Promise<ProductTag> {
     return await this.atomicPhase_(async (manager: EntityManager) => {
@@ -65,9 +81,9 @@ class ProductTagService extends TransactionBaseService {
 
   /**
    * Lists product tags
-   * @param selector - the query object for find
-   * @param config - the config to be used for find
-   * @return the result of the find operation
+   * @param {Object} selector - the query object for find
+   * @param {Object} config - the config to be used for find
+   * @return {Promise} the result of the find operation
    */
   async list(
     selector: FilterableProductTagProps = {},
@@ -75,15 +91,15 @@ class ProductTagService extends TransactionBaseService {
   ): Promise<ProductTag[]> {
     const tagRepo = this.manager_.getCustomRepository(this.tagRepo_)
 
-    const query = buildQuery(selector, config)
+    const query = this.buildQuery_(selector, config)
     return await tagRepo.find(query)
   }
 
   /**
    * Lists product tags and adds count.
-   * @param selector - the query object for find
-   * @param config - the config to be used for find
-   * @return the result of the find operation
+   * @param {Object} selector - the query object for find
+   * @param {Object} config - the config to be used for find
+   * @return {Promise} the result of the find operation
    */
   async listAndCount(
     selector: FilterableProductTagProps = {},
@@ -97,7 +113,7 @@ class ProductTagService extends TransactionBaseService {
       delete selector.q
     }
 
-    const query = buildQuery(selector, config)
+    const query = this.buildQuery_(selector, config)
 
     if (q) {
       const where = query.where
