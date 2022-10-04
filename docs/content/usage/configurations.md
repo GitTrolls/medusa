@@ -24,9 +24,54 @@ This change in how environment variables are loaded was introduced in version 1.
 
 :::
 
+### Load from .env
+
+A common way to use environment variables during development or in production is using `.env` files.
+
+To load environment variables from a `.env` file, add the following at the top of `medusa-config.js`:
+
+```jsx
+const dotenv = require('dotenv')
+
+ let ENV_FILE_NAME = '';
+ switch (process.env.NODE_ENV) {
+  case 'production':
+    ENV_FILE_NAME = '.env.production';
+    break;
+  case 'staging':
+    ENV_FILE_NAME = '.env.staging';
+    break;
+  case 'test':
+    ENV_FILE_NAME = '.env.test';
+    break;
+  case 'development':
+  default:
+    ENV_FILE_NAME = '.env';
+    break;
+ }
+
+ try {
+  dotenv.config({ path: process.cwd() + '/' + ENV_FILE_NAME });
+ } catch (e) {
+  //handle error
+ }
+```
+
+This code snippet uses the [dotenv](https://www.npmjs.com/package/dotenv) library to load environment variables from a local file. The file chosen to be loaded will be loaded based on the current environment.
+
+:::note
+
+`dotenv` should be available to use in your Medusa server project without the need to install it. However, if it’s not available you can install it with the following command:
+
+```npm2yarn
+npm install dotenv --save
+```
+
+:::
+
 ## Database Configuration
 
-Medusa supports two database types: SQLite and PostgreSQL.
+Medusa supports 2 database types: SQLite and PostgreSQL.
 
 :::tip
 
@@ -36,7 +81,7 @@ You can use SQLite for development purposes, however, it’s recommended to use 
 
 ### SQLite Configurations
 
-For SQLite you mainly need two configurations:
+For SQLite you mainly need 2 configurations:
 
 ```jsx
 module.exports = {
@@ -58,7 +103,7 @@ Before getting started with configuring PostgreSQL, you should have created a Po
 
 :::
 
-For PostgreSQL you mainly need two configurations:
+For PostgreSQL you mainly need 2 configurations:
 
 ```jsx
 module.exports = {
@@ -136,9 +181,9 @@ You can learn more about Subscribers and events in the [Subscriber documentation
 
 :::
 
-## JWT Secret
+## JSON Web Token (JWT) Secret
 
-Medusa uses JSON Web Token (JWT) to handle user authentication. To set the JWT secret:
+Medusa uses JWT to handle user authentication. To set the JWT secret:
 
 ```jsx
 module.exports = {
@@ -308,6 +353,6 @@ It is recommended to use environment variables to store values of options instea
 
 ## What’s Next 🚀
 
-- Check out the [Next.js](../starters/nextjs-medusa-starter.md) and [Gatsby](../starters/gatsby-medusa-starter.md) starter storefronts.
+- Check out our [Next.js](../starters/nextjs-medusa-starter.md) and [Gatsby](../starters/gatsby-medusa-starter.md) starter storefronts.
 - Install the [Medusa admin](../admin/quickstart.md).
 - Learn about [deploying the Medusa server](../deployments/server/index.mdx).
