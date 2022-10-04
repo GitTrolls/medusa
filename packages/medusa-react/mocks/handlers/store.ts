@@ -69,31 +69,6 @@ export const storeHandlers = [
     )
   }),
 
-  rest.post("/store/order-edits/:id/decline", (req, res, ctx) => {
-    return res(
-      ctx.status(200),
-      ctx.json({
-        order_edit: {
-          ...fixtures.get("store_order_edit"),
-          declined_reason: (req.body as any).declined_reason,
-          status: "declined",
-        },
-      })
-    )
-  }),
-
-  rest.post("/store/order-edits/:id/complete", (req, res, ctx) => {
-    return res(
-      ctx.status(200),
-      ctx.json({
-        order_edit: {
-          ...fixtures.get("store_order_edit"),
-          status: "confirmed",
-        },
-      })
-    )
-  }),
-
   rest.get("/store/orders/:id", (req, res, ctx) => {
     return res(
       ctx.status(200),

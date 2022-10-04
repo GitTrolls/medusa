@@ -1,16 +1,14 @@
 import { MedusaError } from "medusa-core-utils"
+import { BaseService } from "medusa-interfaces"
 import { Brackets, EntityManager, ILike, SelectQueryBuilder } from "typeorm"
 import {
   IPriceSelectionStrategy,
   PriceSelectionContext,
-  TransactionBaseService,
-} from "../interfaces"
-import {
-  MoneyAmount,
-  Product,
-  ProductOptionValue,
-  ProductVariant,
-} from "../models"
+} from "../interfaces/price-selection-strategy"
+import { MoneyAmount } from "../models/money-amount"
+import { Product } from "../models/product"
+import { ProductOptionValue } from "../models/product-option-value"
+import { ProductVariant } from "../models/product-variant"
 import { CartRepository } from "../repositories/cart"
 import { MoneyAmountRepository } from "../repositories/money-amount"
 import { ProductRepository } from "../repositories/product"
@@ -29,26 +27,28 @@ import {
   ProductVariantPrice,
   UpdateProductVariantInput,
 } from "../types/product-variant"
-import { buildQuery, isDefined, setMetadata } from "../utils"
+import { isDefined } from "../utils"
 
-class ProductVariantService extends TransactionBaseService {
+/**
+ * Provides layer to manipulate product variants.
+ * @extends BaseService
+ */
+class ProductVariantService extends BaseService {
   static Events = {
     UPDATED: "product-variant.updated",
     CREATED: "product-variant.created",
     DELETED: "product-variant.deleted",
   }
 
-  protected manager_: EntityManager
-  protected transactionManager_: EntityManager | undefined
-
-  protected readonly productVariantRepository_: typeof ProductVariantRepository
-  protected readonly productRepository_: typeof ProductRepository
-  protected readonly eventBus_: EventBusService
-  protected readonly regionService_: RegionService
-  protected readonly priceSelectionStrategy_: IPriceSelectionStrategy
-  protected readonly moneyAmountRepository_: typeof MoneyAmountRepository
-  protected readonly productOptionValueRepository_: typeof ProductOptionValueRepository
-  protected readonly cartRepository_: typeof CartRepository
+  private manager_: EntityManager
+  private productVariantRepository_: typeof ProductVariantRepository
+  private productRepository_: typeof ProductRepository
+  private eventBus_: EventBusService
+  private regionService_: RegionService
+  private priceSelectionStrategy_: IPriceSelectionStrategy
+  private moneyAmountRepository_: typeof MoneyAmountRepository
+  private productOptionValueRepository_: typeof ProductOptionValueRepository
+  private cartRepository_: typeof CartRepository
 
   constructor({
     manager,
@@ -61,24 +61,59 @@ class ProductVariantService extends TransactionBaseService {
     cartRepository,
     priceSelectionStrategy,
   }) {
-    super(arguments[0])
+    super()
 
+    /** @private @const {EntityManager} */
     this.manager_ = manager
+
+    /** @private @const {ProductVariantModel} */
     this.productVariantRepository_ = productVariantRepository
+
+    /** @private @const {ProductModel} */
     this.productRepository_ = productRepository
+
+    /** @private @const {EventBus} */
     this.eventBus_ = eventBusService
+
+    /** @private @const {RegionService} */
     this.regionService_ = regionService
+
     this.moneyAmountRepository_ = moneyAmountRepository
+
     this.productOptionValueRepository_ = productOptionValueRepository
+
     this.cartRepository_ = cartRepository
+
     this.priceSelectionStrategy_ = priceSelectionStrategy
+  }
+
+  withTransaction(transactionManager: EntityManager): ProductVariantService {
+    if (!transactionManager) {
+      return this
+    }
+
+    const cloned = new ProductVariantService({
+      manager: transactionManager,
+      productVariantRepository: this.productVariantRepository_,
+      productRepository: this.productRepository_,
+      eventBusService: this.eventBus_,
+      regionService: this.regionService_,
+      moneyAmountRepository: this.moneyAmountRepository_,
+      productOptionValueRepository: this.productOptionValueRepository_,
+      cartRepository: this.cartRepository_,
+      priceSelectionStrategy: this.priceSelectionStrategy_,
+    })
+
+    cloned.transactionManager_ = transactionManager
+
+    return cloned
   }
 
   /**
    * Gets a product variant by id.
-   * @param variantId - the id of the product to get.
-   * @param config - query config object for variant retrieval.
-   * @return the product document.
+   * @param {string} variantId - the id of the product to get.
+   * @param {FindConfig<ProductVariant>} config - query config object for variant retrieval.
+   * @return {Promise<Product>} the product document.
    */
   async retrieve(
     variantId: string,
@@ -89,7 +124,9 @@ class ProductVariantService extends TransactionBaseService {
     const variantRepo = this.manager_.getCustomRepository(
       this.productVariantRepository_
     )
-    const query = buildQuery({ id: variantId }, config)
+    const validatedId = this.validateId_(variantId)
+
+    const query = this.buildQuery_({ id: validatedId }, config)
     const variant = await variantRepo.findOne(query)
 
     if (!variant) {
@@ -104,9 +141,9 @@ class ProductVariantService extends TransactionBaseService {
 
   /**
    * Gets a product variant by id.
-   * @param sku - The unique stock keeping unit used to identify the product variant.
-   * @param config - query config object for variant retrieval.
-   * @return the product document.
+   * @param {string} sku - The unique stock keeping unit used to identify the product variant.
+   * @param {FindConfig<ProductVariant>} config - query config object for variant retrieval.
+   * @return {Promise<Product>} the product document.
    */
   async retrieveBySKU(
     sku: string,
@@ -124,7 +161,7 @@ class ProductVariantService extends TransactionBaseService {
       config.relations.splice(priceIndex, 1)
     }
 
-    const query = buildQuery({ sku }, config)
+    const query = this.buildQuery_({ sku }, config)
     const variant = await variantRepo.findOne(query)
 
     if (!variant) {
@@ -140,15 +177,15 @@ class ProductVariantService extends TransactionBaseService {
   /**
    * Creates an unpublished product variant. Will validate against parent product
    * to ensure that the variant can in fact be created.
-   * @param productOrProductId - the product the variant will be added to
-   * @param variant - the variant to create
-   * @return resolves to the creation result.
+   * @param {string} productOrProductId - the product the variant will be added to
+   * @param {object} variant - the variant to create
+   * @return {Promise} resolves to the creation result.
    */
   async create(
     productOrProductId: string | Product,
     variant: CreateProductVariantInput
   ): Promise<ProductVariant> {
-    return await this.atomicPhase_(async (manager: EntityManager) => {
+    return this.atomicPhase_(async (manager: EntityManager) => {
       const productRepo = manager.getCustomRepository(this.productRepository_)
       const variantRepo = manager.getCustomRepository(
         this.productVariantRepository_
@@ -156,7 +193,7 @@ class ProductVariantService extends TransactionBaseService {
 
       const { prices, ...rest } = variant
 
-      let product = productOrProductId
+      let product = productOrProductId as Product
 
       if (typeof product === `string`) {
         product = (await productRepo.findOne({
@@ -247,21 +284,21 @@ class ProductVariantService extends TransactionBaseService {
    * Updates a variant.
    * Price updates should use dedicated methods.
    * The function will throw, if price updates are attempted.
-   * @param variantOrVariantId - variant or id of a variant.
-   * @param update - an object with the update values.
-   * @param config - an object with the config values for returning the variant.
-   * @return resolves to the update result.
+   * @param {string | ProductVariant} variantOrVariantId - variant or id of a variant.
+   * @param {object} update - an object with the update values.
+   * @param {object} config - an object with the config values for returning the variant.
+   * @return {Promise} resolves to the update result.
    */
   async update(
     variantOrVariantId: string | Partial<ProductVariant>,
     update: UpdateProductVariantInput
   ): Promise<ProductVariant> {
-    return await this.atomicPhase_(async (manager: EntityManager) => {
+    return this.atomicPhase_(async (manager: EntityManager) => {
       const variantRepo = manager.getCustomRepository(
         this.productVariantRepository_
       )
 
-      let variant = variantOrVariantId
+      let variant = variantOrVariantId as ProductVariant
       if (typeof variant === `string`) {
         const variantRes = await variantRepo.findOne({
           where: { id: variantOrVariantId as string },
@@ -284,13 +321,13 @@ class ProductVariantService extends TransactionBaseService {
       const { prices, options, metadata, inventory_quantity, ...rest } = update
 
       if (prices) {
-        await this.updateVariantPrices(variant.id!, prices)
+        await this.updateVariantPrices(variant.id, prices)
       }
 
       if (options) {
         for (const option of options) {
           await this.updateOptionValue(
-            variant.id!,
+            variant.id,
             option.option_id,
             option.value
           )
@@ -298,7 +335,7 @@ class ProductVariantService extends TransactionBaseService {
       }
 
       if (typeof metadata === "object") {
-        variant.metadata = setMetadata(variant as ProductVariant, metadata)
+        variant.metadata = this.setMetadata_(variant, metadata as object)
       }
 
       if (typeof inventory_quantity === "number") {
@@ -328,13 +365,13 @@ class ProductVariantService extends TransactionBaseService {
    * Deletes any prices that are not in the update object, and is not associated with a price list.
    * @param variantId - the id of variant
    * @param prices - the update prices
-   * @returns empty promise
+   * @returns {Promise<void>} empty promise
    */
   async updateVariantPrices(
     variantId: string,
     prices: ProductVariantPrice[]
   ): Promise<void> {
-    return await this.atomicPhase_(async (manager: EntityManager) => {
+    return this.atomicPhase_(async (manager: EntityManager) => {
       const moneyAmountRepo = manager.getCustomRepository(
         this.moneyAmountRepository_
       )
@@ -367,15 +404,15 @@ class ProductVariantService extends TransactionBaseService {
    * Gets the price specific to a region. If no region specific money amount
    * exists the function will try to use a currency price. If no default
    * currency price exists the function will throw an error.
-   * @param variantId - the id of the variant to get price from
-   * @param context - context for getting region price
-   * @return the price specific to the region
+   * @param {string} variantId - the id of the variant to get price from
+   * @param {GetRegionPriceContext} context - context for getting region price
+   * @return {number} the price specific to the region
    */
   async getRegionPrice(
     variantId: string,
     context: GetRegionPriceContext
-  ): Promise<number | null> {
-    return await this.atomicPhase_(async (manager: EntityManager) => {
+  ): Promise<number> {
+    return this.atomicPhase_(async (manager: EntityManager) => {
       const region = await this.regionService_
         .withTransaction(manager)
         .retrieve(context.regionId)
@@ -396,15 +433,15 @@ class ProductVariantService extends TransactionBaseService {
 
   /**
    * Sets the default price of a specific region
-   * @param variantId - the id of the variant to update
-   * @param price - the price for the variant.
-   * @return the result of the update operation
+   * @param {string} variantId - the id of the variant to update
+   * @param {string} price - the price for the variant.
+   * @return {Promise} the result of the update operation
    */
   async setRegionPrice(
     variantId: string,
     price: ProductVariantPrice
   ): Promise<MoneyAmount> {
-    return await this.atomicPhase_(async (manager: EntityManager) => {
+    return this.atomicPhase_(async (manager: EntityManager) => {
       const moneyAmountRepo = manager.getCustomRepository(
         this.moneyAmountRepository_
       )
@@ -426,21 +463,22 @@ class ProductVariantService extends TransactionBaseService {
         moneyAmount.amount = price.amount
       }
 
-      return await moneyAmountRepo.save(moneyAmount)
+      const result = await moneyAmountRepo.save(moneyAmount)
+      return result
     })
   }
 
   /**
    * Sets the default price for the given currency.
-   * @param variantId - the id of the variant to set prices for
-   * @param price - the price for the variant
-   * @return the result of the update operation
+   * @param {string} variantId - the id of the variant to set prices for
+   * @param {ProductVariantPrice} price - the price for the variant
+   * @return {Promise} the result of the update operation
    */
   async setCurrencyPrice(
     variantId: string,
     price: ProductVariantPrice
   ): Promise<MoneyAmount> {
-    return await this.atomicPhase_(async (manager: EntityManager) => {
+    return this.atomicPhase_(async (manager: EntityManager) => {
       const moneyAmountRepo = manager.getCustomRepository(
         this.moneyAmountRepository_
       )
@@ -452,17 +490,17 @@ class ProductVariantService extends TransactionBaseService {
   /**
    * Updates variant's option value.
    * Option value must be of type string or number.
-   * @param variantId - the variant to decorate.
-   * @param optionId - the option from product.
-   * @param optionValue - option value to add.
-   * @return the result of the update operation.
+   * @param {string} variantId - the variant to decorate.
+   * @param {string} optionId - the option from product.
+   * @param {string} optionValue - option value to add.
+   * @return {Promise} the result of the update operation.
    */
   async updateOptionValue(
     variantId: string,
     optionId: string,
     optionValue: string
   ): Promise<ProductOptionValue> {
-    return await this.atomicPhase_(async (manager: EntityManager) => {
+    return this.atomicPhase_(async (manager: EntityManager) => {
       const productOptionValueRepo = manager.getCustomRepository(
         this.productOptionValueRepository_
       )
@@ -490,17 +528,17 @@ class ProductVariantService extends TransactionBaseService {
    * if that product does not have an option with the given
    * option id. Fails if given variant is not found.
    * Option value must be of type string or number.
-   * @param variantId - the variant to decorate.
-   * @param optionId - the option from product.
-   * @param optionValue - option value to add.
-   * @return the result of the update operation.
+   * @param {string} variantId - the variant to decorate.
+   * @param {string} optionId - the option from product.
+   * @param {string} optionValue - option value to add.
+   * @return {Promise} the result of the update operation.
    */
   async addOptionValue(
     variantId: string,
     optionId: string,
     optionValue: string
   ): Promise<ProductOptionValue> {
-    return await this.atomicPhase_(async (manager: EntityManager) => {
+    return this.atomicPhase_(async (manager: EntityManager) => {
       const productOptionValueRepo = manager.getCustomRepository(
         this.productOptionValueRepository_
       )
@@ -518,12 +556,12 @@ class ProductVariantService extends TransactionBaseService {
   /**
    * Deletes option value from given variant.
    * Will never fail due to delete being idempotent.
-   * @param variantId - the variant to decorate.
-   * @param optionId - the option from product.
-   * @return empty promise
+   * @param {string} variantId - the variant to decorate.
+   * @param {string} optionId - the option from product.
+   * @return {Promise} empty promise
    */
   async deleteOptionValue(variantId: string, optionId: string): Promise<void> {
-    return await this.atomicPhase_(async (manager: EntityManager) => {
+    return this.atomicPhase_(async (manager: EntityManager) => {
       const productOptionValueRepo: ProductOptionValueRepository =
         manager.getCustomRepository(this.productOptionValueRepository_)
 
@@ -545,9 +583,9 @@ class ProductVariantService extends TransactionBaseService {
   }
 
   /**
-   * @param selector - the query object for find
-   * @param config - query config object for variant retrieval
-   * @return the result of the find operation
+   * @param {object} selector - the query object for find
+   * @param {FindConfig<ProductVariant>} config - query config object for variant retrieval
+   * @return {Promise} the result of the find operation
    */
   async listAndCount(
     selector: FilterableProductVariantProps,
@@ -586,9 +624,9 @@ class ProductVariantService extends TransactionBaseService {
   }
 
   /**
-   * @param selector - the query object for find
-   * @param config - query config object for variant retrieval
-   * @return the result of the find operation
+   * @param {FilterableProductVariantProps} selector - the query object for find
+   * @param {FindConfig<ProductVariant>} config - query config object for variant retrieval
+   * @return {Promise} the result of the find operation
    */
   async list(
     selector: FilterableProductVariantProps,
@@ -614,7 +652,7 @@ class ProductVariantService extends TransactionBaseService {
       delete selector.q
     }
 
-    const query = buildQuery(selector, config)
+    const query = this.buildQuery_(selector, config)
 
     if (q) {
       const where = query.where
@@ -644,12 +682,12 @@ class ProductVariantService extends TransactionBaseService {
   /**
    * Deletes variant.
    * Will never fail due to delete being idempotent.
-   * @param variantId - the id of the variant to delete. Must be
+   * @param {string} variantId - the id of the variant to delete. Must be
    *   castable as an ObjectId
-   * @return empty promise
+   * @return {Promise<void>} empty promise
    */
   async delete(variantId: string): Promise<void> {
-    return await this.atomicPhase_(async (manager: EntityManager) => {
+    return this.atomicPhase_(async (manager: EntityManager) => {
       const variantRepo = manager.getCustomRepository(
         this.productVariantRepository_
       )
@@ -672,14 +710,47 @@ class ProductVariantService extends TransactionBaseService {
           product_id: variant.product_id,
           metadata: variant.metadata,
         })
+
+      return Promise.resolve()
     })
   }
 
   /**
+   * Dedicated method to set metadata for a variant.
+   * @param {string} variant - the variant to set metadata for.
+   * @param {Object} metadata - the metadata to set
+   * @return {Object} updated metadata object
+   */
+  setMetadata_(
+    variant: ProductVariant,
+    metadata: object
+  ): Record<string, unknown> {
+    const existing = variant.metadata || {}
+    const newData = {}
+    for (const [key, value] of Object.entries(metadata)) {
+      if (typeof key !== "string") {
+        throw new MedusaError(
+          MedusaError.Types.INVALID_ARGUMENT,
+          "Key type is invalid. Metadata keys must be strings"
+        )
+      }
+
+      newData[key] = value
+    }
+
+    const updated = {
+      ...existing,
+      ...newData,
+    }
+
+    return updated
+  }
+
+  /**
    * Creates a query object to be used for list queries.
-   * @param selector - the selector to create the query from
-   * @param config - the config to use for the query
-   * @return an object containing the query, relations and free-text
+   * @param {object} selector - the selector to create the query from
+   * @param {object} config - the config to use for the query
+   * @return {object} an object containing the query, relations and free-text
    *   search param.
    */
   prepareListQuery_(
@@ -692,7 +763,7 @@ class ProductVariantService extends TransactionBaseService {
       delete selector.q
     }
 
-    const query = buildQuery(selector, config)
+    const query = this.buildQuery_(selector, config)
 
     if (config.relations && config.relations.length > 0) {
       query.relations = config.relations
@@ -702,7 +773,7 @@ class ProductVariantService extends TransactionBaseService {
       query.select = config.select
     }
 
-    const rels = query.relations as string[]
+    const rels = query.relations
     delete query.relations
 
     return {
@@ -715,10 +786,10 @@ class ProductVariantService extends TransactionBaseService {
   /**
    * Lists variants based on the provided parameters and includes the count of
    * variants that match the query.
-   * @param variantRepo - the variant repository
-   * @param query - object that defines the scope for what should be returned
-   * @param q - free text query
-   * @return an array containing the products as the first element and the total
+   * @param {object} variantRepo - the variant repository
+   * @param {object} query - object that defines the scope for what should be returned
+   * @param {object} q - free text query
+   * @return {Promise<[ProductVariant[], number]>} an array containing the products as the first element and the total
    *   count of products that matches the query as the second element.
    */
   getFreeTextQueryBuilder_(

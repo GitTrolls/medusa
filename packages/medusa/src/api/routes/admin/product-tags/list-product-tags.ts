@@ -201,7 +201,6 @@ export class AdminGetProductTagsPaginationParams {
   offset = 0
 }
 
-// eslint-disable-next-line max-len
 export class AdminGetProductTagsParams extends AdminGetProductTagsPaginationParams {
   @IsType([String, [String], StringComparisonOperator])
   @IsOptional()

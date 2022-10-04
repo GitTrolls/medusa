@@ -1,6 +1,6 @@
 import Scrypt from "scrypt-kdf"
 import { AuthenticateResult } from "../types/auth"
-import { Customer, User } from "../models"
+import { User, Customer } from "../models"
 import { TransactionBaseService } from "../interfaces"
 import UserService from "./user"
 import CustomerService from "./customer"
@@ -14,6 +14,7 @@ type InjectedDependencies = {
 
 /**
  * Can authenticate a user based on email password combination
+ * @extends BaseService
  */
 class AuthService extends TransactionBaseService {
   protected manager_: EntityManager
@@ -22,7 +23,7 @@ class AuthService extends TransactionBaseService {
   protected readonly customerService_: CustomerService
 
   constructor({ manager, userService, customerService }: InjectedDependencies) {
-    super(arguments[0])
+    super({ manager, userService, customerService })
 
     this.manager_ = manager
     this.userService_ = userService

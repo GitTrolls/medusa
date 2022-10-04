@@ -5,9 +5,6 @@ import { carts } from "../../__mocks__/cart"
 import { TotalsServiceMock } from "../../__mocks__/totals"
 
 const RegionServiceMock = {
-  withTransaction: function () {
-    return this
-  },
   retrieve: jest.fn().mockReturnValue(Promise.resolve({})),
 }
 

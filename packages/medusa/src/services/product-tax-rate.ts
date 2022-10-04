@@ -1,28 +1,47 @@
+import { BaseService } from "medusa-interfaces"
 import { EntityManager } from "typeorm"
-import { ProductTaxRate } from "../models"
+import { ProductTaxRate } from "../models/product-tax-rate"
 import { ProductTaxRateRepository } from "../repositories/product-tax-rate"
 import { FindConfig } from "../types/common"
 import { FilterableProductTaxRateProps } from "../types/product-tax-rate"
-import { TransactionBaseService } from "../interfaces"
-import { buildQuery } from "../utils"
 
-class ProductTaxRateService extends TransactionBaseService {
-  protected manager_: EntityManager
-  protected transactionManager_: EntityManager | undefined
-
-  protected readonly productTaxRateRepository_: typeof ProductTaxRateRepository
+/**
+ * Provides layer to manipulate product variants.
+ * @extends BaseService
+ */
+class ProductTaxRateService extends BaseService {
+  private manager_: EntityManager
+  private productTaxRateRepository_: typeof ProductTaxRateRepository
 
   constructor({ manager, productTaxRateRepository }) {
-    super(arguments[0])
+    super()
 
+    /** @private @const {EntityManager} */
     this.manager_ = manager
+
+    /** @private @const {ProductVariantModel} */
     this.productTaxRateRepository_ = productTaxRateRepository
   }
 
+  withTransaction(transactionManager: EntityManager): ProductTaxRateService {
+    if (!transactionManager) {
+      return this
+    }
+
+    const cloned = new ProductTaxRateService({
+      manager: transactionManager,
+      productTaxRateRepository: this.productTaxRateRepository_,
+    })
+
+    cloned.transactionManager_ = transactionManager
+
+    return cloned
+  }
+
   /**
-   * @param selector - the query object for find
-   * @param config - query config object for variant retrieval
-   * @return the result of the find operation
+   * @param {FilterableProductVariantProps} selector - the query object for find
+   * @param {FindConfig<ProductVariant>} config - query config object for variant retrieval
+   * @return {Promise} the result of the find operation
    */
   async list(
     selector: FilterableProductTaxRateProps,
@@ -32,7 +51,7 @@ class ProductTaxRateService extends TransactionBaseService {
       this.productTaxRateRepository_
     )
 
-    const query = buildQuery(selector, config)
+    const query = this.buildQuery_(selector, config)
 
     return await pTaxRateRepo.find(query)
   }
