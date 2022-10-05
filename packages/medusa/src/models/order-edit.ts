@@ -1,33 +1,16 @@
-import {
-  AfterLoad,
-  BeforeInsert,
-  Column,
-  Index,
-  JoinColumn,
-  ManyToOne,
-  OneToMany,
-  OneToOne,
-} from "typeorm"
+import { BeforeInsert, Column, JoinColumn, ManyToOne, OneToMany } from "typeorm"
 
 import OrderEditingFeatureFlag from "../loaders/feature-flags/order-editing"
 import { FeatureFlagEntity } from "../utils/feature-flag-decorators"
 import { resolveDbType } from "../utils/db-aware-column"
-import { BaseEntity } from "../interfaces"
+import { OrderItemChange } from "./order-item-change"
+import { SoftDeletableEntity } from "../interfaces"
 import { generateEntityId } from "../utils"
-
-import { LineItem, Order, OrderItemChange, PaymentCollection } from "."
-
-export enum OrderEditStatus {
-  CONFIRMED = "confirmed",
-  DECLINED = "declined",
-  REQUESTED = "requested",
-  CREATED = "created",
-  CANCELED = "canceled",
-}
+import { LineItem } from "./line-item"
+import { Order } from "./order"
 
 @FeatureFlagEntity(OrderEditingFeatureFlag.key)
-export class OrderEdit extends BaseEntity {
-  @Index()
+export class OrderEdit extends SoftDeletableEntity {
   @Column()
   order_id: string
 
@@ -73,51 +56,19 @@ export class OrderEdit extends BaseEntity {
   @Column({ type: resolveDbType("timestamptz"), nullable: true })
   canceled_at?: Date
 
-  @OneToMany(() => LineItem, (lineItem) => lineItem.order_edit)
-  items: LineItem[]
-
-  @Index()
-  @Column({ nullable: true })
-  payment_collection_id: string
-
-  @OneToOne(() => PaymentCollection)
-  @JoinColumn({ name: "payment_collection_id" })
-  payment_collection: PaymentCollection
-
   // Computed
-  shipping_total: number
-  discount_total: number
-  tax_total: number | null
-  total: number
   subtotal: number
-  gift_card_total: number
-  gift_card_tax_total: number
-
+  discount_total?: number
+  tax_total: number
+  total: number
   difference_due: number
 
-  status: OrderEditStatus
+  items: LineItem[]
+  removed_items: LineItem[]
 
   @BeforeInsert()
   private beforeInsert(): void {
     this.id = generateEntityId(this.id, "oe")
-  }
-
-  @AfterLoad()
-  loadStatus(): void {
-    if (this.requested_at) {
-      this.status = OrderEditStatus.REQUESTED
-    }
-    if (this.declined_at) {
-      this.status = OrderEditStatus.DECLINED
-    }
-    if (this.confirmed_at) {
-      this.status = OrderEditStatus.CONFIRMED
-    }
-    if (this.canceled_at) {
-      this.status = OrderEditStatus.CANCELED
-    }
-
-    this.status = this.status ?? OrderEditStatus.CREATED
   }
 }
 
@@ -181,23 +132,11 @@ export class OrderEdit extends BaseEntity {
  *     type: string
  *   subtotal:
  *     type: integer
- *     description: The total of subtotal
+ *     description: The subtotal for line items computed from changes.
  *     example: 8000
  *   discount_total:
  *     type: integer
  *     description: The total of discount
- *     example: 800
- *   shipping_total:
- *     type: integer
- *     description: The total of the shipping amount
- *     example: 800
- *   gift_card_total:
- *     type: integer
- *     description: The total of the gift card amount
- *     example: 800
- *   gift_card_tax_total:
- *     type: integer
- *     description: The total of the gift card tax amount
  *     example: 800
  *   tax_total:
  *     type: integer
@@ -215,5 +154,10 @@ export class OrderEdit extends BaseEntity {
  *     type: array
  *     description: Computed line items from the changes.
  *     items:
+ *       $ref: "#/components/schemas/line_item"
+ *   removed_items:
+ *     type: array
+ *     description: Computed line items from the changes that have been marked as deleted.
+ *     removed_items:
  *       $ref: "#/components/schemas/line_item"
  */

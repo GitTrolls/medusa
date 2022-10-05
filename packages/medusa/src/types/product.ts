@@ -5,17 +5,15 @@ import {
   IsEnum,
   IsOptional,
   IsString,
-  ValidateNested
+  ValidateNested,
 } from "class-validator"
-import SalesChannelFeatureFlag from "../loaders/feature-flags/sales-channels"
 import { Product, ProductOptionValue, ProductStatus } from "../models"
-import { FeatureFlagDecorators } from "../utils/feature-flag-decorators"
 import { optionalBooleanMapper } from "../utils/validators/is-boolean"
 import { IsType } from "../utils/validators/is-type"
 import {
   DateComparisonOperator,
   FindConfig,
-  StringComparisonOperator
+  StringComparisonOperator,
 } from "./common"
 import { PriceListLoadConfig } from "./price-list"
 
@@ -68,10 +66,8 @@ export class FilterableProductProps {
   @IsOptional()
   type?: string
 
-  @FeatureFlagDecorators(SalesChannelFeatureFlag.key, [
-    IsOptional(),
-    IsArray(),
-  ])
+  @IsArray()
+  @IsOptional()
   sales_channel_id?: string[]
 
   @IsOptional()
@@ -197,7 +193,7 @@ export type CreateProductProductVariantInput = {
   origin_country?: string
   mid_code?: string
   material?: string
-  metadata?: Record<string, unknown>
+  metadata?: object
   prices?: CreateProductProductVariantPriceInput[]
   options?: { value: string }[]
 }
@@ -220,7 +216,7 @@ export type UpdateProductProductVariantDTO = {
   origin_country?: string
   mid_code?: string
   material?: string
-  metadata?: Record<string, unknown>
+  metadata?: object
   prices?: CreateProductProductVariantPriceInput[]
   options?: { value: string; option_id: string }[]
 }

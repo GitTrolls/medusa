@@ -13,8 +13,9 @@ import {
 import { DiscountConditionRepository } from "../repositories/discount-condition"
 import { FindConfig } from "../types/common"
 import { UpsertDiscountConditionInput } from "../types/discount"
+import { PostgresError } from "../utils/exception-formatter"
 import { TransactionBaseService } from "../interfaces"
-import { buildQuery, PostgresError } from "../utils"
+import { buildQuery } from "../utils"
 
 type InjectedDependencies = {
   manager: EntityManager
@@ -27,7 +28,6 @@ type InjectedDependencies = {
  * @implements {BaseService}
  */
 class DiscountConditionService extends TransactionBaseService {
-  // eslint-disable-next-line max-len
   protected readonly discountConditionRepository_: typeof DiscountConditionRepository
   protected readonly eventBus_: EventBusService
 
@@ -39,7 +39,7 @@ class DiscountConditionService extends TransactionBaseService {
     discountConditionRepository,
     eventBusService,
   }: InjectedDependencies) {
-    super(arguments[0])
+    super({ manager, discountConditionRepository, eventBusService })
 
     this.manager_ = manager
     this.discountConditionRepository_ = discountConditionRepository
