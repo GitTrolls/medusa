@@ -6,7 +6,10 @@ import {
   In,
   Repository,
 } from "typeorm"
-import { PriceList, Product, SalesChannel } from "../models"
+import { PriceList,
+  Product,
+  SalesChannel
+} from "../models"
 import {
   ExtendedFindConfig,
   Selector,
@@ -140,7 +143,7 @@ export class ProductRepository extends Repository<Product> {
     select: (keyof Product)[] = []
   ): Promise<Product[]> {
     const entitiesIdsWithRelations = await Promise.all(
-      Object.entries(groupedRelations).map(async ([toplevel, rels]) => {
+      Object.entries(groupedRelations).map(([toplevel, rels]) => {
         let querybuilder = this.createQueryBuilder("products")
 
         if (select && select.length) {

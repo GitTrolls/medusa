@@ -1,18 +1,12 @@
 import Stripe from "stripe"
-import {
-  AbstractPaymentService,
-  PaymentSessionData,
-  PaymentSessionStatus,
-} from "@medusajs/medusa"
+import { PaymentService } from "medusa-interfaces"
+import { PaymentSessionStatus } from '@medusajs/medusa/dist'
 
-class StripeProviderService extends AbstractPaymentService {
+class StripeProviderService extends PaymentService {
   static identifier = "stripe"
 
-  constructor(
-    { customerService, totalsService, regionService, manager },
-    options
-  ) {
-    super({ customerService, totalsService, regionService, manager }, options)
+  constructor({ customerService, totalsService, regionService }, options) {
+    super()
 
     /**
      * Required Stripe options:
@@ -36,16 +30,13 @@ class StripeProviderService extends AbstractPaymentService {
 
     /** @private @const {TotalsService} */
     this.totalsService_ = totalsService
-
-    /** @private @const {EntityManager} */
-    this.manager_ = manager
   }
 
   /**
-   * Get payment session status
-   * statuses.
-   * @param {PaymentSessionData} paymentData - the data stored with the payment session
-   * @return {Promise<PaymentSessionStatus>} the status of the order
+   * Fetches Stripe payment intent. Check its status and returns the
+   * corresponding Medusa status.
+   * @param {object} paymentData - payment method data from cart
+   * @returns {string} the status of the payment intent
    */
   async getStatus(paymentData) {
     const { id } = paymentData
@@ -70,8 +61,8 @@ class StripeProviderService extends AbstractPaymentService {
 
   /**
    * Fetches a customers saved payment methods if registered in Stripe.
-   * @param {Customer} customer - customer to fetch saved cards for
-   * @return {Promise<Data[]>} saved payments methods
+   * @param {object} customer - customer to fetch saved cards for
+   * @returns {Promise<Array<object>>} saved payments methods
    */
   async retrieveSavedMethods(customer) {
     if (customer.metadata && customer.metadata.stripe_id) {
@@ -110,11 +101,9 @@ class StripeProviderService extends AbstractPaymentService {
       })
 
       if (customer.id) {
-        await this.customerService_
-          .withTransaction(this.manager_)
-          .update(customer.id, {
-            metadata: { stripe_id: stripeCustomer.id },
-          })
+        await this.customerService_.update(customer.id, {
+          metadata: { stripe_id: stripeCustomer.id },
+        })
       }
 
       return stripeCustomer
@@ -126,23 +115,17 @@ class StripeProviderService extends AbstractPaymentService {
   /**
    * Creates a Stripe payment intent.
    * If customer is not registered in Stripe, we do so.
-   * @param {Cart} cart - cart to create a payment for
-   * @return {Promise<PaymentSessionData>} Stripe payment intent
+   * @param {object} cart - cart to create a payment for
+   * @returns {object} Stripe payment intent
    */
   async createPayment(cart) {
     const { customer_id, region_id, email } = cart
-    const { currency_code } = await this.regionService_
-      .withTransaction(this.manager_)
-      .retrieve(region_id)
+    const { currency_code } = await this.regionService_.retrieve(region_id)
 
-    const amount = await this.totalsService_
-      .withTransaction(this.manager_)
-      .getTotal(cart)
+    const amount = await this.totalsService_.getTotal(cart)
 
     const intentRequest = {
-      description:
-        cart?.context?.payment_description ??
-        this.options_?.payment_description,
+      description: cart?.context?.payment_description ?? this.options_?.payment_description,
       amount: Math.round(amount),
       currency: currency_code,
       setup_future_usage: "on_session",
@@ -151,9 +134,7 @@ class StripeProviderService extends AbstractPaymentService {
     }
 
     if (customer_id) {
-      const customer = await this.customerService_
-        .withTransaction(this.manager_)
-        .retrieve(customer_id)
+      const customer = await this.customerService_.retrieve(customer_id)
 
       if (customer.metadata?.stripe_id) {
         intentRequest.customer = customer.metadata.stripe_id
@@ -173,13 +154,15 @@ class StripeProviderService extends AbstractPaymentService {
       intentRequest.customer = stripeCustomer.id
     }
 
-    return await this.stripe_.paymentIntents.create(intentRequest)
+    return await this.stripe_.paymentIntents.create(
+      intentRequest
+    )
   }
 
   /**
    * Retrieves Stripe payment intent.
-   * @param {PaymentData} paymentData - the data of the payment to retrieve
-   * @return {Promise<Data>} Stripe payment intent
+   * @param {object} data - the data of the payment to retrieve
+   * @returns {Promise<object>} Stripe payment intent
    */
   async retrievePayment(data) {
     try {
@@ -191,12 +174,12 @@ class StripeProviderService extends AbstractPaymentService {
 
   /**
    * Gets a Stripe payment intent and returns it.
-   * @param {PaymentSession} paymentSession - the data of the payment to retrieve
-   * @return {Promise<PaymentData>} Stripe payment intent
+   * @param {object} sessionData - the data of the payment to retrieve
+   * @returns {Promise<object>} Stripe payment intent
    */
-  async getPaymentData(paymentSession) {
+  async getPaymentData(sessionData) {
     try {
-      return this.stripe_.paymentIntents.retrieve(paymentSession.data.id)
+      return this.stripe_.paymentIntents.retrieve(sessionData.data.id)
     } catch (error) {
       throw error
     }
@@ -205,15 +188,15 @@ class StripeProviderService extends AbstractPaymentService {
   /**
    * Authorizes Stripe payment intent by simply returning
    * the status for the payment intent in use.
-   * @param {PaymentSession} paymentSession - payment session data
-   * @param {Data} context - properties relevant to current context
-   * @return {Promise<{ data: PaymentSessionData; status: PaymentSessionStatus }>} result with data and status
+   * @param {object} sessionData - payment session data
+   * @param {object} context - properties relevant to current context
+   * @returns {Promise<{ status: string, data: object }>} result with data and status
    */
-  async authorizePayment(paymentSession, context = {}) {
-    const stat = await this.getStatus(paymentSession.data)
+  async authorizePayment(sessionData, context = {}) {
+    const stat = await this.getStatus(sessionData.data)
 
     try {
-      return { data: paymentSession.data, status: stat }
+      return { data: sessionData.data, status: stat }
     } catch (error) {
       throw error
     }
@@ -231,9 +214,9 @@ class StripeProviderService extends AbstractPaymentService {
 
   /**
    * Updates Stripe payment intent.
-   * @param {PaymentSessionData} paymentSessionData - payment session data.
-   * @param {Cart} cart
-   * @return {Promise<PaymentSessionData>} Stripe payment intent
+   * @param {object} sessionData - payment session data.
+   * @param {object} update - objec to update intent with
+   * @returns {object} Stripe payment intent
    */
   async updatePayment(sessionData, cart) {
     try {
@@ -287,8 +270,8 @@ class StripeProviderService extends AbstractPaymentService {
 
   /**
    * Captures payment for Stripe payment intent.
-   * @param {Payment} payment - payment method data from cart
-   * @return {Promise<PaymentData>} Stripe payment intent
+   * @param {object} paymentData - payment method data from cart
+   * @returns {object} Stripe payment intent
    */
   async capturePayment(payment) {
     const { id } = payment.data
@@ -307,9 +290,9 @@ class StripeProviderService extends AbstractPaymentService {
 
   /**
    * Refunds payment for Stripe payment intent.
-   * @param {Payment} payment - payment method data from cart
-   * @param {number} refundAmount - amount to refund
-   * @return {Promise<PaymentData>} refunded payment intent
+   * @param {object} paymentData - payment method data from cart
+   * @param {number} amountToRefund - amount to refund
+   * @returns {string} refunded payment intent
    */
   async refundPayment(payment, amountToRefund) {
     const { id } = payment.data
@@ -327,8 +310,8 @@ class StripeProviderService extends AbstractPaymentService {
 
   /**
    * Cancels payment for Stripe payment intent.
-   * @param {Payment} payment - payment method data from cart
-   * @return {Promise<PaymentData>} canceled payment intent
+   * @param {object} paymentData - payment method data from cart
+   * @returns {object} canceled payment intent
    */
   async cancelPayment(payment) {
     const { id } = payment.data

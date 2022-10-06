@@ -16,7 +16,6 @@ import {
   AdminPostOrdersOrderSwapsSwapFulfillmentsReq,
   AdminPostOrdersOrderSwapsSwapShipmentsReq,
 } from "@medusajs/medusa"
-import { FindParams } from "@medusajs/medusa/dist/types/common"
 import qs from "qs"
 import { ResponsePromise } from "../../typings"
 import BaseResource from "../base"
@@ -33,16 +32,9 @@ class AdminOrdersResource extends BaseResource {
 
   retrieve(
     id: string,
-    query?: FindParams,
     customHeaders: Record<string, any> = {}
   ): ResponsePromise<AdminOrdersRes> {
-    let path = `/admin/orders/${id}`
-
-    if (query) {
-      const queryString = qs.stringify(query)
-      path = `/admin/orders/${id}?${queryString}`
-    }
-
+    const path = `/admin/orders/${id}`
     return this.client.request("GET", path, undefined, {}, customHeaders)
   }
 

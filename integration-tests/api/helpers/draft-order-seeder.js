@@ -137,7 +137,7 @@ module.exports = async (connection, data = {}) => {
 
   const freeShippingDiscount = manager.create(Discount, {
     id: "free-shipping-discount",
-    code: "FREE-SHIPPING",
+    code: "free-shipping",
     is_dynamic: false,
     is_disabled: false,
     rule_id: "free-shipping-rule",
