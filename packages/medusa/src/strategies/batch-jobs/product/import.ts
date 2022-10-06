@@ -1,6 +1,6 @@
 /* eslint-disable valid-jsdoc */
 import { EntityManager } from "typeorm"
-import { computerizeAmount, MedusaError } from "medusa-core-utils"
+import { MedusaError } from "medusa-core-utils"
 
 import { AbstractBatchJobStrategy, IFileService } from "../../../interfaces"
 import CsvParser from "../../../services/csv-parser"
@@ -104,7 +104,7 @@ class ProductImportStrategy extends AbstractBatchJobStrategy {
     this.regionService_ = regionService
   }
 
-  async buildTemplate(): Promise<string> {
+  buildTemplate(): Promise<string> {
     throw new Error("Not implemented!")
   }
 
@@ -198,12 +198,11 @@ class ProductImportStrategy extends AbstractBatchJobStrategy {
 
       if (price.regionName) {
         try {
-          const region = await this.regionService_
-            .withTransaction(transactionManager)
-            .retrieveByName(price.regionName)
-
-          record.region_id = region.id
-          record.currency_code = region.currency_code
+          record.region_id = (
+            await this.regionService_
+              .withTransaction(transactionManager)
+              .retrieveByName(price.regionName)
+          )?.id
         } catch (e) {
           throw new MedusaError(
             MedusaError.Types.INVALID_DATA,
@@ -214,7 +213,6 @@ class ProductImportStrategy extends AbstractBatchJobStrategy {
         record.currency_code = price.currency_code
       }
 
-      record.amount = computerizeAmount(record.amount, record.currency_code)
       prices.push(record)
     }
 
@@ -804,13 +802,9 @@ const CSVSchema: ProductImportCsvSchema = {
         if (typeof value === "undefined" || value === null) {
           return builtLine
         }
-
-        const options = builtLine["product.options"] as Record<
-          string,
-          string | number
-        >[]
-
-        options.push({ title: value })
+        ;(
+          builtLine["product.options"] as Record<string, string | number>[]
+        ).push({ title: value })
 
         return builtLine
       },
@@ -830,12 +824,9 @@ const CSVSchema: ProductImportCsvSchema = {
           return builtLine
         }
 
-        const options = builtLine["variant.options"] as Record<
-          string,
-          string | number
-        >[]
-
-        options.push({
+        ;(
+          builtLine["variant.options"] as Record<string, string | number>[]
+        ).push({
           value,
           _title: context.line[key.slice(0, -6) + " Name"],
         })
@@ -847,7 +838,7 @@ const CSVSchema: ProductImportCsvSchema = {
     // PRICES
     {
       name: "Price Region",
-      match: /Price (.*) \[([A-Z]{3})\]/,
+      match: /Price .* \[([A-Z]{2,4})\]/,
       reducer: (
         builtLine: TParsedProductImportRowData,
         key,
@@ -859,12 +850,11 @@ const CSVSchema: ProductImportCsvSchema = {
           return builtLine
         }
 
-        const [, regionName] =
-          key.trim().match(/Price (.*) \[([A-Z]{3})\]/) || []
+        const regionName = key.split(" ")[1]
         ;(
           builtLine["variant.prices"] as Record<string, string | number>[]
         ).push({
-          amount: parseFloat(value),
+          amount: value,
           regionName,
         })
 
@@ -873,7 +863,7 @@ const CSVSchema: ProductImportCsvSchema = {
     },
     {
       name: "Price Currency",
-      match: /Price [A-Z]{3}/,
+      match: /Price [A-Z]{2,4}/,
       reducer: (
         builtLine: TParsedProductImportRowData,
         key,
@@ -885,12 +875,11 @@ const CSVSchema: ProductImportCsvSchema = {
           return builtLine
         }
 
-        const currency = key.trim().split(" ")[1]
-
+        const currency = key.split(" ")[1]
         ;(
           builtLine["variant.prices"] as Record<string, string | number>[]
         ).push({
-          amount: parseFloat(value),
+          amount: value,
           currency_code: currency,
         })
 
@@ -928,13 +917,12 @@ const SalesChannelsSchema: ProductImportCsvSchema = {
         if (typeof value === "undefined" || value === null) {
           return builtLine
         }
-
-        const channels = builtLine["product.sales_channels"] as Record<
-          string,
-          string | number
-        >[]
-
-        channels.push({
+        ;(
+          builtLine["product.sales_channels"] as Record<
+            string,
+            string | number
+          >[]
+        ).push({
           name: value,
         })
 
@@ -951,13 +939,12 @@ const SalesChannelsSchema: ProductImportCsvSchema = {
         if (typeof value === "undefined" || value === null) {
           return builtLine
         }
-
-        const channels = builtLine["product.sales_channels"] as Record<
-          string,
-          string | number
-        >[]
-
-        channels.push({
+        ;(
+          builtLine["product.sales_channels"] as Record<
+            string,
+            string | number
+          >[]
+        ).push({
           id: value,
         })
 

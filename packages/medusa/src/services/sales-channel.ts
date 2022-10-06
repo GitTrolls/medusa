@@ -41,7 +41,12 @@ class SalesChannelService extends TransactionBaseService {
     storeService,
   }: InjectedDependencies) {
     // eslint-disable-next-line prefer-rest-params
-    super(arguments[0])
+    super({
+      salesChannelRepository,
+      eventBusService,
+      manager,
+      storeService,
+    })
 
     this.manager_ = manager
     this.salesChannelRepository_ = salesChannelRepository

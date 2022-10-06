@@ -222,7 +222,18 @@ module.exports = {
             },
             {
               type: "doc",
-              id: "advanced/backend/price-lists/use-api"
+              id: "advanced/backend/price-lists/use-api",
+              label: "Use PriceList APIs"
+            },
+            {
+              type: "doc",
+              id: "advanced/backend/sales-channels/manage-admin",
+              label: "Use SalesChannel APIs"
+            },
+            {
+              type: "doc",
+              id: "advanced/admin/use-customergroups-api",
+              label: "Use CustomerGroup APIs"
             },
           ]
         },
@@ -368,6 +379,10 @@ module.exports = {
           type: "doc",
           id: "advanced/backend/sales-channels/index"
         },
+        {
+          type: "doc",
+          id: "advanced/backend/customer-groups/index"
+        },
       ]
     },
     {
@@ -501,6 +516,11 @@ module.exports = {
       type: "category",
       label: "Troubleshooting",
       items: [
+        {
+          type: "doc",
+          id: "troubleshooting/cli-installation-errors",
+          label: "Errors Installing CLI",
+        },
         {
           type: "doc",
           id: "troubleshooting/cors-issues",

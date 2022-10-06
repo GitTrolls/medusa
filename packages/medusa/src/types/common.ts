@@ -55,7 +55,7 @@ export type Selector<TEntity> = {
     | DateComparisonOperator
     | StringComparisonOperator
     | NumericalComparisonOperator
-    | FindOperator<TEntity[key][] | string | string[]>
+    | FindOperator<TEntity[key][] | string[]>
 }
 
 export type TotalField =
@@ -91,7 +91,6 @@ export type QueryConfig<TEntity extends BaseEntity> = {
   defaultFields?: (keyof TEntity | string)[]
   defaultRelations?: string[]
   allowedFields?: string[]
-  allowedRelations?: string[]
   defaultLimit?: number
   isList?: boolean
 }

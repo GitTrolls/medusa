@@ -17,9 +17,9 @@ import { OrderEditService } from "../../../../services"
  *       const medusa = new Medusa({ baseUrl: MEDUSA_BACKEND_URL, maxRetries: 3 })
  *       // must be previously logged in or use api token
  *       medusa.admin.orderEdit.retrieve(orderEditId)
- *         .then(({ order_edit }) => {
- *           console.log(order_edit.id)
- *         })
+ *       .then(({ order_edit }) => {
+ *         console.log(order_edit.id);
+ *       });
  *   - lang: Shell
  *     label: cURL
  *     source: |
@@ -59,8 +59,10 @@ export default async (req: Request, res: Response) => {
   const { id } = req.params
   const retrieveConfig = req.retrieveConfig
 
-  let orderEdit = await orderEditService.retrieve(id, retrieveConfig)
-  orderEdit = await orderEditService.decorateTotals(orderEdit)
+  const orderEdit = await orderEditService.retrieve(id, retrieveConfig)
+  const { items, removedItems } = await orderEditService.computeLineItems(id)
+  orderEdit.items = items
+  orderEdit.removed_items = removedItems
 
   return res.json({ order_edit: orderEdit })
 }

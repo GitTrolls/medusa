@@ -140,7 +140,6 @@ export class Order extends BaseEntity {
   @JoinColumn({ name: "region_id" })
   region: Region
 
-  @Index()
   @Column()
   currency_code: string
 

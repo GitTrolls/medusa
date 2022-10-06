@@ -320,37 +320,27 @@ export class AdminGetBatchParams extends AdminGetBatchPaginationParams {
   type?: string[]
 
   @IsOptional()
-  @Transform(({ value }) => {
-    return value === "null" ? null : value
-  })
+  @Transform(({ value }) => (value === "null" ? null : value))
   @Type(() => DateComparisonOperator)
   confirmed_at?: DateComparisonOperator | null
 
   @IsOptional()
-  @Transform(({ value }) => {
-    return value === "null" ? null : value
-  })
+  @Transform(({ value }) => (value === "null" ? null : value))
   @Type(() => DateComparisonOperator)
   pre_processed_at?: DateComparisonOperator | null
 
   @IsOptional()
-  @Transform(({ value }) => {
-    return value === "null" ? null : value
-  })
+  @Transform(({ value }) => (value === "null" ? null : value))
   @Type(() => DateComparisonOperator)
   completed_at?: DateComparisonOperator | null
 
   @IsOptional()
-  @Transform(({ value }) => {
-    return value === "null" ? null : value
-  })
+  @Transform(({ value }) => (value === "null" ? null : value))
   @Type(() => DateComparisonOperator)
   failed_at?: DateComparisonOperator | null
 
   @IsOptional()
-  @Transform(({ value }) => {
-    return value === "null" ? null : value
-  })
+  @Transform(({ value }) => (value === "null" ? null : value))
   @Type(() => DateComparisonOperator)
   canceled_at?: DateComparisonOperator | null
 
