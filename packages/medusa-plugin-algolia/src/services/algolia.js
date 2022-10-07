@@ -36,9 +36,9 @@ class AlgoliaService extends SearchService {
    * @param {string} indexName  - the index name.
    * @return {Promise<{object}>} - returns response from search engine provider
    */
-  async getIndex(indexName) {
+  getIndex(indexName) {
     let hits = []
-    return await this.client_
+    return this.client_
       .initIndex(indexName)
       .browseObjects({
         query: indexName,
@@ -56,11 +56,9 @@ class AlgoliaService extends SearchService {
    * @param {*} type
    * @return {*}
    */
-  async addDocuments(indexName, documents, type) {
+  addDocuments(indexName, documents, type) {
     const transformedDocuments = this.getTransformedDocuments(type, documents)
-    return await this.client_
-      .initIndex(indexName)
-      .saveObjects(transformedDocuments)
+    return this.client_.initIndex(indexName).saveObjects(transformedDocuments)
   }
 
   /**
@@ -70,9 +68,9 @@ class AlgoliaService extends SearchService {
    * @param {Array.<Object>} type  - type of documents to be replaced (e.g: products, regions, orders, etc)
    * @return {Promise<{object}>} - returns response from search engine provider
    */
-  async replaceDocuments(indexName, documents, type) {
+  replaceDocuments(indexName, documents, type) {
     const transformedDocuments = this.getTransformedDocuments(type, documents)
-    return await this.client_
+    return this.client_
       .initIndex(indexName)
       .replaceAllObjects(transformedDocuments)
   }
@@ -83,8 +81,8 @@ class AlgoliaService extends SearchService {
    * @param {string} document_id  - the id of the document
    * @return {Promise<{object}>} - returns response from search engine provider
    */
-  async deleteDocument(indexName, document_id) {
-    return await this.client_.initIndex(indexName).deleteObject(document_id)
+  deleteDocument(indexName, document_id) {
+    return this.client_.initIndex(indexName).deleteObject(document_id)
   }
 
   /**
@@ -92,8 +90,8 @@ class AlgoliaService extends SearchService {
    * @param {string} indexName  - the index name
    * @return {Promise<{object}>} - returns response from search engine provider
    */
-  async deleteAllDocuments(indexName) {
-    return await this.client_.initIndex(indexName).delete()
+  deleteAllDocuments(indexName) {
+    return this.client_.initIndex(indexName).delete()
   }
 
   /**
@@ -105,14 +103,14 @@ class AlgoliaService extends SearchService {
    * - additionalOptions contain any provider specific options
    * @return {*} - returns response from search engine provider
    */
-  async search(indexName, query, options) {
+  search(indexName, query, options) {
     const { paginationOptions, filter, additionalOptions } = options
     if ("limit" in paginationOptions) {
       paginationOptions["length"] = paginationOptions.limit
       delete paginationOptions.limit
     }
 
-    return await this.client_.initIndex(indexName).search(query, {
+    return this.client_.initIndex(indexName).search(query, {
       filters: filter,
       ...paginationOptions,
       ...additionalOptions,
@@ -125,8 +123,8 @@ class AlgoliaService extends SearchService {
    * @param {object} settings  - settings object
    * @return {Promise<{object}>} - returns response from search engine provider
    */
-  async updateSettings(indexName, settings) {
-    return await this.client_.initIndex(indexName).setSettings(settings)
+  updateSettings(indexName, settings) {
+    return this.client_.initIndex(indexName).setSettings(settings)
   }
 
   getTransformedDocuments(type, documents) {

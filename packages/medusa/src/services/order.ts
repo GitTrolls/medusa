@@ -1,7 +1,6 @@
 import { MedusaError } from "medusa-core-utils"
 import { Brackets, EntityManager } from "typeorm"
 import { TransactionBaseService } from "../interfaces"
-import SalesChannelFeatureFlag from "../loaders/feature-flags/sales-channels"
 import {
   Address,
   ClaimOrder,
@@ -12,6 +11,7 @@ import {
   Order,
   OrderStatus,
   Payment,
+  PaymentSession,
   PaymentStatus,
   Return,
   Swap,
@@ -27,7 +27,6 @@ import {
 import { UpdateOrderInput } from "../types/orders"
 import { CreateShippingMethodDto } from "../types/shipping-options"
 import { buildQuery, setMetadata } from "../utils"
-import { FlagRouter } from "../utils/flag-router"
 import CartService from "./cart"
 import CustomerService from "./customer"
 import DiscountService from "./discount"
@@ -63,7 +62,6 @@ type InjectedDependencies = {
   draftOrderService: DraftOrderService
   inventoryService: InventoryService
   eventBusService: EventBusService
-  featureFlagRouter: FlagRouter
 }
 
 class OrderService extends TransactionBaseService {
@@ -106,7 +104,6 @@ class OrderService extends TransactionBaseService {
   protected readonly draftOrderService_: DraftOrderService
   protected readonly inventoryService_: InventoryService
   protected readonly eventBus_: EventBusService
-  protected readonly featureFlagRouter_: FlagRouter
 
   constructor({
     manager,
@@ -127,7 +124,6 @@ class OrderService extends TransactionBaseService {
     draftOrderService,
     inventoryService,
     eventBusService,
-    featureFlagRouter,
   }: InjectedDependencies) {
     // eslint-disable-next-line prefer-rest-params
     super(arguments[0])
@@ -150,7 +146,6 @@ class OrderService extends TransactionBaseService {
     this.addressRepository_ = addressRepository
     this.draftOrderService_ = draftOrderService
     this.inventoryService_ = inventoryService
-    this.featureFlagRouter_ = featureFlagRouter
   }
 
   /**
@@ -169,8 +164,9 @@ class OrderService extends TransactionBaseService {
     const orderRepo = this.manager_.getCustomRepository(this.orderRepository_)
     const query = buildQuery(selector, config)
 
-    const { select, relations, totalsToSelect } =
-      this.transformQueryForTotals(config)
+    const { select, relations, totalsToSelect } = this.transformQueryForTotals(
+      config
+    )
 
     if (select && select.length) {
       query.select = select
@@ -238,8 +234,9 @@ class OrderService extends TransactionBaseService {
       }
     }
 
-    const { select, relations, totalsToSelect } =
-      this.transformQueryForTotals(config)
+    const { select, relations, totalsToSelect } = this.transformQueryForTotals(
+      config
+    )
 
     if (select && select.length) {
       query.select = select
@@ -257,7 +254,9 @@ class OrderService extends TransactionBaseService {
     return [orders, count]
   }
 
-  protected transformQueryForTotals(config: FindConfig<Order>): {
+  protected transformQueryForTotals(
+    config: FindConfig<Order>
+  ): {
     relations: string[] | undefined
     select: FindConfig<Order>["select"]
     totalsToSelect: FindConfig<Order>["select"]
@@ -338,8 +337,9 @@ class OrderService extends TransactionBaseService {
   ): Promise<Order> {
     const orderRepo = this.manager_.getCustomRepository(this.orderRepository_)
 
-    const { select, relations, totalsToSelect } =
-      this.transformQueryForTotals(config)
+    const { select, relations, totalsToSelect } = this.transformQueryForTotals(
+      config
+    )
 
     const query = {
       where: { id: orderId },
@@ -378,8 +378,9 @@ class OrderService extends TransactionBaseService {
   ): Promise<Order> {
     const orderRepo = this.manager_.getCustomRepository(this.orderRepository_)
 
-    const { select, relations, totalsToSelect } =
-      this.transformQueryForTotals(config)
+    const { select, relations, totalsToSelect } = this.transformQueryForTotals(
+      config
+    )
 
     const query = {
       where: { cart_id: cartId },
@@ -417,8 +418,9 @@ class OrderService extends TransactionBaseService {
   ): Promise<Order> {
     const orderRepo = this.manager_.getCustomRepository(this.orderRepository_)
 
-    const { select, relations, totalsToSelect } =
-      this.transformQueryForTotals(config)
+    const { select, relations, totalsToSelect } = this.transformQueryForTotals(
+      config
+    )
 
     const query = {
       where: { external_id: externalId },
@@ -579,13 +581,6 @@ class OrderService extends TransactionBaseService {
         currency_code: region.currency_code,
         metadata: cart.metadata || {},
       } as Partial<Order>
-
-      if (
-        cart.sales_channel_id &&
-        this.featureFlagRouter_.isFeatureEnabled(SalesChannelFeatureFlag.key)
-      ) {
-        toCreate.sales_channel_id = cart.sales_channel_id
-      }
 
       if (cart.type === "draft_order") {
         const draft = await this.draftOrderService_
@@ -790,7 +785,7 @@ class OrderService extends TransactionBaseService {
 
       await addrRepo.save({ ...addr, ...address })
     } else {
-      const created = addrRepo.create({ ...address })
+      const created = await addrRepo.create({ ...address })
       await addrRepo.save(created)
     }
   }
@@ -863,8 +858,9 @@ class OrderService extends TransactionBaseService {
         .withTransaction(manager)
         .createShippingMethod(optionId, data ?? {}, { order, ...config })
 
-      const shippingOptionServiceTx =
-        this.shippingOptionService_.withTransaction(manager)
+      const shippingOptionServiceTx = this.shippingOptionService_.withTransaction(
+        manager
+      )
 
       const methods = [newMethod]
       if (shipping_methods.length) {
@@ -1035,8 +1031,9 @@ class OrderService extends TransactionBaseService {
         await inventoryServiceTx.adjustInventory(item.variant_id, item.quantity)
       }
 
-      const paymentProviderServiceTx =
-        this.paymentProviderService_.withTransaction(manager)
+      const paymentProviderServiceTx = this.paymentProviderService_.withTransaction(
+        manager
+      )
       for (const p of order.payments) {
         await paymentProviderServiceTx.cancelPayment(p)
       }
@@ -1076,16 +1073,17 @@ class OrderService extends TransactionBaseService {
         )
       }
 
-      const paymentProviderServiceTx =
-        this.paymentProviderService_.withTransaction(manager)
+      const paymentProviderServiceTx = this.paymentProviderService_.withTransaction(
+        manager
+      )
 
       const payments: Payment[] = []
       for (const p of order.payments) {
         if (p.captured_at === null) {
           const result = await paymentProviderServiceTx
             .capturePayment(p)
-            .catch(async (err) => {
-              await this.eventBus_
+            .catch((err) => {
+              this.eventBus_
                 .withTransaction(manager)
                 .emit(OrderService.Events.PAYMENT_CAPTURE_FAILED, {
                   id: orderId,
@@ -1113,7 +1111,7 @@ class OrderService extends TransactionBaseService {
       const result = await orderRepo.save(order)
 
       if (order.payment_status === PaymentStatus.CAPTURED) {
-        await this.eventBus_
+        this.eventBus_
           .withTransaction(manager)
           .emit(OrderService.Events.PAYMENT_CAPTURED, {
             id: result.id,
@@ -1230,7 +1228,7 @@ class OrderService extends TransactionBaseService {
       const fulfillments = await this.fulfillmentService_
         .withTransaction(manager)
         .createFulfillment(
-          order as unknown as CreateFulfillmentOrder,
+          (order as unknown) as CreateFulfillmentOrder,
           itemsToFulfill,
           {
             metadata,
@@ -1425,7 +1423,7 @@ class OrderService extends TransactionBaseService {
       const evaluatedNoNotification =
         no_notification !== undefined ? no_notification : order.no_notification
 
-      await this.eventBus_.emit(OrderService.Events.REFUND_CREATED, {
+      this.eventBus_.emit(OrderService.Events.REFUND_CREATED, {
         id: result.id,
         refund_id: refund.id,
         no_notification: evaluatedNoNotification,
@@ -1587,7 +1585,7 @@ class OrderService extends TransactionBaseService {
       if (refundAmount > order.refundable_amount) {
         order.fulfillment_status = FulfillmentStatus.REQUIRES_ACTION
         const result = await orderRepo.save(order)
-        await this.eventBus_
+        this.eventBus_
           .withTransaction(manager)
           .emit(OrderService.Events.RETURN_ACTION_REQUIRED, {
             id: result.id,

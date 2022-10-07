@@ -26,7 +26,7 @@ type InjectedDependencies = {
   refundRepository: typeof RefundRepository
 } & {
   [key in `${PaymentProviderKey}`]:
-    | AbstractPaymentService
+    | AbstractPaymentService<never>
     | typeof BasePaymentService
 }
 
@@ -38,7 +38,6 @@ export default class PaymentProviderService extends TransactionBaseService {
   protected transactionManager_: EntityManager | undefined
   protected readonly container_: InjectedDependencies
   protected readonly paymentSessionRepository_: typeof PaymentSessionRepository
-  // eslint-disable-next-line max-len
   protected readonly paymentProviderRepository_: typeof PaymentProviderRepository
   protected readonly paymentRepository_: typeof PaymentRepository
   protected readonly refundRepository_: typeof RefundRepository
@@ -275,11 +274,11 @@ export default class PaymentProviderService extends TransactionBaseService {
    * @return {PaymentService} the payment provider
    */
   retrieveProvider<
-    TProvider extends AbstractPaymentService | typeof BasePaymentService
+    TProvider extends AbstractPaymentService<never> | typeof BasePaymentService
   >(
     providerId: string
-  ): TProvider extends AbstractPaymentService
-    ? AbstractPaymentService
+  ): TProvider extends AbstractPaymentService<never>
+    ? AbstractPaymentService<never>
     : typeof BasePaymentService {
     try {
       let provider

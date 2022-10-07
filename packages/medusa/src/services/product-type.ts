@@ -1,23 +1,39 @@
 import { MedusaError } from "medusa-core-utils"
+import { BaseService } from "medusa-interfaces"
 import { EntityManager, ILike, SelectQueryBuilder } from "typeorm"
 import { ProductType } from "../models/product-type"
 import { ProductTypeRepository } from "../repositories/product-type"
 import { FindConfig } from "../types/common"
 import { FilterableProductTypeProps } from "../types/product"
-import { TransactionBaseService } from "../interfaces"
-import { buildQuery } from "../utils"
 
-class ProductTypeService extends TransactionBaseService {
-  protected manager_: EntityManager
-  protected transactionManager_: EntityManager | undefined
-
-  protected readonly typeRepository_: typeof ProductTypeRepository
-
+/**
+ * Provides layer to manipulate products.
+ * @extends BaseService
+ */
+class ProductTypeService extends BaseService {
+  private manager_: EntityManager
+  private typeRepository_: typeof ProductTypeRepository
   constructor({ manager, productTypeRepository }) {
-    super(arguments[0])
+    super()
 
     this.manager_ = manager
     this.typeRepository_ = productTypeRepository
+  }
+
+  withTransaction(transactionManager: EntityManager): ProductTypeService {
+    if (!transactionManager) {
+      return this
+    }
+
+    const cloned = new ProductTypeService({
+      manager: transactionManager,
+      productTypeRepository: this.typeRepository_,
+    })
+
+    cloned.transactionManager_ = transactionManager
+    cloned.manager_ = transactionManager
+
+    return cloned
   }
 
   /**
@@ -26,7 +42,7 @@ class ProductTypeService extends TransactionBaseService {
    * @param id - id of the product to get.
    * @param config - object that defines what should be included in the
    *   query response
-   * @return the result of the find one operation.
+   * @return {Promise<Product>} the result of the find one operation.
    */
   async retrieve(
     id: string,
@@ -34,7 +50,7 @@ class ProductTypeService extends TransactionBaseService {
   ): Promise<ProductType> {
     const typeRepo = this.manager_.getCustomRepository(this.typeRepository_)
 
-    const query = buildQuery({ id }, config)
+    const query = this.buildQuery_({ id }, config)
     const type = await typeRepo.findOne(query)
 
     if (!type) {
@@ -49,9 +65,9 @@ class ProductTypeService extends TransactionBaseService {
 
   /**
    * Lists product types
-   * @param selector - the query object for find
-   * @param config - the config to be used for find
-   * @return the result of the find operation
+   * @param {Object} selector - the query object for find
+   * @param {Object} config - the config to be used for find
+   * @return {Promise} the result of the find operation
    */
   async list(
     selector: FilterableProductTypeProps = {},
@@ -59,15 +75,15 @@ class ProductTypeService extends TransactionBaseService {
   ): Promise<ProductType[]> {
     const typeRepo = this.manager_.getCustomRepository(this.typeRepository_)
 
-    const query = buildQuery(selector, config)
+    const query = this.buildQuery_(selector, config)
     return await typeRepo.find(query)
   }
 
   /**
    * Lists product tags and adds count.
-   * @param selector - the query object for find
-   * @param config - the config to be used for find
-   * @return the result of the find operation
+   * @param {Object} selector - the query object for find
+   * @param {Object} config - the config to be used for find
+   * @return {Promise} the result of the find operation
    */
   async listAndCount(
     selector: FilterableProductTypeProps = {},
@@ -81,7 +97,7 @@ class ProductTypeService extends TransactionBaseService {
       delete selector.q
     }
 
-    const query = buildQuery(selector, config)
+    const query = this.buildQuery_(selector, config)
 
     if (q) {
       const where = query.where

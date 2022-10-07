@@ -1,7 +1,9 @@
 import { isEmpty, isEqual } from "lodash"
 import { MedusaError } from "medusa-core-utils"
 import { DeepPartial, EntityManager, In } from "typeorm"
-import { IPriceSelectionStrategy, TransactionBaseService } from "../interfaces"
+import { TransactionBaseService } from "../interfaces"
+import { IPriceSelectionStrategy } from "../interfaces/price-selection-strategy"
+import SalesChannelFeatureFlag from "../loaders/feature-flags/sales-channels"
 import {
   Address,
   Cart,
@@ -34,6 +36,7 @@ import CustomerService from "./customer"
 import DiscountService from "./discount"
 import EventBusService from "./event-bus"
 import GiftCardService from "./gift-card"
+import { SalesChannelService } from "./index"
 import InventoryService from "./inventory"
 import LineItemService from "./line-item"
 import LineItemAdjustmentService from "./line-item-adjustment"
@@ -42,11 +45,9 @@ import ProductService from "./product"
 import ProductVariantService from "./product-variant"
 import RegionService from "./region"
 import ShippingOptionService from "./shipping-option"
+import StoreService from "./store"
 import TaxProviderService from "./tax-provider"
 import TotalsService from "./totals"
-import SalesChannelFeatureFlag from "../loaders/feature-flags/sales-channels"
-import StoreService from "./store"
-import { SalesChannelService } from "./index"
 
 type InjectedDependencies = {
   manager: EntityManager
@@ -1837,9 +1838,6 @@ class CartService extends TransactionBaseService {
           relations: ["countries"],
         })
 
-      const lineItemServiceTx =
-        this.lineItemService_.withTransaction(transactionManager)
-
       cart.items = (
         await Promise.all(
           cart.items.map(async (item) => {
@@ -1858,19 +1856,21 @@ class CartService extends TransactionBaseService {
               availablePrice !== undefined &&
               availablePrice.calculatedPrice !== null
             ) {
-              return lineItemServiceTx.update(item.id, {
-                has_shipping: false,
-                unit_price: availablePrice.calculatedPrice,
-              })
+              return this.lineItemService_
+                .withTransaction(transactionManager)
+                .update(item.id, {
+                  has_shipping: false,
+                  unit_price: availablePrice.calculatedPrice,
+                })
             } else {
-              await lineItemServiceTx.delete(item.id)
+              await this.lineItemService_
+                .withTransaction(transactionManager)
+                .delete(item.id)
               return
             }
           })
         )
-      )
-        .flat()
-        .filter((item): item is LineItem => !!item)
+      ).filter((item): item is LineItem => !!item)
     }
   }
 
@@ -2092,7 +2092,8 @@ class CartService extends TransactionBaseService {
         }
 
         const updatedCart = await cartRepo.save(cart)
-        await this.eventBus_
+
+        this.eventBus_
           .withTransaction(transactionManager)
           .emit(CartService.Events.UPDATED, updatedCart)
 

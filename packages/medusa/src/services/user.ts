@@ -23,6 +23,7 @@ type UserServiceProps = {
 
 /**
  * Provides layer to manipulate users.
+ * @extends BaseService
  */
 class UserService extends TransactionBaseService {
   static Events = {
