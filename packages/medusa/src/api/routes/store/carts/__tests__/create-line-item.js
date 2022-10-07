@@ -25,8 +25,7 @@ describe("POST /store/carts/:id", () => {
     })
 
     it("calls CartService retrieve", () => {
-      expect(CartServiceMock.retrieve).toHaveBeenCalledTimes(2)
-      expect(CartServiceMock.retrieveWithTotals).toHaveBeenCalledTimes(1)
+      expect(CartServiceMock.retrieve).toHaveBeenCalledTimes(3)
     })
 
     it("calls LineItemService generate", () => {

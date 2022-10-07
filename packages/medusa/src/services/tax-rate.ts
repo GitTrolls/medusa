@@ -1,4 +1,5 @@
 import { MedusaError } from "medusa-core-utils"
+import { BaseService } from "medusa-interfaces"
 import { EntityManager } from "typeorm"
 import { ProductTaxRate } from "../models/product-tax-rate"
 import { ProductTypeTaxRate } from "../models/product-type-tax-rate"
@@ -15,18 +16,14 @@ import {
   TaxRateListByConfig,
   UpdateTaxRateInput,
 } from "../types/tax-rate"
-import { buildQuery, isDefined, PostgresError } from "../utils"
-import { TransactionBaseService } from "../interfaces"
-import { FindConditions } from "typeorm/find-options/FindConditions"
+import { isDefined } from "../utils"
 
-class TaxRateService extends TransactionBaseService {
-  protected manager_: EntityManager
-  protected transactionManager_: EntityManager | undefined
-
-  protected readonly productService_: ProductService
-  protected readonly productTypeService_: ProductTypeService
-  protected readonly shippingOptionService_: ShippingOptionService
-  protected readonly taxRateRepository_: typeof TaxRateRepository
+class TaxRateService extends BaseService {
+  private manager_: EntityManager
+  private productService_: ProductService
+  private productTypeService_: ProductTypeService
+  private shippingOptionService_: ShippingOptionService
+  private taxRateRepository_: typeof TaxRateRepository
 
   constructor({
     manager,
@@ -35,13 +32,32 @@ class TaxRateService extends TransactionBaseService {
     shippingOptionService,
     taxRateRepository,
   }) {
-    super(arguments[0])
+    super()
 
     this.manager_ = manager
     this.taxRateRepository_ = taxRateRepository
     this.productService_ = productService
     this.productTypeService_ = productTypeService
     this.shippingOptionService_ = shippingOptionService
+  }
+
+  withTransaction(transactionManager: EntityManager): TaxRateService {
+    if (!transactionManager) {
+      return this
+    }
+
+    const cloned = new TaxRateService({
+      manager: transactionManager,
+      taxRateRepository: this.taxRateRepository_,
+      productService: this.productService_,
+      productTypeService: this.productTypeService_,
+      shippingOptionService: this.shippingOptionService_,
+    })
+
+    cloned.transactionManager_ = transactionManager
+    cloned.manager_ = transactionManager
+
+    return cloned
   }
 
   async list(
@@ -51,7 +67,7 @@ class TaxRateService extends TransactionBaseService {
     const taxRateRepo = this.manager_.getCustomRepository(
       this.taxRateRepository_
     )
-    const query = buildQuery(selector, config)
+    const query = this.buildQuery_(selector, config)
     return await taxRateRepo.findWithResolution(query)
   }
 
@@ -62,7 +78,7 @@ class TaxRateService extends TransactionBaseService {
     const taxRateRepo = this.manager_.getCustomRepository(
       this.taxRateRepository_
     )
-    const query = buildQuery(selector, config)
+    const query = this.buildQuery_(selector, config)
     return await taxRateRepo.findAndCountWithResolution(query)
   }
 
@@ -72,7 +88,7 @@ class TaxRateService extends TransactionBaseService {
   ): Promise<TaxRate> {
     const manager = this.manager_
     const taxRateRepo = manager.getCustomRepository(this.taxRateRepository_)
-    const query = buildQuery({ id }, config)
+    const query = this.buildQuery_({ id }, config)
 
     const taxRate = await taxRateRepo.findOneWithResolution(query)
     if (!taxRate) {
@@ -119,8 +135,8 @@ class TaxRateService extends TransactionBaseService {
   async delete(id: string | string[]): Promise<void> {
     return await this.atomicPhase_(async (manager: EntityManager) => {
       const taxRateRepo = manager.getCustomRepository(this.taxRateRepository_)
-      const query = buildQuery({ id })
-      await taxRateRepo.delete(query.where as FindConditions<TaxRate>)
+      const query = this.buildQuery_({ id })
+      await taxRateRepo.delete(query.where)
     })
   }
 
@@ -197,14 +213,14 @@ class TaxRateService extends TransactionBaseService {
       },
       // eslint-disable-next-line
       async (err: any) => {
-        if (err.code === PostgresError.FOREIGN_KEY_ERROR) {
+        if (err.code === "23503") {
           // A foreign key constraint failed meaning some thing doesn't exist
           // either it is a product or the tax rate itself. Using Promise.all
           // will try to retrieve all of the resources and will fail when
           // something is not found.
           await Promise.all([
             this.retrieve(id, { select: ["id"] }),
-            ...ids.map(async (pId) =>
+            ...ids.map((pId) =>
               this.productService_.retrieve(pId, { select: ["id"] })
             ),
           ])
@@ -233,7 +249,7 @@ class TaxRateService extends TransactionBaseService {
       },
       // eslint-disable-next-line
       async (err: any) => {
-        if (err.code === PostgresError.FOREIGN_KEY_ERROR) {
+        if (err.code === "23503") {
           // A foreign key constraint failed meaning some thing doesn't exist
           // either it is a product or the tax rate itself. Using Promise.all
           // will try to retrieve all of the resources and will fail when
@@ -243,7 +259,7 @@ class TaxRateService extends TransactionBaseService {
               select: ["id"],
             }) as Promise<unknown>,
             ...ids.map(
-              async (pId) =>
+              (pId) =>
                 this.productTypeService_.retrieve(pId, {
                   select: ["id"],
                 }) as Promise<unknown>
@@ -258,7 +274,7 @@ class TaxRateService extends TransactionBaseService {
     id: string,
     optionIds: string | string[],
     replace = false
-  ): Promise<ShippingTaxRate[]> {
+  ): Promise<ShippingTaxRate> {
     let ids: string[]
     if (typeof optionIds === "string") {
       ids = [optionIds]
@@ -286,14 +302,14 @@ class TaxRateService extends TransactionBaseService {
       },
       // eslint-disable-next-line
       async (err: any) => {
-        if (err.code === PostgresError.FOREIGN_KEY_ERROR) {
+        if (err.code === "23503") {
           // A foreign key constraint failed meaning some thing doesn't exist
           // either it is a product or the tax rate itself. Using Promise.all
           // will try to retrieve all of the resources and will fail when
           // something is not found.
           await Promise.all([
             this.retrieve(id, { select: ["id"] }),
-            ...ids.map(async (sId) =>
+            ...ids.map((sId) =>
               this.shippingOptionService_.retrieve(sId, { select: ["id"] })
             ),
           ])

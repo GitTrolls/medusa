@@ -2,6 +2,7 @@ import { CartService, IdempotencyKeyService } from "../../../../services"
 
 import { EntityManager } from "typeorm"
 import { IdempotencyKey } from "../../../../models/idempotency-key"
+import { decorateLineItemsWithTotals } from "./decorate-line-items-with-totals"
 
 /**
  * @oas [post] /carts/{id}/taxes
@@ -48,13 +49,18 @@ export default async (req, res) => {
 
   const headerKey = req.get("Idempotency-Key") || ""
 
-  let idempotencyKey: IdempotencyKey
+  let idempotencyKey
 
   try {
-    idempotencyKey = await manager.transaction(async (transactionManager) => {
-      return await idempotencyKeyService
+    await manager.transaction(async (transactionManager) => {
+      idempotencyKey = await idempotencyKeyService
         .withTransaction(transactionManager)
-        .initializeRequest(headerKey, req.method, req.params, req.path)
+        .initializeRequest(
+          headerKey,
+          req.method,
+          req.params,
+          req.path
+        )
     })
   } catch (error) {
     console.log(error)
@@ -79,13 +85,29 @@ export default async (req, res) => {
             .workStage(
               idempotencyKey.idempotency_key,
               async (manager: EntityManager) => {
-                const cart = await cartService
-                  .withTransaction(manager)
-                  .retrieveWithTotals(id, {}, { force_taxes: true })
+                const cart = await cartService.withTransaction(manager).retrieve(
+                  id,
+                  {
+                    relations: ["items", "items.adjustments"],
+                    select: [
+                      "total",
+                      "subtotal",
+                      "tax_total",
+                      "discount_total",
+                      "shipping_total",
+                      "gift_card_total",
+                    ],
+                  },
+                  { force_taxes: true }
+                )
+
+                const data = await decorateLineItemsWithTotals(cart, req, {
+                  force_taxes: true,
+                })
 
                 return {
                   response_code: 200,
-                  response_body: { cart },
+                  response_body: { cart: data },
                 }
               }
             )
@@ -94,7 +116,7 @@ export default async (req, res) => {
             inProgress = false
             err = error
           } else {
-            idempotencyKey = key!
+            idempotencyKey = key
           }
         })
         break
@@ -109,11 +131,14 @@ export default async (req, res) => {
         await manager.transaction(async (transactionManager) => {
           idempotencyKey = await idempotencyKeyService
             .withTransaction(transactionManager)
-            .update(idempotencyKey.idempotency_key, {
-              recovery_point: "finished",
-              response_code: 500,
-              response_body: { message: "Unknown recovery point" },
-            })
+            .update(
+              idempotencyKey.idempotency_key,
+              {
+                recovery_point: "finished",
+                response_code: 500,
+                response_body: { message: "Unknown recovery point" },
+              }
+            )
         })
         break
     }

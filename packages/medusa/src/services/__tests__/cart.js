@@ -18,13 +18,6 @@ describe("CartService", () => {
     withTransaction: function () {
       return this
     },
-    getShippingMethodTotals: (m) => {
-      return m
-    },
-    getLineItemTotals: (i) => {
-      return i
-    },
-    getCalculationContext: () => {},
     getTotal: (o) => {
       return o.total || 0
     },
@@ -856,12 +849,10 @@ describe("CartService", () => {
         }
         return Promise.resolve({
           id: IdMap.getId("cartWithLine"),
-          total: 100,
           items: [
             {
               id: IdMap.getId("existing"),
               variant_id: IdMap.getId("good"),
-              subtotal: 100,
               quantity: 1,
             },
           ],
@@ -1379,7 +1370,6 @@ describe("CartService", () => {
   describe("setPaymentSessions", () => {
     const cart1 = {
       total: 100,
-      items: [{ subtotal: 100 }],
       payment_sessions: [],
       region: {
         payment_providers: [{ id: "provider_1" }, { id: "provider_2" }],
@@ -1396,8 +1386,6 @@ describe("CartService", () => {
 
     const cart3 = {
       total: 100,
-      items: [{ subtotal: 100 }],
-      shipping_methods: [{ subtotal: 100 }],
       payment_sessions: [
         { provider_id: "provider_1" },
         { provider_id: "not_in_region" },
@@ -1409,8 +1397,6 @@ describe("CartService", () => {
 
     const cart4 = {
       total: 0,
-      items: [{ total: 0 }],
-      shipping_methods: [],
       payment_sessions: [
         { provider_id: "provider_1" },
         { provider_id: "provider_2" },
@@ -1591,7 +1577,7 @@ describe("CartService", () => {
       shipping_methods: [{ id: "ship1", profile: "profile1" }],
     })
     const cart3 = buildCart("lines", {
-      items: [{ id: "line", profile: "profile1", subtotal: 100 }],
+      items: [{ id: "line", profile: "profile1" }],
     })
     const cartWithCustomSO = buildCart("cart-with-custom-so")
 

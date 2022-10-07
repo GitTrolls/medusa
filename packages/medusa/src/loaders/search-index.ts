@@ -5,12 +5,10 @@ import { AbstractSearchService } from "../interfaces"
 
 export const SEARCH_INDEX_EVENT = "SEARCH_INDEX_EVENT"
 
-async function loadProductsIntoSearchEngine(
-  container: MedusaContainer
-): Promise<void> {
+function loadProductsIntoSearchEngine(container: MedusaContainer): void {
   const logger: Logger = container.resolve<Logger>("logger")
   const eventBusService: EventBusService = container.resolve("eventBusService")
-  void eventBusService.emit(SEARCH_INDEX_EVENT, {}).catch((err) => {
+  eventBusService.emit(SEARCH_INDEX_EVENT, {}).catch((err) => {
     logger.error(err)
     logger.error(
       "Something went wrong while emitting the search indexing event."

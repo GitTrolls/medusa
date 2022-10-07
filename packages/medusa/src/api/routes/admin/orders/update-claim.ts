@@ -241,7 +241,7 @@ class Item {
 
   @IsObject()
   @IsOptional()
-  metadata?: Record<string, unknown>
+  metadata?: object
 }
 
 class Image {

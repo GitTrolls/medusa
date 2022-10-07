@@ -54,7 +54,7 @@ export type CartCreateProps = {
   customer_id?: string
   type?: CartType
   context?: object
-  metadata?: Record<string, unknown>
+  metadata?: object
   sales_channel_id?: string
   country_code?: string
 }

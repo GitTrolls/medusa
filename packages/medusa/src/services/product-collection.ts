@@ -28,7 +28,7 @@ class ProductCollectionService extends TransactionBaseService {
   protected transactionManager_: EntityManager | undefined
 
   protected readonly eventBus_: EventBusService
-  // eslint-disable-next-line max-len
+
   protected readonly productCollectionRepository_: typeof ProductCollectionRepository
   protected readonly productRepository_: typeof ProductRepository
 
@@ -38,7 +38,12 @@ class ProductCollectionService extends TransactionBaseService {
     productRepository,
     eventBusService,
   }: InjectedDependencies) {
-    super(arguments[0])
+    super({
+      manager,
+      productCollectionRepository,
+      productRepository,
+      eventBusService,
+    })
     this.manager_ = manager
 
     this.productCollectionRepository_ = productCollectionRepository
@@ -114,7 +119,7 @@ class ProductCollectionService extends TransactionBaseService {
       )
 
       try {
-        const productCollection = collectionRepo.create(collection)
+        const productCollection = await collectionRepo.create(collection)
         return await collectionRepo.save(productCollection)
       } catch (error) {
         throw formatException(error)

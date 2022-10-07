@@ -1,22 +1,41 @@
+import { BaseService } from "medusa-interfaces"
 import { EntityManager } from "typeorm"
-import { ShippingTaxRate } from "../models"
+import { ShippingTaxRate } from "../models/shipping-tax-rate"
 import { ShippingTaxRateRepository } from "../repositories/shipping-tax-rate"
 import { FindConfig } from "../types/common"
 import { FilterableShippingTaxRateProps } from "../types/shipping-tax-rate"
-import { TransactionBaseService } from "../interfaces"
-import { buildQuery } from "../utils"
 
-class ShippingTaxRateService extends TransactionBaseService {
-  protected manager_: EntityManager
-  protected transactionManager_: EntityManager | undefined
-
-  protected readonly shippingTaxRateRepository_: typeof ShippingTaxRateRepository
+/**
+ * Provides layer to manipulate Shipping variants.
+ * @extends BaseService
+ */
+class ShippingTaxRateService extends BaseService {
+  private manager_: EntityManager
+  private shippingTaxRateRepository_: typeof ShippingTaxRateRepository
 
   constructor({ manager, shippingTaxRateRepository }) {
-    super(arguments[0])
+    super()
 
+    /** @private @const {EntityManager} */
     this.manager_ = manager
+
+    /** @private @const {ShippingVariantModel} */
     this.shippingTaxRateRepository_ = shippingTaxRateRepository
+  }
+
+  withTransaction(transactionManager: EntityManager): ShippingTaxRateService {
+    if (!transactionManager) {
+      return this
+    }
+
+    const cloned = new ShippingTaxRateService({
+      manager: transactionManager,
+      shippingTaxRateRepository: this.ShippingTaxRateRepository_,
+    })
+
+    cloned.transactionManager_ = transactionManager
+
+    return cloned
   }
 
   /**
@@ -33,7 +52,7 @@ class ShippingTaxRateService extends TransactionBaseService {
       this.shippingTaxRateRepository_
     )
 
-    const query = buildQuery(selector, config)
+    const query = this.buildQuery_(selector, config)
 
     return await sTaxRateRepo.find(query)
   }

@@ -94,10 +94,6 @@ export class ShippingMethod {
   @FeatureFlagColumn(TaxInclusivePricingFeatureFlag.key, { default: false })
   includes_tax: boolean
 
-  subtotal?: number
-  total?: number
-  tax_total?: number
-
   @BeforeInsert()
   private beforeInsert(): void {
     this.id = generateEntityId(this.id, "sm")

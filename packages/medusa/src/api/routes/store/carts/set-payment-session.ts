@@ -1,8 +1,9 @@
 import { defaultStoreCartFields, defaultStoreCartRelations } from "."
 
 import { CartService } from "../../../../services"
-import { EntityManager } from "typeorm"
+import { EntityManager } from "typeorm";
 import { IsString } from "class-validator"
+import { decorateLineItemsWithTotals } from "./decorate-line-items-with-totals"
 import { validator } from "../../../../utils/validator"
 
 /**
@@ -67,16 +68,15 @@ export default async (req, res) => {
 
   const manager: EntityManager = req.scope.resolve("manager")
   await manager.transaction(async (transactionManager) => {
-    return await cartService
-      .withTransaction(transactionManager)
-      .setPaymentSession(id, validated.provider_id)
+    return await cartService.withTransaction(transactionManager).setPaymentSession(id, validated.provider_id)
   })
 
-  const data = await cartService.retrieveWithTotals(id, {
+  const cart = await cartService.retrieve(id, {
     select: defaultStoreCartFields,
     relations: defaultStoreCartRelations,
   })
 
+  const data = await decorateLineItemsWithTotals(cart, req)
   res.status(200).json({ cart: data })
 }
 
