@@ -55,7 +55,8 @@ export default async (req, res) => {
     "shippingProfileService"
   )
 
-  const cart = await cartService.retrieveWithTotals(cart_id, {
+  const cart = await cartService.retrieve(cart_id, {
+    select: ["subtotal"],
     relations: [
       "region",
       "items",

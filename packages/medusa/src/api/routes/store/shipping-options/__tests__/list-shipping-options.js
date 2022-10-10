@@ -19,10 +19,11 @@ describe("GET /store/shipping-options", () => {
     })
 
     it("calls CartService retrieve", () => {
-      expect(CartServiceMock.retrieveWithTotals).toHaveBeenCalledTimes(1)
-      expect(CartServiceMock.retrieveWithTotals).toHaveBeenCalledWith(
+      expect(CartServiceMock.retrieve).toHaveBeenCalledTimes(1)
+      expect(CartServiceMock.retrieve).toHaveBeenCalledWith(
         IdMap.getId("emptyCart"),
         {
+          select: ["subtotal"],
           relations: [
             "region",
             "items",

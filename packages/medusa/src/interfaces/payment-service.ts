@@ -12,7 +12,8 @@ export type Data = Record<string, unknown>
 export type PaymentData = Data
 export type PaymentSessionData = Data
 
-export interface PaymentService extends TransactionBaseService {
+export interface PaymentService<T extends TransactionBaseService>
+  extends TransactionBaseService {
   getIdentifier(): string
 
   getPaymentData(paymentSession: PaymentSession): Promise<PaymentData>
@@ -49,9 +50,9 @@ export interface PaymentService extends TransactionBaseService {
   getStatus(data: Data): Promise<PaymentSessionStatus>
 }
 
-export abstract class AbstractPaymentService
+export abstract class AbstractPaymentService<T extends TransactionBaseService>
   extends TransactionBaseService
-  implements PaymentService
+  implements PaymentService<T>
 {
   protected constructor(container: unknown, config?: Record<string, unknown>) {
     super(container, config)
@@ -60,10 +61,10 @@ export abstract class AbstractPaymentService
   protected static identifier: string
 
   public getIdentifier(): string {
-    if (!(this.constructor as typeof AbstractPaymentService).identifier) {
-      throw new Error(`Missing static property "identifier".`)
+    if (!(<typeof AbstractPaymentService>this.constructor).identifier) {
+      throw new Error('Missing static property "identifier".')
     }
-    return (this.constructor as typeof AbstractPaymentService).identifier
+    return (<typeof AbstractPaymentService>this.constructor).identifier
   }
 
   public abstract getPaymentData(
@@ -101,7 +102,7 @@ export abstract class AbstractPaymentService
   public abstract deletePayment(paymentSession: PaymentSession): Promise<void>
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  public async retrieveSavedMethods(customer: Customer): Promise<Data[]> {
+  public retrieveSavedMethods(customer: Customer): Promise<Data[]> {
     return Promise.resolve([])
   }
 

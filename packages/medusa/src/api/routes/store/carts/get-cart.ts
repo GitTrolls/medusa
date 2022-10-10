@@ -1,4 +1,5 @@
 import { CartService } from "../../../../services"
+import { decorateLineItemsWithTotals } from "./decorate-line-items-with-totals"
 
 /**
  * @oas [get] /carts/{id}
@@ -48,8 +49,8 @@ export default async (req, res) => {
 
   const cartService: CartService = req.scope.resolve("cartService")
 
-  const cart = await cartService.retrieve(id, {
-    select: ["id", "customer_id"],
+  let cart = await cartService.retrieve(id, {
+    relations: ["customer"],
   })
 
   // If there is a logged in user add the user to the cart
@@ -65,6 +66,8 @@ export default async (req, res) => {
     }
   }
 
-  const data = await cartService.retrieveWithTotals(id, req.retrieveConfig)
+  cart = await cartService.retrieve(id, req.retrieveConfig)
+
+  const data = await decorateLineItemsWithTotals(cart, req)
   res.json({ cart: data })
 }

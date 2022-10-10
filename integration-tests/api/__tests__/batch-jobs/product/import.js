@@ -8,7 +8,6 @@ const { initDb, useDb } = require("../../../../helpers/use-db")
 const adminSeeder = require("../../../helpers/admin-seeder")
 const batchJobSeeder = require("../../../helpers/batch-job-seeder")
 const userSeeder = require("../../../helpers/user-seeder")
-const { simpleProductFactory } = require("../../../factories")
 
 const adminReqConfig = {
   headers: {
@@ -72,29 +71,6 @@ describe("Product import batch job", () => {
     jest.setTimeout(1000000)
     const api = useApi()
 
-    const existingProductToBeUpdated = await simpleProductFactory(
-      dbConnection,
-      {
-        id: "existing-product-id",
-        title: "Test product",
-        options: [{ id: "opt-1-id", title: "Size" }],
-        variants: [
-          {
-            id: "existing-variant-id",
-            title: "Initial tile",
-            sku: "test-sku-4",
-            barde: "test-barcode-4",
-            options: [
-              {
-                option_id: "opt-1-id",
-                value: "Large",
-              },
-            ],
-          },
-        ],
-      }
-    )
-
     const response = await api.post(
       "/admin/batch-jobs",
       {
@@ -137,8 +113,8 @@ describe("Product import batch job", () => {
     expect(productsResponse.data.count).toBe(2)
     expect(productsResponse.data.products).toEqual(
       expect.arrayContaining([
-        // NEW PRODUCT
         expect.objectContaining({
+          id: "O6S1YQ6mKm",
           title: "Test product",
           description:
             "Hopper Stripes Bedding, available as duvet cover, pillow sham and sheet.\\n100% organic cotton, soft and crisp to the touch. Made in Portugal.",
@@ -147,9 +123,9 @@ describe("Product import batch job", () => {
           status: "draft",
           thumbnail: "test-image.png",
           variants: [
-            // NEW VARIANT
             expect.objectContaining({
               title: "Test variant",
+              product_id: "O6S1YQ6mKm",
               sku: "test-sku-1",
               barcode: "test-barcode-1",
               ean: null,
@@ -171,14 +147,14 @@ describe("Product import batch job", () => {
                   region_id: "region-product-import-1",
                 }),
               ],
-              options: expect.arrayContaining([
+              options: [
                 expect.objectContaining({
                   value: "option 1 value red",
                 }),
                 expect.objectContaining({
                   value: "option 2 value 1",
                 }),
-              ]),
+              ],
             }),
           ],
           images: [
@@ -189,9 +165,11 @@ describe("Product import batch job", () => {
           options: [
             expect.objectContaining({
               title: "test-option-1",
+              product_id: "O6S1YQ6mKm",
             }),
             expect.objectContaining({
               title: "test-option-2",
+              product_id: "O6S1YQ6mKm",
             }),
           ],
           tags: [
@@ -200,9 +178,8 @@ describe("Product import batch job", () => {
             }),
           ],
         }),
-        // UPDATED PRODUCT
         expect.objectContaining({
-          id: existingProductToBeUpdated.id,
+          id: "5VxiEkmnPV",
           title: "Test product",
           description: "test-product-description",
           handle: "test-product-product-2",
@@ -210,24 +187,10 @@ describe("Product import batch job", () => {
           status: "draft",
           thumbnail: "test-image.png",
           profile_id: expect.any(String),
-          variants: expect.arrayContaining([
-            // UPDATED VARIANT
-            expect.objectContaining({
-              id: "existing-variant-id",
-              title: "Test variant changed",
-              sku: "test-sku-4",
-              barcode: "test-barcode-4",
-              options: [
-                expect.objectContaining({
-                  value: "Large",
-                  option_id: "opt-1-id",
-                }),
-              ],
-            }),
-            // CREATED VARIANT
+          variants: [
             expect.objectContaining({
               title: "Test variant",
-              product_id: existingProductToBeUpdated.id,
+              product_id: "5VxiEkmnPV",
               sku: "test-sku-2",
               barcode: "test-barcode-2",
               ean: null,
@@ -244,15 +207,13 @@ describe("Product import batch job", () => {
               ],
               options: [
                 expect.objectContaining({
-                  value: "Small",
-                  option_id: "opt-1-id",
+                  value: "Option 1 value 1",
                 }),
               ],
             }),
-            // CREATED VARIANT
             expect.objectContaining({
               title: "Test variant",
-              product_id: existingProductToBeUpdated.id,
+              product_id: "5VxiEkmnPV",
               sku: "test-sku-3",
               barcode: "test-barcode-3",
               ean: null,
@@ -269,12 +230,11 @@ describe("Product import batch job", () => {
               ],
               options: [
                 expect.objectContaining({
-                  value: "Medium",
-                  option_id: "opt-1-id",
+                  value: "Option 1 Value blue",
                 }),
               ],
             }),
-          ]),
+          ],
           images: [
             expect.objectContaining({
               url: "test-image.png",
@@ -282,9 +242,8 @@ describe("Product import batch job", () => {
           ],
           options: [
             expect.objectContaining({
-              product_id: existingProductToBeUpdated.id,
-              id: "opt-1-id",
-              title: "Size",
+              title: "test-option",
+              product_id: "5VxiEkmnPV",
             }),
           ],
           tags: [

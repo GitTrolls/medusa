@@ -1,7 +1,4 @@
 export const TotalsServiceMock = {
-  withTransaction: function () {
-    return this
-  },
   getTotal: jest.fn(),
 }
 

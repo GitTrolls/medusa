@@ -107,5 +107,5 @@ export class AdminPostDiscountsDiscountDynamicCodesReq {
 
   @IsObject()
   @IsOptional()
-  metadata?: Record<string, unknown>
+  metadata?: object
 }

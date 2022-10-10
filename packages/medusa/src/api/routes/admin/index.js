@@ -80,7 +80,7 @@ export default (app, container, config) => {
   noteRoutes(route)
   notificationRoutes(route)
   orderRoutes(route, featureFlagRouter)
-  orderEditRoutes(route)
+  orderEditRoutes(route, featureFlagRouter)
   priceListRoutes(route, featureFlagRouter)
   productRoutes(route, featureFlagRouter)
   productTagRoutes(route)

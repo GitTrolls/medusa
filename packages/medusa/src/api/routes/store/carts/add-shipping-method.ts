@@ -3,6 +3,7 @@ import { defaultStoreCartFields, defaultStoreCartRelations } from "."
 
 import { CartService } from "../../../../services"
 import { EntityManager } from "typeorm"
+import { decorateLineItemsWithTotals } from "./decorate-line-items-with-totals"
 import { validator } from "../../../../utils/validator"
 
 /**
@@ -85,10 +86,12 @@ export default async (req, res) => {
     }
   })
 
-  const data = await cartService.retrieveWithTotals(id, {
+  const updatedCart = await cartService.retrieve(id, {
     select: defaultStoreCartFields,
     relations: defaultStoreCartRelations,
   })
+
+  const data = await decorateLineItemsWithTotals(updatedCart, req)
 
   res.status(200).json({ cart: data })
 }

@@ -61,15 +61,14 @@ describe("POST /store/carts/:id", () => {
     })
 
     it("calls get product from productService", () => {
-      expect(CartServiceMock.retrieve).toHaveBeenCalledTimes(1)
-      expect(CartServiceMock.retrieveWithTotals).toHaveBeenCalledTimes(1)
+      expect(CartServiceMock.retrieve).toHaveBeenCalledTimes(2)
       expect(CartServiceMock.retrieve).toHaveBeenCalledWith(
         IdMap.getId("emptyCart"),
         {
           relations: ["payment_sessions", "shipping_methods"],
         }
       )
-      expect(CartServiceMock.retrieveWithTotals).toHaveBeenCalledWith(
+      expect(CartServiceMock.retrieve).toHaveBeenCalledWith(
         IdMap.getId("emptyCart"),
         {
           relations: defaultStoreCartRelations,

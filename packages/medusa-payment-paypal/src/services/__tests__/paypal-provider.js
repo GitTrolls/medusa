@@ -72,6 +72,7 @@ describe("PaypalProviderService", () => {
     const paypalProviderService = new PayPalProviderService(
       {
         regionService: RegionServiceMock,
+        totalsService: TotalsServiceMock,
       },
       {
         api_key: "test",
@@ -97,6 +98,7 @@ describe("PaypalProviderService", () => {
     const paypalProviderService = new PayPalProviderService(
       {
         regionService: RegionServiceMock,
+        totalsService: TotalsServiceMock,
       },
       {
         api_key: "test",
@@ -147,6 +149,7 @@ describe("PaypalProviderService", () => {
     const paypalProviderService = new PayPalProviderService(
       {
         regionService: RegionServiceMock,
+        totalsService: TotalsServiceMock,
       },
       {
         api_key: "test",
@@ -193,6 +196,7 @@ describe("PaypalProviderService", () => {
     const paypalProviderService = new PayPalProviderService(
       {
         regionService: RegionServiceMock,
+        totalsService: TotalsServiceMock,
       },
       {
         api_key: "test",
@@ -271,6 +275,7 @@ describe("PaypalProviderService", () => {
     const paypalProviderService = new PayPalProviderService(
       {
         regionService: RegionServiceMock,
+        totalsService: TotalsServiceMock,
       },
       {
         api_key: "test",
@@ -344,13 +349,9 @@ describe("PaypalProviderService", () => {
         data: { id: "test-voided" },
       })
 
-      expect(
-        PayPalMock.payments.AuthorizationsVoidRequest
-      ).not.toHaveBeenCalled()
+      expect(PayPalMock.payments.AuthorizationsVoidRequest).not.toHaveBeenCalled()
       expect(PayPalMock.payments.CapturesRefundRequest).not.toHaveBeenCalled()
-      expect(PayPalMock.orders.OrdersGetRequest).toHaveBeenCalledWith(
-        "test-voided"
-      )
+      expect(PayPalMock.orders.OrdersGetRequest).toHaveBeenCalledWith("test-voided")
       expect(PayPalClientMock.execute).toHaveBeenCalledTimes(1)
 
       expect(result.id).toEqual("test-voided")
@@ -365,13 +366,9 @@ describe("PaypalProviderService", () => {
         },
       })
 
-      expect(
-        PayPalMock.payments.AuthorizationsVoidRequest
-      ).not.toHaveBeenCalled()
+      expect(PayPalMock.payments.AuthorizationsVoidRequest).not.toHaveBeenCalled()
       expect(PayPalMock.payments.CapturesRefundRequest).not.toHaveBeenCalled()
-      expect(PayPalMock.orders.OrdersGetRequest).toHaveBeenCalledWith(
-        "test-refund"
-      )
+      expect(PayPalMock.orders.OrdersGetRequest).toHaveBeenCalledWith("test-refund")
       expect(PayPalClientMock.execute).toHaveBeenCalledTimes(1)
 
       expect(result.id).toEqual("test-refund")

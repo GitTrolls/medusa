@@ -74,7 +74,19 @@ class ReturnService extends TransactionBaseService {
     inventoryService,
     orderService,
   }: InjectedDependencies) {
-    super(arguments[0])
+    super({
+      manager,
+      totalsService,
+      lineItemService,
+      returnRepository,
+      returnItemRepository,
+      shippingOptionService,
+      returnReasonService,
+      taxProviderService,
+      fulfillmentProviderService,
+      inventoryService,
+      orderService,
+    })
 
     this.manager_ = manager
     this.totalsService_ = totalsService
@@ -139,7 +151,7 @@ class ReturnService extends TransactionBaseService {
    * @param config - the config object for find
    * @return the result of the find operation
    */
-  async list(
+  list(
     selector: Selector<Return>,
     config: FindConfig<Return> = {
       skip: 0,
@@ -441,7 +453,7 @@ class ReturnService extends TransactionBaseService {
         })
       )
 
-      const created = returnRepository.create(returnObject)
+      const created = (await returnRepository.create(returnObject)) as Return
       const result = await returnRepository.save(created)
 
       if (method && method.option_id) {

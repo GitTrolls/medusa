@@ -7,23 +7,20 @@ export default async (req, res) => {
     const klarnaProviderService = req.scope.resolve("pp_klarna")
     const shippingProfileService = req.scope.resolve("shippingProfileService")
 
-    const cart = await cartService.retrieveWithTotals(
-      merchant_data,
-      {
-        relations: [
-          "shipping_address",
-          "billing_address",
-          "region",
-          "shipping_methods",
-          "shipping_methods.shipping_option",
-          "items",
-          "items.adjustments",
-          "items.variant",
-          "items.variant.product",
-        ],
-      },
-      { force_taxes: true }
-    )
+    const cart = await cartService.retrieve(merchant_data, {
+      select: ["subtotal"],
+      relations: [
+        "shipping_address",
+        "billing_address",
+        "region",
+        "shipping_methods",
+        "shipping_methods.shipping_option",
+        "items",
+        "items.adjustments",
+        "items.variant",
+        "items.variant.product",
+      ],
+    })
     let shippingOptions = await shippingProfileService.fetchCartOptions(cart)
 
     shippingOptions = shippingOptions.filter(
@@ -38,23 +35,28 @@ export default async (req, res) => {
       }
     }
 
-    const newCart = await cartService.retrieveWithTotals(
-      cart.id,
-      {
-        relations: [
-          "shipping_address",
-          "billing_address",
-          "shipping_methods",
-          "shipping_methods.shipping_option",
-          "region",
-          "items",
-          "items.adjustments",
-          "items.variant",
-          "items.variant.product",
-        ],
-      },
-      { force_taxes: true }
-    )
+    const newCart = await cartService.retrieve(cart.id, {
+      select: [
+        "gift_card_total",
+        "subtotal",
+        "total",
+        "shipping_total",
+        "tax_total",
+        "discount_total",
+        "subtotal",
+      ],
+      relations: [
+        "shipping_address",
+        "billing_address",
+        "shipping_methods",
+        "shipping_methods.shipping_option",
+        "region",
+        "items",
+        "items.adjustments",
+        "items.variant",
+        "items.variant.product",
+      ],
+    })
 
     const order = await klarnaProviderService.cartToKlarnaOrder(newCart)
 
