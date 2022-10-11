@@ -204,11 +204,6 @@ module.exports = {
               id: "advanced/storefront/how-to-implement-checkout-flow",
               label: "Implement Checkout"
             },
-            {
-              type: "doc",
-              id: "advanced/storefront/use-sales-channels",
-              label: "Use SalesChannels APIs"
-            },
           ]
         },
         {
@@ -219,11 +214,6 @@ module.exports = {
               type: "doc",
               id: "advanced/admin/import-products",
               label: "Import Products"
-            },
-            {
-              type: "doc",
-              id: "advanced/admin/import-prices",
-              label: "Import Prices"
             },
             {
               type: "doc",
