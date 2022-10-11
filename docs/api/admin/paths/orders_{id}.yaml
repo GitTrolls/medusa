@@ -68,11 +68,11 @@ post:
             billing_address:
               description: Billing address
               anyOf:
-                - $ref: ../components/schemas/address_fields.yaml
+                - $ref: ../components/schemas/address.yaml
             shipping_address:
               description: Shipping address
               anyOf:
-                - $ref: ../components/schemas/address_fields.yaml
+                - $ref: ../components/schemas/address.yaml
             items:
               description: The Line Items for the order
               type: array

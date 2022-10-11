@@ -2,50 +2,32 @@
 
 ## Classes
 
-- [AdminGetDraftOrdersParams](../classes/internal-8.AdminGetDraftOrdersParams.md)
-- [AdminPostDraftOrdersDraftOrderLineItemsItemReq](../classes/internal-8.AdminPostDraftOrdersDraftOrderLineItemsItemReq.md)
-- [AdminPostDraftOrdersDraftOrderLineItemsReq](../classes/internal-8.AdminPostDraftOrdersDraftOrderLineItemsReq.md)
-- [AdminPostDraftOrdersDraftOrderReq](../classes/internal-8.AdminPostDraftOrdersDraftOrderReq.md)
-- [Discount](../classes/internal-8.Discount.md)
+- [AdminGetGiftCardsParams](../classes/internal-8.AdminGetGiftCardsParams.md)
+- [AdminPostGiftCardsGiftCardReq](../classes/internal-8.AdminPostGiftCardsGiftCardReq.md)
+- [AdminPostGiftCardsReq](../classes/internal-8.AdminPostGiftCardsReq.md)
 
 ## Type Aliases
 
-### AdminDraftOrdersListRes
+### AdminGiftCardsListRes
 
-Ƭ **AdminDraftOrdersListRes**: [`PaginatedResponse`](internal-2.md#paginatedresponse) & { `draft_orders`: [`DraftOrder`](../classes/internal.DraftOrder.md)[]  }
+Ƭ **AdminGiftCardsListRes**: [`PaginatedResponse`](internal-2.md#paginatedresponse) & { `gift_cards`: [`GiftCard`](../classes/internal.GiftCard.md)[]  }
 
 #### Defined in
 
-medusa/dist/api/routes/admin/draft-orders/index.d.ts:18
+medusa/dist/api/routes/admin/gift-cards/index.d.ts:14
 
 ___
 
-### AdminDraftOrdersRes
+### AdminGiftCardsRes
 
-Ƭ **AdminDraftOrdersRes**: `Object`
+Ƭ **AdminGiftCardsRes**: `Object`
 
 #### Type declaration
 
 | Name | Type |
 | :------ | :------ |
-| `draft_order` | [`DraftOrder`](../classes/internal.DraftOrder.md) |
+| `gift_card` | [`GiftCard`](../classes/internal.GiftCard.md) |
 
 #### Defined in
 
-medusa/dist/api/routes/admin/draft-orders/index.d.ts:14
-
-___
-
-### AdminPostDraftOrdersDraftOrderRegisterPaymentRes
-
-Ƭ **AdminPostDraftOrdersDraftOrderRegisterPaymentRes**: `Object`
-
-#### Type declaration
-
-| Name | Type |
-| :------ | :------ |
-| `order` | [`Order`](../classes/internal.Order.md) |
-
-#### Defined in
-
-medusa/dist/api/routes/admin/draft-orders/index.d.ts:11
+medusa/dist/api/routes/admin/gift-cards/index.d.ts:10

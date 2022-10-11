@@ -2,34 +2,53 @@
 
 ## Classes
 
-- [AdminGetShippingOptionsParams](../classes/internal-23.AdminGetShippingOptionsParams.md)
-- [AdminPostShippingOptionsOptionReq](../classes/internal-23.AdminPostShippingOptionsOptionReq.md)
-- [AdminPostShippingOptionsReq](../classes/internal-23.AdminPostShippingOptionsReq.md)
-- [OptionRequirement](../classes/internal-23.OptionRequirement.md)
-- [OptionRequirement](../classes/internal-23.OptionRequirement-1.md)
+- [AdminPostStoreReq](../classes/internal-23.AdminPostStoreReq.md)
+- [Store](../classes/internal-23.Store.md)
 
 ## Type Aliases
 
-### AdminShippingOptionsListRes
+### AdminPaymentProvidersList
 
-Ƭ **AdminShippingOptionsListRes**: [`PaginatedResponse`](internal-2.md#paginatedresponse) & { `shipping_options`: [`ShippingOption`](../classes/internal.ShippingOption.md)[]  }
-
-#### Defined in
-
-medusa/dist/api/routes/admin/shipping-options/index.d.ts:8
-
-___
-
-### AdminShippingOptionsRes
-
-Ƭ **AdminShippingOptionsRes**: `Object`
+Ƭ **AdminPaymentProvidersList**: `Object`
 
 #### Type declaration
 
 | Name | Type |
 | :------ | :------ |
-| `shipping_option` | [`ShippingOption`](../classes/internal.ShippingOption.md) |
+| `payment_providers` | [`PaymentProvider`](../classes/internal.PaymentProvider.md)[] |
 
 #### Defined in
 
-medusa/dist/api/routes/admin/shipping-options/index.d.ts:11
+medusa/dist/api/routes/admin/store/index.d.ts:10
+
+___
+
+### AdminStoresRes
+
+Ƭ **AdminStoresRes**: `Object`
+
+#### Type declaration
+
+| Name | Type |
+| :------ | :------ |
+| `store` | [`Store`](../classes/internal-23.Store.md) |
+
+#### Defined in
+
+medusa/dist/api/routes/admin/store/index.d.ts:4
+
+___
+
+### AdminTaxProvidersList
+
+Ƭ **AdminTaxProvidersList**: `Object`
+
+#### Type declaration
+
+| Name | Type |
+| :------ | :------ |
+| `tax_providers` | [`TaxProvider`](../classes/internal.TaxProvider.md)[] |
+
+#### Defined in
+
+medusa/dist/api/routes/admin/store/index.d.ts:7

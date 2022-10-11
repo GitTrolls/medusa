@@ -35,11 +35,11 @@ import { validator } from "../../../../utils/validator"
  *           billing_address:
  *             description: Billing address
  *             anyOf:
- *               - $ref: "#/components/schemas/address_fields"
+ *               - $ref: "#/components/schemas/address"
  *           shipping_address:
  *             description: Shipping address
  *             anyOf:
- *               - $ref: "#/components/schemas/address_fields"
+ *               - $ref: "#/components/schemas/address"
  *           items:
  *             description: The Line Items for the order
  *             type: array

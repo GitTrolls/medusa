@@ -52,7 +52,7 @@ ___
 
 ### currency
 
-• `Optional` **currency**: [`Currency`](internal.Currency.md)
+• **currency**: [`Currency`](internal.Currency.md)
 
 #### Defined in
 
@@ -140,7 +140,7 @@ ___
 
 ### region
 
-• `Optional` **region**: [`Region`](internal.Region.md)
+• **region**: [`Region`](internal.Region.md)
 
 #### Defined in
 

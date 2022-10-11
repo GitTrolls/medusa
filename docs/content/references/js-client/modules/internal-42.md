@@ -1,33 +1,21 @@
 # Namespace: internal
 
+## Classes
+
+- [StoreGetShippingOptionsParams](../classes/internal-42.StoreGetShippingOptionsParams.md)
+
 ## Type Aliases
 
-### StoreRegionsListRes
+### StoreShippingOptionsListRes
 
-Ƭ **StoreRegionsListRes**: `Object`
-
-#### Type declaration
-
-| Name | Type |
-| :------ | :------ |
-| `regions` | [`Region`](../classes/internal.Region.md)[] |
-
-#### Defined in
-
-medusa/dist/api/routes/store/regions/index.d.ts:4
-
-___
-
-### StoreRegionsRes
-
-Ƭ **StoreRegionsRes**: `Object`
+Ƭ **StoreShippingOptionsListRes**: `Object`
 
 #### Type declaration
 
 | Name | Type |
 | :------ | :------ |
-| `region` | [`Region`](../classes/internal.Region.md) |
+| `shipping_options` | [`ShippingOption`](../classes/internal.ShippingOption.md)[] |
 
 #### Defined in
 
-medusa/dist/api/routes/store/regions/index.d.ts:7
+medusa/dist/api/routes/store/shipping-options/index.d.ts:4

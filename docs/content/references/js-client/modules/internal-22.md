@@ -2,45 +2,37 @@
 
 ## Classes
 
-- [AdminDeleteSalesChannelsChannelProductsBatchReq](../classes/internal-22.AdminDeleteSalesChannelsChannelProductsBatchReq.md)
-- [AdminGetSalesChannelsParams](../classes/internal-22.AdminGetSalesChannelsParams.md)
-- [AdminPostSalesChannelsChannelProductsBatchReq](../classes/internal-22.AdminPostSalesChannelsChannelProductsBatchReq.md)
-- [AdminPostSalesChannelsReq](../classes/internal-22.AdminPostSalesChannelsReq.md)
-- [AdminPostSalesChannelsSalesChannelReq](../classes/internal-22.AdminPostSalesChannelsSalesChannelReq.md)
-- [ProductBatchSalesChannel](../classes/internal-22.ProductBatchSalesChannel.md)
+- [AdminPostShippingProfilesProfileReq](../classes/internal-22.AdminPostShippingProfilesProfileReq.md)
+- [AdminPostShippingProfilesReq](../classes/internal-22.AdminPostShippingProfilesReq.md)
 
 ## Type Aliases
 
-### AdminSalesChannelsListRes
+### AdminShippingProfilesListRes
 
-Ƭ **AdminSalesChannelsListRes**: [`PaginatedResponse`](internal-2.md#paginatedresponse) & { `sales_channels`: [`SalesChannel`](../classes/internal.SalesChannel.md)[]  }
-
-#### Defined in
-
-medusa/dist/api/routes/admin/sales-channels/index.d.ts:10
-
-___
-
-### AdminSalesChannelsRes
-
-Ƭ **AdminSalesChannelsRes**: `Object`
+Ƭ **AdminShippingProfilesListRes**: `Object`
 
 #### Type declaration
 
 | Name | Type |
 | :------ | :------ |
-| `sales_channel` | [`SalesChannel`](../classes/internal.SalesChannel.md) |
+| `shipping_profiles` | [`ShippingProfile`](../classes/internal.ShippingProfile.md)[] |
 
 #### Defined in
 
-medusa/dist/api/routes/admin/sales-channels/index.d.ts:6
+medusa/dist/api/routes/admin/shipping-profiles/index.d.ts:12
 
-## Variables
+___
 
-### AdminGetSalesChannelsParams\_base
+### AdminShippingProfilesRes
 
-• `Const` **AdminGetSalesChannelsParams\_base**: [`"/Users/shahednasser/medusa/packages/medusa/dist/types/global"`](internal-15.__Users_shahednasser_medusa_packages_medusa_dist_types_global_.md)
+Ƭ **AdminShippingProfilesRes**: `Object`
+
+#### Type declaration
+
+| Name | Type |
+| :------ | :------ |
+| `shipping_profile` | [`ShippingProfile`](../classes/internal.ShippingProfile.md) |
 
 #### Defined in
 
-medusa/dist/api/routes/admin/sales-channels/list-sales-channels.d.ts:141
+medusa/dist/api/routes/admin/shipping-profiles/index.d.ts:9

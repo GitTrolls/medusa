@@ -18,7 +18,7 @@ import { EntityManager } from "typeorm"
  *     application/json:
  *       schema:
  *         anyOf:
- *           - $ref: "#/components/schemas/address_fields"
+ *           - $ref: "#/components/schemas/address"
  * x-codeSamples:
  *   - lang: JavaScript
  *     label: JS Client

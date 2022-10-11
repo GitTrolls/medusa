@@ -43,9 +43,7 @@ import { validator } from "../../../../utils/validator"
  *         schema:
  *           properties:
  *             variant:
- *               allOf:
- *                 - $ref: "#/components/schemas/product_variant"
- *                 - $ref: "#/components/schemas/product_variant_prices_fields"
+ *               $ref: "#/components/schemas/product_variant"
  *   "400":
  *     $ref: "#/components/responses/400_error"
  *   "404":

@@ -1,31 +1,17 @@
 # Namespace: internal
 
-## Classes
-
-- [StoreGetCollectionsParams](../classes/internal-33.StoreGetCollectionsParams.md)
-
 ## Type Aliases
 
-### StoreCollectionsListRes
+### StoreGiftCardsRes
 
-Ƭ **StoreCollectionsListRes**: [`PaginatedResponse`](internal-2.md#paginatedresponse) & { `collections`: [`ProductCollection`](../classes/internal.ProductCollection.md)[]  }
-
-#### Defined in
-
-medusa/dist/api/routes/store/collections/index.d.ts:7
-
-___
-
-### StoreCollectionsRes
-
-Ƭ **StoreCollectionsRes**: `Object`
+Ƭ **StoreGiftCardsRes**: `Object`
 
 #### Type declaration
 
 | Name | Type |
 | :------ | :------ |
-| `collection` | [`ProductCollection`](../classes/internal.ProductCollection.md) |
+| `gift_card` | [`GiftCard`](../classes/internal.GiftCard.md) |
 
 #### Defined in
 
-medusa/dist/api/routes/store/collections/index.d.ts:10
+medusa/dist/api/routes/store/gift-cards/index.d.ts:8

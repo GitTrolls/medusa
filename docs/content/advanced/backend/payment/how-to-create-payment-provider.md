@@ -10,7 +10,7 @@ By default, Medusa has a [manual payment provider](https://github.com/medusajs/m
 
 Adding a Payment Provider is as simple as creating a [service](../services/create-service.md) file in `src/services`. A Payment Provider is essentially a service that extends `AbstractPaymentService` from the core Medusa package `@medusajs/medusa`.
 
-Payment Provider Services must have a static property `identifier`. It's the name that will be used to install and refer to the Payment Provider in the Medusa server.
+Payment Provider Services must have a static property `identifier`. It is the name that will be used to install and refer to the Payment Provider in the Medusa server.
 
 :::tip
 
@@ -44,51 +44,12 @@ These methods are used at different points in the Checkout flow as well as when 
 
 ## Create a Payment Provider
 
-The first step to create a payment provider is to create a JavaScript or TypeScript file in `src/services`. The file's name should be the name of the payment provider.
+The first step to create a payment provider is to create a file in `src/services` with the following content:
 
-For example, create the file `src/services/my-payment.ts` with the following content:
+```jsx
+import { AbstractPaymentService } from "@medusajs/medusa"
 
-```ts
-import { AbstractPaymentService, Cart, Data, Payment, PaymentSession, PaymentSessionStatus, TransactionBaseService } from "@medusajs/medusa"
-import { EntityManager } from "typeorm";
-
-class MyPaymentService extends AbstractPaymentService<TransactionBaseService> {
-  protected manager_: EntityManager;
-  protected transactionManager_: EntityManager;
-
-  getPaymentData(paymentSession: PaymentSession): Promise<Data> {
-    throw new Error("Method not implemented.");
-  }
-  updatePaymentData(paymentSessionData: Data, data: Data): Promise<Data> {
-    throw new Error("Method not implemented.");
-  }
-  createPayment(cart: Cart): Promise<Data> {
-    throw new Error("Method not implemented.");
-  }
-  retrievePayment(paymentData: Data): Promise<Data> {
-    throw new Error("Method not implemented.");
-  }
-  updatePayment(paymentSessionData: Data, cart: Cart): Promise<Data> {
-    throw new Error("Method not implemented.");
-  }
-  authorizePayment(paymentSession: PaymentSession, context: Data): Promise<{ data: Data; status: PaymentSessionStatus; }> {
-    throw new Error("Method not implemented.");
-  }
-  capturePayment(payment: Payment): Promise<Data> {
-    throw new Error("Method not implemented.");
-  }
-  refundPayment(payment: Payment, refundAmount: number): Promise<Data> {
-    throw new Error("Method not implemented.");
-  }
-  cancelPayment(payment: Payment): Promise<Data> {
-    throw new Error("Method not implemented.");
-  }
-  deletePayment(paymentSession: PaymentSession): Promise<void> {
-    throw new Error("Method not implemented.");
-  }
-  getStatus(data: Data): Promise<PaymentSessionStatus> {
-    throw new Error("Method not implemented.");
-  }
+class MyPaymentService extends AbstractPaymentService {
 
 }
 
@@ -121,9 +82,8 @@ You can also use the constructor to initialize your integration with the third-p
 
 Additionally, if you’re creating your Payment Provider as an external plugin to be installed on any Medusa server and you want to access the options added for the plugin, you can access it in the constructor. The options are passed as a second parameter:
 
-```ts
-constructor({ productService }, options) {
-  super();
+```jsx
+constructor({}, options) {
   //you can access options here
 }
 ```
@@ -138,11 +98,8 @@ This method must return an object that is going to be stored in the `data` field
 
 An example of a minimal implementation of `createPayment` that does not interact with any third-party providers:
 
-```ts
-import { Cart, Data } from "@medusajs/medusa"
-//...
-
-async createPayment(cart: Cart): Promise<Data> {
+```jsx
+async createPayment(cart) {
   return { 
     id: 'test-payment',
     status: 'pending'
@@ -160,11 +117,8 @@ This method must return an object containing the data from the third-party provi
 
 An example of a minimal implementation of `retrievePayment` where you don’t need to interact with the third-party provider:
 
-```ts
-import { Data } from "@medusajs/medusa"
-//...
-
-async retrievePayment(paymentData: Data): Promise<Data> {
+```jsx
+async retrievePayment(cart) {
   return {};
 }
 ```
@@ -187,12 +141,9 @@ This method returns a string that represents the status. The status must be one 
 
 An example of a minimal implementation of `getStatus` where you don’t need to interact with the third-party provider:
 
-```ts
-import { Data, PaymentSessionStatus } from "@medusajs/medusa"
-//...
-
-async getStatus(data: Data): Promise<PaymentSessionStatus> {
-  return PaymentSessionStatus.AUTHORIZED;
+```jsx
+async getStatus (data) {
+    return data.status;
 }
 ```
 
@@ -220,12 +171,9 @@ This method must return an object that will be stored in the `data` field of the
 
 An example of a minimal implementation of `updatePayment` that does not need to make any updates on the third-party provider or the `data` field of the Payment Session:
 
-```ts
-import { Cart, Data } from "@medusajs/medusa";
-//...
-
-async updatePayment(paymentSessionData: Data, cart: Cart): Promise<Data> {
-  return paymentSessionData;
+```jsx
+async updatePayment(sessionData, cart) {
+  return sessionData;
 }
 ```
 
@@ -241,11 +189,8 @@ This method must return an object that will be stored in the `data` field of the
 
 An example of a minimal implementation of `updatePaymentData` that returns the `updatedData` passed in the body of the request as-is to update the `data` field of the Payment Session.
 
-```ts
-import { Data } from "@medusajs/medusa";
-//...
-
-async updatePaymentData(paymentSessionData: Data, updatedData: Data): Promise<Data> {
+```jsx
+async updatePaymentData(sessionData, updatedData) {
   return updatedData;
 }
 ```
@@ -265,11 +210,8 @@ You can use this method to interact with the third-party provider to delete data
 
 An example of a minimal implementation of `deletePayment` where no interaction with a third-party provider is required:
 
-```ts
-import { PaymentSession } from "@medusajs/medusa";
-//...
-
-async deletePayment(paymentSession: PaymentSession): Promise<void> {
+```jsx
+async deletePayment(paymentSession) {
   return;
 }
 ```
@@ -303,18 +245,15 @@ You can utilize this method to interact with the third-party provider and perfor
 
 An example of a minimal implementation of `authorizePayment` that doesn’t need to interact with any third-party provider:
 
-```ts
-import { Data, PaymentSession, PaymentSessionStatus } from "@medusajs/medusa";
-//...
-
-async authorizePayment(paymentSession: PaymentSession, context: Data): Promise<{ data: Data; status: PaymentSessionStatus; }> {
-  return {
-    status: PaymentSessionStatus.AUTHORIZED,
-    data: {
-      id: 'test'
-    }
-  };
-}
+```jsx
+async authorizePayment(paymentSession, context) {
+    return {
+      status: 'authorized',
+      data: {
+        id: 'test'
+      }
+    };
+  }
 ```
 
 ### getPaymentData
@@ -327,11 +266,8 @@ This method must return an object to be stored in the `data` field of the Paymen
 
 An example of a minimal implementation of `getPaymentData`:
 
-```ts
-import { Data, PaymentSession } from "@medusajs/medusa";
-//...
-
-async getPaymentData(paymentSession: PaymentSession): Promise<Data> {
+```jsx
+async getPaymentData(paymentSession) {
   return paymentSession.data;
 }
 ```
@@ -350,11 +286,8 @@ This method must return an object that will be stored in the `data` field of the
 
 An example of a minimal implementation of `capturePayment` that doesn’t need to interact with a third-party provider:
 
-```ts
-import { Data, Payment } from "@medusajs/medusa";
-//...
-
-async capturePayment(payment: Payment): Promise<Data> {
+```jsx
+async capturePayment(payment) {
   return {
     status: 'captured'
   };
@@ -375,11 +308,8 @@ This method must return an object that is stored in the `data` field of the Paym
 
 An example of a minimal implementation of `refundPayment` that doesn’t need to interact with a third-party provider:
 
-```ts
-import { Data, Payment } from "@medusajs/medusa";
-//...
-
-async refundPayment(payment: Payment, refundAmount: number): Promise<Data> {
+```jsx
+async refundPayment(payment, amount) {
   return {
     id: 'test'
   }
@@ -403,11 +333,8 @@ This method must return an object that is stored in the `data` field of the Paym
 
 An example of a minimal implementation of `cancelPayment` that doesn’t need to interact with a third-party provider:
 
-```ts
-import { Data, Payment } from "@medusajs/medusa";
-//...
-
-async cancelPayment(payment: Payment): Promise<Data> {
+```jsx
+async cancelPayment(payment) {
   return {
     id: 'test'
   }
@@ -434,16 +361,13 @@ If you’re using Medusa’s [Next.js](../../../starters/nextjs-medusa-starter.m
 
 An example of the implementation of `retrieveSavedMethods` taken from Stripe’s Payment Provider:
 
-```ts
-import { Customer, Data } from "@medusajs/medusa"
-//...
-
+```jsx
 /**
 * Fetches a customers saved payment methods if registered in Stripe.
 * @param {object} customer - customer to fetch saved cards for
 * @returns {Promise<Array<object>>} saved payments methods
 */
-async retrieveSavedMethods(customer: Customer): Promise<Data[]> {
+async retrieveSavedMethods(customer) {
   if (customer.metadata && customer.metadata.stripe_id) {
     const methods = await this.stripe_.paymentMethods.list({
       customer: customer.metadata.stripe_id,

@@ -141,16 +141,7 @@ import { IsType } from "../../../../utils/validators/is-type"
  *             products:
  *               type: array
  *               items:
- *                 allOf:
- *                   - $ref: "#/components/schemas/product"
- *                   - type: object
- *                     properties:
- *                       variants:
- *                         type: array
- *                         items:
- *                           allOf:
- *                             - $ref: "#/components/schemas/product_variant"
- *                             - $ref: "#/components/schemas/product_variant_prices_fields"
+ *                 $ref: "#/components/schemas/product"
  *             count:
  *               type: integer
  *               description: The total number of items available

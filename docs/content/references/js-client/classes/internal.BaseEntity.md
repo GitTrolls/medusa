@@ -26,8 +26,6 @@ Base abstract entity for all entities
 
   ↳ [`DraftOrder`](internal.DraftOrder.md)
 
-  ↳ [`OrderEdit`](internal.OrderEdit.md)
-
   ↳ [`LineItem`](internal.LineItem.md)
 
   ↳ [`PaymentSession`](internal.PaymentSession.md)
@@ -36,9 +34,9 @@ Base abstract entity for all entities
 
   ↳ [`TaxLine`](internal.TaxLine.md)
 
-  ↳ [`Notification`](internal-12.Notification.md)
+  ↳ [`Notification`](internal-11.Notification.md)
 
-  ↳ [`Store`](internal-25.Store.md)
+  ↳ [`Store`](internal-23.Store.md)
 
 ## Properties
 
