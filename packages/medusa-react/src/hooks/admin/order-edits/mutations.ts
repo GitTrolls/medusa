@@ -13,7 +13,6 @@ import {
 
 import { buildOptions } from "../../utils/buildOptions"
 import { useMedusa } from "../../../contexts"
-import { adminOrderKeys } from "../orders"
 import { adminOrderEditsKeys } from "."
 
 export const useAdminCreateOrderEdit = (
@@ -28,11 +27,7 @@ export const useAdminCreateOrderEdit = (
   return useMutation(
     (payload: AdminPostOrderEditsReq) =>
       client.admin.orderEdits.create(payload),
-    buildOptions(
-      queryClient,
-      [adminOrderEditsKeys.lists(), adminOrderKeys.details()],
-      options
-    )
+    buildOptions(queryClient, adminOrderEditsKeys.lists(), options)
   )
 }
 
@@ -47,11 +42,7 @@ export const useAdminDeleteOrderEdit = (
     () => client.admin.orderEdits.delete(id),
     buildOptions(
       queryClient,
-      [
-        adminOrderEditsKeys.detail(id),
-        adminOrderEditsKeys.lists(),
-        adminOrderKeys.details(),
-      ],
+      [adminOrderEditsKeys.detail(id), adminOrderEditsKeys.lists()],
       options
     )
   )
@@ -105,13 +96,16 @@ export const useAdminOrderEditUpdateLineItem = (
 export const useAdminOrderEditDeleteLineItem = (
   orderEditId: string,
   itemId: string,
-  options?: UseMutationOptions<Response<AdminOrderEditsRes>, Error>
+  options?: UseMutationOptions<
+    Response<AdminOrderEditsRes>,
+    Error
+  >
 ) => {
   const { client } = useMedusa()
   const queryClient = useQueryClient()
 
   return useMutation(
-    () => client.admin.orderEdits.removeLineItem(orderEditId, itemId),
+    (() => client.admin.orderEdits.removeLineItem(orderEditId, itemId)),
     buildOptions(
       queryClient,
       [adminOrderEditsKeys.detail(orderEditId), adminOrderEditsKeys.lists()],
@@ -136,17 +130,13 @@ export const useAdminUpdateOrderEdit = (
       client.admin.orderEdits.update(id, payload),
     buildOptions(
       queryClient,
-      [
-        adminOrderEditsKeys.lists(),
-        adminOrderEditsKeys.detail(id),
-        adminOrderKeys.details(),
-      ],
+      [adminOrderEditsKeys.lists(), adminOrderEditsKeys.detail(id)],
       options
     )
   )
 }
 
-export const useAdminOrderEditAddLineItem = (
+export const useAdminOrderEditLineItem = (
   id: string,
   options?: UseMutationOptions<
     Response<AdminOrderEditsRes>,
@@ -178,11 +168,7 @@ export const useAdminRequestOrderEditConfirmation = (
     () => client.admin.orderEdits.requestConfirmation(id),
     buildOptions(
       queryClient,
-      [
-        adminOrderEditsKeys.lists(),
-        adminOrderEditsKeys.detail(id),
-        adminOrderKeys.details(),
-      ],
+      [adminOrderEditsKeys.lists(), adminOrderEditsKeys.detail(id)],
       options
     )
   )
@@ -199,11 +185,7 @@ export const useAdminCancelOrderEdit = (
     () => client.admin.orderEdits.cancel(id),
     buildOptions(
       queryClient,
-      [
-        adminOrderEditsKeys.lists(),
-        adminOrderEditsKeys.detail(id),
-        adminOrderKeys.details(),
-      ],
+      [adminOrderEditsKeys.lists(), adminOrderEditsKeys.detail(id)],
       options
     )
   )
@@ -220,11 +202,7 @@ export const useAdminConfirmOrderEdit = (
     () => client.admin.orderEdits.confirm(id),
     buildOptions(
       queryClient,
-      [
-        adminOrderEditsKeys.lists(),
-        adminOrderEditsKeys.detail(id),
-        adminOrderKeys.details(),
-      ],
+      [adminOrderEditsKeys.lists(), adminOrderEditsKeys.detail(id)],
       options
     )
   )

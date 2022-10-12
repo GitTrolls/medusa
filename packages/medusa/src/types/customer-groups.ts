@@ -28,10 +28,6 @@ export class FilterableCustomerGroupProps {
   @ValidateNested()
   @Type(() => DateComparisonOperator)
   created_at?: DateComparisonOperator
-
-  @IsString()
-  @IsOptional()
-  discount_condition_id?: string
 }
 
 export class CustomerGroupsBatchCustomer {
