@@ -34,7 +34,6 @@ export const defaultOrderEditFields: (keyof OrderEdit)[] = [
   "changes",
   "order_id",
   "created_by",
-  "created_at",
   "requested_by",
   "requested_at",
   "confirmed_by",

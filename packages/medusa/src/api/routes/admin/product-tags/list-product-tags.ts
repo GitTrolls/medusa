@@ -1,13 +1,23 @@
 import {
   DateComparisonOperator,
+  FindConfig,
   StringComparisonOperator,
 } from "../../../../types/common"
 import { IsNumber, IsOptional, IsString } from "class-validator"
+import {
+  allowedAdminProductTagsFields,
+  defaultAdminProductTagsFields,
+  defaultAdminProductTagsRelations,
+} from "."
+import { identity, omit, pickBy } from "lodash"
 
 import { IsType } from "../../../../utils/validators/is-type"
+import { MedusaError } from "medusa-core-utils"
+import { ProductTag } from "../../../../models/product-tag"
 import ProductTagService from "../../../../services/product-tag"
 import { Type } from "class-transformer"
-import { Request, Response } from "express"
+import { validator } from "../../../../utils/validator"
+import { isDefined } from "../../../../utils"
 
 /**
  * @oas [get] /product-tags
@@ -19,7 +29,6 @@ import { Request, Response } from "express"
  *   - (query) limit=10 {integer} The number of tags to return.
  *   - (query) offset=0 {integer} The number of items to skip before the results.
  *   - (query) order {string} The field to sort items by.
- *   - (query) discount_condition_id {string} The discount condition id on which to filter the tags.
  *   - in: query
  *     name: value
  *     style: form
@@ -135,21 +144,48 @@ import { Request, Response } from "express"
  *  "500":
  *    $ref: "#/components/responses/500_error"
  */
-export default async (req: Request, res: Response) => {
+export default async (req, res) => {
+  const validated = await validator(AdminGetProductTagsParams, req.query)
+
   const tagService: ProductTagService = req.scope.resolve("productTagService")
-  const { listConfig, filterableFields } = req
-  const { skip, take } = req.listConfig
+
+  const listConfig: FindConfig<ProductTag> = {
+    select: defaultAdminProductTagsFields as (keyof ProductTag)[],
+    relations: defaultAdminProductTagsRelations,
+    skip: validated.offset,
+    take: validated.limit,
+  }
+
+  if (isDefined(validated.order)) {
+    let orderField = validated.order
+    if (validated.order.startsWith("-")) {
+      const [, field] = validated.order.split("-")
+      orderField = field
+      listConfig.order = { [field]: "DESC" }
+    } else {
+      listConfig.order = { [validated.order]: "ASC" }
+    }
+
+    if (!allowedAdminProductTagsFields.includes(orderField)) {
+      throw new MedusaError(
+        MedusaError.Types.INVALID_DATA,
+        "Order field must be a valid product tag field"
+      )
+    }
+  }
+
+  const filterableFields = omit(validated, ["limit", "offset"])
 
   const [tags, count] = await tagService.listAndCount(
-    filterableFields,
+    pickBy(filterableFields, identity),
     listConfig
   )
 
   res.status(200).json({
     product_tags: tags,
     count,
-    offset: skip,
-    limit: take,
+    offset: validated.offset,
+    limit: validated.limit,
   })
 }
 
@@ -165,17 +201,18 @@ export class AdminGetProductTagsPaginationParams {
   offset = 0
 }
 
+// eslint-disable-next-line max-len
 export class AdminGetProductTagsParams extends AdminGetProductTagsPaginationParams {
-  @IsOptional()
   @IsType([String, [String], StringComparisonOperator])
+  @IsOptional()
   id?: string | string[] | StringComparisonOperator
 
   @IsString()
   @IsOptional()
   q?: string
 
-  @IsOptional()
   @IsType([String, [String], StringComparisonOperator])
+  @IsOptional()
   value?: string | string[] | StringComparisonOperator
 
   @IsType([DateComparisonOperator])
@@ -189,8 +226,4 @@ export class AdminGetProductTagsParams extends AdminGetProductTagsPaginationPara
   @IsString()
   @IsOptional()
   order?: string
-
-  @IsString()
-  @IsOptional()
-  discount_condition_id?: string
 }

@@ -72,7 +72,7 @@ class DiscountConditionService extends TransactionBaseService {
   protected static resolveConditionType_(data: UpsertDiscountConditionInput):
     | {
         type: DiscountConditionType
-        resource_ids: (string | { id: string })[]
+        resource_ids: string[]
       }
     | undefined {
     switch (true) {
@@ -107,8 +107,7 @@ class DiscountConditionService extends TransactionBaseService {
   }
 
   async upsertCondition(
-    data: UpsertDiscountConditionInput,
-    overrideExisting: boolean = true
+    data: UpsertDiscountConditionInput
   ): Promise<
     (
       | DiscountConditionProduct
@@ -147,7 +146,7 @@ class DiscountConditionService extends TransactionBaseService {
             data.id,
             resolvedConditionType.resource_ids,
             resolvedConditionType.type,
-            overrideExisting
+            true
           )
         }
 

@@ -17,7 +17,6 @@ import { DiscountConditionProduct } from "../models/discount-condition-product"
 import { DiscountConditionProductCollection } from "../models/discount-condition-product-collection"
 import { DiscountConditionProductTag } from "../models/discount-condition-product-tag"
 import { DiscountConditionProductType } from "../models/discount-condition-product-type"
-import { isString } from "../utils"
 
 export enum DiscountConditionJoinTableForeignKey {
   PRODUCT_ID = "product_id",
@@ -151,7 +150,7 @@ export class DiscountConditionRepository extends Repository<DiscountCondition> {
 
   async addConditionResources(
     conditionId: string,
-    resourceIds: (string | { id: string })[],
+    resourceIds: string[],
     type: DiscountConditionType,
     overrideExisting = false
   ): Promise<
@@ -172,10 +171,7 @@ export class DiscountConditionRepository extends Repository<DiscountCondition> {
       return Promise.resolve([])
     }
 
-    const idsToInsert = resourceIds.map((rId): string => {
-      return isString(rId) ? rId : rId.id
-    })
-    toInsert = idsToInsert.map((rId) => ({
+    toInsert = resourceIds.map((rId) => ({
       condition_id: conditionId,
       [joinTableForeignKey]: rId,
     }))
@@ -193,7 +189,7 @@ export class DiscountConditionRepository extends Repository<DiscountCondition> {
         .from(conditionTable)
         .where({
           condition_id: conditionId,
-          [joinTableForeignKey]: Not(In(idsToInsert)),
+          [joinTableForeignKey]: Not(In(resourceIds)),
         })
         .execute()
     }
