@@ -5,14 +5,18 @@ import {
   IsEnum,
   IsOptional,
   IsString,
-  ValidateNested,
+  ValidateNested
 } from "class-validator"
 import SalesChannelFeatureFlag from "../loaders/feature-flags/sales-channels"
 import { Product, ProductOptionValue, ProductStatus } from "../models"
 import { FeatureFlagDecorators } from "../utils/feature-flag-decorators"
 import { optionalBooleanMapper } from "../utils/validators/is-boolean"
 import { IsType } from "../utils/validators/is-type"
-import { DateComparisonOperator, FindConfig } from "./common"
+import {
+  DateComparisonOperator,
+  FindConfig,
+  StringComparisonOperator
+} from "./common"
 import { PriceListLoadConfig } from "./price-list"
 
 /**
@@ -60,11 +64,14 @@ export class FilterableProductProps {
   @Transform(({ value }) => optionalBooleanMapper.get(value.toLowerCase()))
   is_giftcard?: boolean
 
-  @IsArray()
+  @IsString()
   @IsOptional()
-  type_id?: string[]
+  type?: string
 
-  @FeatureFlagDecorators(SalesChannelFeatureFlag.key, [IsOptional(), IsArray()])
+  @FeatureFlagDecorators(SalesChannelFeatureFlag.key, [
+    IsOptional(),
+    IsArray(),
+  ])
   sales_channel_id?: string[]
 
   @IsOptional()
@@ -81,6 +88,50 @@ export class FilterableProductProps {
   @IsOptional()
   @Type(() => DateComparisonOperator)
   deleted_at?: DateComparisonOperator
+}
+
+export class FilterableProductTagProps {
+  @IsOptional()
+  @IsType([String, [String], StringComparisonOperator])
+  id?: string | string[] | StringComparisonOperator
+
+  @IsOptional()
+  @IsType([String, [String], StringComparisonOperator])
+  value?: string | string[] | StringComparisonOperator
+
+  @IsOptional()
+  @IsType([DateComparisonOperator])
+  created_at?: DateComparisonOperator
+
+  @IsOptional()
+  @IsType([DateComparisonOperator])
+  updated_at?: DateComparisonOperator
+
+  @IsString()
+  @IsOptional()
+  q?: string
+}
+
+export class FilterableProductTypeProps {
+  @IsOptional()
+  @IsType([String, [String], StringComparisonOperator])
+  id?: string | string[] | StringComparisonOperator
+
+  @IsOptional()
+  @IsType([String, [String], StringComparisonOperator])
+  value?: string | string[] | StringComparisonOperator
+
+  @IsOptional()
+  @IsType([DateComparisonOperator])
+  created_at?: DateComparisonOperator
+
+  @IsOptional()
+  @IsType([DateComparisonOperator])
+  updated_at?: DateComparisonOperator
+
+  @IsString()
+  @IsOptional()
+  q?: string
 }
 
 /**
