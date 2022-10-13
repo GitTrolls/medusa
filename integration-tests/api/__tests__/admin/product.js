@@ -16,6 +16,12 @@ const { simpleProductFactory } = require("../../factories")
 
 jest.setTimeout(50000)
 
+const adminHeaders = {
+  headers: {
+    Authorization: "Bearer test_token",
+  },
+}
+
 describe("/admin/products", () => {
   let medusaProcess
   let dbConnection
@@ -48,11 +54,7 @@ describe("/admin/products", () => {
       const api = useApi()
 
       const res = await api
-        .get("/admin/products", {
-          headers: {
-            Authorization: "Bearer test_token",
-          },
-        })
+        .get("/admin/products", adminHeaders)
         .catch((err) => {
           console.log(err)
         })
@@ -76,11 +78,7 @@ describe("/admin/products", () => {
       const api = useApi()
 
       const res = await api
-        .get("/admin/products?q=", {
-          headers: {
-            Authorization: "Bearer test_token",
-          },
-        })
+        .get("/admin/products?q=", adminHeaders)
         .catch((err) => {
           console.log(err)
         })
@@ -109,21 +107,13 @@ describe("/admin/products", () => {
 
       // update test-product status to proposed
       await api
-        .post("/admin/products/test-product", payload, {
-          headers: {
-            Authorization: "Bearer test_token",
-          },
-        })
+        .post("/admin/products/test-product", payload, adminHeaders)
         .catch((err) => {
           console.log(err)
         })
 
       const response = await api
-        .get("/admin/products?status[]=proposed", {
-          headers: {
-            Authorization: "Bearer test_token",
-          },
-        })
+        .get("/admin/products?status[]=proposed", adminHeaders)
         .catch((err) => {
           console.log(err)
         })
@@ -151,11 +141,7 @@ describe("/admin/products", () => {
       ]
 
       const response = await api
-        .get("/admin/products?status[]=published,proposed", {
-          headers: {
-            Authorization: "Bearer test_token",
-          },
-        })
+        .get("/admin/products?status[]=published,proposed", adminHeaders)
         .catch((err) => {
           console.log(err)
         })
@@ -182,6 +168,30 @@ describe("/admin/products", () => {
       }
     })
 
+    it("returns a list of products where type_id is test-type", async () => {
+      const api = useApi()
+
+      const response = await api
+        .get("/admin/products?type_id[]=test-type", {
+          headers: {
+            Authorization: "Bearer test_token",
+          },
+        })
+        .catch((err) => {
+          console.log(err)
+        })
+
+      expect(response.status).toEqual(200)
+      expect(response.data.products).toHaveLength(5)
+      expect(response.data.products).toEqual(
+        expect.arrayContaining([
+          expect.objectContaining({
+            type_id: "test-type",
+          }),
+        ])
+      )
+    })
+
     it("doesn't expand collection and types", async () => {
       const api = useApi()
 
@@ -193,11 +203,10 @@ describe("/admin/products", () => {
       ]
 
       const response = await api
-        .get("/admin/products?status[]=published,proposed&expand=tags", {
-          headers: {
-            Authorization: "Bearer test_token",
-          },
-        })
+        .get(
+          "/admin/products?status[]=published,proposed&expand=tags",
+          adminHeaders
+        )
         .catch((err) => {
           console.log(err)
         })
@@ -228,11 +237,7 @@ describe("/admin/products", () => {
       const api = useApi()
 
       const response = await api
-        .get("/admin/products?deleted_at[gt]=01-26-1990&q=test", {
-          headers: {
-            Authorization: "Bearer test_token",
-          },
-        })
+        .get("/admin/products?deleted_at[gt]=01-26-1990&q=test", adminHeaders)
         .catch((err) => {
           console.log(err)
         })
@@ -253,11 +258,7 @@ describe("/admin/products", () => {
       const api = useApi()
 
       const response = await api
-        .get("/admin/products?q=t&limit=2", {
-          headers: {
-            Authorization: "Bearer test_token",
-          },
-        })
+        .get("/admin/products?q=t&limit=2", adminHeaders)
         .catch((err) => {
           console.log(err)
         })
@@ -270,11 +271,7 @@ describe("/admin/products", () => {
       const api = useApi()
 
       const response = await api
-        .get("/admin/products?q=test+product1", {
-          headers: {
-            Authorization: "Bearer test_token",
-          },
-        })
+        .get("/admin/products?q=test+product1", adminHeaders)
         .catch((err) => {
           console.log(err)
         })
@@ -300,11 +297,7 @@ describe("/admin/products", () => {
       const api = useApi()
 
       const response = await api
-        .get("/admin/products?q=t&offset=1", {
-          headers: {
-            Authorization: "Bearer test_token",
-          },
-        })
+        .get("/admin/products?q=t&offset=1", adminHeaders)
         .catch((err) => {
           console.log(err)
         })
@@ -317,11 +310,7 @@ describe("/admin/products", () => {
       const api = useApi()
 
       const response = await api
-        .get("/admin/products?deleted_at[gt]=01-26-1990", {
-          headers: {
-            Authorization: "Bearer test_token",
-          },
-        })
+        .get("/admin/products?deleted_at[gt]=01-26-1990", adminHeaders)
         .catch((err) => {
           console.log(err)
         })
@@ -346,11 +335,7 @@ describe("/admin/products", () => {
       ]
 
       const response = await api
-        .get("/admin/products?collection_id[]=test-collection1", {
-          headers: {
-            Authorization: "Bearer test_token",
-          },
-        })
+        .get("/admin/products?collection_id[]=test-collection1", adminHeaders)
         .catch((err) => {
           console.log(err)
         })
@@ -387,11 +372,7 @@ describe("/admin/products", () => {
       ]
 
       const response = await api
-        .get("/admin/products?tags[]=tag3", {
-          headers: {
-            Authorization: "Bearer test_token",
-          },
-        })
+        .get("/admin/products?tags[]=tag3", adminHeaders)
         .catch((err) => {
           console.log(err)
         })
@@ -432,11 +413,10 @@ describe("/admin/products", () => {
       ]
 
       const response = await api
-        .get("/admin/products?collection_id[]=test-collection1&tags[]=tag4", {
-          headers: {
-            Authorization: "Bearer test_token",
-          },
-        })
+        .get(
+          "/admin/products?collection_id[]=test-collection1&tags[]=tag4",
+          adminHeaders
+        )
         .catch((err) => {
           console.log(err)
         })
@@ -483,22 +463,12 @@ describe("/admin/products", () => {
         ],
       }
 
-      await api
-        .post("/admin/products", payload, {
-          headers: {
-            Authorization: "Bearer test_token",
-          },
-        })
-        .catch((err) => {
-          console.log(err)
-        })
+      await api.post("/admin/products", payload, adminHeaders).catch((err) => {
+        console.log(err)
+      })
 
       const response = await api
-        .get("/admin/products?is_giftcard=true", {
-          headers: {
-            Authorization: "Bearer test_token",
-          },
-        })
+        .get("/admin/products?is_giftcard=true", adminHeaders)
         .catch((err) => {
           console.log(err)
         })
@@ -578,22 +548,12 @@ describe("/admin/products", () => {
         ],
       }
 
-      await api
-        .post("/admin/products", payload, {
-          headers: {
-            Authorization: "Bearer test_token",
-          },
-        })
-        .catch((err) => {
-          console.log(err)
-        })
+      await api.post("/admin/products", payload, adminHeaders).catch((err) => {
+        console.log(err)
+      })
 
       const response = await api
-        .get("/admin/products?is_giftcard=false", {
-          headers: {
-            Authorization: "Bearer test_token",
-          },
-        })
+        .get("/admin/products?is_giftcard=false", adminHeaders)
         .catch((err) => {
           console.log(err)
         })
@@ -609,11 +569,7 @@ describe("/admin/products", () => {
       const api = useApi()
 
       const response = await api
-        .get("/admin/products", {
-          headers: {
-            Authorization: "Bearer test_token",
-          },
-        })
+        .get("/admin/products", adminHeaders)
         .catch((err) => {
           console.log(err)
         })
@@ -910,11 +866,7 @@ describe("/admin/products", () => {
       }
 
       const response = await api
-        .post("/admin/products", payload, {
-          headers: {
-            Authorization: "Bearer test_token",
-          },
-        })
+        .post("/admin/products", payload, adminHeaders)
         .catch((err) => {
           console.log(err)
         })
@@ -1065,11 +1017,7 @@ describe("/admin/products", () => {
       }
 
       const response = await api
-        .post("/admin/products", payload, {
-          headers: {
-            Authorization: "Bearer test_token",
-          },
-        })
+        .post("/admin/products", payload, adminHeaders)
         .catch((err) => {
           console.log(err)
         })
@@ -1110,11 +1058,7 @@ describe("/admin/products", () => {
       }
 
       const creationResponse = await api
-        .post("/admin/products", payload, {
-          headers: {
-            Authorization: "Bearer test_token",
-          },
-        })
+        .post("/admin/products", payload, adminHeaders)
         .catch((err) => {
           console.log(err)
         })
@@ -1124,11 +1068,7 @@ describe("/admin/products", () => {
       const productId = creationResponse.data.product.id
 
       const response = await api
-        .get(`/admin/products/${productId}`, {
-          headers: {
-            Authorization: "Bearer test_token",
-          },
-        })
+        .get(`/admin/products/${productId}`, adminHeaders)
         .catch((err) => {
           console.log(err)
         })
@@ -1166,11 +1106,7 @@ describe("/admin/products", () => {
       }
 
       const response = await api
-        .post("/admin/products", payload, {
-          headers: {
-            Authorization: "Bearer test_token",
-          },
-        })
+        .post("/admin/products", payload, adminHeaders)
         .catch((err) => {
           console.log(err)
         })
@@ -1208,11 +1144,7 @@ describe("/admin/products", () => {
       }
 
       const response = await api
-        .post("/admin/products/test-product", payload, {
-          headers: {
-            Authorization: "Bearer test_token",
-          },
-        })
+        .post("/admin/products/test-product", payload, adminHeaders)
         .catch((err) => {
           console.log(err)
         })
@@ -1315,11 +1247,7 @@ describe("/admin/products", () => {
       }
 
       const response = await api
-        .post("/admin/products/test-product", payload, {
-          headers: {
-            Authorization: "Bearer test_token",
-          },
-        })
+        .post("/admin/products/test-product", payload, adminHeaders)
         .catch((err) => {
           console.log(err)
         })
@@ -1337,11 +1265,7 @@ describe("/admin/products", () => {
       }
 
       try {
-        await api.post("/admin/products/test-product", payload, {
-          headers: {
-            Authorization: "Bearer test_token",
-          },
-        })
+        await api.post("/admin/products/test-product", payload, adminHeaders)
       } catch (e) {
         expect(e.response.status).toEqual(400)
         expect(e.response.data.type).toEqual("invalid_data")
@@ -1368,11 +1292,7 @@ describe("/admin/products", () => {
       }
 
       const response = await api
-        .post("/admin/products/test-product", payload, {
-          headers: {
-            Authorization: "Bearer test_token",
-          },
-        })
+        .post("/admin/products/test-product", payload, adminHeaders)
         .catch((err) => {
           console.log(err)
         })
@@ -1410,11 +1330,7 @@ describe("/admin/products", () => {
       }
 
       const response = await api
-        .post("/admin/products/test-product/options", payload, {
-          headers: {
-            Authorization: "Bearer test_token",
-          },
-        })
+        .post("/admin/products/test-product/options", payload, adminHeaders)
         .catch((err) => {
           console.log(err)
         })
@@ -1436,22 +1352,32 @@ describe("/admin/products", () => {
 
   describe("DELETE /admin/products/:id/options/:option_id", () => {
     beforeEach(async () => {
-      try {
-        await simpleProductFactory(dbConnection, {
-          id: "test-product-without-variants",
-          variants: [],
-          options: [
-            {
-              id: "test-product-option",
-              title: "Test option",
-            },
-          ],
-        })
-        await adminSeeder(dbConnection)
-      } catch (err) {
-        console.log(err)
-        throw err
-      }
+      await simpleProductFactory(dbConnection, {
+        id: "test-product-without-variants",
+        variants: [],
+        options: [
+          {
+            id: "test-product-option",
+            title: "Test option",
+          },
+        ],
+      })
+      await simpleProductFactory(dbConnection, {
+        id: "test-product-with-variant",
+        variants: [
+          {
+            product_id: "test-product-with-variant",
+            options: [{ option_id: "test-product-option-1", value: "test" }],
+          },
+        ],
+        options: [
+          {
+            id: "test-product-option-1",
+            title: "Test option 1",
+          },
+        ],
+      })
+      await adminSeeder(dbConnection)
     })
 
     afterEach(async () => {
@@ -1465,11 +1391,7 @@ describe("/admin/products", () => {
       const response = await api
         .delete(
           "/admin/products/test-product-without-variants/options/test-product-option",
-          {
-            headers: {
-              Authorization: "Bearer test_token",
-            },
-          }
+          adminHeaders
         )
         .catch((err) => {
           console.log(err)
@@ -1483,6 +1405,24 @@ describe("/admin/products", () => {
           variants: [],
         })
       )
+    })
+
+    it("deletes a values associated with deleted option", async () => {
+      const api = useApi()
+
+      const response = await api.delete(
+        "/admin/products/test-product-with-variant/options/test-product-option-1",
+        adminHeaders
+      )
+
+      const values = await dbConnection.manager.find(ProductOptionValue, {
+        where: { option_id: "test-product-option-1" },
+        withDeleted: true,
+      })
+
+      expect(values).toEqual([
+        expect.objectContaining({ deleted_at: expect.any(Date) }),
+      ])
     })
   })
 
@@ -1501,11 +1441,7 @@ describe("/admin/products", () => {
       const api = useApi()
 
       const res = await api
-        .get("/admin/products/test-product/variants", {
-          headers: {
-            Authorization: "Bearer test_token",
-          },
-        })
+        .get("/admin/products/test-product/variants", adminHeaders)
         .catch((err) => {
           console.log(err)
         })
@@ -1559,11 +1495,11 @@ describe("/admin/products", () => {
       }
 
       const response = await api
-        .post("/admin/products/test-product/variants/test-variant", data, {
-          headers: {
-            Authorization: "Bearer test_token",
-          },
-        })
+        .post(
+          "/admin/products/test-product/variants/test-variant",
+          data,
+          adminHeaders
+        )
         .catch((err) => {
           console.log(err)
         })
@@ -1599,11 +1535,11 @@ describe("/admin/products", () => {
       }
 
       const response = await api
-        .post("/admin/products/test-product1/variants/test-variant_3", data, {
-          headers: {
-            Authorization: "Bearer test_token",
-          },
-        })
+        .post(
+          "/admin/products/test-product1/variants/test-variant_3",
+          data,
+          adminHeaders
+        )
         .catch((err) => {
           console.log(err)
         })
@@ -1647,11 +1583,11 @@ describe("/admin/products", () => {
       }
 
       const response = await api
-        .post("/admin/products/test-product/variants/test-variant", data, {
-          headers: {
-            Authorization: "Bearer test_token",
-          },
-        })
+        .post(
+          "/admin/products/test-product/variants/test-variant",
+          data,
+          adminHeaders
+        )
         .catch((err) => {
           console.log(err)
         })
@@ -1694,11 +1630,11 @@ describe("/admin/products", () => {
       }
 
       const response = await api
-        .post("/admin/products/test-product/variants/test-variant", data, {
-          headers: {
-            Authorization: "Bearer test_token",
-          },
-        })
+        .post(
+          "/admin/products/test-product/variants/test-variant",
+          data,
+          adminHeaders
+        )
         .catch((err) => {
           console.log(err)
         })
@@ -1732,11 +1668,11 @@ describe("/admin/products", () => {
       }
 
       const response = await api
-        .post("/admin/products/test-product/variants/test-variant", data, {
-          headers: {
-            Authorization: "Bearer test_token",
-          },
-        })
+        .post(
+          "/admin/products/test-product/variants/test-variant",
+          data,
+          adminHeaders
+        )
         .catch((err) => {
           console.log(err)
         })
@@ -1775,11 +1711,11 @@ describe("/admin/products", () => {
       }
 
       const response = await api
-        .post("/admin/products/test-product1/variants/test-variant_3", data, {
-          headers: {
-            Authorization: "Bearer test_token",
-          },
-        })
+        .post(
+          "/admin/products/test-product1/variants/test-variant_3",
+          data,
+          adminHeaders
+        )
         .catch((err) => {
           console.log(err)
         })
@@ -1845,11 +1781,7 @@ describe("/admin/products", () => {
       }
 
       const res = await api
-        .post("/admin/products/test-product/variants", payload, {
-          headers: {
-            Authorization: "Bearer test_token",
-          },
-        })
+        .post("/admin/products/test-product/variants", payload, adminHeaders)
         .catch((err) => console.log(err))
 
       const insertedVariant = res.data.product.variants.find(
@@ -1895,11 +1827,7 @@ describe("/admin/products", () => {
       const api = useApi()
 
       const response = await api
-        .delete("/admin/products/test-product", {
-          headers: {
-            Authorization: "Bearer test_token",
-          },
-        })
+        .delete("/admin/products/test-product", adminHeaders)
         .catch((err) => {
           console.log(err)
         })
@@ -1924,11 +1852,7 @@ describe("/admin/products", () => {
       expect(variantPre).not.toEqual(undefined)
 
       const response = await api
-        .delete("/admin/products/test-product", {
-          headers: {
-            Authorization: "Bearer test_token",
-          },
-        })
+        .delete("/admin/products/test-product", adminHeaders)
         .catch((err) => {
           console.log(err)
         })
@@ -1962,11 +1886,7 @@ describe("/admin/products", () => {
       // Soft delete the variant
       const response = await api.delete(
         "/admin/products/test-product/variants/test-variant_2",
-        {
-          headers: {
-            Authorization: "Bearer test_token",
-          },
-        }
+        adminHeaders
       )
 
       expect(response.status).toEqual(200)
@@ -2011,11 +1931,10 @@ describe("/admin/products", () => {
       expect(optValPre).not.toEqual(undefined)
 
       // Soft delete the product
-      const response = await api.delete("/admin/products/test-product", {
-        headers: {
-          Authorization: "Bearer test_token",
-        },
-      })
+      const response = await api.delete(
+        "/admin/products/test-product",
+        adminHeaders
+      )
 
       expect(response.status).toEqual(200)
 
@@ -2061,11 +1980,7 @@ describe("/admin/products", () => {
       // Soft delete the variant
       const response = await api.delete(
         "/admin/products/test-product/variants/test-variant",
-        {
-          headers: {
-            Authorization: "Bearer test_token",
-          },
-        }
+        adminHeaders
       )
 
       expect(response.status).toEqual(200)
@@ -2107,11 +2022,10 @@ describe("/admin/products", () => {
       expect(pricePre).not.toEqual(undefined)
 
       // Soft delete the product
-      const response = await api.delete("/admin/products/test-product", {
-        headers: {
-          Authorization: "Bearer test_token",
-        },
-      })
+      const response = await api.delete(
+        "/admin/products/test-product",
+        adminHeaders
+      )
 
       expect(response.status).toEqual(200)
 
@@ -2146,11 +2060,7 @@ describe("/admin/products", () => {
 
       // First we soft-delete the product
       const response = await api
-        .delete("/admin/products/test-product", {
-          headers: {
-            Authorization: "Bearer test_token",
-          },
-        })
+        .delete("/admin/products/test-product", adminHeaders)
         .catch((err) => {
           console.log(err)
         })
@@ -2178,22 +2088,14 @@ describe("/admin/products", () => {
         ],
       }
 
-      const res = await api.post("/admin/products", payload, {
-        headers: {
-          Authorization: "Bearer test_token",
-        },
-      })
+      const res = await api.post("/admin/products", payload, adminHeaders)
 
       expect(res.status).toEqual(200)
       expect(res.data.product.handle).toEqual("test-product")
 
       // Delete product again to ensure uniqueness is enforced in all cases
       const response2 = await api
-        .delete("/admin/products/test-product", {
-          headers: {
-            Authorization: "Bearer test_token",
-          },
-        })
+        .delete("/admin/products/test-product", adminHeaders)
         .catch((err) => {
           console.log(err)
         })
@@ -2226,11 +2128,7 @@ describe("/admin/products", () => {
       }
 
       try {
-        await api.post("/admin/products", payload, {
-          headers: {
-            Authorization: "Bearer test_token",
-          },
-        })
+        await api.post("/admin/products", payload, adminHeaders)
       } catch (error) {
         expect(error.response.data.message).toMatch(
           "Product with handle test-product already exists."
@@ -2243,11 +2141,7 @@ describe("/admin/products", () => {
 
       // First we soft-delete the product collection
       const response = await api
-        .delete("/admin/collections/test-collection", {
-          headers: {
-            Authorization: "Bearer test_token",
-          },
-        })
+        .delete("/admin/collections/test-collection", adminHeaders)
         .catch((err) => {
           console.log(err)
         })
@@ -2260,11 +2154,7 @@ describe("/admin/products", () => {
       const api = useApi()
 
       const response = await api
-        .delete("/admin/collections/test-collection", {
-          headers: {
-            Authorization: "Bearer test_token",
-          },
-        })
+        .delete("/admin/collections/test-collection", adminHeaders)
         .catch((err) => {
           console.log(err)
         })
@@ -2278,11 +2168,7 @@ describe("/admin/products", () => {
         handle: "test-collection",
       }
 
-      const res = await api.post("/admin/collections", payload, {
-        headers: {
-          Authorization: "Bearer test_token",
-        },
-      })
+      const res = await api.post("/admin/collections", payload, adminHeaders)
 
       expect(res.status).toEqual(200)
       expect(res.data.collection.handle).toEqual("test-collection")
@@ -2298,11 +2184,7 @@ describe("/admin/products", () => {
       }
 
       try {
-        await api.post("/admin/collections", payload, {
-          headers: {
-            Authorization: "Bearer test_token",
-          },
-        })
+        await api.post("/admin/collections", payload, adminHeaders)
       } catch (error) {
         expect(error.response.data.message).toMatch(
           "Product_collection with handle test-collection already exists."
@@ -2314,21 +2196,16 @@ describe("/admin/products", () => {
       const api = useApi()
 
       await api
-        .get("/admin/products/test-product", {
-          headers: {
-            Authorization: "bearer test_token",
-          },
-        })
+        .get("/admin/products/test-product", adminHeaders)
         .catch((err) => {
           console.log(err)
         })
 
       const response = await api
-        .delete("/admin/products/test-product/variants/test-variant", {
-          headers: {
-            Authorization: "Bearer test_token",
-          },
-        })
+        .delete(
+          "/admin/products/test-product/variants/test-variant",
+          adminHeaders
+        )
         .catch((err) => {
           console.log(err)
         })
@@ -2352,11 +2229,7 @@ describe("/admin/products", () => {
       }
 
       const res = await api
-        .post("/admin/products/test-product/variants", payload, {
-          headers: {
-            Authorization: "Bearer test_token",
-          },
-        })
+        .post("/admin/products/test-product/variants", payload, adminHeaders)
         .catch((err) => console.log(err))
 
       expect(res.status).toEqual(200)
@@ -2402,11 +2275,7 @@ describe("/admin/products", () => {
           {
             inventory_quantity: 10,
           },
-          {
-            headers: {
-              Authorization: "Bearer test_token",
-            },
-          }
+          adminHeaders
         )
         .catch((err) => {
           console.log(err)
@@ -2431,11 +2300,7 @@ describe("/admin/products", () => {
       const api = useApi()
 
       const res = await api
-        .get("/admin/products/tag-usage", {
-          headers: {
-            Authorization: "Bearer test_token",
-          },
-        })
+        .get("/admin/products/tag-usage", adminHeaders)
         .catch((err) => {
           console.log(err)
         })

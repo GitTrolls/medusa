@@ -388,10 +388,6 @@ module.exports = {
           type: "doc",
           id: "advanced/backend/customer-groups/index"
         },
-        {
-          type: "doc",
-          id: "advanced/backend/dependency-container/index"
-        },
       ]
     },
     {
