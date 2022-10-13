@@ -1,9 +1,4 @@
-import {
-  AdminOrderEditsListRes,
-  AdminOrderEditsRes,
-  GetOrderEditsOrderEditParams,
-  GetOrderEditsParams,
-} from "@medusajs/medusa"
+import { AdminOrderEditsRes } from "@medusajs/medusa"
 import { queryKeysFactory } from "../../utils"
 import { UseQueryOptionsWrapper } from "../../../types"
 import { Response } from "@medusajs/medusa-js"
@@ -17,7 +12,6 @@ type OrderEditQueryKeys = typeof adminOrderEditsKeys
 
 export const useAdminOrderEdit = (
   id: string,
-  query?: GetOrderEditsOrderEditParams,
   options?: UseQueryOptionsWrapper<
     Response<AdminOrderEditsRes>,
     Error,
@@ -27,24 +21,7 @@ export const useAdminOrderEdit = (
   const { client } = useMedusa()
   const { data, ...rest } = useQuery(
     adminOrderEditsKeys.detail(id),
-    () => client.admin.orderEdits.retrieve(id, query),
-    options
-  )
-  return { ...data, ...rest } as const
-}
-
-export const useAdminOrderEdits = (
-  query?: GetOrderEditsParams,
-  options?: UseQueryOptionsWrapper<
-    Response<AdminOrderEditsListRes>,
-    Error,
-    ReturnType<OrderEditQueryKeys["list"]>
-  >
-) => {
-  const { client } = useMedusa()
-  const { data, ...rest } = useQuery(
-    adminOrderEditsKeys.list(query),
-    () => client.admin.orderEdits.list(query),
+    () => client.admin.orderEdits.retrieve(id),
     options
   )
   return { ...data, ...rest } as const

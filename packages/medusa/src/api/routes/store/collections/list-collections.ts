@@ -3,6 +3,7 @@ import { IsInt, IsOptional, ValidateNested } from "class-validator"
 import { DateComparisonOperator } from "../../../../types/common"
 import ProductCollectionService from "../../../../services/product-collection"
 import { Type } from "class-transformer"
+import { validator } from "../../../../utils/validator"
 
 /**
  * @oas [get] /collections
@@ -104,19 +105,24 @@ import { Type } from "class-transformer"
  *    $ref: "#/components/responses/500_error"
  */
 export default async (req, res) => {
+  const validated = await validator(StoreGetCollectionsParams, req.query)
+  const { limit, offset, ...filterableFields } = validated
+
   const productCollectionService: ProductCollectionService = req.scope.resolve(
     "productCollectionService"
   )
 
-  const { listConfig, filterableFields } = req
-  const { skip, take } = req.listConfig
+  const listConfig = {
+    skip: offset,
+    take: limit,
+  }
 
   const [collections, count] = await productCollectionService.listAndCount(
     filterableFields,
     listConfig
   )
 
-  res.status(200).json({ collections, count, limit: take, offset: skip })
+  res.status(200).json({ collections, count, limit, offset })
 }
 
 export class StoreGetCollectionsParams {

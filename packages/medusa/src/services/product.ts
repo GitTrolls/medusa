@@ -812,7 +812,6 @@ class ProductService extends TransactionBaseService {
 
       const productOption = await productOptionRepo.findOne({
         where: { id: optionId, product_id: productId },
-        relations: ["values"],
       })
 
       if (!productOption) {

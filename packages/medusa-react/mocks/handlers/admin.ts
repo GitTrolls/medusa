@@ -1664,18 +1664,6 @@ export const adminHandlers = [
     )
   }),
 
-  rest.get("/admin/order-edits/", (req, res, ctx) => {
-    return res(
-      ctx.status(200),
-      ctx.json({
-        count: 1,
-        limit: 20,
-        offset: 0,
-        order_edits: [fixtures.get("order_edit")],
-      })
-    )
-  }),
-
   rest.post("/admin/order-edits/", (req, res, ctx) => {
     return res(
       ctx.status(200),
@@ -1795,7 +1783,7 @@ export const adminHandlers = [
       })
     )
   }),
-
+  
   rest.delete("/admin/order-edits/:id/items/:item_id", (req, res, ctx) => {
     return res(
       ctx.status(200),
@@ -1804,7 +1792,7 @@ export const adminHandlers = [
           ...fixtures.get("order_edit"),
           changes: [
             {
-              type: "item_remove",
+              type: 'item_remove'
             },
           ],
         },
