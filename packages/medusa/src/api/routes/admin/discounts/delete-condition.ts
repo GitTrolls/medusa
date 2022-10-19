@@ -1,8 +1,13 @@
+import { IsOptional, IsString } from "class-validator"
+import { defaultAdminDiscountsFields, defaultAdminDiscountsRelations } from "."
+
+import { Discount } from "../../../../models"
 import DiscountConditionService from "../../../../services/discount-condition"
 import { DiscountService } from "../../../../services"
 import { EntityManager } from "typeorm"
 import { MedusaError } from "medusa-core-utils"
-import { FindParams } from "../../../../types/common"
+import { getRetrieveConfig } from "../../../../utils/get-query-config"
+import { validator } from "../../../../utils/validator"
 
 /**
  * @oas [delete] /discounts/{discount_id}/conditions/{condition_id}
@@ -73,34 +78,39 @@ import { FindParams } from "../../../../types/common"
 export default async (req, res) => {
   const { discount_id, condition_id } = req.params
 
+  const validatedParams = await validator(
+    AdminDeleteDiscountsDiscountConditionsConditionParams,
+    req.query
+  )
+
   const conditionService: DiscountConditionService = req.scope.resolve(
     "discountConditionService"
   )
-  const discountService: DiscountService = req.scope.resolve("discountService")
 
   const condition = await conditionService
     .retrieve(condition_id)
     .catch(() => void 0)
 
   if (!condition) {
-    const discount = await discountService.retrieve(
-      discount_id,
-      req.retrieveConfig
-    )
     // resolves idempotently in case of non-existing condition
     return res.json({
       id: condition_id,
       object: "discount-condition",
       deleted: true,
-      discount,
     })
   }
 
+  const discountService: DiscountService = req.scope.resolve("discountService")
+
   let discount = await discountService.retrieve(discount_id, {
-    select: ["id", "rule_id"],
+    relations: ["rule", "rule.conditions"],
   })
 
-  if (condition.discount_rule_id !== discount.rule_id) {
+  const existsOnDiscount = discount.rule.conditions.some(
+    (c) => c.id === condition_id
+  )
+
+  if (!existsOnDiscount) {
     throw new MedusaError(
       MedusaError.Types.NOT_FOUND,
       `Condition with id ${condition_id} does not belong to Discount with id ${discount_id}`
@@ -114,7 +124,14 @@ export default async (req, res) => {
       .delete(condition_id)
   })
 
-  discount = await discountService.retrieve(discount_id, req.retrieveConfig)
+  const config = getRetrieveConfig<Discount>(
+    defaultAdminDiscountsFields,
+    defaultAdminDiscountsRelations,
+    validatedParams?.fields?.split(",") as (keyof Discount)[],
+    validatedParams?.expand?.split(",")
+  )
+
+  discount = await discountService.retrieve(discount_id, config)
 
   res.json({
     id: condition_id,
@@ -124,4 +141,12 @@ export default async (req, res) => {
   })
 }
 
-export class AdminDeleteDiscountsDiscountConditionsConditionParams extends FindParams {}
+export class AdminDeleteDiscountsDiscountConditionsConditionParams {
+  @IsString()
+  @IsOptional()
+  expand?: string
+
+  @IsString()
+  @IsOptional()
+  fields?: string
+}

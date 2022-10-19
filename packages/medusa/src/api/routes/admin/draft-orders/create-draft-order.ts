@@ -15,14 +15,14 @@ import {
   defaultAdminDraftOrdersRelations,
 } from "."
 
-import { Type } from "class-transformer"
-import { EntityManager } from "typeorm"
+import { AddressPayload } from "../../../../types/common"
 import { DraftOrder } from "../../../.."
 import { DraftOrderService } from "../../../../services"
-import { AddressPayload } from "../../../../types/common"
-import { DraftOrderCreateProps } from "../../../../types/draft-orders"
+import { EntityManager } from "typeorm"
+import { Type } from "class-transformer"
+import { transformIdableFields } from "medusa-core-utils"
 import { validator } from "../../../../utils/validator"
-import { IsType } from "../../../../utils/validators/is-type"
+
 /**
  * @oas [post] /draft-orders
  * operationId: "PostDraftOrders"
@@ -49,14 +49,10 @@ import { IsType } from "../../../../utils/validators/is-type"
  *             format: email
  *           billing_address:
  *             description: "The Address to be used for billing purposes."
- *             anyOf:
- *               - $ref: "#/components/schemas/address_fields"
- *               - type: string
+ *             $ref: "#/components/schemas/address_fields"
  *           shipping_address:
  *             description: "The Address to be used for shipping."
- *             anyOf:
- *               - $ref: "#/components/schemas/address_fields"
- *               - type: string
+ *             $ref: "#/components/schemas/address_fields"
  *           items:
  *             description: The Line Items that have been received.
  *             type: array
@@ -195,21 +191,10 @@ import { IsType } from "../../../../utils/validators/is-type"
 export default async (req, res) => {
   const validated = await validator(AdminPostDraftOrdersReq, req.body)
 
-  const { shipping_address, billing_address, ...rest } = validated
-
-  const draftOrderDataToCreate: DraftOrderCreateProps = { ...rest }
-
-  if (typeof shipping_address === "string") {
-    draftOrderDataToCreate.shipping_address_id = shipping_address
-  } else {
-    draftOrderDataToCreate.shipping_address = shipping_address
-  }
-
-  if (typeof billing_address === "string") {
-    draftOrderDataToCreate.billing_address_id = billing_address
-  } else {
-    draftOrderDataToCreate.billing_address = billing_address
-  }
+  const value = transformIdableFields(validated, [
+    "shipping_address",
+    "billing_address",
+  ])
 
   const draftOrderService: DraftOrderService =
     req.scope.resolve("draftOrderService")
@@ -219,7 +204,7 @@ export default async (req, res) => {
     async (transactionManager) => {
       return await draftOrderService
         .withTransaction(transactionManager)
-        .create(draftOrderDataToCreate)
+        .create(value)
     }
   )
 
@@ -245,12 +230,12 @@ export class AdminPostDraftOrdersReq {
   email: string
 
   @IsOptional()
-  @IsType([AddressPayload, String])
-  billing_address?: AddressPayload | string
+  @Type(() => AddressPayload)
+  billing_address?: AddressPayload
 
   @IsOptional()
-  @IsType([AddressPayload, String])
-  shipping_address?: AddressPayload | string
+  @Type(() => AddressPayload)
+  shipping_address?: AddressPayload
 
   @IsArray()
   @Type(() => Item)

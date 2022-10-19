@@ -1,5 +1,6 @@
 import { IsNumber, IsOptional, IsString, ValidateNested } from "class-validator"
 import { Request, Response } from "express"
+import _, { identity } from "lodash"
 
 import { DateComparisonOperator } from "../../../../types/common"
 import ProductCollectionService from "../../../../services/product-collection"
@@ -17,7 +18,6 @@ import { Type } from "class-transformer"
  *   - (query) title {string} The title of collections to return.
  *   - (query) handle {string} The handle of collections to return.
  *   - (query) q {string} a search term to search titles and handles.
- *   - (query) discount_condition_id {string} The discount condition id on which to filter the product collections.
  *   - in: query
  *     name: created_at
  *     description: Date comparison for when resulting collections were created.
@@ -143,19 +143,22 @@ export default async (req: Request, res: Response) => {
     "productCollectionService"
   )
 
-  const { filterableFields, listConfig } = req
-  const { skip, take } = listConfig
+  const {
+    validatedQuery: { limit, offset },
+    filterableFields,
+    listConfig,
+  } = req
 
   const [collections, count] = await productCollectionService.listAndCount(
-    filterableFields,
+    _.pickBy(filterableFields, identity),
     listConfig
   )
 
   res.status(200).json({
     collections,
     count,
-    offset: skip,
-    limit: take,
+    offset,
+    limit,
   })
 }
 
@@ -199,8 +202,4 @@ export class AdminGetCollectionsParams extends AdminGetCollectionsPaginationPara
   @IsString()
   @IsOptional()
   q?: string
-
-  @IsString()
-  @IsOptional()
-  discount_condition_id?: string
 }
