@@ -63,11 +63,12 @@ class CartCompletionStrategy extends AbstractCartCompletionStrategy {
     while (inProgress) {
       switch (idempotencyKey.recovery_point) {
         case "started": {
-          await this.manager_
-            .transaction("SERIALIZABLE", async (transactionManager) => {
-              idempotencyKey = await idempotencyKeyService
-                .withTransaction(transactionManager)
-                .workStage(idempotencyKey.idempotency_key, async (manager) => {
+          await this.manager_.transaction(async (transactionManager) => {
+            const { key, error } = await idempotencyKeyService
+              .withTransaction(transactionManager)
+              .workStage(
+                idempotencyKey.idempotency_key,
+                async (manager: EntityManager) => {
                   const cart = await cartService
                     .withTransaction(manager)
                     .retrieve(id)
@@ -88,20 +89,25 @@ class CartCompletionStrategy extends AbstractCartCompletionStrategy {
                   return {
                     recovery_point: "tax_lines_created",
                   }
-                })
-            })
-            .catch((e) => {
+                }
+              )
+
+            if (error) {
               inProgress = false
-              err = e
-            })
+              err = error
+            } else {
+              idempotencyKey = key as IdempotencyKey
+            }
+          })
           break
         }
         case "tax_lines_created": {
-          await this.manager_
-            .transaction("SERIALIZABLE", async (transactionManager) => {
-              idempotencyKey = await idempotencyKeyService
-                .withTransaction(transactionManager)
-                .workStage(idempotencyKey.idempotency_key, async (manager) => {
+          await this.manager_.transaction(async (transactionManager) => {
+            const { key, error } = await idempotencyKeyService
+              .withTransaction(transactionManager)
+              .workStage(
+                idempotencyKey.idempotency_key,
+                async (manager: EntityManager) => {
                   const cart = await cartService
                     .withTransaction(manager)
                     .authorizePayment(id, {
@@ -132,21 +138,26 @@ class CartCompletionStrategy extends AbstractCartCompletionStrategy {
                   return {
                     recovery_point: "payment_authorized",
                   }
-                })
-            })
-            .catch((e) => {
+                }
+              )
+
+            if (error) {
               inProgress = false
-              err = e
-            })
+              err = error
+            } else {
+              idempotencyKey = key as IdempotencyKey
+            }
+          })
           break
         }
 
         case "payment_authorized": {
-          await this.manager_
-            .transaction("SERIALIZABLE", async (transactionManager) => {
-              idempotencyKey = await idempotencyKeyService
-                .withTransaction(transactionManager)
-                .workStage(idempotencyKey.idempotency_key, async (manager) => {
+          await this.manager_.transaction(async (transactionManager) => {
+            const { key, error } = await idempotencyKeyService
+              .withTransaction(transactionManager)
+              .workStage(
+                idempotencyKey.idempotency_key,
+                async (manager: EntityManager) => {
                   const cart = await cartService
                     .withTransaction(manager)
                     .retrieveWithTotals(id, {
@@ -276,12 +287,16 @@ class CartCompletionStrategy extends AbstractCartCompletionStrategy {
                       }
                     }
                   }
-                })
-            })
-            .catch((e) => {
+                }
+              )
+
+            if (error) {
               inProgress = false
-              err = e
-            })
+              err = error
+            } else {
+              idempotencyKey = key as IdempotencyKey
+            }
+          })
           break
         }
 

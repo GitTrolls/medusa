@@ -7,7 +7,6 @@ import {
   AdminPostDraftOrdersDraftOrderLineItemsReq,
   AdminPostDraftOrdersDraftOrderRegisterPaymentRes,
   AdminPostDraftOrdersDraftOrderReq,
-  AdminPostDraftOrdersReq,
 } from "@medusajs/medusa"
 import qs from "qs"
 import { ResponsePromise } from "../../typings"
@@ -18,8 +17,9 @@ class AdminDraftOrdersResource extends BaseResource {
    * @description Creates a draft order
    */
   create(
-    payload: AdminPostDraftOrdersReq,
-    customHeaders: Record<string, any> = {}): ResponsePromise<AdminDraftOrdersRes> {
+    payload: AdminPostDraftOrdersDraftOrderReq,
+    customHeaders: Record<string, any> = {}
+  ): ResponsePromise<AdminDraftOrdersRes> {
     const path = `/admin/draft-orders`
     return this.client.request("POST", path, payload, {}, customHeaders)
   }
@@ -95,7 +95,7 @@ class AdminDraftOrdersResource extends BaseResource {
     customHeaders: Record<string, any> = {}
   ): ResponsePromise<AdminPostDraftOrdersDraftOrderRegisterPaymentRes> {
     const path = `/admin/draft-orders/${id}/pay`
-    return this.client.request("POST", path, {}, customHeaders)
+    return this.client.request("POST", path, undefined)
   }
 
   /**

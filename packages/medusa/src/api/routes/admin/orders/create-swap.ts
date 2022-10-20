@@ -200,68 +200,71 @@ export default async (req, res) => {
   while (inProgress) {
     switch (idempotencyKey.recovery_point) {
       case "started": {
-        await manager
-          .transaction("SERIALIZABLE", async (transactionManager) => {
-            idempotencyKey = await idempotencyKeyService
-              .withTransaction(transactionManager)
-              .workStage(idempotencyKey.idempotency_key, async (manager) => {
-                const order = await orderService
-                  .withTransaction(manager)
-                  .retrieve(id, {
-                    select: ["refunded_total", "total"],
-                    relations: [
-                      "items",
-                      "items.tax_lines",
-                      "swaps",
-                      "swaps.additional_items",
-                      "swaps.additional_items.tax_lines",
-                    ],
-                  })
+        await manager.transaction(async (transactionManager) => {
+          const { key, error } = await idempotencyKeyService
+            .withTransaction(transactionManager)
+            .workStage(idempotencyKey.idempotency_key, async (manager) => {
+              const order = await orderService
+                .withTransaction(manager)
+                .retrieve(id, {
+                  select: ["refunded_total", "total"],
+                  relations: [
+                    "items",
+                    "items.tax_lines",
+                    "swaps",
+                    "swaps.additional_items",
+                    "swaps.additional_items.tax_lines",
+                  ],
+                })
 
-                const swap = await swapService
-                  .withTransaction(manager)
-                  .create(
-                    order,
-                    validated.return_items,
-                    validated.additional_items,
-                    validated.return_shipping,
-                    {
-                      idempotency_key: idempotencyKey.idempotency_key,
-                      no_notification: validated.no_notification,
-                      allow_backorder: validated.allow_backorder,
-                    }
-                  )
+              const swap = await swapService
+                .withTransaction(manager)
+                .create(
+                  order,
+                  validated.return_items,
+                  validated.additional_items,
+                  validated.return_shipping,
+                  {
+                    idempotency_key: idempotencyKey.idempotency_key,
+                    no_notification: validated.no_notification,
+                    allow_backorder: validated.allow_backorder,
+                  }
+                )
 
-                await swapService
-                  .withTransaction(manager)
-                  .createCart(swap.id, validated.custom_shipping_options)
+              await swapService
+                .withTransaction(manager)
+                .createCart(swap.id, validated.custom_shipping_options)
 
-                const returnOrder = await returnService
-                  .withTransaction(manager)
-                  .retrieveBySwap(swap.id)
+              const returnOrder = await returnService
+                .withTransaction(manager)
+                .retrieveBySwap(swap.id)
 
-                await returnService
-                  .withTransaction(manager)
-                  .fulfill(returnOrder.id)
+              await returnService
+                .withTransaction(manager)
+                .fulfill(returnOrder.id)
 
-                return {
-                  recovery_point: "swap_created",
-                }
-              })
-          })
-          .catch((e) => {
+              return {
+                recovery_point: "swap_created",
+              }
+            })
+
+          if (error) {
             inProgress = false
-            err = e
-          })
+            err = error
+          } else {
+            idempotencyKey = key
+          }
+        })
         break
       }
 
       case "swap_created": {
-        await manager
-          .transaction("SERIALIZABLE", async (transactionManager) => {
-            idempotencyKey = await idempotencyKeyService
-              .withTransaction(transactionManager)
-              .workStage(idempotencyKey.idempotency_key, async (manager) => {
+        await manager.transaction(async (transactionManager) => {
+          const { key, error } = await idempotencyKeyService
+            .withTransaction(transactionManager)
+            .workStage(
+              idempotencyKey.idempotency_key,
+              async (transactionManager: EntityManager) => {
                 const swaps = await swapService
                   .withTransaction(transactionManager)
                   .list({
@@ -286,12 +289,16 @@ export default async (req, res) => {
                   response_code: 200,
                   response_body: { order },
                 }
-              })
-          })
-          .catch((e) => {
+              }
+            )
+
+          if (error) {
             inProgress = false
-            err = e
-          })
+            err = error
+          } else {
+            idempotencyKey = key
+          }
+        })
         break
       }
 

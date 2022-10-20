@@ -4,7 +4,7 @@ import middlewares, {
   transformBody,
   transformQuery,
 } from "../../../middlewares"
-import { DeleteResponse, PaginatedResponse } from "../../../../types/common"
+import { DeleteResponse, FindParams } from "../../../../types/common"
 import { isFeatureFlagEnabled } from "../../../middlewares/feature-flag-enabled"
 import OrderEditingFeatureFlag from "../../../../loaders/feature-flags/order-editing"
 import {
@@ -16,8 +16,6 @@ import { AdminPostOrderEditsOrderEditReq } from "./update-order-edit"
 import { AdminPostOrderEditsReq } from "./create-order-edit"
 import { AdminPostOrderEditsEditLineItemsReq } from "./add-line-item"
 import { AdminPostOrderEditsEditLineItemsLineItemReq } from "./update-order-edit-line-item"
-import { GetOrderEditsParams } from "./list-order-edit"
-import { GetOrderEditsOrderEditParams } from "./get-order-edit"
 
 const route = Router()
 
@@ -35,18 +33,8 @@ export default (app) => {
   )
 
   route.get(
-    "/",
-    transformQuery(GetOrderEditsParams, {
-      defaultFields: defaultOrderEditFields,
-      defaultRelations: defaultOrderEditRelations,
-      isList: true,
-    }),
-    middlewares.wrap(require("./list-order-edit").default)
-  )
-
-  route.get(
     "/:id",
-    transformQuery(GetOrderEditsOrderEditParams, {
+    transformQuery(FindParams, {
       defaultRelations: defaultOrderEditRelations,
       defaultFields: defaultOrderEditFields,
       isList: false,
@@ -105,9 +93,6 @@ export default (app) => {
 export type AdminOrderEditsRes = {
   order_edit: OrderEdit
 }
-export type AdminOrderEditsListRes = PaginatedResponse & {
-  order_edits: OrderEdit[]
-}
 export type AdminOrderEditDeleteRes = DeleteResponse
 export type AdminOrderEditItemChangeDeleteRes = {
   id: string
@@ -118,6 +103,5 @@ export type AdminOrderEditItemChangeDeleteRes = {
 export * from "./update-order-edit"
 export * from "./update-order-edit-line-item"
 export * from "./create-order-edit"
-export * from "./get-order-edit"
-export * from "./list-order-edit"
+
 export * from "./add-line-item"

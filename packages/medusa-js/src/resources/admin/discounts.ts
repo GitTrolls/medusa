@@ -1,5 +1,4 @@
 import {
-  AdminDeleteDiscountsDiscountConditionsConditionBatchReq,
   AdminDiscountConditionsRes,
   AdminDiscountsDeleteRes,
   AdminDiscountsListRes,
@@ -8,8 +7,6 @@ import {
   AdminGetDiscountsParams,
   AdminPostDiscountsDiscountConditions,
   AdminPostDiscountsDiscountConditionsCondition,
-  AdminPostDiscountsDiscountConditionsConditionBatchParams,
-  AdminPostDiscountsDiscountConditionsConditionBatchReq,
   AdminPostDiscountsDiscountConditionsConditionParams,
   AdminPostDiscountsDiscountConditionsParams,
   AdminPostDiscountsDiscountDynamicCodesReq,
@@ -124,7 +121,7 @@ class AdminDiscountsResource extends BaseResource {
 
     if (query) {
       const queryString = qs.stringify(query)
-      path += `?${queryString}`
+      path = `/admin/discounts?${queryString}`
     }
 
     return this.client.request("GET", path, undefined, {}, customHeaders)
@@ -155,7 +152,7 @@ class AdminDiscountsResource extends BaseResource {
 
     if (query) {
       const queryString = qs.stringify(query)
-      path += `?${queryString}`
+      path = `/admin/discounts/${discountId}/conditions?${queryString}`
     }
 
     return this.client.request("POST", path, payload, {}, customHeaders)
@@ -175,7 +172,7 @@ class AdminDiscountsResource extends BaseResource {
 
     if (query) {
       const queryString = qs.stringify(query)
-      path += `?${queryString}`
+      path = `/admin/discounts/${discountId}/conditions/${conditionId}?${queryString}`
     }
 
     return this.client.request("POST", path, payload, {}, customHeaders)
@@ -206,43 +203,10 @@ class AdminDiscountsResource extends BaseResource {
 
     if (query) {
       const queryString = qs.stringify(query)
-      path += `?${queryString}`
+      path = `/admin/discounts/${discountId}/conditions/${conditionId}?${queryString}`
     }
 
     return this.client.request("GET", path, undefined, {}, customHeaders)
-  }
-
-  /**
-   * @description Add a batch of items to a discount condition
-   */
-  addConditionResourceBatch(
-    discountId: string,
-    conditionId: string,
-    payload: AdminPostDiscountsDiscountConditionsConditionBatchReq,
-    query?: AdminPostDiscountsDiscountConditionsConditionBatchParams,
-    customHeaders: Record<string, any> = {}
-  ): ResponsePromise<AdminDiscountsRes> {
-    let path = `/admin/discounts/${discountId}/conditions/${conditionId}/batch`
-
-    if (query) {
-      const queryString = qs.stringify(query)
-      path += `?${queryString}`
-    }
-
-    return this.client.request("POST", path, payload, {}, customHeaders)
-  }
-
-  /**
-   * @description Delete a batch of items from a discount condition
-   */
-  deleteConditionResourceBatch(
-    discountId: string,
-    conditionId: string,
-    payload: AdminDeleteDiscountsDiscountConditionsConditionBatchReq,
-    customHeaders: Record<string, any> = {}
-  ): ResponsePromise<AdminDiscountsRes> {
-    const path = `/admin/discounts/${discountId}/conditions/${conditionId}/batch`
-    return this.client.request("DELETE", path, payload, {}, customHeaders)
   }
 }
 

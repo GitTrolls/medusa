@@ -73,11 +73,12 @@ export default async (req, res) => {
   while (inProgress) {
     switch (idempotencyKey.recovery_point) {
       case "started": {
-        await manager
-          .transaction("SERIALIZABLE", async (transactionManager) => {
-            idempotencyKey = await idempotencyKeyService
-              .withTransaction(transactionManager)
-              .workStage(idempotencyKey.idempotency_key, async (manager) => {
+        await manager.transaction(async (transactionManager) => {
+          const { key, error } = await idempotencyKeyService
+            .withTransaction(transactionManager)
+            .workStage(
+              idempotencyKey.idempotency_key,
+              async (manager: EntityManager) => {
                 const cart = await cartService
                   .withTransaction(manager)
                   .retrieveWithTotals(id, {}, { force_taxes: true })
@@ -86,12 +87,16 @@ export default async (req, res) => {
                   response_code: 200,
                   response_body: { cart },
                 }
-              })
-          })
-          .catch((e) => {
+              }
+            )
+
+          if (error) {
             inProgress = false
-            err = e
-          })
+            err = error
+          } else {
+            idempotencyKey = key!
+          }
+        })
         break
       }
 

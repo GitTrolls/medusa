@@ -1,26 +1,15 @@
 import { Router } from "express"
 
-import { ProductVariant } from "../../../../models/product-variant"
 import { PaginatedResponse } from "../../../../types/common"
-import { PricedVariant } from "../../../../types/pricing"
-import middlewares, { transformQuery } from "../../../middlewares"
-import { AdminGetVariantsParams } from "./list-variants"
+import { ProductVariant } from "../../../../models/product-variant"
+import middlewares from "../../../middlewares"
 
 const route = Router()
 
 export default (app) => {
   app.use("/variants", route)
 
-  route.get(
-    "/",
-    transformQuery(AdminGetVariantsParams, {
-      defaultRelations: defaultAdminVariantRelations,
-      defaultFields: defaultAdminVariantFields,
-      allowedFields: allowedAdminVariantFields,
-      isList: true,
-    }),
-    middlewares.wrap(require("./list-variants").default)
-  )
+  route.get("/", middlewares.wrap(require("./list-variants").default))
 
   return app
 }
@@ -80,7 +69,7 @@ export const allowedAdminVariantRelations: (keyof ProductVariant)[] = [
 ]
 
 export type AdminVariantsListRes = PaginatedResponse & {
-  variants: PricedVariant[]
+  variants: ProductVariant[]
 }
 
 export * from "./list-variants"

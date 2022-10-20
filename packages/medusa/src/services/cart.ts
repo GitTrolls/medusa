@@ -2,7 +2,6 @@ import { isEmpty, isEqual } from "lodash"
 import { MedusaError } from "medusa-core-utils"
 import { DeepPartial, EntityManager, In } from "typeorm"
 import { IPriceSelectionStrategy, TransactionBaseService } from "../interfaces"
-import SalesChannelFeatureFlag from "../loaders/feature-flags/sales-channels"
 import {
   Address,
   Cart,
@@ -35,7 +34,6 @@ import CustomerService from "./customer"
 import DiscountService from "./discount"
 import EventBusService from "./event-bus"
 import GiftCardService from "./gift-card"
-import { SalesChannelService } from "./index"
 import InventoryService from "./inventory"
 import LineItemService from "./line-item"
 import LineItemAdjustmentService from "./line-item-adjustment"
@@ -44,9 +42,11 @@ import ProductService from "./product"
 import ProductVariantService from "./product-variant"
 import RegionService from "./region"
 import ShippingOptionService from "./shipping-option"
-import StoreService from "./store"
 import TaxProviderService from "./tax-provider"
 import TotalsService from "./totals"
+import SalesChannelFeatureFlag from "../loaders/feature-flags/sales-channels"
+import StoreService from "./store"
+import { SalesChannelService } from "./index"
 
 type InjectedDependencies = {
   manager: EntityManager
@@ -334,7 +334,11 @@ class CartService extends TransactionBaseService {
       query.relations = relations
     }
 
-    query.select = select?.length ? select : undefined
+    if (select && select.length > 0) {
+      query.select = select
+    } else {
+      query.select = undefined
+    }
 
     const queryRelations = query.relations
     query.relations = undefined
@@ -472,27 +476,8 @@ class CartService extends TransactionBaseService {
           }
         }
 
-        if (data.billing_address) {
-          if (!regCountries.includes(data.billing_address.country_code!)) {
-            throw new MedusaError(
-              MedusaError.Types.NOT_ALLOWED,
-              "Billing country not in region"
-            )
-          }
-          rawCart.billing_address = data.billing_address
-        }
-        if (data.billing_address_id) {
-          const addr = await addressRepo.findOne(data.billing_address_id)
-          if (addr?.country_code && !regCountries.includes(addr.country_code)) {
-            throw new MedusaError(
-              MedusaError.Types.NOT_ALLOWED,
-              "Billing country not in region"
-            )
-          }
-          rawCart.billing_address_id = data.billing_address_id
-        }
-
         const remainingFields: (keyof Cart)[] = [
+          "billing_address_id",
           "context",
           "type",
           "metadata",
@@ -1077,7 +1062,7 @@ class CartService extends TransactionBaseService {
     const productsToKeep = await this.productService_
       .withTransaction(this.manager_)
       .filterProductsBySalesChannel(productIds, newSalesChannelId, {
-        select: ["id"],
+        select: ["id", "sales_channels"],
         take: productIds.length,
       })
     const productIdsToKeep = new Set<string>(
