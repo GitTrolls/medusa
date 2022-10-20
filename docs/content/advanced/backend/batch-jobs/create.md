@@ -1,6 +1,3 @@
-import Tabs from '@theme/Tabs';
-import TabItem from '@theme/TabItem';
-
 # Create a Batch Job Strategy
 
 In this document, you’ll learn how to create a batch job strategy on your Medusa server.
@@ -254,10 +251,8 @@ The first step is to create a batch job using the [Create Batch Job endpoint](ht
 
 For example, this creates a batch job of the type `publish-products`:
 
-<Tabs groupId="request-types">
-<TabItem value="client" label="Medusa JS Client" default>
-
 ```jsx
+// using JS Client
 medusa.admin.batchJobs.create({
   type: 'publish-products',
   context: { },
@@ -268,10 +263,8 @@ medusa.admin.batchJobs.create({
 });
 ```
 
-</TabItem>
-<TabItem value="fetch" label="Fetch API">
-
 ```jsx
+// using Fetch API
 fetch(`<YOUR_SERVER>/admin/batch-jobs`, {
   method: 'POST',
   headers: {
@@ -289,10 +282,8 @@ fetch(`<YOUR_SERVER>/admin/batch-jobs`, {
 });
 ```
 
-</TabItem>
-<TabItem value="curl" label="cURL">
-
 ```bash
+# using cURL
 curl --location --request POST '<YOUR_SERVER>/admin/batch-jobs' \
 --header 'Authorization: Bearer <API_TOKEN>' \
 --header 'Content-Type: application/json' \
@@ -303,9 +294,6 @@ curl --location --request POST '<YOUR_SERVER>/admin/batch-jobs' \
 }'
 ```
 
-</TabItem>
-</Tabs>
-
 You set the `dry_run` to `true` to disable automatic confirmation and running of the batch job. If you want the batch job to run automatically, you can remove this body parameter.
 
 Make sure to replace `<YOUR_SERVER>` with the server URL where applicable.
@@ -314,20 +302,16 @@ Make sure to replace `<YOUR_SERVER>` with the server URL where applicable.
 
 You can retrieve the batch job afterward to get its status and view details about the process in the `result` property:
 
-<Tabs groupId="request-type">
-<TabItem value="client" label="Medusa JS Client" default>
-
 ```jsx
+// using JS Client
 medusa.admin.batchJobs.retrieve(batchJobId)
 .then(( batch_job ) => {
   console.log(batch_job.status, batch_job.result);
 });
 ```
 
-</TabItem>
-<TabItem value="fetch" label="Fetch API">
-
 ```jsx
+// using Fetch API
 fetch(`<YOUR_SERVER>/admin/batch-jobs/${batchJobId}`)
 .then((response) => response.json())
 .then(({ batch_job }) => {
@@ -335,17 +319,12 @@ fetch(`<YOUR_SERVER>/admin/batch-jobs/${batchJobId}`)
 });
 ```
 
-</TabItem>
-<TabItem value="curl" label="cURL">
-
 ```bash
+# using cURL
 curl --location --request GET '<YOUR_SERVER>/admin/batch-jobs/<BATCH_JOB_ID>' \
 --header 'Authorization: Bearer <API_TOKEN>'
 # <BATCH_JOB_ID> is the ID of the batch job
 ```
-
-</TabItem>
-</Tabs>
 
 Based on the batch job strategy implemented in this documentation, the `result` property could be something like this:
 
@@ -367,20 +346,16 @@ Based on the batch job strategy implemented in this documentation, the `result` 
 
 To process the batch job, send a request to [confirm the batch job](https://docs.medusajs.com/api/admin/#tag/Batch-Job/operation/PostBatchJobsBatchJobConfirmProcessing):
 
-<Tabs groupId="request-type">
-<TabItem value="client" label="Medusa JS Client" default>
-
 ```jsx
+// using JS Client
 medusa.admin.batchJobs.confirm(batchJobId)
 .then(( batch_job ) => {
   console.log(batch_job.status);
 });
 ```
 
-</TabItem>
-<TabItem value="fetch" label="Fetch API">
-
 ```jsx
+// using Fetch API
 fetch(`<YOUR_SERVER>/admin/batch-jobs/${batchJobId}/confirm`, {
   method: 'POST'
 })
@@ -390,17 +365,12 @@ fetch(`<YOUR_SERVER>/admin/batch-jobs/${batchJobId}/confirm`, {
 });
 ```
 
-</TabItem>
-<TabItem value="curl" label="cURL">
-
 ```bash
+# using cURL
 curl --location --request POST '<YOUR_SERVER>/admin/batch-jobs/<BATCH_JOB_ID>/confirm' \
 --header 'Authorization: Bearer <API_TOKEN>'
 # <BATCH_JOB_ID> is the ID of the batch job
 ```
-
-</TabItem>
-</Tabs>
 
 The batch job will start processing afterward. Based on the batch job strategy implemented in this documentation, draft products will be published.
 
