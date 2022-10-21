@@ -71,6 +71,7 @@
     "generate:entities": "typedoc --options typedoc.entities.js",
     "release:snapshot": "changeset publish --no-git-tags --snapshot --tag snapshot",
     "generate:announcement": "node ./scripts/doc-change-release.js",
+    "version:staging": "yarn changeset pre enter staging && yarn changeset version",
     "check:freshness": "node ./scripts/freshness-check.js"
   },
   "dependencies": {
