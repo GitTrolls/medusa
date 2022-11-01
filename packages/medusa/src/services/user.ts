@@ -3,7 +3,6 @@ import { MedusaError } from "medusa-core-utils"
 import Scrypt from "scrypt-kdf"
 import { EntityManager } from "typeorm"
 import { TransactionBaseService } from "../interfaces"
-import AnalyticsFeatureFlag from "../loaders/feature-flags/analytics"
 import { User } from "../models"
 import { UserRepository } from "../repositories/user"
 import { FindConfig } from "../types/common"
@@ -13,17 +12,13 @@ import {
   UpdateUserInput,
 } from "../types/user"
 import { buildQuery, setMetadata } from "../utils"
-import { FlagRouter } from "../utils/flag-router"
 import { validateEmail } from "../utils/is-email"
-import AnalyticsConfigService from "./analytics-config"
 import EventBusService from "./event-bus"
 
 type UserServiceProps = {
   userRepository: typeof UserRepository
-  analyticsConfigService: AnalyticsConfigService
   eventBusService: EventBusService
   manager: EntityManager
-  featureFlagRouter: FlagRouter
 }
 
 /**
@@ -39,24 +34,13 @@ class UserService extends TransactionBaseService {
 
   protected manager_: EntityManager
   protected transactionManager_: EntityManager
-  protected readonly analyticsConfigService_: AnalyticsConfigService
   protected readonly userRepository_: typeof UserRepository
   protected readonly eventBus_: EventBusService
-  protected readonly featureFlagRouter_: FlagRouter
 
-  constructor({
-    userRepository,
-    eventBusService,
-    analyticsConfigService,
-    featureFlagRouter,
-    manager,
-  }: UserServiceProps) {
-    // eslint-disable-next-line prefer-rest-params
-    super(arguments[0])
+  constructor({ userRepository, eventBusService, manager }: UserServiceProps) {
+    super({ userRepository, eventBusService, manager })
 
     this.userRepository_ = userRepository
-    this.analyticsConfigService_ = analyticsConfigService
-    this.featureFlagRouter_ = featureFlagRouter
     this.eventBus_ = eventBusService
     this.manager_ = manager
   }
@@ -252,18 +236,12 @@ class UserService extends TransactionBaseService {
   async delete(userId: string): Promise<void> {
     return await this.atomicPhase_(async (manager: EntityManager) => {
       const userRepo = manager.getCustomRepository(this.userRepository_)
-      const analyticsServiceTx =
-        this.analyticsConfigService_.withTransaction(manager)
 
       // Should not fail, if user does not exist, since delete is idempotent
       const user = await userRepo.findOne({ where: { id: userId } })
 
       if (!user) {
         return Promise.resolve()
-      }
-
-      if (this.featureFlagRouter_.isFeatureEnabled(AnalyticsFeatureFlag.key)) {
-        await analyticsServiceTx.delete(userId)
       }
 
       await userRepo.softRemove(user)

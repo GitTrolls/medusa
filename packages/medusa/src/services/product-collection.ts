@@ -4,12 +4,13 @@ import { TransactionBaseService } from "../interfaces"
 import { ProductCollection } from "../models"
 import { ProductRepository } from "../repositories/product"
 import { ProductCollectionRepository } from "../repositories/product-collection"
-import { FindConfig, Selector } from "../types/common"
+import { ExtendedFindConfig, FindConfig, QuerySelector } from "../types/common"
 import {
   CreateProductCollection,
   UpdateProductCollection,
 } from "../types/product-collection"
-import { buildQuery, isString, setMetadata } from "../utils"
+import { buildQuery, setMetadata } from "../utils"
+import { formatException } from "../utils/exception-formatter"
 import EventBusService from "./event-bus"
 
 type InjectedDependencies = {
@@ -112,8 +113,12 @@ class ProductCollectionService extends TransactionBaseService {
         this.productCollectionRepository_
       )
 
-      const productCollection = collectionRepo.create(collection)
-      return await collectionRepo.save(productCollection)
+      try {
+        const productCollection = collectionRepo.create(collection)
+        return await collectionRepo.save(productCollection)
+      } catch (error) {
+        throw formatException(error)
+      }
     })
   }
 
@@ -178,13 +183,17 @@ class ProductCollectionService extends TransactionBaseService {
     return await this.atomicPhase_(async (manager) => {
       const productRepo = manager.getCustomRepository(this.productRepository_)
 
-      const { id } = await this.retrieve(collectionId, { select: ["id"] })
+      try {
+        const { id } = await this.retrieve(collectionId, { select: ["id"] })
 
-      await productRepo.bulkAddToCollection(productIds, id)
+        await productRepo.bulkAddToCollection(productIds, id)
 
-      return await this.retrieve(id, {
-        relations: ["products"],
-      })
+        return await this.retrieve(id, {
+          relations: ["products"],
+        })
+      } catch (error) {
+        throw formatException(error)
+      }
     })
   }
 
@@ -210,14 +219,15 @@ class ProductCollectionService extends TransactionBaseService {
    * @return the result of the find operation
    */
   async list(
-    selector: Selector<ProductCollection> & {
-      q?: string
-      discount_condition_id?: string
-    } = {},
+    selector = {},
     config = { skip: 0, take: 20 }
   ): Promise<ProductCollection[]> {
-    const [collections] = await this.listAndCount(selector, config)
-    return collections
+    const productCollectionRepo = this.manager_.getCustomRepository(
+      this.productCollectionRepository_
+    )
+
+    const query = buildQuery(selector, config)
+    return await productCollectionRepo.find(query)
   }
 
   /**
@@ -227,10 +237,7 @@ class ProductCollectionService extends TransactionBaseService {
    * @return the result of the find operation
    */
   async listAndCount(
-    selector: Selector<ProductCollection> & {
-      q?: string
-      discount_condition_id?: string
-    } = {},
+    selector: QuerySelector<ProductCollection> = {},
     config: FindConfig<ProductCollection> = { skip: 0, take: 20 }
   ): Promise<[ProductCollection[], number]> {
     const productCollectionRepo = this.manager_.getCustomRepository(
@@ -238,12 +245,17 @@ class ProductCollectionService extends TransactionBaseService {
     )
 
     let q
-    if (isString(selector.q)) {
+    if ("q" in selector) {
       q = selector.q
       delete selector.q
     }
 
-    const query = buildQuery(selector, config)
+    const query = buildQuery(
+      selector,
+      config
+    ) as ExtendedFindConfig<ProductCollection> & {
+      where: (qb: any) => void
+    }
 
     if (q) {
       const where = query.where
@@ -264,15 +276,6 @@ class ProductCollectionService extends TransactionBaseService {
           })
         )
       }
-    }
-
-    if (query.where.discount_condition_id) {
-      const discountConditionId = query.where.discount_condition_id as string
-      delete query.where.discount_condition_id
-      return await productCollectionRepo.findAndCountByDiscountConditionId(
-        discountConditionId,
-        query
-      )
     }
 
     return await productCollectionRepo.findAndCount(query)

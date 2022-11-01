@@ -1,17 +1,17 @@
 import { MedusaError } from "medusa-core-utils"
-import { DeepPartial, EntityManager, ILike } from "typeorm"
+import { DeepPartial, EntityManager, ILike, SelectQueryBuilder } from "typeorm"
 import { CustomerService } from "."
 import { CustomerGroup } from ".."
+import { CustomerGroupRepository } from "../repositories/customer-group"
+import { FindConfig } from "../types/common"
 import {
-  CustomerGroupRepository,
-  FindWithoutRelationsOptions,
-} from "../repositories/customer-group"
-import { FindConfig, Selector } from "../types/common"
-import { CustomerGroupUpdate } from "../types/customer-groups"
+  CustomerGroupUpdate,
+  FilterableCustomerGroupProps,
+} from "../types/customer-groups"
 import {
   buildQuery,
+  formatException,
   isDefined,
-  isString,
   PostgresError,
   setMetadata,
 } from "../utils"
@@ -107,8 +107,26 @@ class CustomerGroupService extends TransactionBaseService {
         )
         return await cgRepo.addCustomers(id, ids)
       },
-      async (e: any) => {
-        await this.handleCreationFail(id, ids, e)
+      async (error: any) => {
+        if (error.code === PostgresError.FOREIGN_KEY_ERROR) {
+          await this.retrieve(id)
+
+          const existingCustomers = await this.customerService_.list({
+            id: ids,
+          })
+
+          const nonExistingCustomers = ids.filter(
+            (cId) => existingCustomers.findIndex((el) => el.id === cId) === -1
+          )
+
+          throw new MedusaError(
+            MedusaError.Types.NOT_FOUND,
+            `The following customer ids do not exist: ${JSON.stringify(
+              nonExistingCustomers.join(", ")
+            )}`
+          )
+        }
+        throw formatException(error)
       }
     )
   }
@@ -177,14 +195,15 @@ class CustomerGroupService extends TransactionBaseService {
    * @return  the result of the find operation
    */
   async list(
-    selector: Selector<CustomerGroup> & {
-      q?: string
-      discount_condition_id?: string
-    } = {},
+    selector: FilterableCustomerGroupProps = {},
     config: FindConfig<CustomerGroup>
   ): Promise<CustomerGroup[]> {
-    const [customerGroups] = await this.listAndCount(selector, config)
-    return customerGroups
+    const cgRepo: CustomerGroupRepository = this.manager_.getCustomRepository(
+      this.customerGroupRepository_
+    )
+
+    const query = buildQuery(selector, config)
+    return await cgRepo.find(query)
   }
 
   /**
@@ -195,10 +214,7 @@ class CustomerGroupService extends TransactionBaseService {
    * @return the result of the find operation
    */
   async listAndCount(
-    selector: Selector<CustomerGroup> & {
-      q?: string
-      discount_condition_id?: string
-    } = {},
+    selector: FilterableCustomerGroupProps = {},
     config: FindConfig<CustomerGroup>
   ): Promise<[CustomerGroup[], number]> {
     const cgRepo: CustomerGroupRepository = this.manager_.getCustomRepository(
@@ -206,7 +222,7 @@ class CustomerGroupService extends TransactionBaseService {
     )
 
     let q
-    if (isString(selector.q)) {
+    if ("q" in selector) {
       q = selector.q
       delete selector.q
     }
@@ -214,15 +230,13 @@ class CustomerGroupService extends TransactionBaseService {
     const query = buildQuery(selector, config)
 
     if (q) {
-      query.where.name = ILike(`%${q}%`)
-    }
+      const where = query.where
 
-    if (query.where.discount_condition_id) {
-      const { relations, ...query_ } = query
-      return await cgRepo.findWithRelationsAndCount(
-        relations,
-        query_ as FindWithoutRelationsOptions
-      )
+      delete where.name
+
+      query.where = ((qb: SelectQueryBuilder<CustomerGroup>): void => {
+        qb.where(where).andWhere([{ name: ILike(`%${q}%`) }])
+      }) as any
     }
 
     return await cgRepo.findAndCount(query)
@@ -254,32 +268,6 @@ class CustomerGroupService extends TransactionBaseService {
     await cgRepo.removeCustomers(id, ids)
 
     return customerGroup
-  }
-
-  private async handleCreationFail(
-    id: string,
-    ids: string[],
-    error: any
-  ): Promise<never> {
-    if (error.code === PostgresError.FOREIGN_KEY_ERROR) {
-      await this.retrieve(id)
-
-      const existingCustomers = await this.customerService_.list({
-        id: ids,
-      })
-
-      const nonExistingCustomers = ids.filter(
-        (cId) => existingCustomers.findIndex((el) => el.id === cId) === -1
-      )
-
-      throw new MedusaError(
-        MedusaError.Types.NOT_FOUND,
-        `The following customer ids do not exist: ${JSON.stringify(
-          nonExistingCustomers.join(", ")
-        )}`
-      )
-    }
-    throw error
   }
 }
 

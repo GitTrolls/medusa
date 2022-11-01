@@ -1,7 +1,6 @@
 import cors from "cors"
 import { Router } from "express"
 import middlewares from "../../middlewares"
-import analyticsConfigs from "./analytics-configs"
 import appRoutes from "./apps"
 import authRoutes from "./auth"
 import batchRoutes from "./batch"
@@ -15,8 +14,8 @@ import giftCardRoutes from "./gift-cards"
 import inviteRoutes, { unauthenticatedInviteRoutes } from "./invites"
 import noteRoutes from "./notes"
 import notificationRoutes from "./notifications"
-import orderEditRoutes from "./order-edits"
 import orderRoutes from "./orders"
+import orderEditRoutes from "./order-edits"
 import priceListRoutes from "./price-lists"
 import productTagRoutes from "./product-tags"
 import productTypesRoutes from "./product-types"
@@ -68,7 +67,6 @@ export default (app, container, config) => {
   // Calls all middleware that has been registered to run after authentication.
   middlewareService.usePostAuthentication(app)
 
-  analyticsConfigs(route)
   appRoutes(route)
   batchRoutes(route)
   collectionRoutes(route)

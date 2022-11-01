@@ -125,7 +125,7 @@ module.exports = async (connection, data = {}) => {
   })
   await manager.save(liRma)
 
-  await manager.insert(CustomShippingOption, {
+  manager.insert(CustomShippingOption, {
     id: "cso-test",
     cart_id: cartWithCustomSo.id,
     price: 0,

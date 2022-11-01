@@ -1,6 +1,6 @@
 import { TransactionBaseService } from "./transaction-base-service"
 import { BatchJobResultError, CreateBatchJobInput } from "../types/batch-job"
-import { ProductExportBatchJob } from "../strategies/batch-jobs/product/types"
+import { ProductExportBatchJob } from "../strategies/batch-jobs/product"
 import { BatchJobService } from "../services"
 import { BatchJob } from "../models"
 

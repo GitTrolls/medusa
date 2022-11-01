@@ -1,6 +1,6 @@
 import glob from "glob"
 import path from "path"
-import { aliasTo, asFunction } from "awilix"
+import { asFunction, aliasTo } from "awilix"
 
 import formatRegistrationName from "../utils/format-registration-name"
 import { isBatchJobStrategy } from "../interfaces"
@@ -26,23 +26,17 @@ export default ({ container, configModule, isTest }: LoaderOptions): void => {
 
   const coreFull = path.join(__dirname, corePath)
 
-  const ignore = [
-    "**/__fixtures__/**",
-    "**/index.js",
-    "**/index.ts",
-    "**/utils.js",
-    "**/utils.ts",
-    "**/types.js",
-    "**/types.ts",
-    "**/types/**",
-  ]
-  if (!useMock) {
-    ignore.push("**/__tests__/**", "**/__mocks__/**")
-  }
-
   const core = glob.sync(coreFull, {
     cwd: __dirname,
-    ignore,
+    ignore: [
+      "**/__fixtures__/**",
+      "**/index.js",
+      "**/index.ts",
+      "**/utils.js",
+      "**/utils.ts",
+      "**/types.js",
+      "**/types.ts",
+    ],
   })
 
   core.forEach((fn) => {

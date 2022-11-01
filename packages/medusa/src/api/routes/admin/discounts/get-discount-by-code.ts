@@ -1,7 +1,10 @@
-import { Request, Response } from "express"
-import DiscountService from "../../../../services/discount"
-import { FindParams } from "../../../../types/common"
+import { IsOptional, IsString } from "class-validator"
+import { defaultAdminDiscountsFields, defaultAdminDiscountsRelations } from "."
 
+import { Discount } from "../../../../models"
+import DiscountService from "../../../../services/discount"
+import { getRetrieveConfig } from "../../../../utils/get-query-config"
+import { validator } from "../../../../utils/validator"
 /**
  * @oas [get] /discounts/code/{code}
  * operationId: "GetDiscountsDiscountCode"
@@ -55,16 +58,33 @@ import { FindParams } from "../../../../types/common"
  *   "500":
  *     $ref: "#/components/responses/500_error"
  */
-export default async (req: Request, res: Response) => {
+export default async (req, res) => {
   const { code } = req.params
 
-  const discountService: DiscountService = req.scope.resolve("discountService")
-  const discount = await discountService.retrieveByCode(
-    code,
-    req.retrieveConfig
+  const validated = await validator(
+    AdminGetDiscountsDiscountCodeParams,
+    req.query
   )
+
+  const config = getRetrieveConfig<Discount>(
+    defaultAdminDiscountsFields,
+    defaultAdminDiscountsRelations,
+    validated?.fields?.split(",") as (keyof Discount)[],
+    validated?.expand?.split(",")
+  )
+
+  const discountService: DiscountService = req.scope.resolve("discountService")
+  const discount = await discountService.retrieveByCode(code, config)
 
   res.status(200).json({ discount })
 }
 
-export class AdminGetDiscountsDiscountCodeParams extends FindParams {}
+export class AdminGetDiscountsDiscountCodeParams {
+  @IsOptional()
+  @IsString()
+  expand?: string
+
+  @IsOptional()
+  @IsString()
+  fields?: string
+}
