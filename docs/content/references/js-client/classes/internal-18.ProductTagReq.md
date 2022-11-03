@@ -10,7 +10,7 @@
 
 #### Defined in
 
-medusa/dist/types/product.d.ts:143
+medusa/dist/types/product.d.ts:149
 
 ___
 
@@ -20,4 +20,4 @@ ___
 
 #### Defined in
 
-medusa/dist/types/product.d.ts:144
+medusa/dist/types/product.d.ts:150

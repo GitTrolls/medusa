@@ -10,7 +10,7 @@
 
 #### Defined in
 
-medusa/dist/types/discount.d.ts:13
+medusa/dist/types/discount.d.ts:15
 
 ___
 
@@ -20,4 +20,4 @@ ___
 
 #### Defined in
 
-medusa/dist/types/discount.d.ts:12
+medusa/dist/types/discount.d.ts:14

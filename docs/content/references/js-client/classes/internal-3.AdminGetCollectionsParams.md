@@ -16,7 +16,7 @@
 
 #### Defined in
 
-medusa/dist/api/routes/admin/collections/list-collections.d.ts:145
+medusa/dist/api/routes/admin/collections/list-collections.d.ts:144
 
 ___
 
@@ -26,17 +26,7 @@ ___
 
 #### Defined in
 
-medusa/dist/api/routes/admin/collections/list-collections.d.ts:147
-
-___
-
-### discount\_condition\_id
-
-• `Optional` **discount\_condition\_id**: `string`
-
-#### Defined in
-
-medusa/dist/api/routes/admin/collections/list-collections.d.ts:149
+medusa/dist/api/routes/admin/collections/list-collections.d.ts:146
 
 ___
 
@@ -46,7 +36,7 @@ ___
 
 #### Defined in
 
-medusa/dist/api/routes/admin/collections/list-collections.d.ts:144
+medusa/dist/api/routes/admin/collections/list-collections.d.ts:143
 
 ___
 
@@ -60,7 +50,7 @@ ___
 
 #### Defined in
 
-medusa/dist/api/routes/admin/collections/list-collections.d.ts:139
+medusa/dist/api/routes/admin/collections/list-collections.d.ts:138
 
 ___
 
@@ -74,7 +64,7 @@ ___
 
 #### Defined in
 
-medusa/dist/api/routes/admin/collections/list-collections.d.ts:140
+medusa/dist/api/routes/admin/collections/list-collections.d.ts:139
 
 ___
 
@@ -84,7 +74,7 @@ ___
 
 #### Defined in
 
-medusa/dist/api/routes/admin/collections/list-collections.d.ts:148
+medusa/dist/api/routes/admin/collections/list-collections.d.ts:147
 
 ___
 
@@ -94,7 +84,7 @@ ___
 
 #### Defined in
 
-medusa/dist/api/routes/admin/collections/list-collections.d.ts:143
+medusa/dist/api/routes/admin/collections/list-collections.d.ts:142
 
 ___
 
@@ -104,4 +94,4 @@ ___
 
 #### Defined in
 
-medusa/dist/api/routes/admin/collections/list-collections.d.ts:146
+medusa/dist/api/routes/admin/collections/list-collections.d.ts:145

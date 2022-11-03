@@ -2,7 +2,6 @@
 
 ## Classes
 
-- [AnalyticsConfigService](classes/AnalyticsConfigService.md)
 - [AuthService](classes/AuthService.md)
 - [BatchJobService](classes/BatchJobService.md)
 - [CartService](classes/CartService.md)
@@ -12,7 +11,6 @@
 - [CustomShippingOptionService](classes/CustomShippingOptionService.md)
 - [CustomerGroupService](classes/CustomerGroupService.md)
 - [CustomerService](classes/CustomerService.md)
-- [DiscountConditionService](classes/DiscountConditionService.md)
 - [DiscountService](classes/DiscountService.md)
 - [DraftOrderService](classes/DraftOrderService.md)
 - [EventBusService](classes/EventBusService.md)

@@ -4,7 +4,7 @@
 
 ## Hierarchy
 
-- [`PriceSelectionParams`](internal-30.PriceSelectionParams.md)
+- [`PriceSelectionParams`](internal-40.PriceSelectionParams.md)
 
   ↳ **`StoreGetProductsPaginationParams`**
 
@@ -18,7 +18,7 @@
 
 #### Inherited from
 
-[PriceSelectionParams](internal-30.PriceSelectionParams.md).[cart_id](internal-30.PriceSelectionParams.md#cart_id)
+[PriceSelectionParams](internal-40.PriceSelectionParams.md).[cart_id](internal-40.PriceSelectionParams.md#cart_id)
 
 #### Defined in
 
@@ -32,7 +32,7 @@ ___
 
 #### Inherited from
 
-[PriceSelectionParams](internal-30.PriceSelectionParams.md).[currency_code](internal-30.PriceSelectionParams.md#currency_code)
+[PriceSelectionParams](internal-40.PriceSelectionParams.md).[currency_code](internal-40.PriceSelectionParams.md#currency_code)
 
 #### Defined in
 
@@ -46,7 +46,7 @@ ___
 
 #### Defined in
 
-medusa/dist/api/routes/store/products/list-products.d.ts:160
+medusa/dist/api/routes/store/products/list-products.d.ts:143
 
 ___
 
@@ -56,7 +56,7 @@ ___
 
 #### Defined in
 
-medusa/dist/api/routes/store/products/list-products.d.ts:159
+medusa/dist/api/routes/store/products/list-products.d.ts:142
 
 ___
 
@@ -66,7 +66,7 @@ ___
 
 #### Defined in
 
-medusa/dist/api/routes/store/products/list-products.d.ts:162
+medusa/dist/api/routes/store/products/list-products.d.ts:145
 
 ___
 
@@ -76,7 +76,7 @@ ___
 
 #### Defined in
 
-medusa/dist/api/routes/store/products/list-products.d.ts:161
+medusa/dist/api/routes/store/products/list-products.d.ts:144
 
 ___
 
@@ -86,7 +86,7 @@ ___
 
 #### Inherited from
 
-[PriceSelectionParams](internal-30.PriceSelectionParams.md).[region_id](internal-30.PriceSelectionParams.md#region_id)
+[PriceSelectionParams](internal-40.PriceSelectionParams.md).[region_id](internal-40.PriceSelectionParams.md#region_id)
 
 #### Defined in
 

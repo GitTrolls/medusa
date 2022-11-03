@@ -26,7 +26,7 @@
 
 #### Defined in
 
-[medusa-js/src/resources/admin/order-edits.ts:72](https://github.com/medusajs/medusa/blob/0b0d50b47/packages/medusa-js/src/resources/admin/order-edits.ts#L72)
+[medusa-js/src/resources/admin/order-edits.ts:47](https://github.com/medusajs/medusa/blob/53e34d33d/packages/medusa-js/src/resources/admin/order-edits.ts#L47)
 
 ___
 
@@ -47,7 +47,7 @@ ___
 
 #### Defined in
 
-[medusa-js/src/resources/admin/order-edits.ts:98](https://github.com/medusajs/medusa/blob/0b0d50b47/packages/medusa-js/src/resources/admin/order-edits.ts#L98)
+[medusa-js/src/resources/admin/order-edits.ts:73](https://github.com/medusajs/medusa/blob/53e34d33d/packages/medusa-js/src/resources/admin/order-edits.ts#L73)
 
 ___
 
@@ -68,7 +68,7 @@ ___
 
 #### Defined in
 
-[medusa-js/src/resources/admin/order-edits.ts:106](https://github.com/medusajs/medusa/blob/0b0d50b47/packages/medusa-js/src/resources/admin/order-edits.ts#L106)
+[medusa-js/src/resources/admin/order-edits.ts:81](https://github.com/medusajs/medusa/blob/53e34d33d/packages/medusa-js/src/resources/admin/order-edits.ts#L81)
 
 ___
 
@@ -89,7 +89,7 @@ ___
 
 #### Defined in
 
-[medusa-js/src/resources/admin/order-edits.ts:47](https://github.com/medusajs/medusa/blob/0b0d50b47/packages/medusa-js/src/resources/admin/order-edits.ts#L47)
+[medusa-js/src/resources/admin/order-edits.ts:22](https://github.com/medusajs/medusa/blob/53e34d33d/packages/medusa-js/src/resources/admin/order-edits.ts#L22)
 
 ___
 
@@ -110,7 +110,7 @@ ___
 
 #### Defined in
 
-[medusa-js/src/resources/admin/order-edits.ts:64](https://github.com/medusajs/medusa/blob/0b0d50b47/packages/medusa-js/src/resources/admin/order-edits.ts#L64)
+[medusa-js/src/resources/admin/order-edits.ts:39](https://github.com/medusajs/medusa/blob/53e34d33d/packages/medusa-js/src/resources/admin/order-edits.ts#L39)
 
 ___
 
@@ -132,28 +132,7 @@ ___
 
 #### Defined in
 
-[medusa-js/src/resources/admin/order-edits.ts:81](https://github.com/medusajs/medusa/blob/0b0d50b47/packages/medusa-js/src/resources/admin/order-edits.ts#L81)
-
-___
-
-### list
-
-▸ **list**(`query?`, `customHeaders?`): [`ResponsePromise`](../modules/internal.md#responsepromise)<[`AdminOrderEditsListRes`](../modules/internal-13.md#adminordereditslistres)\>
-
-#### Parameters
-
-| Name | Type |
-| :------ | :------ |
-| `query?` | [`GetOrderEditsParams`](internal-13.GetOrderEditsParams.md) |
-| `customHeaders` | `Record`<`string`, `any`\> |
-
-#### Returns
-
-[`ResponsePromise`](../modules/internal.md#responsepromise)<[`AdminOrderEditsListRes`](../modules/internal-13.md#adminordereditslistres)\>
-
-#### Defined in
-
-[medusa-js/src/resources/admin/order-edits.ts:33](https://github.com/medusajs/medusa/blob/0b0d50b47/packages/medusa-js/src/resources/admin/order-edits.ts#L33)
+[medusa-js/src/resources/admin/order-edits.ts:56](https://github.com/medusajs/medusa/blob/53e34d33d/packages/medusa-js/src/resources/admin/order-edits.ts#L56)
 
 ___
 
@@ -175,7 +154,7 @@ ___
 
 #### Defined in
 
-[medusa-js/src/resources/admin/order-edits.ts:124](https://github.com/medusajs/medusa/blob/0b0d50b47/packages/medusa-js/src/resources/admin/order-edits.ts#L124)
+[medusa-js/src/resources/admin/order-edits.ts:99](https://github.com/medusajs/medusa/blob/53e34d33d/packages/medusa-js/src/resources/admin/order-edits.ts#L99)
 
 ___
 
@@ -196,20 +175,19 @@ ___
 
 #### Defined in
 
-[medusa-js/src/resources/admin/order-edits.ts:90](https://github.com/medusajs/medusa/blob/0b0d50b47/packages/medusa-js/src/resources/admin/order-edits.ts#L90)
+[medusa-js/src/resources/admin/order-edits.ts:65](https://github.com/medusajs/medusa/blob/53e34d33d/packages/medusa-js/src/resources/admin/order-edits.ts#L65)
 
 ___
 
 ### retrieve
 
-▸ **retrieve**(`id`, `query?`, `customHeaders?`): [`ResponsePromise`](../modules/internal.md#responsepromise)<[`AdminOrderEditsRes`](../modules/internal-13.md#adminordereditsres)\>
+▸ **retrieve**(`id`, `customHeaders?`): [`ResponsePromise`](../modules/internal.md#responsepromise)<[`AdminOrderEditsRes`](../modules/internal-13.md#adminordereditsres)\>
 
 #### Parameters
 
 | Name | Type |
 | :------ | :------ |
 | `id` | `string` |
-| `query?` | [`GetOrderEditsOrderEditParams`](internal-13.GetOrderEditsOrderEditParams.md) |
 | `customHeaders` | `Record`<`string`, `any`\> |
 
 #### Returns
@@ -218,7 +196,7 @@ ___
 
 #### Defined in
 
-[medusa-js/src/resources/admin/order-edits.ts:18](https://github.com/medusajs/medusa/blob/0b0d50b47/packages/medusa-js/src/resources/admin/order-edits.ts#L18)
+[medusa-js/src/resources/admin/order-edits.ts:14](https://github.com/medusajs/medusa/blob/53e34d33d/packages/medusa-js/src/resources/admin/order-edits.ts#L14)
 
 ___
 
@@ -240,7 +218,7 @@ ___
 
 #### Defined in
 
-[medusa-js/src/resources/admin/order-edits.ts:55](https://github.com/medusajs/medusa/blob/0b0d50b47/packages/medusa-js/src/resources/admin/order-edits.ts#L55)
+[medusa-js/src/resources/admin/order-edits.ts:30](https://github.com/medusajs/medusa/blob/53e34d33d/packages/medusa-js/src/resources/admin/order-edits.ts#L30)
 
 ___
 
@@ -263,4 +241,4 @@ ___
 
 #### Defined in
 
-[medusa-js/src/resources/admin/order-edits.ts:114](https://github.com/medusajs/medusa/blob/0b0d50b47/packages/medusa-js/src/resources/admin/order-edits.ts#L114)
+[medusa-js/src/resources/admin/order-edits.ts:89](https://github.com/medusajs/medusa/blob/53e34d33d/packages/medusa-js/src/resources/admin/order-edits.ts#L89)

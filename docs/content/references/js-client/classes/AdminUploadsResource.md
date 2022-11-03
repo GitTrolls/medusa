@@ -20,7 +20,7 @@
 
 #### Defined in
 
-[medusa-js/src/resources/admin/uploads.ts:14](https://github.com/medusajs/medusa/blob/0b0d50b47/packages/medusa-js/src/resources/admin/uploads.ts#L14)
+[medusa-js/src/resources/admin/uploads.ts:14](https://github.com/medusajs/medusa/blob/53e34d33d/packages/medusa-js/src/resources/admin/uploads.ts#L14)
 
 ## Methods
 
@@ -40,27 +40,7 @@
 
 #### Defined in
 
-[medusa-js/src/resources/admin/uploads.ts:18](https://github.com/medusajs/medusa/blob/0b0d50b47/packages/medusa-js/src/resources/admin/uploads.ts#L18)
-
-___
-
-### createProtected
-
-▸ **createProtected**(`file`): [`ResponsePromise`](../modules/internal.md#responsepromise)<[`AdminUploadsRes`](../modules/internal-28.md#adminuploadsres)\>
-
-#### Parameters
-
-| Name | Type |
-| :------ | :------ |
-| `file` | [`IAdminPostUploadsFileReq`](internal-28.IAdminPostUploadsFileReq.md) |
-
-#### Returns
-
-[`ResponsePromise`](../modules/internal.md#responsepromise)<[`AdminUploadsRes`](../modules/internal-28.md#adminuploadsres)\>
-
-#### Defined in
-
-[medusa-js/src/resources/admin/uploads.ts:27](https://github.com/medusajs/medusa/blob/0b0d50b47/packages/medusa-js/src/resources/admin/uploads.ts#L27)
+[medusa-js/src/resources/admin/uploads.ts:18](https://github.com/medusajs/medusa/blob/53e34d33d/packages/medusa-js/src/resources/admin/uploads.ts#L18)
 
 ___
 
@@ -81,7 +61,7 @@ ___
 
 #### Defined in
 
-[medusa-js/src/resources/admin/uploads.ts:36](https://github.com/medusajs/medusa/blob/0b0d50b47/packages/medusa-js/src/resources/admin/uploads.ts#L36)
+[medusa-js/src/resources/admin/uploads.ts:27](https://github.com/medusajs/medusa/blob/53e34d33d/packages/medusa-js/src/resources/admin/uploads.ts#L27)
 
 ___
 
@@ -102,4 +82,4 @@ ___
 
 #### Defined in
 
-[medusa-js/src/resources/admin/uploads.ts:45](https://github.com/medusajs/medusa/blob/0b0d50b47/packages/medusa-js/src/resources/admin/uploads.ts#L45)
+[medusa-js/src/resources/admin/uploads.ts:36](https://github.com/medusajs/medusa/blob/53e34d33d/packages/medusa-js/src/resources/admin/uploads.ts#L36)

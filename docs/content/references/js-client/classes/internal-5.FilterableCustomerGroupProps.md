@@ -20,16 +20,6 @@ medusa/dist/types/customer-groups.d.ts:7
 
 ___
 
-### discount\_condition\_id
-
-• `Optional` **discount\_condition\_id**: `string`
-
-#### Defined in
-
-medusa/dist/types/customer-groups.d.ts:8
-
-___
-
 ### id
 
 • `Optional` **id**: `string` \| `string`[] \| [`StringComparisonOperator`](internal-5.StringComparisonOperator.md)

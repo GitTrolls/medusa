@@ -14,7 +14,7 @@ displayed_sidebar: jsClientSidebar
 
 #### Defined in
 
-medusa/dist/models/shipping-method.d.ts:29
+medusa/dist/models/shipping-method.d.ts:26
 
 ___
 
@@ -158,16 +158,6 @@ medusa/dist/models/shipping-method.d.ts:10
 
 ___
 
-### subtotal
-
-• `Optional` **subtotal**: `number`
-
-#### Defined in
-
-medusa/dist/models/shipping-method.d.ts:26
-
-___
-
 ### swap
 
 • **swap**: [`Swap`](internal.Swap.md)
@@ -195,23 +185,3 @@ ___
 #### Defined in
 
 medusa/dist/models/shipping-method.d.ts:22
-
-___
-
-### tax\_total
-
-• `Optional` **tax\_total**: `number`
-
-#### Defined in
-
-medusa/dist/models/shipping-method.d.ts:28
-
-___
-
-### total
-
-• `Optional` **total**: `number`
-
-#### Defined in
-
-medusa/dist/models/shipping-method.d.ts:27

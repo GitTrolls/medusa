@@ -16,23 +16,13 @@ Base abstract entity for all entities
 
 ## Properties
 
-### amount
-
-• **amount**: `number`
-
-#### Defined in
-
-medusa/dist/models/payment-session.d.ts:18
-
-___
-
 ### beforeInsert
 
 • `Private` **beforeInsert**: `any`
 
 #### Defined in
 
-medusa/dist/models/payment-session.d.ts:20
+medusa/dist/models/payment-session.d.ts:18
 
 ___
 
@@ -111,16 +101,6 @@ ___
 #### Defined in
 
 medusa/dist/models/payment-session.d.ts:14
-
-___
-
-### payment\_authorized\_at
-
-• **payment\_authorized\_at**: `Date`
-
-#### Defined in
-
-medusa/dist/models/payment-session.d.ts:19
 
 ___
 

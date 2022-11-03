@@ -10,17 +10,7 @@
 
 #### Defined in
 
-medusa/dist/api/routes/store/collections/list-collections.d.ts:107
-
-___
-
-### handle
-
-• `Optional` **handle**: `string`[]
-
-#### Defined in
-
-medusa/dist/api/routes/store/collections/list-collections.d.ts:104
+medusa/dist/api/routes/store/collections/list-collections.d.ts:106
 
 ___
 
@@ -30,7 +20,7 @@ ___
 
 #### Defined in
 
-medusa/dist/api/routes/store/collections/list-collections.d.ts:105
+medusa/dist/api/routes/store/collections/list-collections.d.ts:104
 
 ___
 
@@ -40,7 +30,7 @@ ___
 
 #### Defined in
 
-medusa/dist/api/routes/store/collections/list-collections.d.ts:106
+medusa/dist/api/routes/store/collections/list-collections.d.ts:105
 
 ___
 
@@ -50,4 +40,4 @@ ___
 
 #### Defined in
 
-medusa/dist/api/routes/store/collections/list-collections.d.ts:108
+medusa/dist/api/routes/store/collections/list-collections.d.ts:107

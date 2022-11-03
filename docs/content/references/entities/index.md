@@ -37,7 +37,6 @@ displayed_sidebar: entitiesSidebar
 ## Classes
 
 - [Address](classes/Address.md)
-- [AnalyticsConfig](classes/AnalyticsConfig.md)
 - [BatchJob](classes/BatchJob.md)
 - [Cart](classes/Cart.md)
 - [ClaimImage](classes/ClaimImage.md)

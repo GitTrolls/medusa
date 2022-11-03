@@ -24,27 +24,13 @@ medusa/dist/types/customer-groups.d.ts:7
 
 ___
 
-### discount\_condition\_id
-
-• `Optional` **discount\_condition\_id**: `string`
-
-#### Inherited from
-
-[FilterableCustomerGroupProps](internal-5.FilterableCustomerGroupProps.md).[discount_condition_id](internal-5.FilterableCustomerGroupProps.md#discount_condition_id)
-
-#### Defined in
-
-medusa/dist/types/customer-groups.d.ts:8
-
-___
-
 ### expand
 
 • `Optional` **expand**: `string`
 
 #### Defined in
 
-medusa/dist/api/routes/admin/customer-groups/list-customer-groups.d.ts:158
+medusa/dist/api/routes/admin/customer-groups/list-customer-groups.d.ts:157
 
 ___
 
@@ -68,7 +54,7 @@ ___
 
 #### Defined in
 
-medusa/dist/api/routes/admin/customer-groups/list-customer-groups.d.ts:157
+medusa/dist/api/routes/admin/customer-groups/list-customer-groups.d.ts:156
 
 ___
 
@@ -92,7 +78,7 @@ ___
 
 #### Defined in
 
-medusa/dist/api/routes/admin/customer-groups/list-customer-groups.d.ts:156
+medusa/dist/api/routes/admin/customer-groups/list-customer-groups.d.ts:155
 
 ___
 
@@ -102,7 +88,7 @@ ___
 
 #### Defined in
 
-medusa/dist/api/routes/admin/customer-groups/list-customer-groups.d.ts:155
+medusa/dist/api/routes/admin/customer-groups/list-customer-groups.d.ts:154
 
 ___
 

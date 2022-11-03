@@ -30,7 +30,7 @@ ___
 
 #### Defined in
 
-medusa/dist/api/routes/store/products/list-products.d.ts:167
+medusa/dist/api/routes/store/products/list-products.d.ts:150
 
 ___
 
@@ -40,7 +40,7 @@ ___
 
 #### Defined in
 
-medusa/dist/api/routes/store/products/list-products.d.ts:175
+medusa/dist/api/routes/store/products/list-products.d.ts:158
 
 ___
 
@@ -64,7 +64,7 @@ ___
 
 #### Defined in
 
-medusa/dist/api/routes/store/products/list-products.d.ts:170
+medusa/dist/api/routes/store/products/list-products.d.ts:153
 
 ___
 
@@ -78,7 +78,7 @@ ___
 
 #### Defined in
 
-medusa/dist/api/routes/store/products/list-products.d.ts:160
+medusa/dist/api/routes/store/products/list-products.d.ts:143
 
 ___
 
@@ -92,7 +92,7 @@ ___
 
 #### Defined in
 
-medusa/dist/api/routes/store/products/list-products.d.ts:159
+medusa/dist/api/routes/store/products/list-products.d.ts:142
 
 ___
 
@@ -102,7 +102,7 @@ ___
 
 #### Defined in
 
-medusa/dist/api/routes/store/products/list-products.d.ts:171
+medusa/dist/api/routes/store/products/list-products.d.ts:154
 
 ___
 
@@ -112,7 +112,7 @@ ___
 
 #### Defined in
 
-medusa/dist/api/routes/store/products/list-products.d.ts:165
+medusa/dist/api/routes/store/products/list-products.d.ts:148
 
 ___
 
@@ -122,7 +122,7 @@ ___
 
 #### Defined in
 
-medusa/dist/api/routes/store/products/list-products.d.ts:172
+medusa/dist/api/routes/store/products/list-products.d.ts:155
 
 ___
 
@@ -136,7 +136,7 @@ ___
 
 #### Defined in
 
-medusa/dist/api/routes/store/products/list-products.d.ts:162
+medusa/dist/api/routes/store/products/list-products.d.ts:145
 
 ___
 
@@ -150,7 +150,7 @@ ___
 
 #### Defined in
 
-medusa/dist/api/routes/store/products/list-products.d.ts:161
+medusa/dist/api/routes/store/products/list-products.d.ts:144
 
 ___
 
@@ -160,7 +160,7 @@ ___
 
 #### Defined in
 
-medusa/dist/api/routes/store/products/list-products.d.ts:166
+medusa/dist/api/routes/store/products/list-products.d.ts:149
 
 ___
 
@@ -184,7 +184,7 @@ ___
 
 #### Defined in
 
-medusa/dist/api/routes/store/products/list-products.d.ts:174
+medusa/dist/api/routes/store/products/list-products.d.ts:157
 
 ___
 
@@ -194,7 +194,7 @@ ___
 
 #### Defined in
 
-medusa/dist/api/routes/store/products/list-products.d.ts:168
+medusa/dist/api/routes/store/products/list-products.d.ts:151
 
 ___
 
@@ -204,17 +204,17 @@ ___
 
 #### Defined in
 
-medusa/dist/api/routes/store/products/list-products.d.ts:169
+medusa/dist/api/routes/store/products/list-products.d.ts:152
 
 ___
 
-### type\_id
+### type
 
-• `Optional` **type\_id**: `string`[]
+• `Optional` **type**: `string`
 
 #### Defined in
 
-medusa/dist/api/routes/store/products/list-products.d.ts:173
+medusa/dist/api/routes/store/products/list-products.d.ts:156
 
 ___
 
@@ -224,4 +224,4 @@ ___
 
 #### Defined in
 
-medusa/dist/api/routes/store/products/list-products.d.ts:176
+medusa/dist/api/routes/store/products/list-products.d.ts:159
