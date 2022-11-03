@@ -994,7 +994,7 @@ class BrightpearlService extends BaseService {
           }
         )
         return {
-          price: accum.price + totals.subtotal,
+          price: accum.price + totals.price,
           tax: accum.tax + totals.tax_total,
         }
       }, Promise.resolve({ price: 0, tax: 0 }))

@@ -1,6 +1,5 @@
 import { ConfigModule } from "../types/global"
 import { getConfigFile } from "medusa-core-utils/dist"
-import logger from "./logger"
 
 const isProduction = ["production", "prod"].includes(process.env.NODE_ENV || "")
 
@@ -10,25 +9,9 @@ const errorHandler = isProduction
     }
   : console.log
 
-export const handleConfigError = (error: Error): void => {
-  logger.error(`Error in loading config: ${error.message}`)
-  if (error.stack) {
-    logger.error(error.stack)
-  }
-  process.exit(1)
-}
-
 export default (rootDirectory: string): ConfigModule => {
-  const { configModule, error } = getConfigFile(
-    rootDirectory,
-    `medusa-config`
-  ) as {
+  const { configModule } = getConfigFile(rootDirectory, `medusa-config`) as {
     configModule: ConfigModule
-    error: Error | null
-  }
-
-  if (error) {
-    handleConfigError(error)
   }
 
   if (!configModule?.projectConfig?.redis_url) {
