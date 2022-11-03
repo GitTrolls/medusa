@@ -18,12 +18,16 @@ const pgSqliteGenerationMapping: {
 let dbType: string
 export function resolveDbType(pgSqlType: ColumnType): ColumnType {
   if (!dbType) {
-    const { configModule } = getConfigFile(
-      path.resolve("."),
-      `medusa-config`
-    ) as any
-
-    dbType = configModule?.projectConfig?.database_type || "postgres"
+    try {
+      const { configModule } = getConfigFile(
+        path.resolve("."),
+        `medusa-config`
+      ) as any
+      dbType = configModule.projectConfig.database_type
+    } catch (error) {
+      // Default to Postgres to allow for e.g. migrations to run
+      dbType = "postgres"
+    }
   }
 
   if (dbType === "sqlite" && (pgSqlType as string) in pgSqliteTypeMapping) {
@@ -36,12 +40,16 @@ export function resolveDbGenerationStrategy(
   pgSqlType: "increment" | "uuid" | "rowid"
 ): "increment" | "uuid" | "rowid" {
   if (!dbType) {
-    const { configModule } = getConfigFile(
-      path.resolve("."),
-      `medusa-config`
-    ) as any
-
-    dbType = configModule?.projectConfig?.database_type || "postgres"
+    try {
+      const { configModule } = getConfigFile(
+        path.resolve("."),
+        `medusa-config`
+      ) as any
+      dbType = configModule.projectConfig.database_type
+    } catch (error) {
+      // Default to Postgres to allow for e.g. migrations to run
+      dbType = "postgres"
+    }
   }
 
   if (dbType === "sqlite" && pgSqlType in pgSqliteTypeMapping) {
