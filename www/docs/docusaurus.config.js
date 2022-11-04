@@ -36,7 +36,6 @@ const config = {
     require.resolve("docusaurus-plugin-image-zoom")
   ],
   themeConfig: {
-    image: 'img/docs-banner.jpg',
     colorMode: {
       defaultMode: 'light',
       disableSwitch: false,
