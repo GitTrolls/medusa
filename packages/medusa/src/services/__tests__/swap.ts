@@ -204,7 +204,7 @@ describe("SwapService", () => {
           refund_amount: 11,
           items: [{ item_id: IdMap.getId("line"), quantity: 1 }],
         },
-        additional_items: [{ id: "test" }],
+        additional_items: [{ data: "lines", id: "test" }],
         other: "data",
       }
 
@@ -316,11 +316,10 @@ describe("SwapService", () => {
         expect(
           LineItemAdjustmentServiceMock.createAdjustmentForLineItem
         ).toHaveBeenCalledWith(
-          { id: "cart", items: [{
-            id: "test-item",
-          }] },
+          { id: "cart" },
           {
-            id: "test-item",
+            id: "test",
+            data: "lines",
           }
         )
 

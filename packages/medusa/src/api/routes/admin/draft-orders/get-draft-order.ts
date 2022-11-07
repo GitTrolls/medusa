@@ -1,5 +1,6 @@
 import { CartService, DraftOrderService } from "../../../../services"
 import {
+  defaultAdminDraftOrdersCartFields,
   defaultAdminDraftOrdersCartRelations,
   defaultAdminDraftOrdersFields,
   defaultAdminDraftOrdersRelations,
@@ -71,8 +72,9 @@ export default async (req, res) => {
     relations: defaultAdminDraftOrdersRelations,
   })
 
-  draftOrder.cart = await cartService.retrieveWithTotals(draftOrder.cart_id, {
+  draftOrder.cart = await cartService.retrieve(draftOrder.cart_id, {
     relations: defaultAdminDraftOrdersCartRelations,
+    select: defaultAdminDraftOrdersCartFields,
   })
 
   res.json({ draft_order: draftOrder })
