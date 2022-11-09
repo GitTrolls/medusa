@@ -1,13 +1,3 @@
----
-hide_footer: true
----
+# Klarna (Documentation coming soon)
 
-# Klarna
-
-:::note
-
-This guide is coming soon.
-
-:::
-
-[View plugin](https://github.com/medusajs/medusa/tree/master/packages/medusa-payment-klarna)
+[View plugin here](https://github.com/medusajs/medusa/tree/master/packages/medusa-payment-klarna)

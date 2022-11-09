@@ -58,8 +58,8 @@ import { isDefined } from "../../../../utils"
  *           }
  *         ]
  *       })
- *       .then((data) => {
- *         console.log(data.return.id);
+ *       .then(({ return }) => {
+ *         console.log(return.id);
  *       });
  *   - lang: Shell
  *     label: cURL

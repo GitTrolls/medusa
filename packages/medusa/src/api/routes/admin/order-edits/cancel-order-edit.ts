@@ -21,14 +21,14 @@ import {
  *       import Medusa from "@medusajs/medusa-js"
  *       const medusa = new Medusa({ baseUrl: MEDUSA_BACKEND_URL, maxRetries: 3 })
  *       // must be previously logged in or use api token
- *       medusa.admin.orderEdits.cancel(order_edit_id)
+ *       medusa.admin.orderEdit.cancel(orderEditId)
  *         .then(({ order_edit }) => {
  *           console.log(order_edit.id)
  *         })
  *   - lang: Shell
  *     label: cURL
  *     source: |
- *       curl --location --request POST 'https://medusa-url.com/admin/order-edits/{id}/cancel' \
+ *       curl --location --request POST 'https://medusa-url.com/admin/order-edits/:id/cancel' \
  *       --header 'Authorization: Bearer {api_token}'
  * security:
  *   - api_token: []

@@ -25,14 +25,10 @@ post:
               format: email
             billing_address:
               description: The Address to be used for billing purposes.
-              anyOf:
-                - $ref: ../components/schemas/address_fields.yaml
-                - type: string
+              $ref: ../components/schemas/address_fields.yaml
             shipping_address:
               description: The Address to be used for shipping.
-              anyOf:
-                - $ref: ../components/schemas/address_fields.yaml
-                - type: string
+              $ref: ../components/schemas/address_fields.yaml
             items:
               description: The Line Items that have been received.
               type: array
