@@ -8,12 +8,6 @@ describe("OrderService", () => {
     withTransaction: function () {
       return this
     },
-    getCalculationContext: jest.fn().mockImplementation((order, lineItems) => {
-      return Promise.resolve({})
-    }),
-    getLineItemTotals: jest.fn().mockImplementation(() => {
-      return Promise.resolve({})
-    }),
     getLineItemRefund: () => {},
     getTotal: (o) => {
       return o.total || 0
@@ -1255,7 +1249,6 @@ describe("OrderService", () => {
         {
           order: {
             id: IdMap.getId("order"),
-            items: [],
             shipping_methods: [
               {
                 shipping_option: {
@@ -1285,7 +1278,6 @@ describe("OrderService", () => {
         {
           order: {
             id: IdMap.getId("order"),
-            items: [],
             shipping_methods: [
               {
                 shipping_option: {

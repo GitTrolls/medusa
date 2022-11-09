@@ -10,7 +10,6 @@ import OrdersResource from "./resources/orders"
 import OrderEditsResource from "./resources/order-edits"
 import PaymentMethodsResource from "./resources/payment-methods"
 import ProductsResource from "./resources/products"
-import ProductTypesResource from "./resources/product-types"
 import RegionsResource from "./resources/regions"
 import ReturnReasonsResource from "./resources/return-reasons"
 import ReturnsResource from "./resources/returns"
@@ -28,7 +27,6 @@ class Medusa {
   public orders: OrdersResource
   public orderEdits: OrderEditsResource
   public products: ProductsResource
-  public productTypes: ProductTypesResource
   public regions: RegionsResource
   public returnReasons: ReturnReasonsResource
   public returns: ReturnsResource
@@ -50,7 +48,6 @@ class Medusa {
     this.orders = new OrdersResource(this.client)
     this.orderEdits = new OrderEditsResource(this.client)
     this.products = new ProductsResource(this.client)
-    this.productTypes = new ProductTypesResource(this.client)
     this.regions = new RegionsResource(this.client)
     this.returnReasons = new ReturnReasonsResource(this.client)
     this.returns = new ReturnsResource(this.client)

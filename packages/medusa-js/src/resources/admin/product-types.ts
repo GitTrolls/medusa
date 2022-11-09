@@ -8,17 +8,16 @@ import BaseResource from "../base"
 
 class AdminProductTypesResource extends BaseResource {
   list(
-    query?: AdminGetProductTypesParams,
-    customHeaders: Record<string, any> = {}
+    query?: AdminGetProductTypesParams
   ): ResponsePromise<AdminProductTypesListRes> {
     let path = `/admin/product-types`
 
     if (query) {
       const queryString = qs.stringify(query)
-      path += `?${queryString}`
+      path = `/admin/product-types?${queryString}`
     }
 
-    return this.client.request("GET", path, undefined, {}, customHeaders)
+    return this.client.request("GET", path)
   }
 }
 

@@ -1,5 +1,4 @@
 export * from "./products/"
-export * from "./product-types/"
 export * from "./carts/"
 export * from "./shipping-options/"
 export * from "./regions/"

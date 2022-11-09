@@ -370,15 +370,15 @@ class ShippingOptionService extends TransactionBaseService {
       )
     }
 
-    const amount = (option.includes_tax ? cart.total : cart.subtotal) as number
+    const subtotal = cart.subtotal as number
 
     const requirementResults: boolean[] = option.requirements.map(
       (requirement) => {
         switch (requirement.type) {
           case "max_subtotal":
-            return requirement.amount > amount
+            return requirement.amount > subtotal
           case "min_subtotal":
-            return requirement.amount <= amount
+            return requirement.amount <= subtotal
           default:
             return true
         }
