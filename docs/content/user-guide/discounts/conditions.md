@@ -1,6 +1,5 @@
 ---
 sidebar_position: 2
-hide_footer: true
 ---
 
 # Discount Conditions Overview
