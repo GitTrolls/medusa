@@ -40,7 +40,7 @@ All these methods must be declared async in the Payment Provider Service.
 
 These methods are used at different points in the Checkout flow as well as when processing the order after it’s placed.
 
-![Checkout Flow - Payment](https://res.cloudinary.com/dza7lstvk/image/upload/v1668001750/Medusa%20Docs/Diagrams/WeDr0ph_idcrir.jpg)
+![Payment Flows.jpg](https://i.imgur.com/WeDr0ph.jpg)
 
 ## Create a Payment Provider
 

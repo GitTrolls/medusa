@@ -1,6 +1,5 @@
 ---
 sidebar_position: 5
-hide_footer: true
 ---
 
 # Tax Inclusive Pricing Overview
