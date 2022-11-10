@@ -2,22 +2,20 @@
 
 ## Classes
 
-- [Item](../classes/internal-45.Item.md)
-- [ReturnShipping](../classes/internal-45.ReturnShipping.md)
-- [StorePostReturnsReq](../classes/internal-45.StorePostReturnsReq.md)
+- [StoreGetShippingOptionsParams](../classes/internal-45.StoreGetShippingOptionsParams.md)
 
 ## Type Aliases
 
-### StoreReturnsRes
+### StoreShippingOptionsListRes
 
-Ƭ **StoreReturnsRes**: `Object`
+Ƭ **StoreShippingOptionsListRes**: `Object`
 
 #### Type declaration
 
 | Name | Type |
 | :------ | :------ |
-| `return` | [`Return`](../classes/internal.Return.md) |
+| `shipping_options` | [`ShippingOption`](../classes/internal.ShippingOption.md)[] |
 
 #### Defined in
 
-medusa/dist/api/routes/store/returns/index.d.ts:4
+medusa/dist/api/routes/store/shipping-options/index.d.ts:4

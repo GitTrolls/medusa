@@ -4,7 +4,7 @@
 
 ## Hierarchy
 
-- [`FindPaginationParams`](internal-4.FindPaginationParams.md)
+- [`AdminGetProductTypesPaginationParams`](internal-17.AdminGetProductTypesPaginationParams.md)
 
   ↳ **`AdminGetProductTypesParams`**
 
@@ -16,7 +16,7 @@
 
 #### Defined in
 
-medusa/dist/api/routes/admin/product-types/list-product-types.d.ts:134
+medusa/dist/api/routes/admin/product-types/list-product-types.d.ts:138
 
 ___
 
@@ -26,7 +26,7 @@ ___
 
 #### Defined in
 
-medusa/dist/api/routes/admin/product-types/list-product-types.d.ts:137
+medusa/dist/api/routes/admin/product-types/list-product-types.d.ts:141
 
 ___
 
@@ -36,7 +36,7 @@ ___
 
 #### Defined in
 
-medusa/dist/api/routes/admin/product-types/list-product-types.d.ts:131
+medusa/dist/api/routes/admin/product-types/list-product-types.d.ts:135
 
 ___
 
@@ -46,11 +46,11 @@ ___
 
 #### Inherited from
 
-[FindPaginationParams](internal-4.FindPaginationParams.md).[limit](internal-4.FindPaginationParams.md#limit)
+[AdminGetProductTypesPaginationParams](internal-17.AdminGetProductTypesPaginationParams.md).[limit](internal-17.AdminGetProductTypesPaginationParams.md#limit)
 
 #### Defined in
 
-medusa/dist/types/common.d.ts:122
+medusa/dist/api/routes/admin/product-types/list-product-types.d.ts:131
 
 ___
 
@@ -60,11 +60,11 @@ ___
 
 #### Inherited from
 
-[FindPaginationParams](internal-4.FindPaginationParams.md).[offset](internal-4.FindPaginationParams.md#offset)
+[AdminGetProductTypesPaginationParams](internal-17.AdminGetProductTypesPaginationParams.md).[offset](internal-17.AdminGetProductTypesPaginationParams.md#offset)
 
 #### Defined in
 
-medusa/dist/types/common.d.ts:121
+medusa/dist/api/routes/admin/product-types/list-product-types.d.ts:132
 
 ___
 
@@ -74,7 +74,7 @@ ___
 
 #### Defined in
 
-medusa/dist/api/routes/admin/product-types/list-product-types.d.ts:136
+medusa/dist/api/routes/admin/product-types/list-product-types.d.ts:140
 
 ___
 
@@ -84,7 +84,7 @@ ___
 
 #### Defined in
 
-medusa/dist/api/routes/admin/product-types/list-product-types.d.ts:132
+medusa/dist/api/routes/admin/product-types/list-product-types.d.ts:136
 
 ___
 
@@ -94,7 +94,7 @@ ___
 
 #### Defined in
 
-medusa/dist/api/routes/admin/product-types/list-product-types.d.ts:135
+medusa/dist/api/routes/admin/product-types/list-product-types.d.ts:139
 
 ___
 
@@ -104,4 +104,4 @@ ___
 
 #### Defined in
 
-medusa/dist/api/routes/admin/product-types/list-product-types.d.ts:133
+medusa/dist/api/routes/admin/product-types/list-product-types.d.ts:137
