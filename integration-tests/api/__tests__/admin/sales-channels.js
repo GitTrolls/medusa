@@ -9,6 +9,7 @@ const adminSeeder = require("../../helpers/admin-seeder")
 const {
   simpleSalesChannelFactory,
   simpleProductFactory,
+  simpleCartFactory,
 } = require("../../factories")
 const { simpleOrderFactory } = require("../../factories")
 const orderSeeder = require("../../helpers/order-seeder")

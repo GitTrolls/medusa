@@ -16,11 +16,13 @@ export abstract class TransactionBaseService {
     }
 
     const cloned = new (this.constructor as any)(
-      this.__container__,
+      {
+        ...this.__container__,
+        manager: transactionManager,
+      },
       this.__configModule__
     )
 
-    cloned.manager_ = transactionManager
     cloned.transactionManager_ = transactionManager
 
     return cloned

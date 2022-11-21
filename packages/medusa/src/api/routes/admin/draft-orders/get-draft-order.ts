@@ -71,15 +71,9 @@ export default async (req, res) => {
     relations: defaultAdminDraftOrdersRelations,
   })
 
-  draftOrder.cart = await cartService.retrieveWithTotals(
-    draftOrder.cart_id,
-    {
-      relations: defaultAdminDraftOrdersCartRelations,
-    },
-    {
-      force_taxes: true,
-    }
-  )
+  draftOrder.cart = await cartService.retrieveWithTotals(draftOrder.cart_id, {
+    relations: defaultAdminDraftOrdersCartRelations,
+  })
 
   res.json({ draft_order: draftOrder })
 }

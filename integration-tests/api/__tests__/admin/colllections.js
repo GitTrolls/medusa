@@ -29,7 +29,7 @@ describe("/admin/collections", () => {
   beforeAll(async () => {
     const cwd = path.resolve(path.join(__dirname, "..", ".."))
     dbConnection = await initDb({ cwd })
-    medusaProcess = await setupServer({ cwd, verbose: true })
+    medusaProcess = await setupServer({ cwd })
   })
 
   afterAll(async () => {
@@ -70,17 +70,15 @@ describe("/admin/collections", () => {
       )
 
       expect(response.status).toEqual(200)
-      expect(response.data).toEqual(
-        expect.objectContaining({
-          collection: expect.objectContaining({
-            id: expect.stringMatching(/^pcol_*/),
-            title: "test collection creation",
-            handle: "test-handle-creation",
-            created_at: expect.any(String),
-            updated_at: expect.any(String),
-          }),
-        })
-      )
+      expect(response.data).toMatchSnapshot({
+        collection: {
+          id: expect.stringMatching(/^pcol_*/),
+          title: "test collection creation",
+          handle: "test-handle-creation",
+          created_at: expect.any(String),
+          updated_at: expect.any(String),
+        },
+      })
     })
 
     it("deletes a collection", async () => {
@@ -114,29 +112,27 @@ describe("/admin/collections", () => {
         headers: { Authorization: "Bearer test_token" },
       })
 
-      expect(response.data).toEqual(
-        expect.objectContaining({
-          collection: expect.objectContaining({
-            id: "test-collection",
-            created_at: expect.any(String),
-            updated_at: expect.any(String),
-            products: expect.arrayContaining([
-              expect.objectContaining({
-                collection_id: "test-collection",
-                created_at: expect.any(String),
-                updated_at: expect.any(String),
-                profile_id: expect.stringMatching(/^sp_*/),
-              }),
-              expect.objectContaining({
-                collection_id: "test-collection",
-                created_at: expect.any(String),
-                updated_at: expect.any(String),
-                profile_id: expect.stringMatching(/^sp_*/),
-              }),
-            ]),
-          }),
-        })
-      )
+      expect(response.data).toMatchSnapshot({
+        collection: {
+          id: "test-collection",
+          created_at: expect.any(String),
+          updated_at: expect.any(String),
+          products: [
+            {
+              collection_id: "test-collection",
+              created_at: expect.any(String),
+              updated_at: expect.any(String),
+              profile_id: expect.stringMatching(/^sp_*/),
+            },
+            {
+              collection_id: "test-collection",
+              created_at: expect.any(String),
+              updated_at: expect.any(String),
+              profile_id: expect.stringMatching(/^sp_*/),
+            },
+          ],
+        },
+      })
     })
   })
 
@@ -164,17 +160,15 @@ describe("/admin/collections", () => {
       )
 
       expect(response.status).toEqual(200)
-      expect(response.data).toEqual(
-        expect.objectContaining({
-          collection: expect.objectContaining({
-            id: expect.stringMatching(/^pcol_*/),
-            title: "test collection creation",
-            handle: "test-handle-creation",
-            created_at: expect.any(String),
-            updated_at: expect.any(String),
-          }),
-        })
-      )
+      expect(response.data).toMatchSnapshot({
+        collection: {
+          id: expect.stringMatching(/^pcol_*/),
+          title: "test collection creation",
+          handle: "test-handle-creation",
+          created_at: expect.any(String),
+          updated_at: expect.any(String),
+        },
+      })
     })
 
     it("lists collections", async () => {
@@ -184,70 +178,68 @@ describe("/admin/collections", () => {
         headers: { Authorization: "Bearer test_token" },
       })
 
-      expect(response.data).toEqual(
-        expect.objectContaining({
-          count: 3,
-          collections: expect.arrayContaining([
-            expect.objectContaining({
-              id: "test-collection2",
-              handle: "test-collection2",
-              title: "Test collection 2",
-              created_at: expect.any(String),
-              updated_at: expect.any(String),
-              products: expect.arrayContaining([
-                expect.objectContaining({
-                  collection_id: "test-collection2",
-                  created_at: expect.any(String),
-                  updated_at: expect.any(String),
-                  profile_id: expect.stringMatching(/^sp_*/),
-                }),
-              ]),
-            }),
-            expect.objectContaining({
-              id: "test-collection1",
-              handle: "test-collection1",
-              title: "Test collection 1",
-              created_at: expect.any(String),
-              updated_at: expect.any(String),
-              products: expect.arrayContaining([
-                expect.objectContaining({
-                  collection_id: "test-collection1",
-                  created_at: expect.any(String),
-                  updated_at: expect.any(String),
-                  profile_id: expect.stringMatching(/^sp_*/),
-                }),
-                expect.objectContaining({
-                  collection_id: "test-collection1",
-                  created_at: expect.any(String),
-                  updated_at: expect.any(String),
-                  profile_id: expect.stringMatching(/^sp_*/),
-                }),
-              ]),
-            }),
-            expect.objectContaining({
-              id: "test-collection",
-              handle: "test-collection",
-              title: "Test collection",
-              created_at: expect.any(String),
-              updated_at: expect.any(String),
-              products: expect.arrayContaining([
-                expect.objectContaining({
-                  collection_id: "test-collection",
-                  created_at: expect.any(String),
-                  updated_at: expect.any(String),
-                  profile_id: expect.stringMatching(/^sp_*/),
-                }),
-                expect.objectContaining({
-                  collection_id: "test-collection",
-                  created_at: expect.any(String),
-                  updated_at: expect.any(String),
-                  profile_id: expect.stringMatching(/^sp_*/),
-                }),
-              ]),
-            }),
-          ]),
-        })
-      )
+      expect(response.data).toMatchSnapshot({
+        collections: [
+          {
+            id: "test-collection2",
+            handle: "test-collection2",
+            title: "Test collection 2",
+            created_at: expect.any(String),
+            updated_at: expect.any(String),
+            products: [
+              {
+                collection_id: "test-collection2",
+                created_at: expect.any(String),
+                updated_at: expect.any(String),
+                profile_id: expect.stringMatching(/^sp_*/),
+              },
+            ],
+          },
+          {
+            id: "test-collection1",
+            handle: "test-collection1",
+            title: "Test collection 1",
+            created_at: expect.any(String),
+            updated_at: expect.any(String),
+            products: [
+              {
+                collection_id: "test-collection1",
+                created_at: expect.any(String),
+                updated_at: expect.any(String),
+                profile_id: expect.stringMatching(/^sp_*/),
+              },
+              {
+                collection_id: "test-collection1",
+                created_at: expect.any(String),
+                updated_at: expect.any(String),
+                profile_id: expect.stringMatching(/^sp_*/),
+              },
+            ],
+          },
+          {
+            id: "test-collection",
+            handle: "test-collection",
+            title: "Test collection",
+            created_at: expect.any(String),
+            updated_at: expect.any(String),
+            products: [
+              {
+                collection_id: "test-collection",
+                created_at: expect.any(String),
+                updated_at: expect.any(String),
+                profile_id: expect.stringMatching(/^sp_*/),
+              },
+              {
+                collection_id: "test-collection",
+                created_at: expect.any(String),
+                updated_at: expect.any(String),
+                profile_id: expect.stringMatching(/^sp_*/),
+              },
+            ],
+          },
+        ],
+        count: 3,
+      })
     })
 
     it("adds products to collection", async () => {
@@ -266,38 +258,36 @@ describe("/admin/collections", () => {
         )
         .catch((err) => console.warn(err))
 
-      expect(response.data).toEqual(
-        expect.objectContaining({
-          collection: expect.objectContaining({
-            id: "test-collection",
-            created_at: expect.any(String),
-            updated_at: expect.any(String),
-            products: expect.arrayContaining([
-              expect.objectContaining({
-                collection_id: "test-collection",
-                id: "test-product",
-                created_at: expect.any(String),
-                updated_at: expect.any(String),
-                profile_id: expect.stringMatching(/^sp_*/),
-              }),
-              expect.objectContaining({
-                collection_id: "test-collection",
-                id: "test-product_filtering_1",
-                created_at: expect.any(String),
-                updated_at: expect.any(String),
-                profile_id: expect.stringMatching(/^sp_*/),
-              }),
-              expect.objectContaining({
-                collection_id: "test-collection",
-                id: "test-product1",
-                created_at: expect.any(String),
-                updated_at: expect.any(String),
-                profile_id: expect.stringMatching(/^sp_*/),
-              }),
-            ]),
-          }),
-        })
-      )
+      expect(response.data).toMatchSnapshot({
+        collection: {
+          id: "test-collection",
+          created_at: expect.any(String),
+          updated_at: expect.any(String),
+          products: [
+            {
+              collection_id: "test-collection",
+              id: "test-product",
+              created_at: expect.any(String),
+              updated_at: expect.any(String),
+              profile_id: expect.stringMatching(/^sp_*/),
+            },
+            {
+              collection_id: "test-collection",
+              id: "test-product1",
+              created_at: expect.any(String),
+              updated_at: expect.any(String),
+              profile_id: expect.stringMatching(/^sp_*/),
+            },
+            {
+              collection_id: "test-collection",
+              id: "test-product_filtering_1",
+              created_at: expect.any(String),
+              updated_at: expect.any(String),
+              profile_id: expect.stringMatching(/^sp_*/),
+            },
+          ],
+        },
+      })
 
       expect(response.status).toEqual(200)
     })
@@ -312,13 +302,11 @@ describe("/admin/collections", () => {
         })
         .catch((err) => console.warn(err))
 
-      expect(response.data).toEqual(
-        expect.objectContaining({
-          id: "test-collection",
-          object: "product-collection",
-          removed_products: ["test-product"],
-        })
-      )
+      expect(response.data).toMatchSnapshot({
+        id: "test-collection",
+        object: "product-collection",
+        removed_products: ["test-product"],
+      })
 
       expect(response.status).toEqual(200)
     })
@@ -332,36 +320,34 @@ describe("/admin/collections", () => {
         })
         .catch((err) => console.log(err))
 
-      expect(response.data).toEqual(
-        expect.objectContaining({
-          count: 1,
-          limit: 10,
-          offset: 0,
-          collections: expect.arrayContaining([
-            expect.objectContaining({
-              id: "test-collection",
-              handle: "test-collection",
-              title: "Test collection",
-              created_at: expect.any(String),
-              updated_at: expect.any(String),
-              products: expect.arrayContaining([
-                expect.objectContaining({
-                  collection_id: "test-collection",
-                  created_at: expect.any(String),
-                  updated_at: expect.any(String),
-                  profile_id: expect.stringMatching(/^sp_*/),
-                }),
-                expect.objectContaining({
-                  collection_id: "test-collection",
-                  created_at: expect.any(String),
-                  updated_at: expect.any(String),
-                  profile_id: expect.stringMatching(/^sp_*/),
-                }),
-              ]),
-            }),
-          ]),
-        })
-      )
+      expect(response.data).toMatchSnapshot({
+        collections: [
+          {
+            id: "test-collection",
+            handle: "test-collection",
+            title: "Test collection",
+            created_at: expect.any(String),
+            updated_at: expect.any(String),
+            products: [
+              {
+                collection_id: "test-collection",
+                created_at: expect.any(String),
+                updated_at: expect.any(String),
+                profile_id: expect.stringMatching(/^sp_*/),
+              },
+              {
+                collection_id: "test-collection",
+                created_at: expect.any(String),
+                updated_at: expect.any(String),
+                profile_id: expect.stringMatching(/^sp_*/),
+              },
+            ],
+          },
+        ],
+        count: 1,
+        limit: 10,
+        offset: 0,
+      })
     })
 
     it("returns a list of collections filtered by discount condition id", async () => {

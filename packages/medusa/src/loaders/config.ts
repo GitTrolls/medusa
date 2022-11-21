@@ -1,7 +1,6 @@
-import { getConfigFile } from "medusa-core-utils"
 import { ConfigModule } from "../types/global"
+import { getConfigFile } from "medusa-core-utils/dist"
 import logger from "./logger"
-import registerModuleDefinitions from "./module-definitions"
 
 const isProduction = ["production", "prod"].includes(process.env.NODE_ENV || "")
 
@@ -68,16 +67,12 @@ export default (rootDirectory: string): ConfigModule => {
     )
   }
 
-  const moduleResolutions = registerModuleDefinitions(configModule)
-
   return {
     projectConfig: {
       jwt_secret: jwt_secret ?? "supersecret",
       cookie_secret: cookie_secret ?? "supersecret",
       ...configModule?.projectConfig,
     },
-    modules: configModule.modules ?? {},
-    moduleResolutions,
     featureFlags: configModule?.featureFlags ?? {},
     plugins: configModule?.plugins ?? [],
   }

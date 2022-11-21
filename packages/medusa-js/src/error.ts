@@ -47,7 +47,7 @@ export class MedusaAPIError extends MedusaError {}
 export class MedusaAuthenticationError extends MedusaError {}
 
 /**
- * MedusaPermissionError is raised when attempting to access a resource without permissions
+ * MedusaPermissionErorr is raised when attempting to access a resource without permissions
  */
 export class MedusaPermissionError extends MedusaError {}
 

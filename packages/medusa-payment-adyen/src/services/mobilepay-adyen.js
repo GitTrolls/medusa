@@ -20,12 +20,6 @@ class MobilePayAdyenService extends PaymentService {
     return raw
   }
 
-  async createPaymentNew(paymentInput) {
-    const raw = await this.adyenService_.createPaymentNew(paymentInput)
-    raw.type = "mobilepay"
-    return raw
-  }
-
   async authorizePayment(sessionData, context) {
     return this.adyenService_.authorizePayment(sessionData, context)
   }
@@ -36,10 +30,6 @@ class MobilePayAdyenService extends PaymentService {
 
   async updatePayment(data, _) {
     return this.adyenService_.updatePayment(data)
-  }
-
-  async updatePaymentNew(data, _) {
-    return this.adyenService_.updatePaymentNew(data)
   }
 
   async updatePaymentData(sessionData, update) {

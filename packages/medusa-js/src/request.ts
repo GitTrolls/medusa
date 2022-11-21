@@ -2,22 +2,17 @@ import axios, { AxiosError, AxiosInstance, AxiosRequestHeaders } from "axios"
 import * as rax from "retry-axios"
 import { v4 as uuidv4 } from "uuid"
 
-import KeyManager from "./key-manager"
-
 const unAuthenticatedAdminEndpoints = {
   "/admin/auth": "POST",
   "/admin/users/password-token": "POST",
   "/admin/users/reset-password": "POST",
   "/admin/invites/accept": "POST",
 }
-
 export interface Config {
   baseUrl: string
   maxRetries: number
   apiKey?: string
-  publishableApiKey?: string
 }
-
 export interface RequestOptions {
   timeout?: number
   numberOfRetries?: number
@@ -126,13 +121,6 @@ class Client {
         ...defaultHeaders,
         Authorization: `Bearer ${this.config.apiKey}`,
       }
-    }
-
-    const publishableApiKey =
-      this.config.publishableApiKey || KeyManager.getPublishableApiKey()
-
-    if (publishableApiKey) {
-      defaultHeaders["x-publishable-api-key"] = publishableApiKey
     }
 
     // only add idempotency key, if we want to retry
