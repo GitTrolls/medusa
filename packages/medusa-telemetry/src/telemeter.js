@@ -26,8 +26,6 @@ class Telemeter {
     this.queueCount_ = this.store_.getQueueCount()
 
     this.featureFlags_ = new Set()
-    this.modules_ = new Set()
-    this.plugins_ = []
   }
 
   getMachineId() {
@@ -135,8 +133,6 @@ class Telemeter {
       medusa_version: this.getMedusaVersion(),
       cli_version: this.getCliVersion(),
       feature_flags: Array.from(this.featureFlags_),
-      modules: Array.from(this.modules_),
-      plugins: this.plugins_,
     }
 
     this.store_.addEvent(event)
@@ -163,18 +159,6 @@ class Telemeter {
   trackFeatureFlag(flag) {
     if (flag) {
       this.featureFlags_.add(flag)
-    }
-  }
-
-  trackModule(module) {
-    if (module) {
-      this.modules_.add(module)
-    }
-  }
-
-  trackPlugin(plugin) {
-    if (plugin) {
-      this.plugins_.push(plugin)
     }
   }
 }

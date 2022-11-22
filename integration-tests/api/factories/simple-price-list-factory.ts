@@ -3,6 +3,7 @@ import {
   MoneyAmount,
   PriceListType,
   PriceListStatus,
+  CustomerGroup,
 } from "@medusajs/medusa"
 import faker from "faker"
 import { Connection } from "typeorm"

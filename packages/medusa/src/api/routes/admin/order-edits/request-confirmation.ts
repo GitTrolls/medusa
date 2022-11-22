@@ -1,15 +1,9 @@
 import { EntityManager } from "typeorm"
-import { IsOptional, IsString, IsObject } from "class-validator"
-import {
-  OrderEditService,
-  OrderService,
-  PaymentCollectionService,
-} from "../../../../services"
+import { OrderEditService } from "../../../../services"
 import {
   defaultOrderEditFields,
   defaultOrderEditRelations,
 } from "../../../../types/order-edit"
-import { PaymentCollectionType } from "../../../../models"
 
 /**
  * @oas [post] /order-edits/{id}/request
@@ -60,71 +54,26 @@ import { PaymentCollectionType } from "../../../../models"
  */
 export default async (req, res) => {
   const { id } = req.params
-  const validatedBody =
-    req.validatedBody as AdminPostOrderEditsRequestConfirmationReq
 
   const orderEditService: OrderEditService =
     req.scope.resolve("orderEditService")
-
-  const orderService: OrderService = req.scope.resolve("orderService")
-
-  const paymentCollectionService: PaymentCollectionService = req.scope.resolve(
-    "paymentCollectionService"
-  )
 
   const manager: EntityManager = req.scope.resolve("manager")
 
   const loggedInUser = (req.user?.id ?? req.user?.userId) as string
 
   await manager.transaction(async (transactionManager) => {
-    const orderEditServiceTx =
-      orderEditService.withTransaction(transactionManager)
-
-    const orderEdit = await orderEditServiceTx.requestConfirmation(id, {
-      loggedInUserId: loggedInUser,
-    })
-
-    const total = await orderEditServiceTx.getTotals(orderEdit.id)
-
-    if (total.difference_due > 0) {
-      const order = await orderService
-        .withTransaction(transactionManager)
-        .retrieve(orderEdit.order_id, {
-          select: ["currency_code", "region_id"],
-        })
-
-      const paymentCollection = await paymentCollectionService
-        .withTransaction(transactionManager)
-        .create({
-          type: PaymentCollectionType.ORDER_EDIT,
-          amount: total.difference_due,
-          currency_code: order.currency_code,
-          region_id: order.region_id,
-          description: validatedBody.payment_collection_description,
-          created_by: loggedInUser,
-        })
-
-      orderEdit.payment_collection_id = paymentCollection.id
-
-      await orderEditServiceTx.update(orderEdit.id, {
-        payment_collection_id: paymentCollection.id,
-      })
-    }
+    await orderEditService
+      .withTransaction(transactionManager)
+      .requestConfirmation(id, { loggedInUserId: loggedInUser })
   })
 
-  let orderEdit = await orderEditService.retrieve(id, {
+  const orderEdit = await orderEditService.retrieve(id, {
     relations: defaultOrderEditRelations,
     select: defaultOrderEditFields,
   })
-  orderEdit = await orderEditService.decorateTotals(orderEdit)
 
   res.status(200).send({
     order_edit: orderEdit,
   })
-}
-
-export class AdminPostOrderEditsRequestConfirmationReq {
-  @IsString()
-  @IsOptional()
-  payment_collection_description?: string | undefined
 }

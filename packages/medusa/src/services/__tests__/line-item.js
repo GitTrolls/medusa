@@ -413,14 +413,6 @@ describe("LineItemService", () => {
           metadata: {},
           should_merge: true,
           includes_tax: true,
-          variant: expect.objectContaining({
-            id: expect.any(String),
-            product: expect.objectContaining({
-              thumbnail: "",
-              title: "Test product",
-            }),
-            title: "Test variant",
-          }),
         })
       })
     })
@@ -532,14 +524,6 @@ describe("LineItemService", () => {
           metadata: {},
           should_merge: true,
           includes_tax: false,
-          variant: expect.objectContaining({
-            id: expect.any(String),
-            product: expect.objectContaining({
-              thumbnail: "",
-              title: "Test product",
-            }),
-            title: "Test variant",
-          }),
         })
       })
     })

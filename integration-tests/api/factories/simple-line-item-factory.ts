@@ -31,7 +31,6 @@ export type LineItemFactoryData = {
   tax_lines?: TaxLineFactoryData[]
   adjustments: LineItemAdjustmentFactoryData[]
   includes_tax?: boolean
-  order_edit_id?: string
 }
 
 export const simpleLineItemFactory = async (
@@ -73,7 +72,6 @@ export const simpleLineItemFactory = async (
     returned_quantity: data.returned_quantity || null,
     adjustments: data.adjustments,
     includes_tax: data.includes_tax,
-    order_edit_id: data.order_edit_id,
   })
 
   const line = await manager.save(toSave)

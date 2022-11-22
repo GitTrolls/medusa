@@ -1,22 +1,21 @@
 import cors from "cors"
 import { Router } from "express"
 import middlewares from "../../middlewares"
+import productTypesRoutes from "../admin/product-types"
 import authRoutes from "./auth"
 import cartRoutes from "./carts"
 import collectionRoutes from "./collections"
 import customerRoutes from "./customers"
 import giftCardRoutes from "./gift-cards"
-import orderRoutes from "./orders"
 import orderEditRoutes from "./order-edits"
+import orderRoutes from "./orders"
 import productRoutes from "./products"
-import productTypesRoutes from "../admin/product-types"
 import regionRoutes from "./regions"
 import returnReasonRoutes from "./return-reasons"
 import returnRoutes from "./returns"
 import shippingOptionRoutes from "./shipping-options"
 import swapRoutes from "./swaps"
 import variantRoutes from "./variants"
-import paymentCollectionRoutes from "./payment-collections"
 
 const route = Router()
 
@@ -48,7 +47,6 @@ export default (app, container, config) => {
   returnRoutes(route)
   giftCardRoutes(route)
   returnReasonRoutes(route)
-  paymentCollectionRoutes(route)
 
   return app
 }

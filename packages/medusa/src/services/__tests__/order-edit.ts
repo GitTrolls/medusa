@@ -182,6 +182,7 @@ describe("OrderEditService", () => {
       }
     },
   })
+
   const orderEditService = new OrderEditService({
     manager: MockManager,
     orderEditRepository,
@@ -330,10 +331,6 @@ describe("OrderEditService", () => {
       let result
 
       beforeEach(async () => {
-        jest.spyOn(orderEditService, "getTotals").mockResolvedValue({
-          difference_due: 1500,
-        } as any)
-
         result = await orderEditService.requestConfirmation(orderEditId, {
           loggedInUserId: userId,
         })

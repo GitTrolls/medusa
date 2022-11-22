@@ -1,5 +1,3 @@
-import { PostgresError } from "@medusajs/medusa/src/utils"
-
 export default async (req, res) => {
   const signature = req.headers["stripe-signature"]
 
@@ -18,6 +16,7 @@ export default async (req, res) => {
 
   async function handleCartPayments(event, req, res, cartId) {
     const manager = req.scope.resolve("manager")
+    const cartService = req.scope.resolve("cartService")
     const orderService = req.scope.resolve("orderService")
 
     const order = await orderService
@@ -34,26 +33,13 @@ export default async (req, res) => {
         }
         break
       case "payment_intent.amount_capturable_updated":
-        try {
+        if (!order) {
           await manager.transaction(async (manager) => {
-            await paymentIntentAmountCapturableEventHandler({
-              order,
-              cartId,
-              container: req.scope,
-              transactionManager: manager,
-            })
+            const cartServiceTx = cartService.withTransaction(manager)
+            await cartServiceTx.setPaymentSession(cartId, "stripe")
+            await cartServiceTx.authorizePayment(cartId)
+            await orderService.withTransaction(manager).createFromCart(cartId)
           })
-        } catch (err) {
-          let message = `Stripe webhook ${event} handling failed\n${
-            err?.detail ?? err?.message
-          }`
-          if (err?.code === PostgresError.SERIALIZATION_FAILURE) {
-            message = `Stripe webhook ${event} handle failed. This can happen when this webhook is triggered during a cart completion and can be ignored. This event should be retried automatically.\n${
-              err?.detail ?? err?.message
-            }`
-          }
-          this.logger_.warn(message)
-          return res.sendStatus(409)
         }
         break
       default:
@@ -64,62 +50,13 @@ export default async (req, res) => {
     res.sendStatus(200)
   }
 
-  async function handlePaymentCollection(event, req, res, id, paymentIntentId) {
-    const manager = req.scope.resolve("manager")
-    const paymentCollectionService = req.scope.resolve(
-      "paymentCollectionService"
-    )
-
-    const paycol = await paymentCollectionService
-      .retrieve(id, { relations: ["payments"] })
-      .catch(() => undefined)
-
-    if (paycol?.payments?.length) {
-      if (event.type === "payment_intent.succeeded") {
-        const payment = paycol.payments.find(
-          (pay) => pay.data.id === paymentIntentId
-        )
-        if (payment && !payment.captured_at) {
-          await manager.transaction(async (manager) => {
-            await paymentCollectionService
-              .withTransaction(manager)
-              .capture(payment.id)
-          })
-        }
-
-        res.sendStatus(200)
-        return
-      }
-    }
-    res.sendStatus(204)
-  }
-
   const paymentIntent = event.data.object
-  const cartId = paymentIntent.metadata.cart_id // Backward compatibility
+  const cartId = paymentIntent.metadata.cart_id
   const resourceId = paymentIntent.metadata.resource_id
 
   if (isPaymentCollection(resourceId)) {
-    await handlePaymentCollection(event, req, res, resourceId, paymentIntent.id)
+    // TODO: handle payment collection
   } else {
-    await handleCartPayments(event, req, res, cartId ?? resourceId)
-  }
-}
-
-async function paymentIntentAmountCapturableEventHandler({
-  order,
-  cartId,
-  container,
-  transactionManager,
-}) {
-  if (!order) {
-    const cartService = container.resolve("cartService")
-    const orderService = container.resolve("orderService")
-
-    const cartServiceTx = cartService.withTransaction(transactionManager)
-    await cartServiceTx.setPaymentSession(cartId, "stripe")
-    await cartServiceTx.authorizePayment(cartId)
-    await orderService
-      .withTransaction(transactionManager)
-      .createFromCart(cartId)
+    await handleCartPayments(event, req, res, resourceId ?? cartId)
   }
 }

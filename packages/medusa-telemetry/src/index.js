@@ -21,15 +21,4 @@ export function trackFeatureFlag(flag) {
   telemeter.trackFeatureFlag(flag)
 }
 
-export function trackInstallation(installation, type) {
-  switch (type) {
-    case `plugin`:
-      telemeter.trackPlugin(installation)
-      break
-    case `module`:
-      telemeter.trackModule(installation)
-      break
-  }
-}
-
 export { default as Telemeter } from "./telemeter"

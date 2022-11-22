@@ -70,15 +70,18 @@ export default async (req, res) => {
     })
   }
 
-  async function autorizePaymentCollection(req, id, orderId) {
+  async function autorizePaymentCollection(req, payColId) {
     const manager = req.scope.resolve("manager")
     const paymentCollectionService = req.scope.resolve(
       "paymentCollectonService"
     )
 
-    await manager.transaction(async (manager) => {
-      await paymentCollectionService.withTransaction(manager).authorize(id)
+    await manager.transaction(async (m) => {
+      const payCol = await paymentCollectionService
+        .withTransaction(m)
+        .retrieve(payColId)
     })
+    // TODO: complete authorization
   }
 
   try {
@@ -97,8 +100,7 @@ export default async (req, res) => {
     }
 
     if (isPaymentCollection(customId)) {
-      const orderId = order.id
-      await autorizePaymentCollection(req, customId, orderId)
+      await autorizePaymentCollection(req, customId)
     } else {
       await autorizeCart(req, customId)
     }

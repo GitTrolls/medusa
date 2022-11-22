@@ -12,7 +12,7 @@ class TestPayService extends AbstractPaymentService {
   }
 
   async retrieveSavedMethods(customer) {
-    return []
+    return Promise.resolve([])
   }
 
   async createPayment(cart) {

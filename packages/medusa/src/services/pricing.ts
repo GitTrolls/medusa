@@ -432,9 +432,7 @@ class PricingService extends TransactionBaseService {
     if ("automatic_taxes" in context) {
       pricingContext = context
     } else {
-      pricingContext =
-        (context as PricingContext) ??
-        (await this.collectPricingContext(context))
+      pricingContext = await this.collectPricingContext(context)
     }
 
     let shippingOptionRates: TaxServiceRate[] = []
@@ -472,12 +470,14 @@ class PricingService extends TransactionBaseService {
     )
     const totalInclTax = includesTax ? price : price + taxAmount
 
-    return {
+    const result: PricedShippingOption = {
       ...shippingOption,
       price_incl_tax: totalInclTax,
       tax_rates: shippingOptionRates,
       tax_amount: taxAmount,
     }
+
+    return result
   }
 
   /**
@@ -508,26 +508,29 @@ class PricingService extends TransactionBaseService {
       })
     )
 
-    const shippingOptionPricingPromises: Promise<PricedShippingOption>[] = []
-
-    shippingOptions.map(async (shippingOption) => {
-      const pricingContext = contexts.find(
-        (c) => c.region_id === shippingOption.region_id
-      )
-
-      if (!pricingContext) {
-        throw new MedusaError(
-          MedusaError.Types.UNEXPECTED_STATE,
-          "Could not find pricing context for shipping option"
+    return await Promise.all(
+      shippingOptions.map(async (shippingOption) => {
+        const pricingContext = contexts.find(
+          (c) => c.region_id === shippingOption.region_id
         )
-      }
 
-      shippingOptionPricingPromises.push(
-        this.getShippingOptionPricing(shippingOption, pricingContext.context)
-      )
-    })
+        if (!pricingContext) {
+          throw new MedusaError(
+            MedusaError.Types.UNEXPECTED_STATE,
+            "Could not find pricing context for shipping option"
+          )
+        }
 
-    return await Promise.all(shippingOptionPricingPromises)
+        const shippingOptionPricing = await this.getShippingOptionPricing(
+          shippingOption,
+          pricingContext.context
+        )
+        return {
+          ...shippingOption,
+          ...shippingOptionPricing,
+        }
+      })
+    )
   }
 }
 

@@ -8,6 +8,7 @@ import {
   FulfillmentProvider,
   LineItem,
   Order,
+  Return,
   ShippingMethod,
   ShippingOption,
 } from "../models"
@@ -149,11 +150,7 @@ class FulfillmentProviderService extends TransactionBaseService {
     cart?: Order | Cart
   ): Promise<number> {
     const provider = this.retrieveProvider(option.provider_id)
-    return (await provider.calculatePrice(
-      option.data,
-      data,
-      cart
-    )) as unknown as number
+    return provider.calculatePrice(option.data, data, cart) as unknown as number
   }
 
   async validateOption(option: ShippingOption): Promise<boolean> {

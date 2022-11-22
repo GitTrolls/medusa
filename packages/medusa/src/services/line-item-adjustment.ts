@@ -184,18 +184,14 @@ class LineItemAdjustmentService extends TransactionBaseService {
     generatedLineItem: LineItem,
     context: AdjustmentContext
   ): Promise<GeneratedAdjustment[]> {
-    const lineItem = {
-      ...generatedLineItem,
-    } as LineItem
-
     return this.atomicPhase_(async (manager) => {
       // if lineItem should not be discounted
       // or lineItem is a return line item
       // or the cart does not have any discounts
       // then do nothing
       if (
-        !lineItem.allow_discounts ||
-        lineItem.is_return ||
+        !generatedLineItem.allow_discounts ||
+        generatedLineItem.is_return ||
         !cart?.discounts?.length
       ) {
         return []
@@ -221,11 +217,9 @@ class LineItemAdjustmentService extends TransactionBaseService {
         return []
       }
 
-      // In case of a generated line item the id is not available, it is mocked instead to be used for totals calculations
-      lineItem.id = lineItem.id ?? new Date().getTime()
       const amount = await this.discountService.calculateDiscountForLineItem(
         discount.id,
-        lineItem,
+        generatedLineItem,
         cart
       )
 

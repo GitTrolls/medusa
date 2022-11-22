@@ -83,7 +83,16 @@ export default async (req, res) => {
 
     const cart = await cartService
       .withTransaction(manager)
-      .retrieveWithTotals(draftOrder.cart_id)
+      .retrieve(draftOrder.cart_id, {
+        select: ["total"],
+        relations: [
+          "discounts",
+          "discounts.rule",
+          "shipping_methods",
+          "region",
+          "items",
+        ],
+      })
 
     await paymentProviderService
       .withTransaction(manager)

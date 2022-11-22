@@ -23,7 +23,13 @@ describe("GET /store/shipping-options", () => {
       expect(CartServiceMock.retrieveWithTotals).toHaveBeenCalledWith(
         IdMap.getId("emptyCart"),
         {
-          relations: ["items.variant", "items.variant.product"],
+          relations: [
+            "region",
+            "items",
+            "items.adjustments",
+            "items.variant",
+            "items.variant.product",
+          ],
         }
       )
     })
