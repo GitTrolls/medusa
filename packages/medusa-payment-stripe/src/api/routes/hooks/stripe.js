@@ -1,4 +1,4 @@
-import { PostgresError } from "@medusajs/medusa/dist/utils"
+import { PostgresError } from "@medusajs/medusa/src/utils"
 
 export default async (req, res) => {
   const signature = req.headers["stripe-signature"]
