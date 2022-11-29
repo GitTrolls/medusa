@@ -1,33 +1,23 @@
 # Namespace: internal
 
+## Classes
+
+- [AdditionalItem](../classes/internal-47.AdditionalItem.md)
+- [Item](../classes/internal-47.Item.md)
+- [StorePostSwapsReq](../classes/internal-47.StorePostSwapsReq.md)
+
 ## Type Aliases
 
-### StoreRegionsListRes
+### StoreSwapsRes
 
-Ƭ **StoreRegionsListRes**: `Object`
-
-#### Type declaration
-
-| Name | Type |
-| :------ | :------ |
-| `regions` | [`Region`](../classes/internal.Region.md)[] |
-
-#### Defined in
-
-medusa/dist/api/routes/store/regions/index.d.ts:4
-
-___
-
-### StoreRegionsRes
-
-Ƭ **StoreRegionsRes**: `Object`
+Ƭ **StoreSwapsRes**: `Object`
 
 #### Type declaration
 
 | Name | Type |
 | :------ | :------ |
-| `region` | [`Region`](../classes/internal.Region.md) |
+| `swap` | [`Swap`](../classes/internal.Swap.md) |
 
 #### Defined in
 
-medusa/dist/api/routes/store/regions/index.d.ts:7
+medusa/dist/api/routes/store/swaps/index.d.ts:7

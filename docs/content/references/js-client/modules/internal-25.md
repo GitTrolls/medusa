@@ -2,45 +2,53 @@
 
 ## Classes
 
-- [AdminDeleteSalesChannelsChannelProductsBatchReq](../classes/internal-25.AdminDeleteSalesChannelsChannelProductsBatchReq.md)
-- [AdminGetSalesChannelsParams](../classes/internal-25.AdminGetSalesChannelsParams.md)
-- [AdminPostSalesChannelsChannelProductsBatchReq](../classes/internal-25.AdminPostSalesChannelsChannelProductsBatchReq.md)
-- [AdminPostSalesChannelsReq](../classes/internal-25.AdminPostSalesChannelsReq.md)
-- [AdminPostSalesChannelsSalesChannelReq](../classes/internal-25.AdminPostSalesChannelsSalesChannelReq.md)
-- [ProductBatchSalesChannel](../classes/internal-25.ProductBatchSalesChannel.md)
+- [AdminPostStoreReq](../classes/internal-25.AdminPostStoreReq.md)
+- [Store](../classes/internal-25.Store.md)
 
 ## Type Aliases
 
-### AdminSalesChannelsListRes
+### AdminPaymentProvidersList
 
-Ƭ **AdminSalesChannelsListRes**: [`PaginatedResponse`](internal-2.md#paginatedresponse) & { `sales_channels`: [`SalesChannel`](../classes/internal.SalesChannel.md)[]  }
-
-#### Defined in
-
-medusa/dist/api/routes/admin/sales-channels/index.d.ts:10
-
-___
-
-### AdminSalesChannelsRes
-
-Ƭ **AdminSalesChannelsRes**: `Object`
+Ƭ **AdminPaymentProvidersList**: `Object`
 
 #### Type declaration
 
 | Name | Type |
 | :------ | :------ |
-| `sales_channel` | [`SalesChannel`](../classes/internal.SalesChannel.md) |
+| `payment_providers` | [`PaymentProvider`](../classes/internal.PaymentProvider.md)[] |
 
 #### Defined in
 
-medusa/dist/api/routes/admin/sales-channels/index.d.ts:6
+medusa/dist/api/routes/admin/store/index.d.ts:10
 
-## Variables
+___
 
-### AdminGetSalesChannelsParams\_base
+### AdminStoresRes
 
-• `Const` **AdminGetSalesChannelsParams\_base**: [`"/home/runner/work/medusa/medusa/packages/medusa/dist/types/global"`](internal-7.__home_runner_work_medusa_medusa_packages_medusa_dist_types_global_.md)
+Ƭ **AdminStoresRes**: `Object`
+
+#### Type declaration
+
+| Name | Type |
+| :------ | :------ |
+| `store` | [`Store`](../classes/internal-25.Store.md) |
 
 #### Defined in
 
-medusa/dist/api/routes/admin/sales-channels/list-sales-channels.d.ts:141
+medusa/dist/api/routes/admin/store/index.d.ts:4
+
+___
+
+### AdminTaxProvidersList
+
+Ƭ **AdminTaxProvidersList**: `Object`
+
+#### Type declaration
+
+| Name | Type |
+| :------ | :------ |
+| `tax_providers` | [`TaxProvider`](../classes/internal.TaxProvider.md)[] |
+
+#### Defined in
+
+medusa/dist/api/routes/admin/store/index.d.ts:7

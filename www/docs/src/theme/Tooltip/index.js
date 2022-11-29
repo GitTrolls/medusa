@@ -4,17 +4,17 @@ export default function Tooltip ({ children, text, tooltipClassName, ...rest }) 
   const [show, setShow] = React.useState(false);
 
   return (
-    <span className={`tooltip-container ${tooltipClassName || ''}`}>
-      <span className={show ? 'tooltip-box visible' : 'tooltip-box'}>
+    <div className={`tooltip-container ${tooltipClassName || ''}`}>
+      <div className={show ? 'tooltip-box visible' : 'tooltip-box'}>
         {text}
-      </span>
-      <span
+      </div>
+      <div
         onMouseEnter={() => setShow(true)}
         onMouseLeave={() => setShow(false)}
         {...rest}
       >
         {children}
-      </span>
-    </span>
+      </div>
+    </div>
   );
 };
