@@ -1,15 +1,33 @@
 # Namespace: internal
 
-## Classes
-
-- [StoreGetProductTypesParams](../classes/internal-44.StoreGetProductTypesParams.md)
-
 ## Type Aliases
 
-### StoreProductTypesListRes
+### StoreReturnReasonsListRes
 
-Ƭ **StoreProductTypesListRes**: [`PaginatedResponse`](internal-2.md#paginatedresponse) & { `product_types`: [`ProductType`](../classes/internal.ProductType.md)[]  }
+Ƭ **StoreReturnReasonsListRes**: `Object`
+
+#### Type declaration
+
+| Name | Type |
+| :------ | :------ |
+| `return_reasons` | [`ReturnReason`](../classes/internal.ReturnReason.md)[] |
 
 #### Defined in
 
-medusa/dist/api/routes/store/product-types/index.d.ts:9
+medusa/dist/api/routes/store/return-reasons/index.d.ts:6
+
+___
+
+### StoreReturnReasonsRes
+
+Ƭ **StoreReturnReasonsRes**: `Object`
+
+#### Type declaration
+
+| Name | Type |
+| :------ | :------ |
+| `return_reason` | [`ReturnReason`](../classes/internal.ReturnReason.md) |
+
+#### Defined in
+
+medusa/dist/api/routes/store/return-reasons/index.d.ts:9

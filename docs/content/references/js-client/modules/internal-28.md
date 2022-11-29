@@ -2,53 +2,38 @@
 
 ## Classes
 
-- [AdminPostStoreReq](../classes/internal-28.AdminPostStoreReq.md)
-- [Store](../classes/internal-28.Store.md)
+- [AdminDeleteUploadsReq](../classes/internal-28.AdminDeleteUploadsReq.md)
+- [AdminPostUploadsDownloadUrlReq](../classes/internal-28.AdminPostUploadsDownloadUrlReq.md)
+- [IAdminPostUploadsFileReq](../classes/internal-28.IAdminPostUploadsFileReq.md)
 
 ## Type Aliases
 
-### AdminPaymentProvidersList
+### AdminUploadsDownloadUrlRes
 
-Ƭ **AdminPaymentProvidersList**: `Object`
+Ƭ **AdminUploadsDownloadUrlRes**: `Object`
 
 #### Type declaration
 
 | Name | Type |
 | :------ | :------ |
-| `payment_providers` | [`PaymentProvider`](../classes/internal.PaymentProvider.md)[] |
+| `download_url` | `string` |
 
 #### Defined in
 
-medusa/dist/api/routes/admin/store/index.d.ts:10
+medusa/dist/api/routes/admin/uploads/index.d.ts:10
 
 ___
 
-### AdminStoresRes
+### AdminUploadsRes
 
-Ƭ **AdminStoresRes**: `Object`
-
-#### Type declaration
-
-| Name | Type |
-| :------ | :------ |
-| `store` | [`Store`](../classes/internal-28.Store.md) |
-
-#### Defined in
-
-medusa/dist/api/routes/admin/store/index.d.ts:4
-
-___
-
-### AdminTaxProvidersList
-
-Ƭ **AdminTaxProvidersList**: `Object`
+Ƭ **AdminUploadsRes**: `Object`
 
 #### Type declaration
 
 | Name | Type |
 | :------ | :------ |
-| `tax_providers` | [`TaxProvider`](../classes/internal.TaxProvider.md)[] |
+| `uploads` | { `url`: `string`  }[] |
 
 #### Defined in
 
-medusa/dist/api/routes/admin/store/index.d.ts:7
+medusa/dist/api/routes/admin/uploads/index.d.ts:4
