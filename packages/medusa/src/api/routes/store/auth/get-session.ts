@@ -48,11 +48,16 @@ import CustomerService from "../../../../services/customer"
  *    $ref: "#/components/responses/500_error"
  */
 export default async (req, res) => {
-  const customerService: CustomerService = req.scope.resolve("customerService")
+  if (req.user && req.user.customer_id) {
+    const customerService: CustomerService =
+      req.scope.resolve("customerService")
 
-  const customer = await customerService.retrieve(req.user.customer_id, {
-    relations: ["shipping_addresses", "orders", "orders.items"],
-  })
+    const customer = await customerService.retrieve(req.user.customer_id, {
+      relations: ["shipping_addresses", "orders", "orders.items"],
+    })
 
-  res.json({ customer })
+    res.json({ customer })
+  } else {
+    res.sendStatus(401)
+  }
 }
