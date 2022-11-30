@@ -57,7 +57,6 @@ medusa.admin.customerGroups.create({
 ```jsx
 fetch(`<SERVER_URL>/admin/customer-groups`, {
   method: 'POST',
-  credentials: 'include',
   headers: {
     'Content-Type': 'application/json'
   },
@@ -108,9 +107,7 @@ medusa.admin.customerGroups.list()
 <TabItem value="fetch" label="Fetch API">
 
 ```jsx
-fetch(`<SERVER_URL>/admin/customer-groups`, {
-  credentials: 'include',
-})
+fetch(`<SERVER_URL>/admin/customer-groups`)
 .then((response) => response.json())
 .then(({ customer_groups, limit, offset, count }) => {
   console.log(customer_groups.length)
@@ -152,9 +149,7 @@ medusa.admin.customerGroups.retrieve(customerGroupId)
 <TabItem value="fetch" label="Fetch API">
 
 ```jsx
-fetch(`<SERVER_URL>/admin/customer-groups/${customerGroupId}`, {
-  credentials: 'include',
-})
+fetch(`<SERVER_URL>/admin/customer-groups/${customerGroupId}`)
 .then((response) => response.json())
 .then(({ customer_group }) => {
   console.log(customer_group.id)
@@ -200,7 +195,6 @@ medusa.admin.customerGroups.update(customerGroupId, {
 ```jsx
 fetch(`<SERVER_URL>/admin/customer-groups/${customerGroupId}`, {
   method: 'POST',
-  credentials: 'include',
   headers: {
     'Content-Type': 'application/json'
   },
@@ -256,8 +250,7 @@ medusa.admin.customerGroups.delete(customerGroupId)
 
 ```jsx
 fetch(`<SERVER_URL>/admin/customer-groups/${customerGroupId}`, {
-	method: 'DELETE',
-  credentials: 'include',
+	method: 'DELETE'
 })
 .then((response) => response.json())
 .then(({ id, object, deleted }) => {
@@ -308,7 +301,6 @@ medusa.admin.customerGroups.addCustomers(customerGroupId, {
 ```jsx
 fetch(`<SERVER_URL>/admin/customer-groups/${customerGroupId}/customers/batch`, {
   method: 'POST',
-  credentials: 'include',
   headers: {
     'Content-Type': 'application/json'
   },
@@ -365,9 +357,7 @@ medusa.admin.customerGroups.listCustomers(customerGroupId)
 <TabItem value="fetch" label="Fetch API">
 
 ```jsx
-fetch(`<SERVER_URL>/admin/customer-groups/${customerGroupId}/customers`, {
-  credentials: 'include',
-})
+fetch(`<SERVER_URL>/admin/customer-groups/${customerGroupId}/customers`)
 .then((response) => response.json())
 .then(({ customers, count, offset, limit }) => {
   console.log(customers.length)
@@ -419,7 +409,6 @@ medusa.admin.customerGroups.removeCustomers(customer_group_id, {
 ```jsx
 fetch(`<SERVER_URL>/admin/customer-groups/${customerGroupId}/customers/batch`, {
   method: 'DELETE',
-  credentials: 'include',
   headers: {
     'Content-Type': 'application/json'
   },

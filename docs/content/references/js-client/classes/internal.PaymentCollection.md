@@ -22,17 +22,17 @@ Base abstract entity for all entities
 
 #### Defined in
 
-medusa/dist/models/payment-collection.d.ts:17
+medusa/dist/models/payment-collection.d.ts:22
 
 ___
 
 ### authorized\_amount
 
-• **authorized\_amount**: ``null`` \| `number`
+• **authorized\_amount**: `number`
 
 #### Defined in
 
-medusa/dist/models/payment-collection.d.ts:18
+medusa/dist/models/payment-collection.d.ts:23
 
 ___
 
@@ -42,7 +42,17 @@ ___
 
 #### Defined in
 
-medusa/dist/models/payment-collection.d.ts:27
+medusa/dist/models/payment-collection.d.ts:34
+
+___
+
+### captured\_amount
+
+• **captured\_amount**: `number`
+
+#### Defined in
+
+medusa/dist/models/payment-collection.d.ts:24
 
 ___
 
@@ -66,7 +76,7 @@ ___
 
 #### Defined in
 
-medusa/dist/models/payment-collection.d.ts:26
+medusa/dist/models/payment-collection.d.ts:33
 
 ___
 
@@ -76,7 +86,7 @@ ___
 
 #### Defined in
 
-medusa/dist/models/payment-collection.d.ts:22
+medusa/dist/models/payment-collection.d.ts:29
 
 ___
 
@@ -86,7 +96,7 @@ ___
 
 #### Defined in
 
-medusa/dist/models/payment-collection.d.ts:21
+medusa/dist/models/payment-collection.d.ts:28
 
 ___
 
@@ -106,11 +116,11 @@ ___
 
 ### description
 
-• **description**: ``null`` \| `string`
+• **description**: `string`
 
 #### Defined in
 
-medusa/dist/models/payment-collection.d.ts:16
+medusa/dist/models/payment-collection.d.ts:21
 
 ___
 
@@ -134,7 +144,7 @@ ___
 
 #### Defined in
 
-medusa/dist/models/payment-collection.d.ts:25
+medusa/dist/models/payment-collection.d.ts:32
 
 ___
 
@@ -144,7 +154,7 @@ ___
 
 #### Defined in
 
-medusa/dist/models/payment-collection.d.ts:23
+medusa/dist/models/payment-collection.d.ts:30
 
 ___
 
@@ -154,7 +164,17 @@ ___
 
 #### Defined in
 
-medusa/dist/models/payment-collection.d.ts:24
+medusa/dist/models/payment-collection.d.ts:31
+
+___
+
+### refunded\_amount
+
+• **refunded\_amount**: `number`
+
+#### Defined in
+
+medusa/dist/models/payment-collection.d.ts:25
 
 ___
 
@@ -164,7 +184,7 @@ ___
 
 #### Defined in
 
-medusa/dist/models/payment-collection.d.ts:20
+medusa/dist/models/payment-collection.d.ts:27
 
 ___
 
@@ -174,7 +194,7 @@ ___
 
 #### Defined in
 
-medusa/dist/models/payment-collection.d.ts:19
+medusa/dist/models/payment-collection.d.ts:26
 
 ___
 
@@ -184,7 +204,7 @@ ___
 
 #### Defined in
 
-medusa/dist/models/payment-collection.d.ts:15
+medusa/dist/models/payment-collection.d.ts:20
 
 ___
 
@@ -194,7 +214,7 @@ ___
 
 #### Defined in
 
-medusa/dist/models/payment-collection.d.ts:14
+medusa/dist/models/payment-collection.d.ts:19
 
 ___
 
