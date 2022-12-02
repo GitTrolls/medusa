@@ -2,36 +2,19 @@
 
 ## Classes
 
-- [StorePostAuthReq](../classes/internal-34.StorePostAuthReq.md)
+- [StoreGetCustomersCustomerOrdersPaginationParams](../classes/internal-34.StoreGetCustomersCustomerOrdersPaginationParams.md)
+- [StoreGetCustomersCustomerOrdersParams](../classes/internal-34.StoreGetCustomersCustomerOrdersParams.md)
+- [StorePostCustomersCustomerPasswordTokenReq](../classes/internal-34.StorePostCustomersCustomerPasswordTokenReq.md)
+- [StorePostCustomersCustomerReq](../classes/internal-34.StorePostCustomersCustomerReq.md)
+- [StorePostCustomersReq](../classes/internal-34.StorePostCustomersReq.md)
+- [StorePostCustomersResetPasswordReq](../classes/internal-34.StorePostCustomersResetPasswordReq.md)
 
 ## Type Aliases
 
-### StoreAuthRes
+### StoreCustomersListOrdersRes
 
-Ƭ **StoreAuthRes**: `Object`
-
-#### Type declaration
-
-| Name | Type |
-| :------ | :------ |
-| `customer` | [`Customer`](../classes/internal.Customer.md) |
+Ƭ **StoreCustomersListOrdersRes**: [`PaginatedResponse`](internal-2.md#paginatedresponse) & { `orders`: [`Order`](../classes/internal.Order.md)[]  }
 
 #### Defined in
 
-medusa/dist/api/routes/store/auth/index.d.ts:4
-
-___
-
-### StoreGetAuthEmailRes
-
-Ƭ **StoreGetAuthEmailRes**: `Object`
-
-#### Type declaration
-
-| Name | Type |
-| :------ | :------ |
-| `exists` | `boolean` |
-
-#### Defined in
-
-medusa/dist/api/routes/store/auth/index.d.ts:7
+medusa/dist/api/routes/store/customers/index.d.ts:12

@@ -1,12 +1,11 @@
 import React, {isValidElement} from 'react';
-
-import CopyButton from '../CopyButton';
+import useIsBrowser from '@docusaurus/useIsBrowser';
+import useBaseUrl from '@docusaurus/useBaseUrl';
 import ElementContent from '@theme/CodeBlock/Content/Element';
 import StringContent from '@theme/CodeBlock/Content/String';
 import ThemedImage from '@theme/ThemedImage';
 import Tooltip from '../Tooltip';
-import useBaseUrl from '@docusaurus/useBaseUrl';
-import useIsBrowser from '@docusaurus/useIsBrowser';
+import CopyButton from '../CopyButton';
 import {useThemeConfig} from '@docusaurus/theme-common';
 
 /**

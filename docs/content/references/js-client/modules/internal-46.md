@@ -2,52 +2,20 @@
 
 ## Classes
 
-- [StoreGetProductsPaginationParams](../classes/internal-46.StoreGetProductsPaginationParams.md)
-- [StoreGetProductsParams](../classes/internal-46.StoreGetProductsParams.md)
-- [StorePostSearchReq](../classes/internal-46.StorePostSearchReq.md)
+- [StoreGetShippingOptionsParams](../classes/internal-46.StoreGetShippingOptionsParams.md)
 
 ## Type Aliases
 
-### StorePostSearchRes
+### StoreShippingOptionsListRes
 
-Ƭ **StorePostSearchRes**: `Object`
-
-#### Index signature
-
-▪ [k: `string`]: `unknown`
+Ƭ **StoreShippingOptionsListRes**: `Object`
 
 #### Type declaration
 
 | Name | Type |
 | :------ | :------ |
-| `hits` | `unknown`[] |
+| `shipping_options` | [`ShippingOption`](../classes/internal.ShippingOption.md)[] |
 
 #### Defined in
 
-medusa/dist/api/routes/store/products/index.d.ts:12
-
-___
-
-### StoreProductsListRes
-
-Ƭ **StoreProductsListRes**: [`PaginatedResponse`](internal-2.md#paginatedresponse) & { `products`: [`Product`](../classes/internal.Product.md)[]  }
-
-#### Defined in
-
-medusa/dist/api/routes/store/products/index.d.ts:16
-
-___
-
-### StoreProductsRes
-
-Ƭ **StoreProductsRes**: `Object`
-
-#### Type declaration
-
-| Name | Type |
-| :------ | :------ |
-| `product` | [`Product`](../classes/internal.Product.md) |
-
-#### Defined in
-
-medusa/dist/api/routes/store/products/index.d.ts:9
+medusa/dist/api/routes/store/shipping-options/index.d.ts:4

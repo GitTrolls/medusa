@@ -2,34 +2,30 @@
 
 ## Classes
 
-- [AdminGetShippingOptionsParams](../classes/internal-26.AdminGetShippingOptionsParams.md)
-- [AdminPostShippingOptionsOptionReq](../classes/internal-26.AdminPostShippingOptionsOptionReq.md)
-- [AdminPostShippingOptionsReq](../classes/internal-26.AdminPostShippingOptionsReq.md)
-- [OptionRequirement](../classes/internal-26.OptionRequirement.md)
-- [OptionRequirement](../classes/internal-26.OptionRequirement-1.md)
+- [AdminGetSwapsParams](../classes/internal-26.AdminGetSwapsParams.md)
 
 ## Type Aliases
 
-### AdminShippingOptionsListRes
+### AdminSwapsListRes
 
-Ƭ **AdminShippingOptionsListRes**: [`PaginatedResponse`](internal-2.md#paginatedresponse) & { `shipping_options`: [`ShippingOption`](../classes/internal.ShippingOption.md)[]  }
+Ƭ **AdminSwapsListRes**: [`PaginatedResponse`](internal-2.md#paginatedresponse) & { `swaps`: [`Swap`](../classes/internal.Swap.md)[]  }
 
 #### Defined in
 
-medusa/dist/api/routes/admin/shipping-options/index.d.ts:8
+medusa/dist/api/routes/admin/swaps/index.d.ts:7
 
 ___
 
-### AdminShippingOptionsRes
+### AdminSwapsRes
 
-Ƭ **AdminShippingOptionsRes**: `Object`
+Ƭ **AdminSwapsRes**: `Object`
 
 #### Type declaration
 
 | Name | Type |
 | :------ | :------ |
-| `shipping_option` | [`ShippingOption`](../classes/internal.ShippingOption.md) |
+| `swap` | [`Swap`](../classes/internal.Swap.md) |
 
 #### Defined in
 
-medusa/dist/api/routes/admin/shipping-options/index.d.ts:11
+medusa/dist/api/routes/admin/swaps/index.d.ts:10
