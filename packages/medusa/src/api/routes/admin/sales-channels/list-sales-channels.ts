@@ -118,7 +118,6 @@ import { removeUndefinedProperties } from "../../../../utils"
  *     content:
  *       application/json:
  *         schema:
- *           type: object
  *           properties:
  *             sales_channels:
  *               type: array

@@ -17,7 +17,6 @@ import { IsType } from "../../../../utils/validators/is-type"
  *   content:
  *     application/json:
  *       schema:
- *         type: object
  *         properties:
  *           first_name:
  *             description: "The Customer's first name."
@@ -76,7 +75,6 @@ import { IsType } from "../../../../utils/validators/is-type"
  *     content:
  *       application/json:
  *         schema:
- *           type: object
  *           properties:
  *             customer:
  *               $ref: "#/components/schemas/customer"

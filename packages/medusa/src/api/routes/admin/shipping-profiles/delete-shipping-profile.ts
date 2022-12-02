@@ -36,7 +36,6 @@ import { ShippingProfileService } from "../../../../services"
  *     content:
  *       application/json:
  *         schema:
- *           type: object
  *           properties:
  *             id:
  *               type: string

@@ -13,7 +13,6 @@ import { EntityManager } from "typeorm"
  *   content:
  *     application/json:
  *       schema:
- *         type: object
  *         required:
  *           - name
  *         properties:
@@ -53,7 +52,6 @@ import { EntityManager } from "typeorm"
  *     content:
  *       application/json:
  *         schema:
- *           type: object
  *           properties:
  *             shipping_profile:
  *               $ref: "#/components/schemas/shipping_profile"

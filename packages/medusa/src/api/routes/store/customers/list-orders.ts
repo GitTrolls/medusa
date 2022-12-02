@@ -163,7 +163,6 @@ import { DateComparisonOperator } from "../../../../types/common"
  *     content:
  *       application/json:
  *         schema:
- *           type: object
  *           properties:
  *             orders:
  *               type: array

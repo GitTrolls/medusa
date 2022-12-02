@@ -79,7 +79,6 @@ export default () => {
  * @schema error
  * title: "Response Error"
  * x-resourceId: error
- * type: object
  * properties:
  *  code:
  *    type: string

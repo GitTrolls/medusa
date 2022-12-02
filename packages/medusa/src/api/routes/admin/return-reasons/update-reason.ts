@@ -20,7 +20,6 @@ import { EntityManager } from "typeorm"
  *   content:
  *     application/json:
  *       schema:
- *         type: object
  *         properties:
  *           label:
  *             description: "The label to display to the Customer."
@@ -67,7 +66,6 @@ import { EntityManager } from "typeorm"
  *     content:
  *       application/json:
  *         schema:
- *           type: object
  *           properties:
  *             return_reason:
  *               $ref: "#/components/schemas/return_reason"

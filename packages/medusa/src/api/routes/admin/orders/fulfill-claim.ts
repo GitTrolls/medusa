@@ -18,7 +18,6 @@ import { validator } from "../../../../utils/validator"
  *   content:
  *     application/json:
  *       schema:
- *         type: object
  *         properties:
  *           metadata:
  *             description: An optional set of key-value pairs to hold additional information.
@@ -53,7 +52,6 @@ import { validator } from "../../../../utils/validator"
  *     content:
  *       application/json:
  *         schema:
- *           type: object
  *           properties:
  *             order:
  *               $ref: "#/components/schemas/order"

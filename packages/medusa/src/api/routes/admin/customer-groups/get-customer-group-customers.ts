@@ -37,7 +37,6 @@ import CustomerController from "../../../../controllers/customers"
  *     content:
  *       application/json:
  *         schema:
- *           type: object
  *           properties:
  *             customers:
  *               type: array

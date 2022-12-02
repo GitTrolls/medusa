@@ -58,7 +58,6 @@ import { validator } from "../../../../utils/validator"
  *     content:
  *       application/json:
  *         schema:
- *           type: object
  *           properties:
  *             tax_rate:
  *               $ref: "#/components/schemas/tax_rate"

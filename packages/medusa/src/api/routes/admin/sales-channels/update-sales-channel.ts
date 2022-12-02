@@ -16,7 +16,6 @@ import { EntityManager } from "typeorm"
  *   content:
  *     application/json:
  *       schema:
- *         type: object
  *         properties:
  *           name:
  *             type: string
@@ -60,7 +59,6 @@ import { EntityManager } from "typeorm"
  *     content:
  *       application/json:
  *         schema:
- *           type: object
  *           properties:
  *             sales_channel:
  *               $ref: "#/components/schemas/sales_channel"

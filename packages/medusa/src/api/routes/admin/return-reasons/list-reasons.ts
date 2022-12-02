@@ -39,7 +39,6 @@ import { FindConfig, Selector } from "../../../../types/common"
  *     content:
  *       application/json:
  *         schema:
- *           type: object
  *           properties:
  *             return_reasons:
  *               type: array

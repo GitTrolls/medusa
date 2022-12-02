@@ -107,7 +107,6 @@ export class BatchJob extends SoftDeletableEntity {
  * title: "Batch Job"
  * description: "A Batch Job."
  * x-resourceId: batch_job
- * type: object
  * required:
  *   - type
  * properties:

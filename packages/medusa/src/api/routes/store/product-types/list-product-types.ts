@@ -109,7 +109,6 @@ import ProductTypeService from "../../../../services/product-type"
  *    content:
  *      application/json:
  *        schema:
- *          type: object
  *          properties:
  *            product_types:
  *              $ref: "#/components/schemas/product_type"
