@@ -216,7 +216,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@babel/cli@npm:^7.12.1, @babel/cli@npm:^7.14.3, @babel/cli@npm:^7.15.4, @babel/cli@npm:^7.16.0, @babel/cli@npm:^7.7.5":
+"@babel/cli@npm:^7.12.1, @babel/cli@npm:^7.13.0, @babel/cli@npm:^7.14.3, @babel/cli@npm:^7.15.4, @babel/cli@npm:^7.16.0, @babel/cli@npm:^7.7.5":
   version: 7.18.6
   resolution: "@babel/cli@npm:7.18.6"
   dependencies:
@@ -292,7 +292,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@babel/core@npm:^7.1.0, @babel/core@npm:^7.12.10, @babel/core@npm:^7.12.3, @babel/core@npm:^7.12.7, @babel/core@npm:^7.14.0, @babel/core@npm:^7.14.3, @babel/core@npm:^7.15.5, @babel/core@npm:^7.16.0, @babel/core@npm:^7.18.6, @babel/core@npm:^7.7.2, @babel/core@npm:^7.7.5, @babel/core@npm:^7.8.0":
+"@babel/core@npm:^7.1.0, @babel/core@npm:^7.12.10, @babel/core@npm:^7.12.3, @babel/core@npm:^7.12.7, @babel/core@npm:^7.13.8, @babel/core@npm:^7.14.0, @babel/core@npm:^7.14.3, @babel/core@npm:^7.15.5, @babel/core@npm:^7.16.0, @babel/core@npm:^7.18.6, @babel/core@npm:^7.7.2, @babel/core@npm:^7.7.5, @babel/core@npm:^7.8.0":
   version: 7.18.6
   resolution: "@babel/core@npm:7.18.6"
   dependencies:
@@ -709,7 +709,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@babel/plugin-proposal-class-properties@npm:^7.0.0, @babel/plugin-proposal-class-properties@npm:^7.10.4, @babel/plugin-proposal-class-properties@npm:^7.12.1, @babel/plugin-proposal-class-properties@npm:^7.14.0, @babel/plugin-proposal-class-properties@npm:^7.14.5, @babel/plugin-proposal-class-properties@npm:^7.16.0, @babel/plugin-proposal-class-properties@npm:^7.18.6, @babel/plugin-proposal-class-properties@npm:^7.7.4":
+"@babel/plugin-proposal-class-properties@npm:^7.0.0, @babel/plugin-proposal-class-properties@npm:^7.10.4, @babel/plugin-proposal-class-properties@npm:^7.12.1, @babel/plugin-proposal-class-properties@npm:^7.13.0, @babel/plugin-proposal-class-properties@npm:^7.14.0, @babel/plugin-proposal-class-properties@npm:^7.14.5, @babel/plugin-proposal-class-properties@npm:^7.16.0, @babel/plugin-proposal-class-properties@npm:^7.18.6, @babel/plugin-proposal-class-properties@npm:^7.7.4":
   version: 7.18.6
   resolution: "@babel/plugin-proposal-class-properties@npm:7.18.6"
   dependencies:
@@ -1668,7 +1668,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@babel/preset-env@npm:^7.11.5, @babel/preset-env@npm:^7.12.11, @babel/preset-env@npm:^7.12.7, @babel/preset-env@npm:^7.15.4, @babel/preset-env@npm:^7.15.6, @babel/preset-env@npm:^7.16.4, @babel/preset-env@npm:^7.18.6, @babel/preset-env@npm:^7.7.5":
+"@babel/preset-env@npm:^7.11.5, @babel/preset-env@npm:^7.12.11, @babel/preset-env@npm:^7.12.7, @babel/preset-env@npm:^7.13.9, @babel/preset-env@npm:^7.15.4, @babel/preset-env@npm:^7.15.6, @babel/preset-env@npm:^7.16.4, @babel/preset-env@npm:^7.18.6, @babel/preset-env@npm:^7.7.5":
   version: 7.18.6
   resolution: "@babel/preset-env@npm:7.18.6"
   dependencies:
@@ -1835,7 +1835,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@babel/runtime@npm:^7.0.0, @babel/runtime@npm:^7.1.2, @babel/runtime@npm:^7.10.0, @babel/runtime@npm:^7.10.2, @babel/runtime@npm:^7.10.4, @babel/runtime@npm:^7.11.2, @babel/runtime@npm:^7.12.13, @babel/runtime@npm:^7.12.5, @babel/runtime@npm:^7.15.4, @babel/runtime@npm:^7.16.3, @babel/runtime@npm:^7.17.8, @babel/runtime@npm:^7.18.0, @babel/runtime@npm:^7.18.3, @babel/runtime@npm:^7.3.1, @babel/runtime@npm:^7.5.0, @babel/runtime@npm:^7.5.5, @babel/runtime@npm:^7.6.2, @babel/runtime@npm:^7.7.2, @babel/runtime@npm:^7.7.6, @babel/runtime@npm:^7.8.4, @babel/runtime@npm:^7.9.2, @babel/runtime@npm:^7.9.6":
+"@babel/runtime@npm:^7.0.0, @babel/runtime@npm:^7.1.2, @babel/runtime@npm:^7.10.0, @babel/runtime@npm:^7.10.2, @babel/runtime@npm:^7.10.4, @babel/runtime@npm:^7.11.2, @babel/runtime@npm:^7.12.13, @babel/runtime@npm:^7.12.5, @babel/runtime@npm:^7.13.9, @babel/runtime@npm:^7.15.4, @babel/runtime@npm:^7.16.3, @babel/runtime@npm:^7.17.8, @babel/runtime@npm:^7.18.0, @babel/runtime@npm:^7.18.3, @babel/runtime@npm:^7.3.1, @babel/runtime@npm:^7.5.0, @babel/runtime@npm:^7.5.5, @babel/runtime@npm:^7.6.2, @babel/runtime@npm:^7.7.2, @babel/runtime@npm:^7.7.6, @babel/runtime@npm:^7.8.4, @babel/runtime@npm:^7.9.2, @babel/runtime@npm:^7.9.6":
   version: 7.18.6
   resolution: "@babel/runtime@npm:7.18.6"
   dependencies:
@@ -4347,7 +4347,7 @@ __metadata:
     "@types/jsonwebtoken": ^8.5.5
     "@types/lodash": ^4.14.168
     "@types/multer": ^1.4.7
-    awilix: ^8.0.0
+    awilix: ^4.2.3
     babel-preset-medusa-package: ^1.1.19
     body-parser: ^1.19.0
     bull: ^3.12.1
@@ -10143,13 +10143,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"awilix@npm:^8.0.0":
-  version: 8.0.0
-  resolution: "awilix@npm:8.0.0"
+"awilix@npm:^4.2.3":
+  version: 4.3.4
+  resolution: "awilix@npm:4.3.4"
   dependencies:
     camel-case: ^4.1.2
-    fast-glob: ^3.2.12
-  checksum: 29a6b05d651635c240d5a22ea7d463330e5aab262e25a4043c39ca5a52d5e7ff691fcd6e1f0d6565b5bbd095c1fbc3240f6686e4db657bcb3155fe84d16c7f1a
+    glob: ^7.1.6
+  checksum: 636f887be095d1f3dbd245bb2189965b6214b9cc19050a963c22a2f30aaea0039ba7d7df235a2d5ba725550230a98a44daf21971bd32ece3e5a88e91cbbe102f
   languageName: node
   linkType: hard
 
@@ -16191,19 +16191,6 @@ __metadata:
     merge2: ^1.3.0
     micromatch: ^4.0.4
   checksum: f726d4d6545ae9ade242eba78ae418cd8beac6c9291cdc36fc6b3b4e54f04fa0ecde5767256f2a600d6e14dc49a841adb3aa4b5f3f0c06b35dd4f3954965443d
-  languageName: node
-  linkType: hard
-
-"fast-glob@npm:^3.2.12":
-  version: 3.2.12
-  resolution: "fast-glob@npm:3.2.12"
-  dependencies:
-    "@nodelib/fs.stat": ^2.0.2
-    "@nodelib/fs.walk": ^1.2.3
-    glob-parent: ^5.1.2
-    merge2: ^1.3.0
-    micromatch: ^4.0.4
-  checksum: 08604fb8ef6442ce74068bef3c3104382bb1f5ab28cf75e4ee904662778b60ad620e1405e692b7edea598ef445f5d387827a965ba034e1892bf54b1dfde97f26
   languageName: node
   linkType: hard
 
@@ -23568,13 +23555,20 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "medusa-core-utils@workspace:packages/medusa-core-utils"
   dependencies:
+    "@babel/cli": ^7.13.0
+    "@babel/core": ^7.13.8
+    "@babel/plugin-proposal-class-properties": ^7.13.0
+    "@babel/plugin-transform-classes": ^7.9.5
+    "@babel/plugin-transform-runtime": ^7.7.6
+    "@babel/preset-env": ^7.13.9
+    "@babel/preset-typescript": ^7.16.0
+    "@babel/runtime": ^7.13.9
     class-transformer: ^0.5.1
     class-validator: ^0.13.1
     cross-env: ^5.2.1
     jest: ^25.5.2
     joi: ^17.3.0
     joi-objectid: ^3.0.1
-    ts-jest: ^25.5.1
     typescript: ^4.4.4
   languageName: unknown
   linkType: soft

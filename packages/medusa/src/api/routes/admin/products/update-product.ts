@@ -39,7 +39,6 @@ import { validator } from "../../../../utils/validator"
  *   content:
  *     application/json:
  *       schema:
- *         type: object
  *         properties:
  *           title:
  *             description: "The title of the Product"
@@ -263,7 +262,6 @@ import { validator } from "../../../../utils/validator"
  *     content:
  *       application/json:
  *         schema:
- *           type: object
  *           properties:
  *             product:
  *               $ref: "#/components/schemas/product"

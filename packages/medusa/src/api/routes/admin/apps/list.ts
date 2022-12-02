@@ -23,7 +23,6 @@ import { OauthService } from "../../../../services"
  *    content:
  *      application/json:
  *        schema:
- *          type: object
  *          properties:
  *            apps:
  *               type: array

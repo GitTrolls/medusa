@@ -23,7 +23,6 @@ import { isDefined } from "../../../../utils"
  *   content:
  *     application/json:
  *       schema:
- *         type: object
  *         required:
  *           - items
  *         properties:
@@ -87,7 +86,6 @@ import { isDefined } from "../../../../utils"
  *     content:
  *       application/json:
  *         schema:
- *           type: object
  *           properties:
  *             return:
  *               $ref: "#/components/schemas/return"

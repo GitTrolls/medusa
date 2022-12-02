@@ -33,7 +33,6 @@ import InviteService from "../../../../services/invite"
  *     content:
  *       application/json:
  *         schema:
- *           type: object
  *           properties:
  *             invites:
  *               type: array

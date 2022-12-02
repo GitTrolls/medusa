@@ -18,7 +18,6 @@ import { EntityManager } from "typeorm"
  *   content:
  *     application/json:
  *       schema:
- *         type: object
  *         required:
  *           - title
  *         properties:
@@ -58,7 +57,6 @@ import { EntityManager } from "typeorm"
  *     content:
  *       application/json:
  *         schema:
- *           type: object
  *           properties:
  *             product:
  *               $ref: "#/components/schemas/product"

@@ -21,7 +21,6 @@ import { PaymentService } from "../../../../services"
  *   content:
  *     application/json:
  *       schema:
- *         type: object
  *         required:
  *           - amount
  *           - reason
@@ -72,7 +71,6 @@ import { PaymentService } from "../../../../services"
  *     content:
  *       application/json:
  *         schema:
- *           type: object
  *           properties:
  *             refund:
  *               $ref: "#/components/schemas/refund"

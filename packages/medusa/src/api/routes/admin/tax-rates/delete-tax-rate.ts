@@ -36,7 +36,6 @@ import { TaxRateService } from "../../../../services"
  *     content:
  *       application/json:
  *         schema:
- *           type: object
  *           properties:
  *             id:
  *               type: string

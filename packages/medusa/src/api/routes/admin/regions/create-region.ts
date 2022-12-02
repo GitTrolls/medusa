@@ -24,7 +24,6 @@ import { validator } from "../../../../utils/validator"
  *   content:
  *     application/json:
  *       schema:
- *         type: object
  *         required:
  *           - name
  *           - currency_code
@@ -122,7 +121,6 @@ import { validator } from "../../../../utils/validator"
  *     content:
  *       application/json:
  *         schema:
- *           type: object
  *           properties:
  *             region:
  *               $ref: "#/components/schemas/region"

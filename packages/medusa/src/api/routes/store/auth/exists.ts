@@ -32,7 +32,6 @@ import CustomerService from "../../../../services/customer"
  *    content:
  *      application/json:
  *        schema:
- *          type: object
  *          properties:
  *            exists:
  *              type: boolean

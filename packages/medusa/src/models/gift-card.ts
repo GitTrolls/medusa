@@ -64,7 +64,6 @@ export class GiftCard extends SoftDeletableEntity {
  * title: "Gift Card"
  * description: "Gift Cards are redeemable and represent a value that can be used towards the payment of an Order."
  * x-resourceId: gift_card
- * type: object
  * required:
  *   - code
  *   - value

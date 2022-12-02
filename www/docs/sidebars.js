@@ -95,7 +95,7 @@ module.exports = {
                   id: "deployments/server/deploying-on-heroku",
                   label: "Deploy on Heroku",
                   customProps: {
-                    image: 'https://i.imgur.com/xNvxSkf.png'
+                    image: 'https://res.cloudinary.com/dza7lstvk/image/upload/v1669739927/Medusa%20Docs/Other/xNvxSkf_l230wq.png'
                   }
                 },
                 {
@@ -103,7 +103,7 @@ module.exports = {
                   id: "deployments/server/deploying-on-digital-ocean",
                   label: "Deploy on DigitalOcean",
                   customProps: {
-                    image: 'https://i.imgur.com/aahqJp4.png'
+                    image: 'https://res.cloudinary.com/dza7lstvk/image/upload/v1669739945/Medusa%20Docs/Other/aahqJp4_lbtfdz.png'
                   }
                 },
                 {
@@ -111,7 +111,18 @@ module.exports = {
                   id: "deployments/server/deploying-on-qovery",
                   label: "Deploy on Qovery",
                   customProps: {
-                    image: 'https://i.imgur.com/qOvY2dN.png'
+                    image: 'https://res.cloudinary.com/dza7lstvk/image/upload/v1669739955/Medusa%20Docs/Other/qOvY2dN_vogsxy.png'
+                  }
+                },
+                {
+                  type: "doc",
+                  id: "deployments/server/deploying-on-railway",
+                  label: "Deploy on Railway",
+                  customProps: {
+                    themedImage: {
+                      light: 'https://res.cloudinary.com/dza7lstvk/image/upload/v1669741520/Medusa%20Docs/Other/railway-light_fzuyeo.png',
+                      dark: 'https://res.cloudinary.com/dza7lstvk/image/upload/v1669741520/Medusa%20Docs/Other/railway-dark_kkzuwh.png'
+                    }
                   }
                 }
               ]
@@ -206,8 +217,18 @@ module.exports = {
             },
             {
               type: "doc",
+              id: "advanced/storefront/use-discounts-in-checkout",
+              label: "Use Discounts in Checkout"
+            },
+            {
+              type: "doc",
               id: "advanced/storefront/how-to-implement-checkout-flow",
               label: "Implement Checkout"
+            },
+            {
+              type: "doc",
+              id: "advanced/backend/taxes/manual-calculation",
+              label: "Calculate Taxes Manually"
             },
             {
               type: "doc",
@@ -229,11 +250,6 @@ module.exports = {
               type: "doc",
               id: "advanced/admin/import-prices",
               label: "Import Prices"
-            },
-            {
-              type: "doc",
-              id: "advanced/backend/taxes/manual-calculation",
-              label: "Calculate Taxes Manually"
             },
             {
               type: "doc",
@@ -356,6 +372,10 @@ module.exports = {
           type: "doc",
           id: "advanced/backend/notification/overview",
           label: "Notification Architecture"
+        },
+        {
+          type: "doc",
+          id: "advanced/backend/discounts/index"
         },
         {
           type: "doc",

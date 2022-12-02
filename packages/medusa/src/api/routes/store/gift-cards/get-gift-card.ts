@@ -31,7 +31,6 @@ import GiftCardService from "../../../../services/gift-card"
  *     content:
  *       application/json:
  *         schema:
- *           type: object
  *           properties:
  *             gift_card:
  *               $ref: "#/components/schemas/gift_card"

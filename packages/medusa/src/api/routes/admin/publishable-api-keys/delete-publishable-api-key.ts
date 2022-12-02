@@ -37,7 +37,6 @@ import PublishableApiKeyService from "../../../../services/publishable-api-key"
  *     content:
  *       application/json:
  *         schema:
- *           type: object
  *           properties:
  *             id:
  *               type: string

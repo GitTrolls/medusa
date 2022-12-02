@@ -12,7 +12,6 @@ import { EntityManager } from "typeorm"
  *   content:
  *     application/json:
  *       schema:
- *         type: object
  *         required:
  *           - email
  *         properties:

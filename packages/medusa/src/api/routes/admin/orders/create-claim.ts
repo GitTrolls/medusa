@@ -31,7 +31,6 @@ import { validator } from "../../../../utils/validator"
  *   content:
  *     application/json:
  *       schema:
- *         type: object
  *         required:
  *           - type
  *           - claim_items
@@ -172,7 +171,6 @@ import { validator } from "../../../../utils/validator"
  *     content:
  *       application/json:
  *         schema:
- *           type: object
  *           properties:
  *             order:
  *               $ref: "#/components/schemas/order"

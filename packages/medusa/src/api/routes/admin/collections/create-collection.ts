@@ -13,7 +13,6 @@ import { EntityManager } from "typeorm"
  *   content:
  *     application/json:
  *       schema:
- *         type: object
  *         required:
  *           - title
  *         properties:
@@ -59,7 +58,6 @@ import { EntityManager } from "typeorm"
  *    content:
  *      application/json:
  *        schema:
- *          type: object
  *          properties:
  *            collection:
  *              $ref: "#/components/schemas/product_collection"

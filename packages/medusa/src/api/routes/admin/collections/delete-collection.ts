@@ -38,7 +38,6 @@ import ProductCollectionService from "../../../../services/product-collection"
  *    content:
  *      application/json:
  *        schema:
- *          type: object
  *          properties:
  *            id:
  *              type: string

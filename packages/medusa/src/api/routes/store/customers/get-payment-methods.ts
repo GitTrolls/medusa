@@ -36,7 +36,6 @@ import { PaymentProvider } from "../../../../models"
  *     content:
  *       application/json:
  *         schema:
- *           type: object
  *           properties:
  *             payment_methods:
  *               type: array

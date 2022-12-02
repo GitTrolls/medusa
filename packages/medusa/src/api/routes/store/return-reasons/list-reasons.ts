@@ -31,7 +31,6 @@ import ReturnReasonService from "../../../../services/return-reason"
  *     content:
  *       application/json:
  *         schema:
- *           type: object
  *           properties:
  *             return_reasons:
  *               type: array

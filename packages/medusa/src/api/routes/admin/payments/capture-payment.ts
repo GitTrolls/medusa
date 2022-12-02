@@ -35,7 +35,6 @@ import { PaymentService } from "../../../../services"
  *     content:
  *       application/json:
  *         schema:
- *           type: object
  *           properties:
  *             payment:
  *               $ref: "#/components/schemas/payment"

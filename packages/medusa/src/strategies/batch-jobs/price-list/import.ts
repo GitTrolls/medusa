@@ -1,23 +1,23 @@
 import { EntityManager } from "typeorm"
-import { computerizeAmount, MedusaError } from "medusa-core-utils"
+import { MedusaError, computerizeAmount } from "medusa-core-utils"
 
 import { AbstractBatchJobStrategy, IFileService } from "../../../interfaces"
 import CsvParser from "../../../services/csv-parser"
 import {
   BatchJobService,
-  PriceListService,
   ProductVariantService,
+  PriceListService,
   RegionService,
 } from "../../../services"
 import { CreateBatchJobInput } from "../../../types/batch-job"
 import {
   InjectedProps,
   OperationType,
+  PriceListImportOperation,
+  PriceListImportOperationPrice,
   ParsedPriceListImportPrice,
   PriceListImportBatchJob,
   PriceListImportCsvSchema,
-  PriceListImportOperation,
-  PriceListImportOperationPrice,
   TBuiltPriceListImportLine,
   TParsedPriceListImportRowData,
 } from "./types"
@@ -204,10 +204,7 @@ class PriceListImportStrategy extends AbstractBatchJobStrategy {
         record.currency_code = price.currency_code
       }
 
-      record.amount = computerizeAmount(
-        record.amount as number,
-        record.currency_code
-      )
+      record.amount = computerizeAmount(record.amount, record.currency_code)
 
       operationalPrices.push(record as PriceListImportOperationPrice)
     }

@@ -15,7 +15,6 @@ import { PaymentCollectionService } from "../../../../services"
  *   content:
  *     application/json:
  *       schema:
- *         type: object
  *         properties:
  *           description:
  *             description: An optional description to create or update the payment collection.
@@ -56,7 +55,6 @@ import { PaymentCollectionService } from "../../../../services"
  *     content:
  *       application/json:
  *         schema:
- *           type: object
  *           properties:
  *             payment_collection:
  *               $ref: "#/components/schemas/payment_collection"

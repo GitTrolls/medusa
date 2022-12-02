@@ -42,7 +42,6 @@ import { FindParams } from "../../../../types/common"
  *     content:
  *       application/json:
  *         schema:
- *           type: object
  *           properties:
  *             id:
  *               type: string

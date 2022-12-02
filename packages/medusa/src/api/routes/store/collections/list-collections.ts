@@ -78,7 +78,6 @@ import { Type } from "class-transformer"
  *    content:
  *      application/json:
  *        schema:
- *          type: object
  *          properties:
  *            collections:
  *               type: array
