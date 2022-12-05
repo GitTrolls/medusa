@@ -2,37 +2,34 @@
 
 ## Classes
 
-- [AdminPostReturnReasonsReasonReq](../classes/internal-23.AdminPostReturnReasonsReasonReq.md)
-- [AdminPostReturnReasonsReq](../classes/internal-23.AdminPostReturnReasonsReq.md)
+- [AdminGetShippingOptionsParams](../classes/internal-23.AdminGetShippingOptionsParams.md)
+- [AdminPostShippingOptionsOptionReq](../classes/internal-23.AdminPostShippingOptionsOptionReq.md)
+- [AdminPostShippingOptionsReq](../classes/internal-23.AdminPostShippingOptionsReq.md)
+- [OptionRequirement](../classes/internal-23.OptionRequirement.md)
+- [OptionRequirement](../classes/internal-23.OptionRequirement-1.md)
 
 ## Type Aliases
 
-### AdminReturnReasonsListRes
+### AdminShippingOptionsListRes
 
-Ƭ **AdminReturnReasonsListRes**: `Object`
-
-#### Type declaration
-
-| Name | Type |
-| :------ | :------ |
-| `return_reasons` | [`ReturnReason`](../classes/internal.ReturnReason.md)[] |
+Ƭ **AdminShippingOptionsListRes**: [`PaginatedResponse`](internal-2.md#paginatedresponse) & { `shipping_options`: [`ShippingOption`](../classes/internal.ShippingOption.md)[]  }
 
 #### Defined in
 
-medusa/dist/api/routes/admin/return-reasons/index.d.ts:10
+medusa/dist/api/routes/admin/shipping-options/index.d.ts:8
 
 ___
 
-### AdminReturnReasonsRes
+### AdminShippingOptionsRes
 
-Ƭ **AdminReturnReasonsRes**: `Object`
+Ƭ **AdminShippingOptionsRes**: `Object`
 
 #### Type declaration
 
 | Name | Type |
 | :------ | :------ |
-| `return_reason` | [`ReturnReason`](../classes/internal.ReturnReason.md) |
+| `shipping_option` | [`ShippingOption`](../classes/internal.ShippingOption.md) |
 
 #### Defined in
 
-medusa/dist/api/routes/admin/return-reasons/index.d.ts:7
+medusa/dist/api/routes/admin/shipping-options/index.d.ts:11

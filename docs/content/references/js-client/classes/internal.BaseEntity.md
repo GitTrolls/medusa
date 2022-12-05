@@ -38,9 +38,7 @@ Base abstract entity for all entities
 
   ↳ [`Notification`](internal-12.Notification.md)
 
-  ↳ [`PublishableApiKey`](internal-21.PublishableApiKey.md)
-
-  ↳ [`Store`](internal-28.Store.md)
+  ↳ [`Store`](internal-25.Store.md)
 
 ## Properties
 

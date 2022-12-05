@@ -2,16 +2,32 @@
 
 ## Type Aliases
 
-### StoreCustomersListPaymentMethodsRes
+### StoreRegionsListRes
 
-Ƭ **StoreCustomersListPaymentMethodsRes**: `Object`
+Ƭ **StoreRegionsListRes**: `Object`
 
 #### Type declaration
 
 | Name | Type |
 | :------ | :------ |
-| `payment_methods` | { `data`: `object` ; `provider_id`: `string`  }[] |
+| `regions` | [`Region`](../classes/internal.Region.md)[] |
 
 #### Defined in
 
-medusa/dist/api/routes/store/customers/index.d.ts:15
+medusa/dist/api/routes/store/regions/index.d.ts:4
+
+___
+
+### StoreRegionsRes
+
+Ƭ **StoreRegionsRes**: `Object`
+
+#### Type declaration
+
+| Name | Type |
+| :------ | :------ |
+| `region` | [`Region`](../classes/internal.Region.md) |
+
+#### Defined in
+
+medusa/dist/api/routes/store/regions/index.d.ts:7
