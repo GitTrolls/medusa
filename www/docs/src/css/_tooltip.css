@@ -24,10 +24,6 @@
   transition: all .1s;
 }
 
-.tooltip-box:not(.visible) {
-  display: none;
-}
-
 .tooltip-box.visible {
   opacity: 1;
 }

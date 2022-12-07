@@ -82,6 +82,7 @@ export class Customer extends SoftDeletableEntity {
  * title: "Customer"
  * description: "Represents a customer"
  * x-resourceId: customer
+ * type: object
  * required:
  *   - email
  * properties:
@@ -99,7 +100,7 @@ export class Customer extends SoftDeletableEntity {
  *     example: Arno
  *   last_name:
  *     type: string
- *     description: The customer's last name
+ *     description: The customer's first name
  *     example: Willms
  *   billing_address_id:
  *     type: string

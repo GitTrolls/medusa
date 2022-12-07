@@ -2,43 +2,48 @@
 
 ## Classes
 
-- [AdminPostPublishableApiKeysPublishableApiKeyReq](../classes/internal-21.AdminPostPublishableApiKeysPublishableApiKeyReq.md)
-- [AdminPostPublishableApiKeysReq](../classes/internal-21.AdminPostPublishableApiKeysReq.md)
-- [GetPublishableApiKeysParams](../classes/internal-21.GetPublishableApiKeysParams.md)
-- [PublishableApiKey](../classes/internal-21.PublishableApiKey.md)
+- [AdminGetReturnsParams](../classes/internal-21.AdminGetReturnsParams.md)
+- [AdminPostReturnsReturnReceiveReq](../classes/internal-21.AdminPostReturnsReturnReceiveReq.md)
+- [Item](../classes/internal-21.Item.md)
 
 ## Type Aliases
 
-### AdminPublishableApiKeysListRes
+### AdminReturnsCancelRes
 
-Ƭ **AdminPublishableApiKeysListRes**: [`PaginatedResponse`](internal-2.md#paginatedresponse) & { `publishable_api_keys`: [`PublishableApiKey`](../classes/internal-21.PublishableApiKey.md)[]  }
-
-#### Defined in
-
-medusa/dist/api/routes/admin/publishable-api-keys/index.d.ts:8
-
-___
-
-### AdminPublishableApiKeysRes
-
-Ƭ **AdminPublishableApiKeysRes**: `Object`
+Ƭ **AdminReturnsCancelRes**: `Object`
 
 #### Type declaration
 
 | Name | Type |
 | :------ | :------ |
-| `publishable_api_key` | [`PublishableApiKey`](../classes/internal-21.PublishableApiKey.md) |
+| `order` | [`Order`](../classes/internal.Order.md) |
 
 #### Defined in
 
-medusa/dist/api/routes/admin/publishable-api-keys/index.d.ts:5
+medusa/dist/api/routes/admin/returns/index.d.ts:6
 
-## Variables
+___
 
-### GetPublishableApiKeysParams\_base
+### AdminReturnsListRes
 
-• `Const` **GetPublishableApiKeysParams\_base**: [`"/home/runner/work/medusa/medusa/packages/medusa/dist/types/global"`](internal-7.__home_runner_work_medusa_medusa_packages_medusa_dist_types_global_.md)
+Ƭ **AdminReturnsListRes**: [`PaginatedResponse`](internal-2.md#paginatedresponse) & { `returns`: [`Return`](../classes/internal.Return.md)[]  }
 
 #### Defined in
 
-medusa/dist/api/routes/admin/publishable-api-keys/list-publishable-api-keys.d.ts:60
+medusa/dist/api/routes/admin/returns/index.d.ts:9
+
+___
+
+### AdminReturnsRes
+
+Ƭ **AdminReturnsRes**: `Object`
+
+#### Type declaration
+
+| Name | Type |
+| :------ | :------ |
+| `return` | [`Return`](../classes/internal.Return.md) |
+
+#### Defined in
+
+medusa/dist/api/routes/admin/returns/index.d.ts:12

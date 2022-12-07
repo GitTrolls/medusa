@@ -2,38 +2,36 @@
 
 ## Classes
 
-- [AdminDeleteUploadsReq](../classes/internal-31.AdminDeleteUploadsReq.md)
-- [AdminPostUploadsDownloadUrlReq](../classes/internal-31.AdminPostUploadsDownloadUrlReq.md)
-- [IAdminPostUploadsFileReq](../classes/internal-31.IAdminPostUploadsFileReq.md)
+- [StorePostAuthReq](../classes/internal-31.StorePostAuthReq.md)
 
 ## Type Aliases
 
-### AdminUploadsDownloadUrlRes
+### StoreAuthRes
 
-Ƭ **AdminUploadsDownloadUrlRes**: `Object`
+Ƭ **StoreAuthRes**: `Object`
 
 #### Type declaration
 
 | Name | Type |
 | :------ | :------ |
-| `download_url` | `string` |
+| `customer` | [`Customer`](../classes/internal.Customer.md) |
 
 #### Defined in
 
-medusa/dist/api/routes/admin/uploads/index.d.ts:10
+medusa/dist/api/routes/store/auth/index.d.ts:4
 
 ___
 
-### AdminUploadsRes
+### StoreGetAuthEmailRes
 
-Ƭ **AdminUploadsRes**: `Object`
+Ƭ **StoreGetAuthEmailRes**: `Object`
 
 #### Type declaration
 
 | Name | Type |
 | :------ | :------ |
-| `uploads` | { `url`: `string`  }[] |
+| `exists` | `boolean` |
 
 #### Defined in
 
-medusa/dist/api/routes/admin/uploads/index.d.ts:4
+medusa/dist/api/routes/store/auth/index.d.ts:7
