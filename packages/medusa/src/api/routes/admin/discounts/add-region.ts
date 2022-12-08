@@ -40,7 +40,6 @@ import { EntityManager } from "typeorm"
  *     content:
  *       application/json:
  *         schema:
- *           type: object
  *           properties:
  *             discount:
  *               $ref: "#/components/schemas/discount"

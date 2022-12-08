@@ -1,10 +1,7 @@
 import { Router } from "express"
 import "reflect-metadata"
 import { Order } from "../../../.."
-import middlewares, { transformBody } from "../../../middlewares"
-import requireCustomerAuthentication from "../../../middlewares/require-customer-authentication"
-import { StorePostCustomersCustomerOrderClaimReq } from "./request-order"
-import { StorePostCustomersCustomerAcceptClaimReq } from "./confirm-order-request"
+import middlewares from "../../../middlewares"
 
 const route = Router()
 
@@ -27,19 +24,6 @@ export default (app) => {
   route.get(
     "/cart/:cart_id",
     middlewares.wrap(require("./get-order-by-cart").default)
-  )
-
-  route.post(
-    "/customer/confirm",
-    transformBody(StorePostCustomersCustomerAcceptClaimReq),
-    middlewares.wrap(require("./confirm-order-request").default)
-  )
-
-  route.post(
-    "/batch/customer/token",
-    requireCustomerAuthentication(),
-    transformBody(StorePostCustomersCustomerOrderClaimReq),
-    middlewares.wrap(require("./request-order").default)
   )
 
   return app
@@ -127,5 +111,3 @@ export type StoreOrdersRes = {
 }
 
 export * from "./lookup-order"
-export * from "./confirm-order-request"
-export * from "./request-order"

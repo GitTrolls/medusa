@@ -20,7 +20,6 @@ import { validator } from "../../../../utils/validator"
  *   content:
  *     application/json:
  *       schema:
- *         type: object
  *         required:
  *           - email
  *           - password
@@ -62,7 +61,6 @@ import { validator } from "../../../../utils/validator"
  *    content:
  *      application/json:
  *        schema:
- *          type: object
  *          properties:
  *            user:
  *              $ref: "#/components/schemas/user"

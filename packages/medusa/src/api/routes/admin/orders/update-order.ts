@@ -28,7 +28,6 @@ import { validator } from "../../../../utils/validator"
  *   content:
  *     application/json:
  *       schema:
- *         type: object
  *         properties:
  *           email:
  *             description: the email for the order
@@ -124,7 +123,6 @@ import { validator } from "../../../../utils/validator"
  *     content:
  *       application/json:
  *         schema:
- *           type: object
  *           properties:
  *             order:
  *               $ref: "#/components/schemas/order"

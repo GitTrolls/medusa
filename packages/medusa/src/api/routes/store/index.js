@@ -31,14 +31,12 @@ export default (app, container, config) => {
     })
   )
 
-  const featureFlagRouter = container.resolve("featureFlagRouter")
-
   route.use(middlewares.authenticateCustomer())
 
   authRoutes(route)
   collectionRoutes(route)
   customerRoutes(route, container)
-  productRoutes(route, featureFlagRouter)
+  productRoutes(route)
   productTypesRoutes(route)
   orderRoutes(route)
   orderEditRoutes(route)

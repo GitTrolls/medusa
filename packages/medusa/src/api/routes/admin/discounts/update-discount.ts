@@ -36,7 +36,6 @@ import { FindParams } from "../../../../types/common"
  *   content:
  *     application/json:
  *       schema:
- *         type: object
  *         properties:
  *           code:
  *             type: string
@@ -159,7 +158,6 @@ import { FindParams } from "../../../../types/common"
  *     content:
  *       application/json:
  *         schema:
- *           type: object
  *           properties:
  *             discount:
  *               $ref: "#/components/schemas/discount"

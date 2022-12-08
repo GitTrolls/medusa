@@ -181,7 +181,7 @@ class StripeProviderService extends AbstractPaymentService {
 
   async createPaymentNew(paymentInput, intentRequestData = {}) {
     const { customer, currency_code, amount, resource_id, cart } = paymentInput
-    const { id: customer_id, email } = customer ?? {}
+    const { id: customer_id, email } = customer
 
     const intentRequest = {
       description:
@@ -205,7 +205,7 @@ class StripeProviderService extends AbstractPaymentService {
 
         intentRequest.customer = stripeCustomer.id
       }
-    } else if (email) {
+    } else {
       const stripeCustomer = await this.createCustomer({
         email,
       })
@@ -302,7 +302,7 @@ class StripeProviderService extends AbstractPaymentService {
     try {
       const stripeId = paymentInput.customer?.metadata?.stripe_id
 
-      if (stripeId !== paymentSessionData.customer) {
+      if (stripeId !== paymentInput.customer_id) {
         return await this.createPaymentNew(paymentInput, intentRequestData)
       } else {
         if (paymentSessionData.amount === Math.round(paymentInput.amount)) {

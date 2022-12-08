@@ -53,7 +53,6 @@ import {
  *     content:
  *       application/json:
  *         schema:
- *           type: object
  *           properties:
  *             cart:
  *               $ref: "#/components/schemas/cart"

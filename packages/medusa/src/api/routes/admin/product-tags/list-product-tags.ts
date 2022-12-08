@@ -110,7 +110,6 @@ import { Request, Response } from "express"
  *    content:
  *      application/json:
  *        schema:
- *          type: object
  *          properties:
  *            product_tags:
  *              $ref: "#/components/schemas/product_tag"

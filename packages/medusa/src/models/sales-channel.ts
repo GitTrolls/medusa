@@ -26,7 +26,6 @@ export class SalesChannel extends SoftDeletableEntity {
  * title: "Sales Channel"
  * description: "A Sales Channel"
  * x-resourceId: sales_channel
- * type: object
  * required:
  *   - name
  * properties:

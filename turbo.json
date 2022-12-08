@@ -3,26 +3,11 @@
   "baseBranch": "origin/master",
   "pipeline": {
     "build": {
-      "dependsOn": [
-        "^build"
-      ],
-      "outputs": [
-        "dist/**",
-        "api/**",
-        "helpers/**",
-        "loaders/**",
-        "migrations/**",
-        "models/**",
-        "repositories/**",
-        "services/**",
-        "subscribers/**",
-        "utils/**"
-      ]
+      "dependsOn": ["^build"],
+      "outputs": ["dist/**", "api/**", "services/**", "subscribers/**"]
     },
     "test": {
-      "dependsOn": [
-        "build"
-      ],
+      "dependsOn": ["build"],
       "outputs": []
     }
   }

@@ -237,7 +237,6 @@ import { isDefined } from "../../../../utils"
  *    content:
  *      application/json:
  *        schema:
- *          type: object
  *          properties:
  *            batch_jobs:
  *               type: array

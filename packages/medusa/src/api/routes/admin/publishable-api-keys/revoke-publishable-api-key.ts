@@ -39,7 +39,6 @@ import PublishableApiKeyService from "../../../../services/publishable-api-key"
  *     content:
  *       application/json:
  *         schema:
- *           type: object
  *           properties:
  *             publishable_api_key:
  *               $ref: "#/components/schemas/publishable_api_key"

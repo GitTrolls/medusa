@@ -17,13 +17,12 @@ import {
   RegionService,
 } from "../../../../services"
 import { defaultStoreCartFields, defaultStoreCartRelations } from "."
-import { Cart, LineItem } from "../../../../models"
+import { Cart } from "../../../../models"
 import { FeatureFlagDecorators } from "../../../../utils/feature-flag-decorators"
 import { FlagRouter } from "../../../../utils/flag-router"
 import SalesChannelFeatureFlag from "../../../../loaders/feature-flags/sales-channels"
 import { CartCreateProps } from "../../../../types/cart"
 import { isDefined } from "../../../../utils"
-import PublishableAPIKeysFeatureFlag from "../../../../loaders/feature-flags/publishable-api-keys"
 
 /**
  * @oas [post] /carts
@@ -37,7 +36,6 @@ import PublishableAPIKeysFeatureFlag from "../../../../loaders/feature-flags/pub
  *   content:
  *     application/json:
  *       schema:
- *         type: object
  *         properties:
  *           region_id:
  *             type: string
@@ -93,7 +91,6 @@ import PublishableAPIKeysFeatureFlag from "../../../../loaders/feature-flags/pub
  *     content:
  *       application/json:
  *         schema:
- *           type: object
  *           properties:
  *             cart:
  *               $ref: "#/components/schemas/cart"
@@ -160,49 +157,26 @@ export default async (req, res) => {
     }
   }
 
-  if (featureFlagRouter.isFeatureEnabled(PublishableAPIKeysFeatureFlag.key)) {
-    if (
-      !toCreate.sales_channel_id &&
-      req.publishableApiKeyScopes?.sales_channel_id.length
-    ) {
-      if (req.publishableApiKeyScopes.sales_channel_id.length > 1) {
-        throw new MedusaError(
-          MedusaError.Types.UNEXPECTED_STATE,
-          "The PublishableApiKey provided in the request header has multiple associated sales channels."
-        )
-      }
-
-      toCreate.sales_channel_id =
-        req.publishableApiKeyScopes.sales_channel_id[0]
-    }
-  }
-
   let cart: Cart
   await entityManager.transaction(async (manager) => {
-    const cartServiceTx = cartService.withTransaction(manager)
-    const lineItemServiceTx = lineItemService.withTransaction(manager)
+    cart = await cartService.withTransaction(manager).create(toCreate)
 
-    cart = await cartServiceTx.create(toCreate)
-
-    if (validated.items?.length) {
-      const generateInputData = validated.items.map((item) => {
-        return {
-          variantId: item.variant_id,
-          quantity: item.quantity,
-        }
-      })
-      const generatedLineItems: LineItem[] = await lineItemServiceTx.generate(
-        generateInputData,
-        {
-          region_id: regionId,
-          customer_id: req.user?.customer_id,
-        }
+    if (validated.items) {
+      await Promise.all(
+        validated.items.map(async (i) => {
+          const lineItem = await lineItemService
+            .withTransaction(manager)
+            .generate(i.variant_id, regionId, i.quantity, {
+              customer_id: req.user?.customer_id,
+            })
+          return await cartService
+            .withTransaction(manager)
+            .addLineItem(cart.id, lineItem, {
+              validateSalesChannels:
+                featureFlagRouter.isFeatureEnabled("sales_channels"),
+            })
+        })
       )
-
-      await cartServiceTx.addOrUpdateLineItems(cart.id, generatedLineItems, {
-        validateSalesChannels:
-          featureFlagRouter.isFeatureEnabled("sales_channels"),
-      })
     }
   })
 

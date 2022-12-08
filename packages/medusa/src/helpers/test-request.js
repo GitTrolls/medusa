@@ -87,18 +87,16 @@ export async function request(method, url, opts = {}) {
   )
   headers.Cookie = headers.Cookie || ""
   if (opts.adminSession) {
-    const adminSession = { ...opts.adminSession }
-
-    if (adminSession.jwt) {
-      adminSession.jwt = jwt.sign(
-        adminSession.jwt,
+    if (opts.adminSession.jwt) {
+      opts.adminSession.jwt = jwt.sign(
+        opts.adminSession.jwt,
         config.projectConfig.jwt_secret,
         {
           expiresIn: "30m",
         }
       )
     }
-    headers.Cookie = JSON.stringify(adminSession) || ""
+    headers.Cookie = JSON.stringify(opts.adminSession) || ""
   }
   if (opts.clientSession) {
     if (opts.clientSession.jwt) {

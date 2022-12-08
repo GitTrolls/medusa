@@ -42,7 +42,6 @@ import { Swap } from "../../../../models"
  *     content:
  *       application/json:
  *         schema:
- *           type: object
  *           properties:
  *             swaps:
  *               type: array

@@ -40,7 +40,6 @@ import { IdempotencyKeyService } from "../../../../services"
  *     content:
  *       application/json:
  *         schema:
- *           type: object
  *           properties:
  *             type:
  *               type: string

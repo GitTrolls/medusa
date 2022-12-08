@@ -15,24 +15,22 @@ export type CreatePaymentCollectionInput = {
   description?: string
 }
 
-export type PaymentCollectionsSessionsBatchInput = {
+export type PaymentCollectionSessionInput = {
   provider_id: string
   amount: number
   session_id?: string
-}
-
-export type PaymentCollectionsSessionsInput = {
-  provider_id: string
+  customer_id: string
 }
 
 export type PaymentProviderDataInput = {
   resource_id: string
-  customer: Partial<Customer> | null
+  customer: Partial<Customer>
   currency_code: string
   provider_id: string
   amount: number
   cart_id?: string
   cart?: Cart
+  metadata?: any
 }
 export const defaultPaymentCollectionRelations = [
   "region",
