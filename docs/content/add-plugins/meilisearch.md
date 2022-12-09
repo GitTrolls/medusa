@@ -51,7 +51,7 @@ Where `<YOUR_MEILISEARCH_HOST>` is the host of your MeiliSearch instance. By def
 
 Finally, in `medusa-config.js` add the following item into the `plugins` array:
 
-```jsx title=medusa-config.js
+```jsx
 const plugins = [
   //...
   {
@@ -144,7 +144,7 @@ The Next.js storefront has the MeiliSearch integration available out of the box.
 
 First, ensure that the search feature is enabled in `store.config.json`:
 
-```json title=store.config.json
+```json
 {
   "features": {
     "search": true
@@ -206,7 +206,7 @@ In Gatsby, environment variables that should be public and available in the brow
 
 Then, create the file `src/components/header/search.jsx` with the following content:
 
-```jsx title=src/components/header/search.jsx
+```jsx
 import {
   Highlight,
   Hits,
@@ -269,13 +269,13 @@ If you named your environment variables differently based on your framework, mak
 
 Finally, import this file at the beginning of `src/components/header/index.jsx`:
 
-```jsx title=src/components/header/index.jsx
+```jsx
 import Search from "./search"
 ```
 
 And add the `Search` component in the returned JSX before `RegionPopover`:
 
-```jsx title=src/components/header/index.jsx
+```jsx
 //...
 <Search />
 <RegionPopover regions={mockData.regions} />

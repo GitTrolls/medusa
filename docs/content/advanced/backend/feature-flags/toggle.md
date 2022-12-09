@@ -44,7 +44,7 @@ You can enable a feature by using the server settings in `medusa-config.js`. You
 
 For example, to enable the Tax-Inclusive Pricing beta feature, add the following to the exported object in `medusa-config.js`:
 
-```jsx title=medusa-config.js
+```jsx
 module.exports = {
   featureFlags: {
     tax_inclusive_pricing: true

@@ -20,7 +20,7 @@ Creating a Notification Provider is as simple as creating a TypeScript or JavaS
 
 For example, create the file `src/services/email-sender.ts` with the following content:
 
-```ts title=src/services/email-sender.ts
+```ts
 import { AbstractNotificationService } from "@medusajs/medusa";
 import { EntityManager } from "typeorm";
 
@@ -89,6 +89,7 @@ class EmailSenderService extends AbstractNotificationService {
   static identifier = "email-sender";
   protected orderService: OrderService;
 
+  // highlight-start
   constructor(container, options) {
     super(container);
     //you can access options here in case you're
@@ -96,6 +97,7 @@ class EmailSenderService extends AbstractNotificationService {
 
     this.orderService = container.orderService;
   }
+  // highlight-end
 
   //...
 }
@@ -217,7 +219,7 @@ This section will not cover the basics of Subscribers. You can read the [Subscri
 
 Following the previous example, to make sure the `email-sender` Notification Provider handles the `order.placed` event, create the file `src/subscribers/notification.js` with the following content:
 
-```ts title=src/subscribers/notification.js
+```ts
 class NotificationSubscriber {
   constructor({ notificationService }) {
     notificationService.subscribe('order.placed', 'email-sender');

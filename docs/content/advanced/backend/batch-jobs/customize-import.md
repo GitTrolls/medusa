@@ -40,7 +40,7 @@ The batch job strategy class must extend the `AbstractBatchJobStrategy` class wh
 
 For example, you can define the following class in the file you created:
 
-```typescript title=src/strategies/import.ts
+```typescript
 import { AbstractBatchJobStrategy, BatchJobService } from '@medusajs/medusa'
 import { EntityManager } from 'typeorm'
 
