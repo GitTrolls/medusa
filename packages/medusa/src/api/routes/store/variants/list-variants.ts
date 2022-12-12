@@ -73,7 +73,6 @@ import { IsType } from "../../../../utils/validators/is-type"
  *     content:
  *       application/json:
  *         schema:
- *           type: object
  *           properties:
  *             variants:
  *               type: array

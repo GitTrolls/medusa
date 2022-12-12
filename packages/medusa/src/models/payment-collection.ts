@@ -106,7 +106,6 @@ export class PaymentCollection extends SoftDeletableEntity {
  * title: "Payment Collection"
  * description: "Payment Collection"
  * x-resourceId: payment_collection
- * type: object
  * required:
  *   - type
  *   - status

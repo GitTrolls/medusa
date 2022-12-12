@@ -1,6 +1,6 @@
 const path = require("path")
 const fs = require("fs/promises")
-import { resolve, sep } from "path"
+import { sep, resolve } from "path"
 
 const setupServer = require("../../../../helpers/setup-server")
 const { useApi } = require("../../../../helpers/use-api")
@@ -31,6 +31,7 @@ describe("Batchjob with type order-export", () => {
       cwd,
       redisUrl: "redis://127.0.0.1:6379",
       uploadDir: __dirname,
+      verbose: false,
     })
   })
 

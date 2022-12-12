@@ -26,7 +26,6 @@ import { IsType } from "../../../../utils/validators/is-type"
  *   content:
  *     application/json:
  *       schema:
- *         type: object
  *         properties:
  *           region_id:
  *             type: string
@@ -115,7 +114,6 @@ import { IsType } from "../../../../utils/validators/is-type"
  *     content:
  *       application/json:
  *         schema:
- *           type: object
  *           properties:
  *             cart:
  *               $ref: "#/components/schemas/cart"
@@ -136,10 +134,6 @@ export default async (req, res) => {
 
   const cartService: CartService = req.scope.resolve("cartService")
   const manager: EntityManager = req.scope.resolve("manager")
-
-  if (req.user?.customer_id) {
-    validated.customer_id = req.user.customer_id
-  }
 
   await manager.transaction(async (transactionManager) => {
     await cartService.withTransaction(transactionManager).update(id, validated)

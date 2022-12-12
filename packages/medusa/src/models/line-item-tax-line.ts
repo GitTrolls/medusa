@@ -34,7 +34,6 @@ export class LineItemTaxLine extends TaxLine {
  * title: "Line Item Tax Line"
  * description: "Represents an Line Item Tax Line"
  * x-resourceId: line_item_tax_line
- * type: object
  * required:
  *   - item_id
  *   - rate

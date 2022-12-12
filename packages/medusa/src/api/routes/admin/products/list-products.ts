@@ -184,7 +184,6 @@ import { FilterableProductProps } from "../../../../types/product"
  *     content:
  *       application/json:
  *         schema:
- *           type: object
  *           properties:
  *             products:
  *               type: array

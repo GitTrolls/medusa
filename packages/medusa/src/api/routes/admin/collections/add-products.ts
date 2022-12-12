@@ -16,7 +16,6 @@ import ProductCollectionService from "../../../../services/product-collection"
  *   content:
  *     application/json:
  *       schema:
- *         type: object
  *         required:
  *           - product_ids
  *         properties:
@@ -49,7 +48,6 @@ import ProductCollectionService from "../../../../services/product-collection"
  *    content:
  *      application/json:
  *        schema:
- *          type: object
  *          properties:
  *            collection:
  *              $ref: "#/components/schemas/product_collection"

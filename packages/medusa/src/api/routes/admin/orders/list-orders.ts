@@ -180,7 +180,6 @@ import { pick } from "lodash"
  *     content:
  *       application/json:
  *         schema:
- *           type: object
  *           properties:
  *             orders:
  *               type: array

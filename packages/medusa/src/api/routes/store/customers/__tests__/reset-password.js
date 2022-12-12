@@ -9,7 +9,7 @@ describe("POST /store/customers/password-reset", () => {
     beforeAll(async () => {
       subject = await request("POST", `/store/customers/password-reset`, {
         payload: {
-          email: "lebron@james1.com",
+          email: "lebron@james.com",
           token: jwt.sign({ customer_id: IdMap.getId("lebron") }, "1234"),
           password: "TheGame",
         },
@@ -47,7 +47,7 @@ describe("POST /store/customers/password-reset", () => {
     beforeAll(async () => {
       subject = await request("POST", `/store/customers/password-reset`, {
         payload: {
-          email: "lebron@james1.com",
+          email: "lebron@james.com",
           token: jwt.sign({ customer_id: IdMap.getId("not-lebron") }, "1234"),
           password: "TheGame",
         },

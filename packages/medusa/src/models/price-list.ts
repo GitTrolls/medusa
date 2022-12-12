@@ -74,7 +74,6 @@ export class PriceList extends SoftDeletableEntity {
  * title: "Price List"
  * description: "Price Lists represents a set of prices that overrides the default price for one or more product variants."
  * x-resourceId: price_list
- * type: object
  * required:
  *   - name
  *   - description

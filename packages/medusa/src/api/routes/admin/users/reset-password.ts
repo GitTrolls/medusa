@@ -18,7 +18,6 @@ import { EntityManager } from "typeorm"
  *   content:
  *     application/json:
  *       schema:
- *         type: object
  *         required:
  *           - token
  *           - password
@@ -69,7 +68,6 @@ import { EntityManager } from "typeorm"
  *     content:
  *       application/json:
  *         schema:
- *           type: object
  *           properties:
  *             user:
  *               $ref: "#/components/schemas/user"

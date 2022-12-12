@@ -37,7 +37,6 @@ import { defaultAdminCollectionsRelations } from "."
  *    content:
  *      application/json:
  *        schema:
- *          type: object
  *          properties:
  *            collection:
  *              $ref: "#/components/schemas/product_collection"

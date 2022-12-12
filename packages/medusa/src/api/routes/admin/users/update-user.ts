@@ -17,7 +17,6 @@ import { EntityManager } from "typeorm"
  *   content:
  *     application/json:
  *       schema:
- *         type: object
  *         properties:
  *           first_name:
  *             description: "The name of the User."
@@ -68,7 +67,6 @@ import { EntityManager } from "typeorm"
  *     content:
  *       application/json:
  *         schema:
- *           type: object
  *           properties:
  *             user:
  *               $ref: "#/components/schemas/user"

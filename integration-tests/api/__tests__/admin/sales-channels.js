@@ -34,6 +34,7 @@ describe("sales channels", () => {
     const [process, connection] = await startServerWithEnvironment({
       cwd,
       env: { MEDUSA_FF_SALES_CHANNELS: true },
+      verbose: false,
     })
     dbConnection = connection
     medusaProcess = process

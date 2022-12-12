@@ -1,14 +1,19 @@
 import { MedusaError } from "medusa-core-utils"
 import { EntityManager, In } from "typeorm"
 
-import { Cart, DiscountRuleType, LineItem, LineItemAdjustment } from "../models"
+import {
+  Cart,
+  DiscountRuleType,
+  LineItem,
+  LineItemAdjustment,
+  ProductVariant,
+} from "../models"
 import { LineItemAdjustmentRepository } from "../repositories/line-item-adjustment"
 import { FindConfig } from "../types/common"
 import { FilterableLineItemAdjustmentProps } from "../types/line-item-adjustment"
 import DiscountService from "./discount"
 import { TransactionBaseService } from "../interfaces"
 import { buildQuery, setMetadata } from "../utils"
-import { CalculationContextData } from "../types/totals"
 
 type LineItemAdjustmentServiceProps = {
   manager: EntityManager
@@ -17,7 +22,7 @@ type LineItemAdjustmentServiceProps = {
 }
 
 type AdjustmentContext = {
-  variant: { product_id: string }
+  variant: ProductVariant
 }
 
 type GeneratedAdjustment = {
@@ -169,13 +174,13 @@ class LineItemAdjustmentService extends TransactionBaseService {
 
   /**
    * Creates adjustment for a line item
-   * @param calculationContextData - the calculationContextData object holding discounts
+   * @param cart - the cart object holding discounts
    * @param generatedLineItem - the line item for which a line item adjustment might be created
    * @param context - the line item for which a line item adjustment might be created
    * @return a line item adjustment or undefined if no adjustment was created
    */
   async generateAdjustments(
-    calculationContextData: CalculationContextData,
+    cart: Cart,
     generatedLineItem: LineItem,
     context: AdjustmentContext
   ): Promise<GeneratedAdjustment[]> {
@@ -191,12 +196,12 @@ class LineItemAdjustmentService extends TransactionBaseService {
       if (
         !lineItem.allow_discounts ||
         lineItem.is_return ||
-        !calculationContextData?.discounts?.length
+        !cart?.discounts?.length
       ) {
         return []
       }
 
-      const [discount] = calculationContextData.discounts.filter(
+      const [discount] = cart.discounts.filter(
         (d) => d.rule.type !== DiscountRuleType.FREE_SHIPPING
       )
 
@@ -221,7 +226,7 @@ class LineItemAdjustmentService extends TransactionBaseService {
       const amount = await this.discountService.calculateDiscountForLineItem(
         discount.id,
         lineItem,
-        calculationContextData
+        cart
       )
 
       // if discounted amount is 0, then do nothing
@@ -229,13 +234,15 @@ class LineItemAdjustmentService extends TransactionBaseService {
         return []
       }
 
-      return [
+      const adjustments = [
         {
           amount,
           discount_id: discount.id,
           description: "discount",
         },
       ]
+
+      return adjustments
     })
   }
 

@@ -42,7 +42,6 @@ export class DiscountConditionProductCollection {
  * title: "Product Collection Discount Condition"
  * description: "Associates a discount condition with a product collection"
  * x-resourceId: discount_condition_product_collection
- * type: object
  * required:
  *   - product_collection_id
  *   - condition_id

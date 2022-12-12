@@ -24,7 +24,6 @@ import { IdempotencyKey } from "../../../../models/idempotency-key"
  *     content:
  *       application/json:
  *         schema:
- *           type: object
  *           properties:
  *             cart:
  *               $ref: "#/components/schemas/cart"

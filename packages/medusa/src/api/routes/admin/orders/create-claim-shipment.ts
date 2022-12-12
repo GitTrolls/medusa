@@ -18,7 +18,6 @@ import { EntityManager } from "typeorm"
  *   content:
  *     application/json:
  *       schema:
- *         type: object
  *         required:
  *           - fulfillment_id
  *         properties:
@@ -63,7 +62,6 @@ import { EntityManager } from "typeorm"
  *     content:
  *       application/json:
  *         schema:
- *           type: object
  *           properties:
  *             order:
  *               $ref: "#/components/schemas/order"

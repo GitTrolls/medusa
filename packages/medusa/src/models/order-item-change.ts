@@ -63,7 +63,6 @@ export class OrderItemChange extends SoftDeletableEntity {
  * title: "Order Item Change"
  * description: "Represents an order edit item change"
  * x-resourceId: order_item_change
- * type: object
  * required:
  *   - type
  *   - order_edit_id

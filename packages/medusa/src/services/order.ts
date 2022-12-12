@@ -1,4 +1,3 @@
-import jwt, { JwtPayload } from "jsonwebtoken"
 import { MedusaError } from "medusa-core-utils"
 import { Brackets, EntityManager } from "typeorm"
 import { TransactionBaseService } from "../interfaces"
@@ -46,8 +45,6 @@ import ShippingOptionService from "./shipping-option"
 import ShippingProfileService from "./shipping-profile"
 import TotalsService from "./totals"
 import { NewTotalsService, TaxProviderService } from "./index"
-import { ConfigModule } from "../types/global"
-import logger from "../loaders/logger"
 
 export const ORDER_CART_ALREADY_EXISTS_ERROR = "Order from cart already exists"
 
@@ -97,7 +94,6 @@ class OrderService extends TransactionBaseService {
     UPDATED: "order.updated",
     CANCELED: "order.canceled",
     COMPLETED: "order.completed",
-    ORDERS_CLAIMED: "order.orders_claimed",
   }
 
   protected manager_: EntityManager
@@ -1502,27 +1498,6 @@ class OrderService extends TransactionBaseService {
     order: Order,
     totalsFields: string[] = []
   ): Promise<Order> {
-    if (totalsFields.some((field) => ["subtotal", "total"].includes(field))) {
-      const calculationContext =
-        await this.totalsService_.getCalculationContext(order, {
-          exclude_shipping: true,
-        })
-      order.items = await Promise.all(
-        (order.items || []).map(async (item) => {
-          const itemTotals = await this.totalsService_.getLineItemTotals(
-            item,
-            order,
-            {
-              include_tax: true,
-              calculation_context: calculationContext,
-            }
-          )
-
-          return Object.assign(item, itemTotals)
-        })
-      )
-    }
-
     for (const totalField of totalsFields) {
       switch (totalField) {
         case "shipping_total": {
@@ -1628,9 +1603,9 @@ class OrderService extends TransactionBaseService {
   }
 
   /**
-   * Calculate and attach the different total fields on the object
    * @param order
    * @param totalsFieldsOrConfig
+   * @protected
    */
   async decorateTotals(
     order: Order,

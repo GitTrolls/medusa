@@ -149,21 +149,21 @@ class AuthService extends TransactionBaseService {
   ): Promise<AuthenticateResult> {
     return await this.atomicPhase_(async (transactionManager) => {
       try {
-        const customer: Customer = await this.customerService_
+        const customerPasswordHash: Customer = await this.customerService_
           .withTransaction(transactionManager)
-          .retrieveRegisteredByEmail(email, {
-            select: ["id", "password_hash"],
+          .retrieveByEmail(email, {
+            select: ["password_hash"],
           })
-        if (customer.password_hash) {
+        if (customerPasswordHash.password_hash) {
           const passwordsMatch = await this.comparePassword_(
             password,
-            customer.password_hash
+            customerPasswordHash.password_hash
           )
 
           if (passwordsMatch) {
             const customer = await this.customerService_
               .withTransaction(transactionManager)
-              .retrieveRegisteredByEmail(email)
+              .retrieveByEmail(email)
 
             return {
               success: true,

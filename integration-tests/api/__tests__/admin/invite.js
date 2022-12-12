@@ -1,3 +1,4 @@
+const jwt = require("jsonwebtoken")
 const path = require("path")
 
 const setupServer = require("../../../helpers/setup-server")

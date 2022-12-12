@@ -218,10 +218,7 @@ class ProductImportStrategy extends AbstractBatchJobStrategy {
         record.currency_code = price.currency_code
       }
 
-      record.amount = computerizeAmount(
-        Number(record.amount),
-        record.currency_code as string
-      )
+      record.amount = computerizeAmount(record.amount, record.currency_code)
       prices.push(record)
     }
 
