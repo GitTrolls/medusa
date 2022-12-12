@@ -75,7 +75,7 @@ npm install medusa-plugin-slack-notification
 
 After that, open `medusa-config.js` and add the new plugin with its configurations in the `plugins` array:
 
-```jsx title=medusa-config.js
+```jsx
 const plugins = [
   ...,
   {

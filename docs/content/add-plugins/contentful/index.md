@@ -38,7 +38,7 @@ This installs a new Medusa server in the directory `medusa-contentful`.
 
 Change to the `medusa-contentful` directory. In `.env` you’ll find three variables:
 
-```bash title=.env
+```bash
 CONTENTFUL_SPACE_ID=
 CONTENTFUL_ACCESS_TOKEN=
 CONTENTFUL_ENV=
@@ -116,7 +116,7 @@ You can find the format of the PostgreSQL database URL in [PostgreSQL’s docume
 
 Then, in `medusa-config.js` in the exported object, comment out or remove the SQLite database configurations and add the PostgreSQL database configurations:
 
-```jsx title=medusa-config.js
+```jsx
 module.exports = {
   projectConfig: {
     //...
@@ -239,7 +239,7 @@ mv .env.template .env
 
 Then, open `.env`. You should find the following environment variables:
 
-```bash title=.env
+```bash
 CONTENTFUL_SPACE_ID=
 CONTENTFUL_ACCESS_TOKEN=
 ```

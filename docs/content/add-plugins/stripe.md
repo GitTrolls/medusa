@@ -42,7 +42,7 @@ Next, you need to add configurations for your stripe plugin.
 
 In `medusa-config.js` add the following at the end of the `plugins` array:
 
-```jsx title=medusa-config.js
+```jsx
 const plugins = [
   ...,
   {
@@ -123,7 +123,7 @@ Medusa has a Next.js storefront that you can easily use with your Medusa server.
 
 In your `.env.local` file (or the file you’re using for your environment variables), add the following variable:
 
-```bash title=.env.local
+```bash
 NEXT_PUBLIC_STRIPE_KEY=<YOUR_PUBLISHABLE_KEY>
 ```
 
@@ -139,7 +139,7 @@ Medusa also has a Gatsby storefront that you can use as your ecommerce store. If
 
 In your `.env.development` file (or the file you’re using for your environment variables) add the following variable with the value set to the Publishable Key:
 
-```jsx title=.env.development
+```jsx
 GATSBY_STRIPE_KEY=pk_
 ```
 
