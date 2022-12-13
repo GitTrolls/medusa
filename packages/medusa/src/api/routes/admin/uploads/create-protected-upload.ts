@@ -46,7 +46,6 @@ import { IFileService } from "../../../../interfaces"
  *     content:
  *       application/json:
  *         schema:
- *           type: object
  *           properties:
  *             uploads:
  *               type: array

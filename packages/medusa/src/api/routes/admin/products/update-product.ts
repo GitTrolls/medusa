@@ -11,20 +11,20 @@ import {
   ValidateIf,
   ValidateNested,
 } from "class-validator"
-import { defaultAdminProductFields, defaultAdminProductRelations } from "."
 import { PricingService, ProductService } from "../../../../services"
 import {
   ProductSalesChannelReq,
   ProductTagReq,
   ProductTypeReq,
 } from "../../../../types/product"
+import { defaultAdminProductFields, defaultAdminProductRelations } from "."
 
-import { Type } from "class-transformer"
 import { EntityManager } from "typeorm"
-import SalesChannelFeatureFlag from "../../../../loaders/feature-flags/sales-channels"
+import { FeatureFlagDecorators } from "../../../../utils/feature-flag-decorators"
 import { ProductStatus } from "../../../../models"
 import { ProductVariantPricesUpdateReq } from "../../../../types/product-variant"
-import { FeatureFlagDecorators } from "../../../../utils/feature-flag-decorators"
+import SalesChannelFeatureFlag from "../../../../loaders/feature-flags/sales-channels"
+import { Type } from "class-transformer"
 import { validator } from "../../../../utils/validator"
 
 /**
@@ -39,7 +39,6 @@ import { validator } from "../../../../utils/validator"
  *   content:
  *     application/json:
  *       schema:
- *         type: object
  *         properties:
  *           title:
  *             description: "The title of the Product"
@@ -263,7 +262,6 @@ import { validator } from "../../../../utils/validator"
  *     content:
  *       application/json:
  *         schema:
- *           type: object
  *           properties:
  *             product:
  *               $ref: "#/components/schemas/product"
@@ -390,7 +388,7 @@ class ProductVariantReq {
   @IsOptional()
   @ValidateNested({ each: true })
   @Type(() => ProductVariantPricesUpdateReq)
-  prices?: ProductVariantPricesUpdateReq[]
+  prices: ProductVariantPricesUpdateReq[]
 
   @IsOptional()
   @Type(() => ProductVariantOptionReq)
@@ -418,7 +416,7 @@ export class AdminPostProductsProductReq {
 
   @IsArray()
   @IsOptional()
-  images?: string[]
+  images: string[]
 
   @IsString()
   @IsOptional()
@@ -454,7 +452,7 @@ export class AdminPostProductsProductReq {
     ValidateNested({ each: true }),
     IsArray(),
   ])
-  sales_channels?: ProductSalesChannelReq[] | null
+  sales_channels: ProductSalesChannelReq[] | null
 
   @IsOptional()
   @Type(() => ProductVariantReq)

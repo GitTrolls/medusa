@@ -26,7 +26,6 @@ import {
   FilterableCartProps,
   isCart,
   LineItemUpdate,
-  LineItemValidateData,
 } from "../types/cart"
 import {
   AddressPayload,
@@ -325,26 +324,14 @@ class CartService extends TransactionBaseService {
           ).id
         }
 
-        if (data.customer_id) {
-          const customer = await this.customerService_
-            .withTransaction(transactionManager)
-            .retrieve(data.customer_id)
-            .catch(() => undefined)
-          rawCart.customer = customer
-          rawCart.customer_id = customer?.id
-          rawCart.email = customer?.email
-        }
-
-        if (!rawCart.email && data.email) {
-          const customer = await this.createOrFetchGuestCustomerFromEmail_(
-            data.email
-          )
+        if (data.email) {
+          const customer = await this.createOrFetchUserFromEmail_(data.email)
           rawCart.customer = customer
           rawCart.customer_id = customer.id
           rawCart.email = customer.email
         }
 
-        if (!data.region_id && !data.region) {
+        if (!data.region_id) {
           throw new MedusaError(
             MedusaError.Types.INVALID_DATA,
             `A region_id must be provided when creating a cart`
@@ -352,13 +339,11 @@ class CartService extends TransactionBaseService {
         }
 
         rawCart.region_id = data.region_id
-        const region = data.region
-          ? data.region
-          : await this.regionService_
-              .withTransaction(transactionManager)
-              .retrieve(data.region_id!, {
-                relations: ["countries"],
-              })
+        const region = await this.regionService_
+          .withTransaction(transactionManager)
+          .retrieve(data.region_id, {
+            relations: ["countries"],
+          })
         const regCountries = region.countries.map(({ iso_2 }) => iso_2)
 
         if (!data.shipping_address && !data.shipping_address_id) {
@@ -570,17 +555,15 @@ class CartService extends TransactionBaseService {
    */
   protected async validateLineItem(
     { sales_channel_id }: { sales_channel_id: string | null },
-    lineItem: LineItemValidateData
+    lineItem: LineItem
   ): Promise<boolean> {
     if (!sales_channel_id) {
       return true
     }
 
-    const lineItemVariant = lineItem.variant?.product_id
-      ? lineItem.variant
-      : await this.productVariantService_
-          .withTransaction(this.manager_)
-          .retrieve(lineItem.variant_id, { select: ["id", "product_id"] })
+    const lineItemVariant = await this.productVariantService_
+      .withTransaction(this.manager_)
+      .retrieve(lineItem.variant_id)
 
     return !!(
       await this.productService_
@@ -600,7 +583,6 @@ class CartService extends TransactionBaseService {
    *    validateSalesChannels - should check if product belongs to the same sales chanel as cart
    *                            (if cart has associated sales channel)
    * @return the result of the update operation
-   * @deprecated Use {@link addOrUpdateLineItems} instead.
    */
   async addLineItem(
     cartId: string,
@@ -677,166 +659,7 @@ class CartService extends TransactionBaseService {
             { cart_id: cartId, has_shipping: true },
             { has_shipping: false }
           )
-          .catch((err: Error | MedusaError) => {
-            // We only want to catch the errors related to not found items since we don't care if there is not item to update
-            if ("type" in err && err.type === MedusaError.Types.NOT_FOUND) {
-              return
-            }
-            throw err
-          })
-
-        cart = await this.retrieve(cart.id, {
-          relations: ["items", "discounts", "discounts.rule", "region"],
-        })
-
-        await this.refreshAdjustments_(cart)
-
-        await this.eventBus_
-          .withTransaction(transactionManager)
-          .emit(CartService.Events.UPDATED, { id: cart.id })
-      }
-    )
-  }
-
-  /**
-   * Adds or update one or multiple line items to the cart. It also update all existing items in the cart
-   * to have has_shipping to false. Finally, the adjustments will be updated.
-   * @param cartId - the id of the cart that we will add to
-   * @param lineItems - the line items to add.
-   * @param config
-   *    validateSalesChannels - should check if product belongs to the same sales chanel as cart
-   *                            (if cart has associated sales channel)
-   * @return the result of the update operation
-   */
-  async addOrUpdateLineItems(
-    cartId: string,
-    lineItems: LineItem | LineItem[],
-    config = { validateSalesChannels: true }
-  ): Promise<void> {
-    const items: LineItem[] = Array.isArray(lineItems) ? lineItems : [lineItems]
-
-    const select: (keyof Cart)[] = ["id"]
-
-    if (this.featureFlagRouter_.isFeatureEnabled("sales_channels")) {
-      select.push("sales_channel_id")
-    }
-
-    return await this.atomicPhase_(
-      async (transactionManager: EntityManager) => {
-        let cart = await this.retrieve(cartId, { select })
-
-        if (this.featureFlagRouter_.isFeatureEnabled("sales_channels")) {
-          if (config.validateSalesChannels) {
-            const areValid = await Promise.all(
-              items.map(async (item) => {
-                return await this.validateLineItem(cart, item)
-              })
-            )
-
-            const invalidProducts = areValid
-              .map((valid, index) => {
-                return !valid ? { title: items[index].title } : undefined
-              })
-              .filter((v): v is { title: string } => !!v)
-
-            if (invalidProducts.length) {
-              throw new MedusaError(
-                MedusaError.Types.INVALID_DATA,
-                `The products [${invalidProducts
-                  .map((item) => item.title)
-                  .join(
-                    " - "
-                  )}] must belongs to the sales channel on which the cart has been created.`
-              )
-            }
-          }
-        }
-
-        const lineItemServiceTx =
-          this.lineItemService_.withTransaction(transactionManager)
-        const inventoryServiceTx =
-          this.inventoryService_.withTransaction(transactionManager)
-
-        const existingItems = await lineItemServiceTx.list(
-          {
-            cart_id: cart.id,
-            variant_id: In([items.map((item) => item.variant_id)]),
-            should_merge: true,
-          },
-          { select: ["id", "metadata", "quantity"] }
-        )
-
-        const existingItemsVariantMap = new Map()
-        existingItems.forEach((item) => {
-          existingItemsVariantMap.set(item.variant_id, item)
-        })
-
-        const lineItemsToCreate: LineItem[] = []
-        const lineItemsToUpdate: { [id: string]: LineItem }[] = []
-        for (const item of items) {
-          let currentItem: LineItem | undefined
-
-          const existingItem = existingItemsVariantMap.get(item.variant_id)
-          if (item.should_merge) {
-            if (existingItem && isEqual(existingItem.metadata, item.metadata)) {
-              currentItem = existingItem
-            }
-          }
-
-          // If content matches one of the line items currently in the cart we can
-          // simply update the quantity of the existing line item
-          item.quantity = currentItem
-            ? (currentItem.quantity += item.quantity)
-            : item.quantity
-
-          await inventoryServiceTx.confirmInventory(
-            item.variant_id,
-            item.quantity
-          )
-
-          if (currentItem) {
-            lineItemsToUpdate[currentItem.id] = {
-              quantity: item.quantity,
-              has_shipping: false,
-            }
-          } else {
-            // Since the variant is eager loaded, we are removing it before the line item is being created.
-            delete (item as Partial<LineItem>).variant
-            item.has_shipping = false
-            item.cart_id = cart.id
-            lineItemsToCreate.push(item)
-          }
-        }
-
-        const itemKeysToUpdate = Object.keys(lineItemsToUpdate)
-
-        // Update all items that needs to be updated
-        if (itemKeysToUpdate.length) {
-          await Promise.all(
-            itemKeysToUpdate.map(async (id) => {
-              return await lineItemServiceTx.update(id, lineItemsToUpdate[id])
-            })
-          )
-        }
-
-        // Create all items that needs to be created
-        await lineItemServiceTx.create(lineItemsToCreate)
-
-        await lineItemServiceTx
-          .update(
-            {
-              cart_id: cartId,
-              has_shipping: true,
-            },
-            { has_shipping: false }
-          )
-          .catch((err: Error | MedusaError) => {
-            // We only want to catch the errors related to not found items since we don't care if there is not item to update
-            if ("type" in err && err.type === MedusaError.Types.NOT_FOUND) {
-              return
-            }
-            throw err
-          })
+          .catch(() => void 0)
 
         cart = await this.retrieve(cart.id, {
           relations: ["items", "discounts", "discounts.rule", "region"],
@@ -1004,9 +827,7 @@ class CartService extends TransactionBaseService {
         if (data.customer_id) {
           await this.updateCustomerId_(cart, data.customer_id)
         } else if (isDefined(data.email)) {
-          const customer = await this.createOrFetchGuestCustomerFromEmail_(
-            data.email
-          )
+          const customer = await this.createOrFetchUserFromEmail_(data.email)
           cart.customer = customer
           cart.customer_id = customer.id
           cart.email = customer.email
@@ -1053,7 +874,7 @@ class CartService extends TransactionBaseService {
           }
         }
 
-        if (isDefined(data.discounts) && data.discounts.length) {
+        if (isDefined(data.discounts)) {
           const previousDiscounts = [...cart.discounts]
           cart.discounts.length = 0
 
@@ -1081,9 +902,6 @@ class CartService extends TransactionBaseService {
           if (hasFreeShipping) {
             await this.adjustFreeShipping_(cart, true)
           }
-        } else if (isDefined(data.discounts) && !data.discounts.length) {
-          cart.discounts.length = 0
-          await this.refreshAdjustments_(cart)
         }
 
         if ("gift_cards" in data) {
@@ -1198,14 +1016,14 @@ class CartService extends TransactionBaseService {
    * @param email - the email to use
    * @return the resultign customer object
    */
-  protected async createOrFetchGuestCustomerFromEmail_(
+  protected async createOrFetchUserFromEmail_(
     email: string
   ): Promise<Customer> {
     const validatedEmail = validateEmail(email)
 
     let customer = await this.customerService_
       .withTransaction(this.transactionManager_)
-      .retrieveUnregisteredByEmail(validatedEmail)
+      .retrieveByEmail(validatedEmail)
       .catch(() => undefined)
 
     if (!customer) {
@@ -1237,6 +1055,8 @@ class CartService extends TransactionBaseService {
     } else {
       address = addressOrId as Address
     }
+
+    address.country_code = address.country_code?.toLowerCase() ?? null
 
     if (address.id) {
       cart.billing_address = await addrRepo.save(address)
@@ -1282,11 +1102,11 @@ class CartService extends TransactionBaseService {
       address = addressOrId as Address
     }
 
+    address.country_code = address.country_code?.toLowerCase() ?? null
+
     if (
       address.country_code &&
-      !cart.region.countries.find(
-        ({ iso_2 }) => address.country_code?.toLowerCase() === iso_2
-      )
+      !cart.region.countries.find(({ iso_2 }) => address.country_code === iso_2)
     ) {
       throw new MedusaError(
         MedusaError.Types.INVALID_DATA,
@@ -1412,8 +1232,6 @@ class CartService extends TransactionBaseService {
       async (transactionManager: EntityManager) => {
         const cart = await this.retrieve(cartId, {
           relations: [
-            "items",
-            "region",
             "discounts",
             "discounts.rule",
             "payment_sessions",
@@ -1438,9 +1256,7 @@ class CartService extends TransactionBaseService {
         )
         const updatedCart = await cartRepo.save(cart)
 
-        await this.refreshAdjustments_(updatedCart)
-
-        if (cart.payment_sessions?.length) {
+        if (updatedCart.payment_sessions?.length) {
           await this.setPaymentSessions(cartId)
         }
 

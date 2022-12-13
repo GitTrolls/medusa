@@ -24,7 +24,6 @@ import { FindParams } from "../../../../types/common"
  *   content:
  *     application/json:
  *       schema:
- *         type: object
  *         required:
  *           - resources
  *         properties:
@@ -71,7 +70,6 @@ import { FindParams } from "../../../../types/common"
  *     content:
  *       application/json:
  *         schema:
- *           type: object
  *           properties:
  *             discount:
  *               $ref: "#/components/schemas/discount"

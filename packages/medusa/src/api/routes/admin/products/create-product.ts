@@ -1,4 +1,8 @@
 import {
+  CreateProductVariantInput,
+  ProductVariantPricesCreateReq,
+} from "../../../../types/product-variant"
+import {
   IsArray,
   IsBoolean,
   IsEnum,
@@ -8,7 +12,6 @@ import {
   IsString,
   ValidateNested,
 } from "class-validator"
-import { defaultAdminProductFields, defaultAdminProductRelations } from "."
 import {
   PricingService,
   ProductService,
@@ -20,16 +23,13 @@ import {
   ProductTagReq,
   ProductTypeReq,
 } from "../../../../types/product"
-import {
-  CreateProductVariantInput,
-  ProductVariantPricesCreateReq,
-} from "../../../../types/product-variant"
+import { defaultAdminProductFields, defaultAdminProductRelations } from "."
 
-import { Type } from "class-transformer"
 import { EntityManager } from "typeorm"
-import SalesChannelFeatureFlag from "../../../../loaders/feature-flags/sales-channels"
-import { ProductStatus } from "../../../../models"
 import { FeatureFlagDecorators } from "../../../../utils/feature-flag-decorators"
+import { ProductStatus } from "../../../../models"
+import SalesChannelFeatureFlag from "../../../../loaders/feature-flags/sales-channels"
+import { Type } from "class-transformer"
 import { validator } from "../../../../utils/validator"
 
 /**
@@ -42,7 +42,6 @@ import { validator } from "../../../../utils/validator"
  *   content:
  *     application/json:
  *       schema:
- *         type: object
  *         required:
  *           - title
  *         properties:
@@ -281,7 +280,6 @@ import { validator } from "../../../../utils/validator"
  *     content:
  *       application/json:
  *         schema:
- *           type: object
  *           properties:
  *             product:
  *               $ref: "#/components/schemas/product"
@@ -413,7 +411,7 @@ class ProductVariantReq {
 
   @IsNumber()
   @IsOptional()
-  inventory_quantity?: number = 0
+  inventory_quantity = 0
 
   @IsBoolean()
   @IsOptional()

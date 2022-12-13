@@ -40,7 +40,6 @@ import { FindParams } from "../../../../types/common"
  *     content:
  *       application/json:
  *         schema:
- *           type: object
  *           properties:
  *             discount_condition:
  *               $ref: "#/components/schemas/discount_condition"

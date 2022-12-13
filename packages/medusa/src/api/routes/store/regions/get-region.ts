@@ -28,7 +28,6 @@ import RegionService from "../../../../services/region"
  *     content:
  *       application/json:
  *         schema:
- *           type: object
  *           properties:
  *             region:
  *               $ref: "#/components/schemas/region"

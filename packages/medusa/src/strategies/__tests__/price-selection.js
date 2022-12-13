@@ -1,7 +1,6 @@
 import TaxInclusivePricingFeatureFlag from "../../loaders/feature-flags/tax-inclusive-pricing"
 import { FlagRouter } from "../../utils/flag-router"
 import PriceSelectionStrategy from "../price-selection"
-import { cacheServiceMock } from "../../services/__mocks__/cache"
 
 const executeTest =
   (flagValue) =>
@@ -227,7 +226,6 @@ const executeTest =
       manager: mockEntityManager,
       moneyAmountRepository: mockMoneyAmountRepository,
       featureFlagRouter,
-      cacheService: cacheServiceMock,
     })
 
     try {

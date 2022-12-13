@@ -18,7 +18,6 @@ import { validator } from "../../../../utils/validator"
  *   content:
  *     application/json:
  *       schema:
- *         type: object
  *         required:
  *           - country_code
  *         properties:
@@ -61,7 +60,6 @@ import { validator } from "../../../../utils/validator"
  *     content:
  *       application/json:
  *         schema:
- *           type: object
  *           properties:
  *             region:
  *               $ref: "#/components/schemas/region"

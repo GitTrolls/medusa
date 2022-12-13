@@ -3,7 +3,6 @@
  * title: "Cart"
  * description: "Represents a user cart"
  * x-resourceId: cart
- * type: object
  * properties:
  *   id:
  *     type: string

@@ -13,11 +13,7 @@ export default (): RequestHandler => {
         if (err) {
           return next(err)
         }
-
-        if (user) {
-          req.user = user
-        }
-
+        req.user = user
         return next()
       }
     )(req, res, next)

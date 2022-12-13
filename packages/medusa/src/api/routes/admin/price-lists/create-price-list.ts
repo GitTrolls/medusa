@@ -30,7 +30,6 @@ import { FeatureFlagDecorators } from "../../../../utils/feature-flag-decorators
  *   content:
  *     application/json:
  *       schema:
- *         type: object
  *         required:
  *           - name
  *           - description
@@ -157,7 +156,6 @@ import { FeatureFlagDecorators } from "../../../../utils/feature-flag-decorators
  *     content:
  *       application/json:
  *         schema:
- *           type: object
  *           properties:
  *             price_list:
  *               $ref: "#/components/schemas/price_list"

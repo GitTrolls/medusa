@@ -211,19 +211,13 @@ export default class ProductExportStrategy extends AbstractBatchJobStrategy {
 
     return await this.atomicPhase_(
       async (transactionManager) => {
-        const productServiceTx =
-          this.productService_.withTransaction(transactionManager)
-        const batchJobServiceTx =
-          this.batchJobService_.withTransaction(transactionManager)
-        const fileServiceTx =
-          this.fileService_.withTransaction(transactionManager)
+        let batchJob = (await this.batchJobService_
+          .withTransaction(transactionManager)
+          .retrieve(batchJobId)) as ProductExportBatchJob
 
-        let batchJob = (await batchJobServiceTx.retrieve(
-          batchJobId
-        )) as ProductExportBatchJob
-
-        const { writeStream, fileKey, promise } =
-          await fileServiceTx.getUploadStreamDescriptor({
+        const { writeStream, fileKey, promise } = await this.fileService_
+          .withTransaction(transactionManager)
+          .getUploadStreamDescriptor({
             name: `exports/products/product-export-${Date.now()}`,
             ext: "csv",
           })
@@ -232,12 +226,14 @@ export default class ProductExportStrategy extends AbstractBatchJobStrategy {
         writeStream.write(header)
         approximateFileSize += Buffer.from(header).byteLength
 
-        await batchJobServiceTx.update(batchJobId, {
-          result: {
-            file_key: fileKey,
-            file_size: approximateFileSize,
-          },
-        })
+        await this.batchJobService_
+          .withTransaction(transactionManager)
+          .update(batchJobId, {
+            result: {
+              file_key: fileKey,
+              file_size: approximateFileSize,
+            },
+          })
 
         advancementCount =
           batchJob.result?.advancement_count ?? advancementCount
@@ -245,25 +241,26 @@ export default class ProductExportStrategy extends AbstractBatchJobStrategy {
         limit = batchJob.context?.list_config?.take ?? limit
 
         const { list_config = {}, filterable_fields = {} } = batchJob.context
-        const [productList, count] = await productServiceTx.listAndCount(
-          filterable_fields,
-          {
+        const [productList, count] = await this.productService_
+          .withTransaction(transactionManager)
+          .listAndCount(filterable_fields, {
             ...list_config,
             skip: offset,
             take: Math.min(batchJob.context.batch_size ?? Infinity, limit),
-          } as FindProductConfig
-        )
+          } as FindProductConfig)
 
         productCount = batchJob.context?.batch_size ?? count
         let products: Product[] = productList
 
         while (offset < productCount) {
           if (!products?.length) {
-            products = await productServiceTx.list(filterable_fields, {
-              ...list_config,
-              skip: offset,
-              take: Math.min(productCount - offset, limit),
-            } as FindProductConfig)
+            products = await this.productService_
+              .withTransaction(transactionManager)
+              .list(filterable_fields, {
+                ...list_config,
+                skip: offset,
+                take: Math.min(productCount - offset, limit),
+              } as FindProductConfig)
           }
 
           products.forEach((product: Product) => {
@@ -278,14 +275,16 @@ export default class ProductExportStrategy extends AbstractBatchJobStrategy {
           offset += products.length
           products = []
 
-          batchJob = (await batchJobServiceTx.update(batchJobId, {
-            result: {
-              file_size: approximateFileSize,
-              count: productCount,
-              advancement_count: advancementCount,
-              progress: advancementCount / productCount,
-            },
-          })) as ProductExportBatchJob
+          batchJob = (await this.batchJobService_
+            .withTransaction(transactionManager)
+            .update(batchJobId, {
+              result: {
+                file_size: approximateFileSize,
+                count: productCount,
+                advancement_count: advancementCount,
+                progress: advancementCount / productCount,
+              },
+            })) as ProductExportBatchJob
 
           if (batchJob.status === BatchJobStatus.CANCELED) {
             writeStream.end()
@@ -504,9 +503,7 @@ export default class ProductExportStrategy extends AbstractBatchJobStrategy {
       for (const [, { exportDescriptor: columnSchema }] of Object.entries(
         this.columnsDefinition
       )) {
-        if (!columnSchema || "isDynamic" in columnSchema) {
-          continue
-        }
+        if (!columnSchema || "isDynamic" in columnSchema) continue
 
         if (columnSchema.entityName === "product") {
           const formattedContent = csvCellContentFormatter(

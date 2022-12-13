@@ -24,7 +24,6 @@ import { validator } from "../../../../utils/validator"
  *   content:
  *     application/json:
  *       schema:
- *         type: object
  *         required:
  *           - fulfillment_id
  *         properties:
@@ -72,7 +71,6 @@ import { validator } from "../../../../utils/validator"
  *     content:
  *       application/json:
  *         schema:
- *           type: object
  *           properties:
  *             order:
  *               $ref: "#/components/schemas/order"

@@ -19,7 +19,6 @@ import { validator } from "../../../../utils/validator"
  *   content:
  *     application/json:
  *       schema:
- *         type: object
  *         properties:
  *           name:
  *             description: "Name of the customer group"
@@ -60,7 +59,6 @@ import { validator } from "../../../../utils/validator"
  *     content:
  *       application/json:
  *         schema:
- *           type: object
  *           properties:
  *             customer_group:
  *               $ref: "#/components/schemas/customer_group"

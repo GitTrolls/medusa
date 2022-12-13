@@ -1,10 +1,11 @@
-import { DeepPartial, EntityManager } from "typeorm"
+import { DeepPartial, EntityManager, Equal } from "typeorm"
 import { MedusaError } from "medusa-core-utils"
 
 import { FindConfig } from "../types/common"
 import { buildQuery, isDefined, setMetadata } from "../utils"
 import { PaymentCollectionRepository } from "../repositories/payment-collection"
 import {
+  Customer,
   PaymentCollection,
   PaymentCollectionStatus,
   PaymentSession,
@@ -15,12 +16,12 @@ import {
   CustomerService,
   EventBusService,
   PaymentProviderService,
+  PaymentService,
 } from "./index"
 
 import {
   CreatePaymentCollectionInput,
-  PaymentCollectionsSessionsBatchInput,
-  PaymentCollectionsSessionsInput,
+  PaymentCollectionSessionInput,
   PaymentProviderDataInput,
 } from "../types/payment-collection"
 
@@ -65,12 +66,6 @@ export default class PaymentCollectionService extends TransactionBaseService {
     this.customerService_ = customerService
   }
 
-  /**
-   * Retrieves a payment collection by id.
-   * @param paymentCollectionId - the id of the payment collection
-   * @param config - the config to retrieve the payment collection
-   * @return the payment collection.
-   */
   async retrieve(
     paymentCollectionId: string,
     config: FindConfig<PaymentCollection> = {}
@@ -80,11 +75,9 @@ export default class PaymentCollectionService extends TransactionBaseService {
       this.paymentCollectionRepository_
     )
 
-    let paymentCollection: PaymentCollection[] = []
-    if (paymentCollectionId) {
-      const query = buildQuery({ id: paymentCollectionId }, config)
-      paymentCollection = await paymentCollectionRepository.find(query)
-    }
+    const query = buildQuery({ id: paymentCollectionId }, config)
+
+    const paymentCollection = await paymentCollectionRepository.find(query)
 
     if (!paymentCollection.length) {
       throw new MedusaError(
@@ -96,11 +89,6 @@ export default class PaymentCollectionService extends TransactionBaseService {
     return paymentCollection[0]
   }
 
-  /**
-   * Creates a new payment collection.
-   * @param data - info to create the payment collection
-   * @return the payment collection created.
-   */
   async create(data: CreatePaymentCollectionInput): Promise<PaymentCollection> {
     return await this.atomicPhase_(async (manager) => {
       const paymentCollectionRepository = manager.getCustomRepository(
@@ -130,12 +118,6 @@ export default class PaymentCollectionService extends TransactionBaseService {
     })
   }
 
-  /**
-   * Updates a payment collection.
-   * @param paymentCollectionId - the id of the payment collection to update
-   * @param data - info to be updated
-   * @return the payment collection updated.
-   */
   async update(
     paymentCollectionId: string,
     data: DeepPartial<PaymentCollection>
@@ -165,11 +147,6 @@ export default class PaymentCollectionService extends TransactionBaseService {
     })
   }
 
-  /**
-   * Deletes a payment collection.
-   * @param paymentCollectionId - the id of the payment collection to be removed
-   * @return the payment collection removed.
-   */
   async delete(
     paymentCollectionId: string
   ): Promise<PaymentCollection | undefined> {
@@ -210,24 +187,18 @@ export default class PaymentCollectionService extends TransactionBaseService {
 
   private isValidTotalAmount(
     total: number,
-    sessionsInput: PaymentCollectionsSessionsBatchInput[]
+    sessionsInput: PaymentCollectionSessionInput[]
   ): boolean {
     const sum = sessionsInput.reduce((cur, sess) => cur + sess.amount, 0)
     return total === sum
   }
 
-  /**
-   * Manages multiple payment sessions of a payment collection.
-   * @param paymentCollectionId - the id of the payment collection
-   * @param sessionsInput - array containing payment session info
-   * @param customerId - the id of the customer
-   * @return the payment collection and its payment sessions.
-   */
-  async setPaymentSessionsBatch(
+  async setPaymentSessions(
     paymentCollectionId: string,
-    sessionsInput: PaymentCollectionsSessionsBatchInput[],
-    customerId: string
+    sessions: PaymentCollectionSessionInput[] | PaymentCollectionSessionInput
   ): Promise<PaymentCollection> {
+    let sessionsInput = Array.isArray(sessions) ? sessions : [sessions]
+
     return await this.atomicPhase_(async (manager: EntityManager) => {
       const paymentCollectionRepository = manager.getCustomRepository(
         this.paymentCollectionRepository_
@@ -257,19 +228,20 @@ export default class PaymentCollectionService extends TransactionBaseService {
         )
       }
 
-      const customer = !isDefined(customerId)
-        ? null
-        : await this.customerService_
-            .withTransaction(manager)
-            .retrieve(customerId, {
-              select: ["id", "email", "metadata"],
-            })
-            .catch(() => null)
+      let customer: Customer | undefined = undefined
 
       const selectedSessionIds: string[] = []
       const paymentSessions: PaymentSession[] = []
 
       for (const session of sessionsInput) {
+        if (!customer) {
+          customer = await this.customerService_
+            .withTransaction(manager)
+            .retrieve(session.customer_id, {
+              select: ["id", "email", "metadata"],
+            })
+        }
+
         const existingSession = payCol.payment_sessions?.find(
           (sess) => session.session_id === sess?.id
         )
@@ -280,6 +252,9 @@ export default class PaymentCollectionService extends TransactionBaseService {
           amount: session.amount,
           provider_id: session.provider_id,
           customer,
+          metadata: {
+            resource_id: payCol.id,
+          },
         }
 
         if (existingSession) {
@@ -300,22 +275,12 @@ export default class PaymentCollectionService extends TransactionBaseService {
       }
 
       if (payCol.payment_sessions?.length) {
-        const removeSessions: PaymentSession[] = payCol.payment_sessions.filter(
-          ({ id }) => !selectedSessionIds.includes(id)
-        )
+        const removeIds: string[] = payCol.payment_sessions
+          .map((sess) => sess.id)
+          .filter((id) => !selectedSessionIds.includes(id))
 
-        if (removeSessions.length) {
-          await paymentCollectionRepository.deleteMultiple(
-            removeSessions.map((sess) => sess.id)
-          )
-
-          Promise.all(
-            removeSessions.map(async (sess) =>
-              this.paymentProviderService_
-                .withTransaction(manager)
-                .deleteSessionNew(sess)
-            )
-          ).catch(() => void 0)
+        if (removeIds.length) {
+          await paymentCollectionRepository.deleteMultiple(removeIds)
         }
       }
 
@@ -325,116 +290,10 @@ export default class PaymentCollectionService extends TransactionBaseService {
     })
   }
 
-  /**
-   * Manages a single payment sessions of a payment collection.
-   * @param paymentCollectionId - the id of the payment collection
-   * @param sessionsInput - object containing payment session info
-   * @param customerId - the id of the customer
-   * @return the payment collection and its payment session.
-   */
-  async setPaymentSession(
-    paymentCollectionId: string,
-    sessionInput: PaymentCollectionsSessionsInput,
-    customerId: string
-  ): Promise<PaymentCollection> {
-    return await this.atomicPhase_(async (manager: EntityManager) => {
-      const paymentCollectionRepository = manager.getCustomRepository(
-        this.paymentCollectionRepository_
-      )
-
-      const payCol = await this.retrieve(paymentCollectionId, {
-        relations: ["region", "region.payment_providers", "payment_sessions"],
-      })
-
-      if (payCol.status !== PaymentCollectionStatus.NOT_PAID) {
-        throw new MedusaError(
-          MedusaError.Types.NOT_ALLOWED,
-          `Cannot set payment sessions for a payment collection with status ${payCol.status}`
-        )
-      }
-
-      const hasProvider = payCol?.region?.payment_providers
-        .map((p) => p.id)
-        .includes(sessionInput.provider_id)
-
-      if (!hasProvider) {
-        throw new MedusaError(
-          MedusaError.Types.INVALID_DATA,
-          "Payment provider not found"
-        )
-      }
-
-      const customer = !isDefined(customerId)
-        ? null
-        : await this.customerService_
-            .withTransaction(manager)
-            .retrieve(customerId, {
-              select: ["id", "email", "metadata"],
-            })
-            .catch(() => null)
-
-      const paymentSessions: PaymentSession[] = []
-      const inputData: PaymentProviderDataInput = {
-        resource_id: payCol.id,
-        currency_code: payCol.currency_code,
-        amount: payCol.amount,
-        provider_id: sessionInput.provider_id,
-        customer,
-      }
-
-      const existingSession = payCol.payment_sessions?.find(
-        (sess) => sessionInput.provider_id === sess?.provider_id
-      )
-
-      if (existingSession) {
-        const paymentSession = await this.paymentProviderService_
-          .withTransaction(manager)
-          .updateSessionNew(existingSession, inputData)
-
-        paymentSessions.push(paymentSession)
-      } else {
-        const paymentSession = await this.paymentProviderService_
-          .withTransaction(manager)
-          .createSessionNew(inputData)
-
-        paymentSessions.push(paymentSession)
-
-        const removeSessions: PaymentSession[] = payCol.payment_sessions.filter(
-          ({ id }) => id != paymentSession.id
-        )
-
-        if (removeSessions.length) {
-          await paymentCollectionRepository.deleteMultiple(
-            removeSessions.map((sess) => sess.id)
-          )
-
-          Promise.all(
-            removeSessions.map(async (sess) =>
-              this.paymentProviderService_
-                .withTransaction(manager)
-                .deleteSessionNew(sess)
-            )
-          ).catch(() => void 0)
-        }
-      }
-
-      payCol.payment_sessions = paymentSessions
-
-      return await paymentCollectionRepository.save(payCol)
-    })
-  }
-
-  /**
-   * Removes and recreate a payment session of a payment collection.
-   * @param paymentCollectionId - the id of the payment collection
-   * @param sessionId - the id of the payment session to be replaced
-   * @param customerId - the id of the customer
-   * @return the new payment session created.
-   */
   async refreshPaymentSession(
     paymentCollectionId: string,
     sessionId: string,
-    customerId: string
+    sessionInput: Omit<PaymentCollectionSessionInput, "amount">
   ): Promise<PaymentSession> {
     return await this.atomicPhase_(async (manager: EntityManager) => {
       const paymentCollectionRepository = manager.getCustomRepository(
@@ -471,14 +330,11 @@ export default class PaymentCollectionService extends TransactionBaseService {
         )
       }
 
-      const customer = !isDefined(customerId)
-        ? null
-        : await this.customerService_
-            .withTransaction(manager)
-            .retrieve(customerId, {
-              select: ["id", "email", "metadata"],
-            })
-            .catch(() => null)
+      const customer = await this.customerService_
+        .withTransaction(manager)
+        .retrieve(sessionInput.customer_id, {
+          select: ["id", "email", "metadata"],
+        })
 
       const inputData: PaymentProviderDataInput = {
         resource_id: payCol.id,
@@ -509,11 +365,6 @@ export default class PaymentCollectionService extends TransactionBaseService {
     })
   }
 
-  /**
-   * Marks a payment collection as authorized bypassing the payment flow.
-   * @param paymentCollectionId - the id of the payment collection
-   * @return the payment session authorized.
-   */
   async markAsAuthorized(
     paymentCollectionId: string
   ): Promise<PaymentCollection> {
@@ -536,16 +387,8 @@ export default class PaymentCollectionService extends TransactionBaseService {
     })
   }
 
-  /**
-   * Authorizes the payment sessions of a payment collection.
-   * @param paymentCollectionId - the id of the payment collection
-   * @param sessionIds - array of payment session ids to be authorized
-   * @param context - additional data required by payment providers
-   * @return the payment collection and its payment session.
-   */
-  async authorizePaymentSessions(
+  async authorize(
     paymentCollectionId: string,
-    sessionIds: string[],
     context: Record<string, unknown> = {}
   ): Promise<PaymentCollection> {
     return await this.atomicPhase_(async (manager: EntityManager) => {
@@ -561,9 +404,9 @@ export default class PaymentCollectionService extends TransactionBaseService {
         return payCol
       }
 
+      // If cart total is 0, we don't perform anything payment related
       if (payCol.amount <= 0) {
         payCol.authorized_amount = 0
-        payCol.status = PaymentCollectionStatus.AUTHORIZED
         return await paymentCollectionRepository.save(payCol)
       }
 
@@ -580,10 +423,6 @@ export default class PaymentCollectionService extends TransactionBaseService {
 
         if (session.payment_authorized_at) {
           authorizedAmount += session.amount
-          continue
-        }
-
-        if (!sessionIds.includes(session.id)) {
           continue
         }
 

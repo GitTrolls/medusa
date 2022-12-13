@@ -18,7 +18,6 @@ import { Type } from "class-transformer"
  *   content:
  *     application/json:
  *       schema:
- *         type: object
  *         required:
  *           - product_ids
  *         properties:
@@ -74,7 +73,6 @@ import { Type } from "class-transformer"
  *     content:
  *       application/json:
  *         schema:
- *           type: object
  *           properties:
  *             sales_channel:
  *               $ref: "#/components/schemas/sales_channel"

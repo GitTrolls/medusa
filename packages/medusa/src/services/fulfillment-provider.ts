@@ -28,11 +28,6 @@ type FulfillmentProviderContainer = MedusaContainer & {
   [key in `${FulfillmentProviderKey}`]: typeof BaseFulfillmentService
 }
 
-type CalculateOptionPriceInput = {
-  provider_id: string
-  data: Record<string, unknown>
-}
-
 /**
  * Helps retrive fulfillment providers
  */
@@ -123,7 +118,7 @@ class FulfillmentProviderService extends TransactionBaseService {
     ) as unknown as Record<string, unknown>
   }
 
-  async canCalculate(option: CalculateOptionPriceInput): Promise<boolean> {
+  async canCalculate(option: ShippingOption): Promise<boolean> {
     const provider = this.retrieveProvider(option.provider_id)
     return provider.canCalculate(option.data) as unknown as boolean
   }

@@ -31,6 +31,7 @@ describe("[MEDUSA_FF_ORDER_EDITING] /admin/payment", () => {
     const [process, connection] = await startServerWithEnvironment({
       cwd,
       env: { MEDUSA_FF_ORDER_EDITING: true },
+      verbose: false,
     })
     dbConnection = connection
     medusaProcess = process
@@ -66,20 +67,14 @@ describe("[MEDUSA_FF_ORDER_EDITING] /admin/payment", () => {
       const api = useApi()
 
       // create payment session
-      const payColRes = await api.post(
-        `/store/payment-collections/${payCol.id}/sessions`,
-        {
+      await api.post(`/store/payment-collections/${payCol.id}/sessions`, {
+        sessions: {
           provider_id: "test-pay",
-        }
-      )
-      await api.post(
-        `/store/payment-collections/${payCol.id}/sessions/batch/authorize`,
-        {
-          session_ids: payColRes.data.payment_collection.payment_sessions.map(
-            ({ id }) => id
-          ),
-        }
-      )
+          customer_id: "customer",
+          amount: 10000,
+        },
+      })
+      await api.post(`/store/payment-collections/${payCol.id}/authorize`)
 
       const paymentCollections = await api.get(
         `/admin/payment-collections/${payCol.id}`,
@@ -91,7 +86,6 @@ describe("[MEDUSA_FF_ORDER_EDITING] /admin/payment", () => {
       )
 
       const payment = paymentCollections.data.payment_collection.payments[0]
-
       expect(payment.captured_at).toBe(null)
 
       const response = await api.post(
@@ -114,20 +108,14 @@ describe("[MEDUSA_FF_ORDER_EDITING] /admin/payment", () => {
       const api = useApi()
 
       // create payment session
-      const payColRes = await api.post(
-        `/store/payment-collections/${payCol.id}/sessions`,
-        {
+      await api.post(`/store/payment-collections/${payCol.id}/sessions`, {
+        sessions: {
           provider_id: "test-pay",
-        }
-      )
-      await api.post(
-        `/store/payment-collections/${payCol.id}/sessions/batch/authorize`,
-        {
-          session_ids: payColRes.data.payment_collection.payment_sessions.map(
-            ({ id }) => id
-          ),
-        }
-      )
+          customer_id: "customer",
+          amount: 10000,
+        },
+      })
+      await api.post(`/store/payment-collections/${payCol.id}/authorize`)
 
       const paymentCollections = await api.get(
         `/admin/payment-collections/${payCol.id}`,

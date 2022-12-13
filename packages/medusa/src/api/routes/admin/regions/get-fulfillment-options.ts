@@ -37,7 +37,6 @@ import RegionService from "../../../../services/region"
  *     content:
  *       application/json:
  *         schema:
- *           type: object
  *           properties:
  *             fulfillment_options:
  *               type: array
