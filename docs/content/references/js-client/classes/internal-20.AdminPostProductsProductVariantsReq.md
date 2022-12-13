@@ -10,7 +10,7 @@
 
 #### Defined in
 
-medusa/dist/api/routes/admin/products/create-variant.d.ts:201
+medusa/dist/api/routes/admin/products/create-variant.d.ts:199
 
 ___
 
@@ -20,7 +20,7 @@ ___
 
 #### Defined in
 
-medusa/dist/api/routes/admin/products/create-variant.d.ts:198
+medusa/dist/api/routes/admin/products/create-variant.d.ts:196
 
 ___
 
@@ -30,7 +30,7 @@ ___
 
 #### Defined in
 
-medusa/dist/api/routes/admin/products/create-variant.d.ts:196
+medusa/dist/api/routes/admin/products/create-variant.d.ts:194
 
 ___
 
@@ -40,7 +40,7 @@ ___
 
 #### Defined in
 
-medusa/dist/api/routes/admin/products/create-variant.d.ts:205
+medusa/dist/api/routes/admin/products/create-variant.d.ts:203
 
 ___
 
@@ -50,17 +50,17 @@ ___
 
 #### Defined in
 
-medusa/dist/api/routes/admin/products/create-variant.d.ts:199
+medusa/dist/api/routes/admin/products/create-variant.d.ts:197
 
 ___
 
 ### inventory\_quantity
 
-• `Optional` **inventory\_quantity**: `number`
+• **inventory\_quantity**: `number`
 
 #### Defined in
 
-medusa/dist/api/routes/admin/products/create-variant.d.ts:200
+medusa/dist/api/routes/admin/products/create-variant.d.ts:198
 
 ___
 
@@ -70,7 +70,7 @@ ___
 
 #### Defined in
 
-medusa/dist/api/routes/admin/products/create-variant.d.ts:204
+medusa/dist/api/routes/admin/products/create-variant.d.ts:202
 
 ___
 
@@ -80,7 +80,7 @@ ___
 
 #### Defined in
 
-medusa/dist/api/routes/admin/products/create-variant.d.ts:202
+medusa/dist/api/routes/admin/products/create-variant.d.ts:200
 
 ___
 
@@ -90,7 +90,7 @@ ___
 
 #### Defined in
 
-medusa/dist/api/routes/admin/products/create-variant.d.ts:209
+medusa/dist/api/routes/admin/products/create-variant.d.ts:207
 
 ___
 
@@ -100,7 +100,7 @@ ___
 
 #### Defined in
 
-medusa/dist/api/routes/admin/products/create-variant.d.ts:210
+medusa/dist/api/routes/admin/products/create-variant.d.ts:208
 
 ___
 
@@ -110,17 +110,17 @@ ___
 
 #### Defined in
 
-medusa/dist/api/routes/admin/products/create-variant.d.ts:208
+medusa/dist/api/routes/admin/products/create-variant.d.ts:206
 
 ___
 
 ### options
 
-• `Optional` **options**: [`ProductVariantOptionReq`](internal-20.ProductVariantOptionReq.md)[]
+• **options**: [`ProductVariantOptionReq`](internal-20.ProductVariantOptionReq.md)[]
 
 #### Defined in
 
-medusa/dist/api/routes/admin/products/create-variant.d.ts:212
+medusa/dist/api/routes/admin/products/create-variant.d.ts:210
 
 ___
 
@@ -130,7 +130,7 @@ ___
 
 #### Defined in
 
-medusa/dist/api/routes/admin/products/create-variant.d.ts:207
+medusa/dist/api/routes/admin/products/create-variant.d.ts:205
 
 ___
 
@@ -140,7 +140,7 @@ ___
 
 #### Defined in
 
-medusa/dist/api/routes/admin/products/create-variant.d.ts:211
+medusa/dist/api/routes/admin/products/create-variant.d.ts:209
 
 ___
 
@@ -150,7 +150,7 @@ ___
 
 #### Defined in
 
-medusa/dist/api/routes/admin/products/create-variant.d.ts:195
+medusa/dist/api/routes/admin/products/create-variant.d.ts:193
 
 ___
 
@@ -160,7 +160,7 @@ ___
 
 #### Defined in
 
-medusa/dist/api/routes/admin/products/create-variant.d.ts:194
+medusa/dist/api/routes/admin/products/create-variant.d.ts:192
 
 ___
 
@@ -170,7 +170,7 @@ ___
 
 #### Defined in
 
-medusa/dist/api/routes/admin/products/create-variant.d.ts:197
+medusa/dist/api/routes/admin/products/create-variant.d.ts:195
 
 ___
 
@@ -180,7 +180,7 @@ ___
 
 #### Defined in
 
-medusa/dist/api/routes/admin/products/create-variant.d.ts:203
+medusa/dist/api/routes/admin/products/create-variant.d.ts:201
 
 ___
 
@@ -190,4 +190,4 @@ ___
 
 #### Defined in
 
-medusa/dist/api/routes/admin/products/create-variant.d.ts:206
+medusa/dist/api/routes/admin/products/create-variant.d.ts:204

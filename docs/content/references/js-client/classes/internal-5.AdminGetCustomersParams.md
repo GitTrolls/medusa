@@ -16,7 +16,7 @@
 
 #### Defined in
 
-medusa/dist/api/routes/admin/customers/list-customers.d.ts:74
+medusa/dist/api/routes/admin/customers/list-customers.d.ts:73
 
 ___
 
@@ -40,7 +40,7 @@ ___
 
 #### Defined in
 
-medusa/dist/api/routes/admin/customers/list-customers.d.ts:72
+medusa/dist/api/routes/admin/customers/list-customers.d.ts:71
 
 ___
 
@@ -50,7 +50,7 @@ ___
 
 #### Defined in
 
-medusa/dist/api/routes/admin/customers/list-customers.d.ts:73
+medusa/dist/api/routes/admin/customers/list-customers.d.ts:72
 
 ___
 

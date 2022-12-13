@@ -8,97 +8,52 @@
 
 ## Methods
 
-### authorizePaymentSession
+### authorize
 
-▸ **authorizePaymentSession**(`id`, `session_id`, `customHeaders?`): [`ResponsePromise`](../modules/internal.md#responsepromise)<[`StorePaymentCollectionsRes`](../modules/internal-42.md#storepaymentcollectionsres)\>
+▸ **authorize**(`id`, `customHeaders?`): [`ResponsePromise`](../modules/internal.md#responsepromise)<[`StorePaymentCollectionRes`](../modules/internal-42.md#storepaymentcollectionres)\>
 
 #### Parameters
 
 | Name | Type |
 | :------ | :------ |
 | `id` | `string` |
-| `session_id` | `string` |
 | `customHeaders` | `Record`<`string`, `any`\> |
 
 #### Returns
 
-[`ResponsePromise`](../modules/internal.md#responsepromise)<[`StorePaymentCollectionsRes`](../modules/internal-42.md#storepaymentcollectionsres)\>
+[`ResponsePromise`](../modules/internal.md#responsepromise)<[`StorePaymentCollectionRes`](../modules/internal-42.md#storepaymentcollectionres)\>
 
 #### Defined in
 
-[medusa-js/src/resources/payment-collections.ts:29](https://github.com/medusajs/medusa/blob/29135c051/packages/medusa-js/src/resources/payment-collections.ts#L29)
+[medusa-js/src/resources/payment-collections.ts:28](https://github.com/medusajs/medusa/blob/105c68929/packages/medusa-js/src/resources/payment-collections.ts#L28)
 
 ___
 
-### authorizePaymentSessionsBatch
+### manageSessions
 
-▸ **authorizePaymentSessionsBatch**(`id`, `payload`, `customHeaders?`): [`ResponsePromise`](../modules/internal.md#responsepromise)<[`StorePaymentCollectionsRes`](../modules/internal-42.md#storepaymentcollectionsres)\>
-
-#### Parameters
-
-| Name | Type |
-| :------ | :------ |
-| `id` | `string` |
-| `payload` | [`StorePostPaymentCollectionsBatchSessionsAuthorizeReq`](internal-42.StorePostPaymentCollectionsBatchSessionsAuthorizeReq.md) |
-| `customHeaders` | `Record`<`string`, `any`\> |
-
-#### Returns
-
-[`ResponsePromise`](../modules/internal.md#responsepromise)<[`StorePaymentCollectionsRes`](../modules/internal-42.md#storepaymentcollectionsres)\>
-
-#### Defined in
-
-[medusa-js/src/resources/payment-collections.ts:38](https://github.com/medusajs/medusa/blob/29135c051/packages/medusa-js/src/resources/payment-collections.ts#L38)
-
-___
-
-### managePaymentSession
-
-▸ **managePaymentSession**(`id`, `payload`, `customHeaders?`): [`ResponsePromise`](../modules/internal.md#responsepromise)<[`StorePaymentCollectionsRes`](../modules/internal-42.md#storepaymentcollectionsres)\>
+▸ **manageSessions**(`id`, `payload`, `customHeaders?`): [`ResponsePromise`](../modules/internal.md#responsepromise)<[`StorePaymentCollectionRes`](../modules/internal-42.md#storepaymentcollectionres)\>
 
 #### Parameters
 
 | Name | Type |
 | :------ | :------ |
 | `id` | `string` |
-| `payload` | [`StorePaymentCollectionSessionsReq`](internal-42.StorePaymentCollectionSessionsReq.md) |
+| `payload` | [`StoreManagePaymentCollectionSessionRequest`](internal-42.StoreManagePaymentCollectionSessionRequest.md) |
 | `customHeaders` | `Record`<`string`, `any`\> |
 
 #### Returns
 
-[`ResponsePromise`](../modules/internal.md#responsepromise)<[`StorePaymentCollectionsRes`](../modules/internal-42.md#storepaymentcollectionsres)\>
+[`ResponsePromise`](../modules/internal.md#responsepromise)<[`StorePaymentCollectionRes`](../modules/internal-42.md#storepaymentcollectionres)\>
 
 #### Defined in
 
-[medusa-js/src/resources/payment-collections.ts:56](https://github.com/medusajs/medusa/blob/29135c051/packages/medusa-js/src/resources/payment-collections.ts#L56)
-
-___
-
-### managePaymentSessionsBatch
-
-▸ **managePaymentSessionsBatch**(`id`, `payload`, `customHeaders?`): [`ResponsePromise`](../modules/internal.md#responsepromise)<[`StorePaymentCollectionsRes`](../modules/internal-42.md#storepaymentcollectionsres)\>
-
-#### Parameters
-
-| Name | Type |
-| :------ | :------ |
-| `id` | `string` |
-| `payload` | [`StorePostPaymentCollectionsBatchSessionsReq`](internal-42.StorePostPaymentCollectionsBatchSessionsReq.md) |
-| `customHeaders` | `Record`<`string`, `any`\> |
-
-#### Returns
-
-[`ResponsePromise`](../modules/internal.md#responsepromise)<[`StorePaymentCollectionsRes`](../modules/internal-42.md#storepaymentcollectionsres)\>
-
-#### Defined in
-
-[medusa-js/src/resources/payment-collections.ts:47](https://github.com/medusajs/medusa/blob/29135c051/packages/medusa-js/src/resources/payment-collections.ts#L47)
+[medusa-js/src/resources/payment-collections.ts:36](https://github.com/medusajs/medusa/blob/105c68929/packages/medusa-js/src/resources/payment-collections.ts#L36)
 
 ___
 
 ### refreshPaymentSession
 
-▸ **refreshPaymentSession**(`id`, `session_id`, `customHeaders?`): [`ResponsePromise`](../modules/internal.md#responsepromise)<[`StorePaymentCollectionsSessionRes`](../modules/internal-42.md#storepaymentcollectionssessionres)\>
+▸ **refreshPaymentSession**(`id`, `session_id`, `payload`, `customHeaders?`): [`ResponsePromise`](../modules/internal.md#responsepromise)<[`StorePaymentCollectionSessionRes`](../modules/internal-42.md#storepaymentcollectionsessionres)\>
 
 #### Parameters
 
@@ -106,21 +61,22 @@ ___
 | :------ | :------ |
 | `id` | `string` |
 | `session_id` | `string` |
+| `payload` | [`StoreRefreshPaymentCollectionSessionRequest`](internal-42.StoreRefreshPaymentCollectionSessionRequest.md) |
 | `customHeaders` | `Record`<`string`, `any`\> |
 
 #### Returns
 
-[`ResponsePromise`](../modules/internal.md#responsepromise)<[`StorePaymentCollectionsSessionRes`](../modules/internal-42.md#storepaymentcollectionssessionres)\>
+[`ResponsePromise`](../modules/internal.md#responsepromise)<[`StorePaymentCollectionSessionRes`](../modules/internal-42.md#storepaymentcollectionsessionres)\>
 
 #### Defined in
 
-[medusa-js/src/resources/payment-collections.ts:65](https://github.com/medusajs/medusa/blob/29135c051/packages/medusa-js/src/resources/payment-collections.ts#L65)
+[medusa-js/src/resources/payment-collections.ts:45](https://github.com/medusajs/medusa/blob/105c68929/packages/medusa-js/src/resources/payment-collections.ts#L45)
 
 ___
 
 ### retrieve
 
-▸ **retrieve**(`id`, `query?`, `customHeaders?`): [`ResponsePromise`](../modules/internal.md#responsepromise)<[`StorePaymentCollectionsRes`](../modules/internal-42.md#storepaymentcollectionsres)\>
+▸ **retrieve**(`id`, `query?`, `customHeaders?`): [`ResponsePromise`](../modules/internal.md#responsepromise)<[`StorePaymentCollectionRes`](../modules/internal-42.md#storepaymentcollectionres)\>
 
 #### Parameters
 
@@ -132,8 +88,8 @@ ___
 
 #### Returns
 
-[`ResponsePromise`](../modules/internal.md#responsepromise)<[`StorePaymentCollectionsRes`](../modules/internal-42.md#storepaymentcollectionsres)\>
+[`ResponsePromise`](../modules/internal.md#responsepromise)<[`StorePaymentCollectionRes`](../modules/internal-42.md#storepaymentcollectionres)\>
 
 #### Defined in
 
-[medusa-js/src/resources/payment-collections.ts:14](https://github.com/medusajs/medusa/blob/29135c051/packages/medusa-js/src/resources/payment-collections.ts#L14)
+[medusa-js/src/resources/payment-collections.ts:13](https://github.com/medusajs/medusa/blob/105c68929/packages/medusa-js/src/resources/payment-collections.ts#L13)

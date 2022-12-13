@@ -10,7 +10,7 @@
 
 #### Defined in
 
-medusa/dist/api/routes/admin/return-reasons/update-reason.d.ts:82
+medusa/dist/api/routes/admin/return-reasons/update-reason.d.ts:80
 
 ___
 
@@ -20,7 +20,7 @@ ___
 
 #### Defined in
 
-medusa/dist/api/routes/admin/return-reasons/update-reason.d.ts:80
+medusa/dist/api/routes/admin/return-reasons/update-reason.d.ts:78
 
 ___
 
@@ -30,7 +30,7 @@ ___
 
 #### Defined in
 
-medusa/dist/api/routes/admin/return-reasons/update-reason.d.ts:83
+medusa/dist/api/routes/admin/return-reasons/update-reason.d.ts:81
 
 ___
 
@@ -40,4 +40,4 @@ ___
 
 #### Defined in
 
-medusa/dist/api/routes/admin/return-reasons/update-reason.d.ts:81
+medusa/dist/api/routes/admin/return-reasons/update-reason.d.ts:79

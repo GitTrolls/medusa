@@ -10,7 +10,7 @@
 
 #### Defined in
 
-medusa/dist/api/routes/store/customers/reset-password.d.ts:79
+medusa/dist/api/routes/store/customers/reset-password.d.ts:77
 
 ___
 
@@ -20,7 +20,7 @@ ___
 
 #### Defined in
 
-medusa/dist/api/routes/store/customers/reset-password.d.ts:81
+medusa/dist/api/routes/store/customers/reset-password.d.ts:79
 
 ___
 
@@ -30,4 +30,4 @@ ___
 
 #### Defined in
 
-medusa/dist/api/routes/store/customers/reset-password.d.ts:80
+medusa/dist/api/routes/store/customers/reset-password.d.ts:78

@@ -10,4 +10,4 @@
 
 #### Defined in
 
-medusa/dist/api/routes/admin/discounts/add-resources-to-condition-batch.d.ts:85
+medusa/dist/api/routes/admin/discounts/add-resources-to-condition-batch.d.ts:83

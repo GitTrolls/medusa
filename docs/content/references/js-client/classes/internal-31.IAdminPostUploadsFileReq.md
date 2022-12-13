@@ -10,7 +10,7 @@
 
 #### Defined in
 
-medusa/dist/api/routes/admin/uploads/create-upload.d.ts:73
+medusa/dist/api/routes/admin/uploads/create-upload.d.ts:72
 
 ___
 
@@ -20,4 +20,4 @@ ___
 
 #### Defined in
 
-medusa/dist/api/routes/admin/uploads/create-upload.d.ts:74
+medusa/dist/api/routes/admin/uploads/create-upload.d.ts:73

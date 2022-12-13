@@ -10,7 +10,7 @@
 
 #### Defined in
 
-medusa/dist/api/routes/admin/payments/refund-payment.d.ts:85
+medusa/dist/api/routes/admin/payments/refund-payment.d.ts:83
 
 ___
 
@@ -20,7 +20,7 @@ ___
 
 #### Defined in
 
-medusa/dist/api/routes/admin/payments/refund-payment.d.ts:87
+medusa/dist/api/routes/admin/payments/refund-payment.d.ts:85
 
 ___
 
@@ -30,4 +30,4 @@ ___
 
 #### Defined in
 
-medusa/dist/api/routes/admin/payments/refund-payment.d.ts:86
+medusa/dist/api/routes/admin/payments/refund-payment.d.ts:84

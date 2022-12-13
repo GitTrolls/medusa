@@ -10,7 +10,7 @@
 
 #### Defined in
 
-medusa/dist/api/routes/admin/shipping-options/update-shipping-option.d.ts:125
+medusa/dist/api/routes/admin/shipping-options/update-shipping-option.d.ts:123
 
 ___
 
@@ -20,7 +20,7 @@ ___
 
 #### Defined in
 
-medusa/dist/api/routes/admin/shipping-options/update-shipping-option.d.ts:123
+medusa/dist/api/routes/admin/shipping-options/update-shipping-option.d.ts:121
 
 ___
 
@@ -30,7 +30,7 @@ ___
 
 #### Defined in
 
-medusa/dist/api/routes/admin/shipping-options/update-shipping-option.d.ts:127
+medusa/dist/api/routes/admin/shipping-options/update-shipping-option.d.ts:125
 
 ___
 
@@ -40,7 +40,7 @@ ___
 
 #### Defined in
 
-medusa/dist/api/routes/admin/shipping-options/update-shipping-option.d.ts:126
+medusa/dist/api/routes/admin/shipping-options/update-shipping-option.d.ts:124
 
 ___
 
@@ -50,7 +50,7 @@ ___
 
 #### Defined in
 
-medusa/dist/api/routes/admin/shipping-options/update-shipping-option.d.ts:122
+medusa/dist/api/routes/admin/shipping-options/update-shipping-option.d.ts:120
 
 ___
 
@@ -60,4 +60,4 @@ ___
 
 #### Defined in
 
-medusa/dist/api/routes/admin/shipping-options/update-shipping-option.d.ts:124
+medusa/dist/api/routes/admin/shipping-options/update-shipping-option.d.ts:122
