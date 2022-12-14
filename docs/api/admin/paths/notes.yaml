@@ -7,7 +7,6 @@ post:
     content:
       application/json:
         schema:
-          type: object
           required:
             - resource_id
             - resource_type
@@ -42,7 +41,6 @@ post:
       content:
         application/json:
           schema:
-            type: object
             properties:
               note:
                 $ref: ../components/schemas/note.yaml
@@ -101,7 +99,6 @@ get:
       content:
         application/json:
           schema:
-            type: object
             properties:
               notes:
                 type: array

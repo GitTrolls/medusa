@@ -10,7 +10,7 @@
 
 #### Defined in
 
-medusa/dist/api/routes/admin/users/reset-password.d.ts:87
+medusa/dist/api/routes/admin/users/reset-password.d.ts:85
 
 ___
 
@@ -20,7 +20,7 @@ ___
 
 #### Defined in
 
-medusa/dist/api/routes/admin/users/reset-password.d.ts:89
+medusa/dist/api/routes/admin/users/reset-password.d.ts:87
 
 ___
 
@@ -30,4 +30,4 @@ ___
 
 #### Defined in
 
-medusa/dist/api/routes/admin/users/reset-password.d.ts:88
+medusa/dist/api/routes/admin/users/reset-password.d.ts:86

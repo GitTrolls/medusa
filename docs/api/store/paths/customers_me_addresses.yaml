@@ -7,7 +7,6 @@ post:
     content:
       application/json:
         schema:
-          type: object
           required:
             - address
           properties:
@@ -42,7 +41,6 @@ post:
       content:
         application/json:
           schema:
-            type: object
             properties:
               customer:
                 $ref: ../components/schemas/customer.yaml

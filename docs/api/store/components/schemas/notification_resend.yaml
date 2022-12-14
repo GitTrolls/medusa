@@ -1,7 +1,6 @@
 title: Notification Resend
 description: A resend of a Notification.
 x-resourceId: notification_resend
-type: object
 properties:
   id:
     description: The notification resend's ID

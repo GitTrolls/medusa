@@ -2,7 +2,7 @@
 
 ## Classes
 
-- [AdminUpdatePaymentCollectionsReq](../classes/internal-15.AdminUpdatePaymentCollectionsReq.md)
+- [AdminUpdatePaymentCollectionRequest](../classes/internal-15.AdminUpdatePaymentCollectionRequest.md)
 - [GetPaymentCollectionsParams](../classes/internal-15.GetPaymentCollectionsParams.md)
 
 ## Type Aliases
@@ -25,9 +25,9 @@ medusa/dist/api/routes/admin/payment-collections/index.d.ts:10
 
 ___
 
-### AdminPaymentCollectionsRes
+### AdminPaymentCollectionRes
 
-Ƭ **AdminPaymentCollectionsRes**: `Object`
+Ƭ **AdminPaymentCollectionRes**: `Object`
 
 #### Type declaration
 

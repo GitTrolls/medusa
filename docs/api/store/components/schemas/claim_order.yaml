@@ -4,7 +4,6 @@ description: >-
   consists of a subset of items associated with an original order, and can
   contain additional information about fulfillments and returns.
 x-resourceId: claim_order
-type: object
 required:
   - type
   - order_id

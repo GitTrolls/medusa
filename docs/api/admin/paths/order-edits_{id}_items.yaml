@@ -13,7 +13,6 @@ post:
     content:
       application/json:
         schema:
-          type: object
           required:
             - variant_id
             - quantity
@@ -50,7 +49,6 @@ post:
       content:
         application/json:
           schema:
-            type: object
             properties:
               order_edit:
                 $ref: ../components/schemas/order_edit.yaml

@@ -7,7 +7,6 @@ post:
     content:
       application/json:
         schema:
-          type: object
           required:
             - email
             - password
@@ -53,7 +52,6 @@ post:
       content:
         application/json:
           schema:
-            type: object
             properties:
               user:
                 $ref: ../components/schemas/user.yaml
@@ -94,7 +92,6 @@ get:
       content:
         application/json:
           schema:
-            type: object
             properties:
               users:
                 type: array

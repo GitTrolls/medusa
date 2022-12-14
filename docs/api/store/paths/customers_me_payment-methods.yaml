@@ -25,7 +25,6 @@ get:
       content:
         application/json:
           schema:
-            type: object
             properties:
               payment_methods:
                 type: array

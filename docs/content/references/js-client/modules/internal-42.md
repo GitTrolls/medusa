@@ -2,16 +2,15 @@
 
 ## Classes
 
-- [StorePaymentCollectionSessionsReq](../classes/internal-42.StorePaymentCollectionSessionsReq.md)
-- [StorePostPaymentCollectionsBatchSessionsAuthorizeReq](../classes/internal-42.StorePostPaymentCollectionsBatchSessionsAuthorizeReq.md)
-- [StorePostPaymentCollectionsBatchSessionsReq](../classes/internal-42.StorePostPaymentCollectionsBatchSessionsReq.md)
-- [StorePostPaymentCollectionsSessionsReq](../classes/internal-42.StorePostPaymentCollectionsSessionsReq.md)
+- [PaymentCollectionSessionInputRequest](../classes/internal-42.PaymentCollectionSessionInputRequest.md)
+- [StoreManagePaymentCollectionSessionRequest](../classes/internal-42.StoreManagePaymentCollectionSessionRequest.md)
+- [StoreRefreshPaymentCollectionSessionRequest](../classes/internal-42.StoreRefreshPaymentCollectionSessionRequest.md)
 
 ## Type Aliases
 
-### StorePaymentCollectionsRes
+### StorePaymentCollectionRes
 
-Ƭ **StorePaymentCollectionsRes**: `Object`
+Ƭ **StorePaymentCollectionRes**: `Object`
 
 #### Type declaration
 
@@ -25,9 +24,9 @@ medusa/dist/api/routes/store/payment-collections/index.d.ts:7
 
 ___
 
-### StorePaymentCollectionsSessionRes
+### StorePaymentCollectionSessionRes
 
-Ƭ **StorePaymentCollectionsSessionRes**: `Object`
+Ƭ **StorePaymentCollectionSessionRes**: `Object`
 
 #### Type declaration
 

@@ -36,7 +36,6 @@ post:
       content:
         application/json:
           schema:
-            type: object
             properties:
               hits:
                 type: array

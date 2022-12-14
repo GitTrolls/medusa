@@ -10,7 +10,7 @@
 
 #### Defined in
 
-medusa/dist/api/routes/admin/products/create-variant.d.ts:191
+medusa/dist/api/routes/admin/products/create-variant.d.ts:189
 
 ___
 
@@ -20,4 +20,4 @@ ___
 
 #### Defined in
 
-medusa/dist/api/routes/admin/products/create-variant.d.ts:190
+medusa/dist/api/routes/admin/products/create-variant.d.ts:188

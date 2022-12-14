@@ -10,7 +10,7 @@
 
 #### Defined in
 
-medusa/dist/api/routes/admin/orders/create-swap.d.ts:165
+medusa/dist/api/routes/admin/orders/create-swap.d.ts:163
 
 ___
 
@@ -20,4 +20,4 @@ ___
 
 #### Defined in
 
-medusa/dist/api/routes/admin/orders/create-swap.d.ts:166
+medusa/dist/api/routes/admin/orders/create-swap.d.ts:164

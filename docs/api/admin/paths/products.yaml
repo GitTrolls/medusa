@@ -7,7 +7,6 @@ post:
     content:
       application/json:
         schema:
-          type: object
           required:
             - title
           properties:
@@ -262,7 +261,6 @@ post:
       content:
         application/json:
           schema:
-            type: object
             properties:
               product:
                 $ref: ../components/schemas/product.yaml
@@ -500,7 +498,6 @@ get:
       content:
         application/json:
           schema:
-            type: object
             properties:
               products:
                 type: array

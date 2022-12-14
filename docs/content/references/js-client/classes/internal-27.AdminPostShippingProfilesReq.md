@@ -10,4 +10,4 @@
 
 #### Defined in
 
-medusa/dist/api/routes/admin/shipping-profiles/create-shipping-profile.d.ts:71
+medusa/dist/api/routes/admin/shipping-profiles/create-shipping-profile.d.ts:69

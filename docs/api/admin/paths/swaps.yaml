@@ -36,7 +36,6 @@ get:
       content:
         application/json:
           schema:
-            type: object
             properties:
               swaps:
                 type: array

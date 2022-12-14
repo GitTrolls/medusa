@@ -14,7 +14,6 @@ post:
     content:
       application/json:
         schema:
-          type: object
           properties:
             includes_tax:
               type: boolean
@@ -36,7 +35,6 @@ post:
       content:
         application/json:
           schema:
-            type: object
             properties:
               currency:
                 $ref: ../components/schemas/currency.yaml

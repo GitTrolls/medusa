@@ -26,8 +26,7 @@ export default function CodeBlockString({
   title: titleProp,
   showLineNumbers: showLineNumbersProp,
   language: languageProp,
-  noReport = false,
-  noCopy = false
+  noReport = false
 }) {
   const {
     prism: {defaultLanguage, magicComments},
@@ -102,14 +101,12 @@ export default function CodeBlockString({
               </a>
             </Tooltip>
           )}
-          {!noCopy && (
-            <CopyButton buttonClassName='code-action' text={code}>
-              <ThemedImage alt='Copy to Clipboard' sources={{
-                light: useBaseUrl('/img/clipboard-copy.png'),
-                dark: useBaseUrl('/img/clipboard-copy-dark.png')
-              }} className="no-zoom-img" />
-            </CopyButton>
-          )}
+          <CopyButton buttonClassName='code-action' text={code}>
+            <ThemedImage alt='Copy to Clipboard' sources={{
+              light: useBaseUrl('/img/clipboard-copy.png'),
+              dark: useBaseUrl('/img/clipboard-copy-dark.png')
+            }} className="no-zoom-img" />
+          </CopyButton>
         </div>
       </div>
     </Container>

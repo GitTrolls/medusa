@@ -30,7 +30,6 @@ delete:
       content:
         application/json:
           schema:
-            type: object
             properties:
               id:
                 type: string
@@ -87,7 +86,6 @@ get:
       content:
         application/json:
           schema:
-            type: object
             properties:
               shipping_profile:
                 $ref: ../components/schemas/shipping_profile.yaml
@@ -118,7 +116,6 @@ post:
     content:
       application/json:
         schema:
-          type: object
           properties:
             name:
               description: The name of the Shipping Profile
@@ -143,7 +140,6 @@ post:
       content:
         application/json:
           schema:
-            type: object
             properties:
               shipping_profile:
                 $ref: ../components/schemas/shipping_profile.yaml

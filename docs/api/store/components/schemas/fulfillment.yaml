@@ -8,7 +8,6 @@ description: >-
   webhooks in order to automatically update and synchronize the state of
   Fulfillments.
 x-resourceId: fulfillment
-type: object
 required:
   - provider_id
 properties:

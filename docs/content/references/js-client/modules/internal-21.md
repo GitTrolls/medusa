@@ -2,13 +2,9 @@
 
 ## Classes
 
-- [AdminDeletePublishableApiKeySalesChannelsBatchReq](../classes/internal-21.AdminDeletePublishableApiKeySalesChannelsBatchReq.md)
-- [AdminPostPublishableApiKeySalesChannelsBatchReq](../classes/internal-21.AdminPostPublishableApiKeySalesChannelsBatchReq.md)
 - [AdminPostPublishableApiKeysPublishableApiKeyReq](../classes/internal-21.AdminPostPublishableApiKeysPublishableApiKeyReq.md)
 - [AdminPostPublishableApiKeysReq](../classes/internal-21.AdminPostPublishableApiKeysReq.md)
-- [GetPublishableApiKeySalesChannelsParams](../classes/internal-21.GetPublishableApiKeySalesChannelsParams.md)
 - [GetPublishableApiKeysParams](../classes/internal-21.GetPublishableApiKeysParams.md)
-- [ProductBatchSalesChannel](../classes/internal-21.ProductBatchSalesChannel.md)
 - [PublishableApiKey](../classes/internal-21.PublishableApiKey.md)
 
 ## Type Aliases
@@ -37,16 +33,6 @@ ___
 
 medusa/dist/api/routes/admin/publishable-api-keys/index.d.ts:5
 
-___
-
-### AdminSalesChannelsListRes
-
-Ƭ **AdminSalesChannelsListRes**: [`PaginatedResponse`](internal-2.md#paginatedresponse) & { `sales_channels`: [`SalesChannel`](../classes/internal.SalesChannel.md)[]  }
-
-#### Defined in
-
-medusa/dist/api/routes/admin/sales-channels/index.d.ts:10
-
 ## Variables
 
 ### GetPublishableApiKeysParams\_base
@@ -55,4 +41,4 @@ medusa/dist/api/routes/admin/sales-channels/index.d.ts:10
 
 #### Defined in
 
-medusa/dist/api/routes/admin/publishable-api-keys/list-publishable-api-keys.d.ts:61
+medusa/dist/api/routes/admin/publishable-api-keys/list-publishable-api-keys.d.ts:60

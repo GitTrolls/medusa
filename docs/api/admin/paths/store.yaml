@@ -23,7 +23,6 @@ get:
       content:
         application/json:
           schema:
-            type: object
             properties:
               store:
                 $ref: ../components/schemas/store.yaml
@@ -48,7 +47,6 @@ post:
     content:
       application/json:
         schema:
-          type: object
           properties:
             name:
               description: The name of the Store
@@ -102,7 +100,6 @@ post:
       content:
         application/json:
           schema:
-            type: object
             properties:
               store:
                 $ref: ../components/schemas/store.yaml

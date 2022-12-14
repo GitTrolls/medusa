@@ -77,7 +77,6 @@ get:
       content:
         application/json:
           schema:
-            type: object
             properties:
               notifications:
                 type: array

@@ -7,7 +7,6 @@ post:
     content:
       application/json:
         schema:
-          type: object
           required:
             - title
           properties:
@@ -44,7 +43,6 @@ post:
       content:
         application/json:
           schema:
-            type: object
             properties:
               collection:
                 $ref: ../components/schemas/product_collection.yaml
@@ -184,7 +182,6 @@ get:
       content:
         application/json:
           schema:
-            type: object
             properties:
               collections:
                 type: array

@@ -30,7 +30,6 @@ get:
       content:
         application/json:
           schema:
-            type: object
             properties:
               order:
                 $ref: ../components/schemas/order.yaml
@@ -62,7 +61,6 @@ post:
     content:
       application/json:
         schema:
-          type: object
           properties:
             email:
               description: the email for the order
@@ -147,7 +145,6 @@ post:
       content:
         application/json:
           schema:
-            type: object
             properties:
               order:
                 $ref: ../components/schemas/order.yaml

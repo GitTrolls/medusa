@@ -38,7 +38,6 @@ delete:
       content:
         application/json:
           schema:
-            type: object
             properties:
               region:
                 $ref: ../components/schemas/region.yaml

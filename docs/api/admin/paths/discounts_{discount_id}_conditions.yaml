@@ -31,7 +31,6 @@ post:
     content:
       application/json:
         schema:
-          type: object
           required:
             - operator
           properties:
@@ -95,7 +94,6 @@ post:
       content:
         application/json:
           schema:
-            type: object
             properties:
               discount:
                 $ref: ../components/schemas/discount.yaml

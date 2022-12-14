@@ -10,4 +10,4 @@
 
 #### Defined in
 
-medusa/dist/api/routes/admin/discounts/delete-resources-from-condition-batch.d.ts:87
+medusa/dist/api/routes/admin/discounts/delete-resources-from-condition-batch.d.ts:85

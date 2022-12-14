@@ -30,7 +30,6 @@ delete:
       content:
         application/json:
           schema:
-            type: object
             properties:
               id:
                 type: string
@@ -87,7 +86,6 @@ get:
       content:
         application/json:
           schema:
-            type: object
             properties:
               collection:
                 $ref: ../components/schemas/product_collection.yaml
@@ -119,7 +117,6 @@ post:
     content:
       application/json:
         schema:
-          type: object
           properties:
             title:
               type: string
@@ -154,7 +151,6 @@ post:
       content:
         application/json:
           schema:
-            type: object
             properties:
               collection:
                 $ref: ../components/schemas/product_collection.yaml

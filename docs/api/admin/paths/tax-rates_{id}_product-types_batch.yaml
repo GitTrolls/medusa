@@ -32,7 +32,6 @@ post:
     content:
       application/json:
         schema:
-          type: object
           required:
             - product_types
           properties:
@@ -62,7 +61,6 @@ post:
       content:
         application/json:
           schema:
-            type: object
             properties:
               tax_rate:
                 $ref: ../components/schemas/tax_rate.yaml
@@ -112,7 +110,6 @@ delete:
     content:
       application/json:
         schema:
-          type: object
           required:
             - product_types
           properties:
@@ -145,7 +142,6 @@ delete:
       content:
         application/json:
           schema:
-            type: object
             properties:
               tax_rate:
                 $ref: ../components/schemas/tax_rate.yaml

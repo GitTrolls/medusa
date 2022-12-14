@@ -14,7 +14,6 @@ post:
     content:
       application/json:
         schema:
-          type: object
           required:
             - product_ids
           properties:
@@ -50,7 +49,6 @@ post:
       content:
         application/json:
           schema:
-            type: object
             properties:
               sales_channel:
                 $ref: ../components/schemas/sales_channel.yaml
@@ -82,7 +80,6 @@ delete:
     content:
       application/json:
         schema:
-          type: object
           required:
             - product_ids
           properties:
@@ -119,7 +116,6 @@ delete:
       content:
         application/json:
           schema:
-            type: object
             properties:
               sales_channel:
                 $ref: ../components/schemas/sales_channel.yaml

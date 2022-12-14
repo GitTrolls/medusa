@@ -6,7 +6,6 @@ post:
     content:
       application/json:
         schema:
-          type: object
           required:
             - order_id
           properties:
@@ -37,7 +36,6 @@ post:
       content:
         application/json:
           schema:
-            type: object
             properties:
               order_edit:
                 $ref: ../components/schemas/order_edit.yaml
@@ -55,8 +53,8 @@ post:
       $ref: ../components/responses/500_error.yaml
 get:
   operationId: GetOrderEdits
-  summary: List OrderEdits
-  description: List OrderEdits.
+  summary: List an OrderEdit
+  description: List a OrderEdit.
   x-authenticated: true
   parameters:
     - in: query
@@ -111,7 +109,6 @@ get:
       content:
         application/json:
           schema:
-            type: object
             properties:
               order_edits:
                 type: array

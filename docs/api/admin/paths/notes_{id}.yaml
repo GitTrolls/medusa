@@ -30,7 +30,6 @@ delete:
       content:
         application/json:
           schema:
-            type: object
             properties:
               id:
                 type: string
@@ -87,7 +86,6 @@ get:
       content:
         application/json:
           schema:
-            type: object
             properties:
               note:
                 $ref: ../components/schemas/note.yaml
@@ -119,7 +117,6 @@ post:
     content:
       application/json:
         schema:
-          type: object
           required:
             - value
           properties:
@@ -146,7 +143,6 @@ post:
       content:
         application/json:
           schema:
-            type: object
             properties:
               note:
                 $ref: ../components/schemas/note.yaml

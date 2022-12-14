@@ -30,7 +30,6 @@ delete:
       content:
         application/json:
           schema:
-            type: object
             properties:
               id:
                 type: string
@@ -87,7 +86,6 @@ get:
       content:
         application/json:
           schema:
-            type: object
             properties:
               order_edit:
                 $ref: ../components/schemas/order_edit.yaml
@@ -119,7 +117,6 @@ post:
     content:
       application/json:
         schema:
-          type: object
           properties:
             internal_note:
               description: An optional note to create or update for the order edit.
@@ -144,7 +141,6 @@ post:
       content:
         application/json:
           schema:
-            type: object
             properties:
               order_edit:
                 $ref: ../components/schemas/order_edit.yaml

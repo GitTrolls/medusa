@@ -14,15 +14,9 @@ You can install Node from the [official website](https://nodejs.org/en/).
 
 ## Create a Medusa Server
 
-:::tip
-
-It is recommended to use [Yarn](https://yarnpkg.com/getting-started/install) for the installation process as it's much faster than using NPM.
-
-:::
-
 ### 1. Install Medusa CLI
 
-   ```bash npm2yarn
+   ```bash npm2yarn noReport
    npm install @medusajs/medusa-cli -g
    ```
 

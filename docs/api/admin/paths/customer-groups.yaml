@@ -24,7 +24,6 @@ post:
       content:
         application/json:
           schema:
-            type: object
             properties:
               customer_group:
                 $ref: ../components/schemas/customer_group.yaml
@@ -196,7 +195,6 @@ get:
       content:
         application/json:
           schema:
-            type: object
             properties:
               customer_groups:
                 type: array

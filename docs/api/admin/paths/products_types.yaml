@@ -24,7 +24,6 @@ get:
       content:
         application/json:
           schema:
-            type: object
             properties:
               types:
                 type: array
