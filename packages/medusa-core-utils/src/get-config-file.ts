@@ -9,20 +9,21 @@ import { join } from "path"
 function getConfigFile<TConfig = unknown>(
   rootDir: string,
   configName: string
-): { configModule: TConfig; configFilePath: string, error?: any } {
+): { configModule: TConfig; configFilePath: string } | { error: any } {
   const configPath = join(rootDir, configName)
   let configFilePath = ``
   let configModule
-  let err
 
   try {
     configFilePath = require.resolve(configPath)
     configModule = require(configFilePath)
-  } catch (e) {
-    err = e
+  } catch (err) {
+    return {
+      error: err,
+    }
   }
 
-  return { configModule, configFilePath, error: err }
+  return { configModule, configFilePath }
 }
 
 export default getConfigFile

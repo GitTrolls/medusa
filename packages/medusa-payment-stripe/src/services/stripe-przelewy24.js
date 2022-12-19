@@ -3,8 +3,26 @@ import StripeBase from "../helpers/stripe-base"
 class Przelewy24ProviderService extends StripeBase {
   static identifier = "stripe-przelewy24"
 
-  constructor(_, options) {
-    super(_, options)
+  constructor(
+    {
+      stripeProviderService,
+      customerService,
+      totalsService,
+      regionService,
+      manager,
+    },
+    options
+  ) {
+    super(
+      {
+        stripeProviderService,
+        customerService,
+        totalsService,
+        regionService,
+        manager,
+      },
+      options
+    )
   }
 
   get paymentIntentOptions() {

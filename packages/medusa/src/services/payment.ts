@@ -1,6 +1,6 @@
 import { PaymentRepository } from "./../repositories/payment"
 import { EntityManager } from "typeorm"
-import { isDefined, MedusaError } from "medusa-core-utils"
+import { MedusaError } from "medusa-core-utils"
 
 import { Payment, Refund } from "../models"
 import { TransactionBaseService } from "../interfaces"
@@ -62,13 +62,6 @@ export default class PaymentService extends TransactionBaseService {
     paymentId: string,
     config: FindConfig<Payment> = {}
   ): Promise<Payment> {
-    if (!isDefined(paymentId)) {
-      throw new MedusaError(
-        MedusaError.Types.NOT_FOUND,
-        `"paymentId" must be defined`
-      )
-    }
-
     const manager = this.transactionManager_ ?? this.manager_
     const paymentRepository = manager.getCustomRepository(
       this.paymentRepository_

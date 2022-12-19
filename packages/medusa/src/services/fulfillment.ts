@@ -1,4 +1,4 @@
-import { isDefined, MedusaError } from "medusa-core-utils"
+import { MedusaError } from "medusa-core-utils"
 import { EntityManager } from "typeorm"
 import { ShippingProfileService } from "."
 import { TransactionBaseService } from "../interfaces"
@@ -13,7 +13,7 @@ import {
   FulfillmentItemPartition,
   FulFillmentItemType,
 } from "../types/fulfillment"
-import { buildQuery } from "../utils"
+import { buildQuery, isDefined } from "../utils"
 import FulfillmentProviderService from "./fulfillment-provider"
 import LineItemService from "./line-item"
 import TotalsService from "./totals"
@@ -159,34 +159,27 @@ class FulfillmentService extends TransactionBaseService {
 
   /**
    * Retrieves a fulfillment by its id.
-   * @param fulfillmentId - the id of the fulfillment to retrieve
+   * @param id - the id of the fulfillment to retrieve
    * @param config - optional values to include with fulfillmentRepository query
    * @return the fulfillment
    */
   async retrieve(
-    fulfillmentId: string,
+    id: string,
     config: FindConfig<Fulfillment> = {}
   ): Promise<Fulfillment> {
-    if (!isDefined(fulfillmentId)) {
-      throw new MedusaError(
-        MedusaError.Types.NOT_FOUND,
-        `"fulfillmentId" must be defined`
-      )
-    }
-
     const manager = this.manager_
     const fulfillmentRepository = manager.getCustomRepository(
       this.fulfillmentRepository_
     )
 
-    const query = buildQuery({ id: fulfillmentId }, config)
+    const query = buildQuery({ id }, config)
 
     const fulfillment = await fulfillmentRepository.findOne(query)
 
     if (!fulfillment) {
       throw new MedusaError(
         MedusaError.Types.NOT_FOUND,
-        `Fulfillment with id: ${fulfillmentId} was not found`
+        `Fulfillment with id: ${id} was not found`
       )
     }
     return fulfillment

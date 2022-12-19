@@ -1,4 +1,5 @@
-import { isDefined, MedusaError } from "medusa-core-utils"
+import jwt, { JwtPayload } from "jsonwebtoken"
+import { MedusaError } from "medusa-core-utils"
 import { Brackets, EntityManager } from "typeorm"
 import { TransactionBaseService } from "../interfaces"
 import SalesChannelFeatureFlag from "../loaders/feature-flags/sales-channels"
@@ -27,7 +28,7 @@ import {
 } from "../types/fulfillment"
 import { UpdateOrderInput } from "../types/orders"
 import { CreateShippingMethodDto } from "../types/shipping-options"
-import { buildQuery, isString, setMetadata } from "../utils"
+import { buildQuery, isDefined, isString, setMetadata } from "../utils"
 import { FlagRouter } from "../utils/flag-router"
 import CartService from "./cart"
 import CustomerService from "./customer"
@@ -45,6 +46,8 @@ import ShippingOptionService from "./shipping-option"
 import ShippingProfileService from "./shipping-profile"
 import TotalsService from "./totals"
 import { NewTotalsService, TaxProviderService } from "./index"
+import { ConfigModule } from "../types/global"
+import logger from "../loaders/logger"
 
 export const ORDER_CART_ALREADY_EXISTS_ERROR = "Order from cart already exists"
 
@@ -94,6 +97,7 @@ class OrderService extends TransactionBaseService {
     UPDATED: "order.updated",
     CANCELED: "order.canceled",
     COMPLETED: "order.completed",
+    ORDERS_CLAIMED: "order.orders_claimed",
   }
 
   protected manager_: EntityManager
@@ -333,13 +337,6 @@ class OrderService extends TransactionBaseService {
     orderId: string,
     config: FindConfig<Order> = {}
   ): Promise<Order> {
-    if (!isDefined(orderId)) {
-      throw new MedusaError(
-        MedusaError.Types.NOT_FOUND,
-        `"orderId" must be defined`
-      )
-    }
-
     const { totalsToSelect } = this.transformQueryForTotals(config)
 
     if (totalsToSelect?.length) {
@@ -705,7 +702,7 @@ class OrderService extends TransactionBaseService {
               ),
             ]
           }),
-          cart.shipping_methods.map(async (method) => {
+          cart.shipping_methods.map((method) => {
             // TODO: Due to cascade insert we have to remove the tax_lines that have been added by the cart decorate totals.
             // Is the cascade insert really used? Also, is it really necessary to pass the entire entities when creating or updating?
             // We normally should only pass what is needed?

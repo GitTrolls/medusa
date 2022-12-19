@@ -14,10 +14,11 @@ import {
 } from "../../../../services"
 
 import { Type } from "class-transformer"
-import { isDefined, MedusaError } from "medusa-core-utils"
+import { MedusaError } from "medusa-core-utils"
 import { EntityManager } from "typeorm"
 import { Order, Return } from "../../../../models"
 import { OrdersReturnItem } from "../../../../types/orders"
+import { isDefined } from "../../../../utils"
 import { validator } from "../../../../utils/validator"
 
 /**

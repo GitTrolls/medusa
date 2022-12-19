@@ -7,7 +7,7 @@ import { TaxRate } from "../../../.."
 import { TaxRateService } from "../../../../services"
 import { omit } from "lodash"
 import { validator } from "../../../../utils/validator"
-import { isDefined } from "medusa-core-utils"
+import { isDefined } from "../../../../utils"
 
 /**
  * @oas [post] /tax-rates/{id}
