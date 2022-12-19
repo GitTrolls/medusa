@@ -9,6 +9,7 @@ import middlewares, {
 import { AdminGetPriceListPaginationParams } from "./list-price-lists"
 import { AdminGetPriceListsPriceListProductsParams } from "./list-price-list-products"
 import {
+  allowedAdminProductFields,
   defaultAdminProductFields,
   defaultAdminProductRelations,
 } from "../products"
@@ -36,6 +37,7 @@ export default (app, featureFlagRouter: FlagRouter) => {
   route.get(
     "/:id/products",
     transformQuery(AdminGetPriceListsPriceListProductsParams, {
+      allowedFields: allowedAdminProductFields,
       defaultFields: defaultAdminProductFields,
       defaultRelations: defaultAdminProductRelations.filter(
         (r) => r !== "variants.prices"
@@ -92,6 +94,8 @@ export const defaultAdminPriceListFields = [
 ]
 
 export const defaultAdminPriceListRelations = ["prices", "customer_groups"]
+
+export const allowedAdminPriceListFields = ["prices", "customer_groups"]
 
 export type AdminPriceListRes = {
   price_list: PriceList

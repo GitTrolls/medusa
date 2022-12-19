@@ -11,8 +11,6 @@ import {
   ValidateNested,
 } from "class-validator"
 import {
-  defaultAdminDraftOrdersCartFields,
-  defaultAdminDraftOrdersCartRelations,
   defaultAdminDraftOrdersFields,
   defaultAdminDraftOrdersRelations,
 } from "."
@@ -20,7 +18,7 @@ import {
 import { Type } from "class-transformer"
 import { EntityManager } from "typeorm"
 import { DraftOrder } from "../../../.."
-import { CartService, DraftOrderService } from "../../../../services"
+import { DraftOrderService } from "../../../../services"
 import { AddressPayload } from "../../../../types/common"
 import { DraftOrderCreateProps } from "../../../../types/draft-orders"
 import { validator } from "../../../../utils/validator"
@@ -231,15 +229,6 @@ export default async (req, res) => {
     relations: defaultAdminDraftOrdersRelations,
     select: defaultAdminDraftOrdersFields,
   })
-
-  const cartService: CartService = req.scope.resolve("cartService")
-
-  draftOrder.cart = await cartService
-    .withTransaction(manager)
-    .retrieveWithTotals(draftOrder.cart_id, {
-      relations: defaultAdminDraftOrdersCartRelations,
-      select: defaultAdminDraftOrdersCartFields,
-    })
 
   res.status(200).json({ draft_order: draftOrder })
 }

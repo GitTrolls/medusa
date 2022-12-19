@@ -214,13 +214,6 @@ class CartService extends TransactionBaseService {
     options: FindConfig<Cart> = {},
     totalsConfig: TotalsConfig = {}
   ): Promise<Cart> {
-    if (!isDefined(cartId)) {
-      throw new MedusaError(
-        MedusaError.Types.NOT_FOUND,
-        `"cartId" must be defined`
-      )
-    }
-
     const { totalsToSelect } = this.transformQueryForTotals_(options)
 
     if (totalsToSelect.length) {

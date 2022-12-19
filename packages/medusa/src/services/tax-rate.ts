@@ -67,25 +67,18 @@ class TaxRateService extends TransactionBaseService {
   }
 
   async retrieve(
-    taxRateId: string,
+    id: string,
     config: FindConfig<TaxRate> = {}
   ): Promise<TaxRate> {
-    if (!isDefined(taxRateId)) {
-      throw new MedusaError(
-        MedusaError.Types.NOT_FOUND,
-        `"taxRateId" must be defined`
-      )
-    }
-
     const manager = this.manager_
     const taxRateRepo = manager.getCustomRepository(this.taxRateRepository_)
-    const query = buildQuery({ id: taxRateId }, config)
+    const query = buildQuery({ id }, config)
 
     const taxRate = await taxRateRepo.findOneWithResolution(query)
     if (!taxRate) {
       throw new MedusaError(
         MedusaError.Types.NOT_FOUND,
-        `TaxRate with ${taxRateId} was not found`
+        `TaxRate with ${id} was not found`
       )
     }
 

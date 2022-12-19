@@ -9,7 +9,7 @@ import {
   CreateProductCollection,
   UpdateProductCollection,
 } from "../types/product-collection"
-import { buildQuery, isDefined, isString, setMetadata } from "../utils"
+import { buildQuery, isString, setMetadata } from "../utils"
 import EventBusService from "./event-bus"
 
 type InjectedDependencies = {
@@ -55,13 +55,6 @@ class ProductCollectionService extends TransactionBaseService {
     collectionId: string,
     config: FindConfig<ProductCollection> = {}
   ): Promise<ProductCollection> {
-    if (!isDefined(collectionId)) {
-      throw new MedusaError(
-        MedusaError.Types.NOT_FOUND,
-        `"collectionId" must be defined`
-      )
-    }
-
     const collectionRepo = this.manager_.getCustomRepository(
       this.productCollectionRepository_
     )

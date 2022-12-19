@@ -251,33 +251,26 @@ class ReturnService extends TransactionBaseService {
 
   /**
    * Retrieves a return by its id.
-   * @param returnId - the id of the return to retrieve
+   * @param id - the id of the return to retrieve
    * @param config - the config object
    * @return the return
    */
   async retrieve(
-    returnId: string,
+    id: string,
     config: FindConfig<Return> = {}
   ): Promise<Return | never> {
-    if (!isDefined(returnId)) {
-      throw new MedusaError(
-        MedusaError.Types.NOT_FOUND,
-        `"returnId" must be defined`
-      )
-    }
-
     const returnRepository = this.manager_.getCustomRepository(
       this.returnRepository_
     )
 
-    const query = buildQuery({ id: returnId }, config)
+    const query = buildQuery({ id }, config)
 
     const returnObj = await returnRepository.findOne(query)
 
     if (!returnObj) {
       throw new MedusaError(
         MedusaError.Types.NOT_FOUND,
-        `Return with id: ${returnId} was not found`
+        `Return with id: ${id} was not found`
       )
     }
     return returnObj

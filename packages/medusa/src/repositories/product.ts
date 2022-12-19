@@ -353,18 +353,6 @@ export class ProductRepository extends Repository<Product> {
     options: FindWithoutRelationsOptions = { where: {} },
     relations: string[] = []
   ): Promise<[Product[], number]> {
-    const tags = options.where.tags
-    delete options.where.tags
-
-    const price_lists = options.where.price_list_id
-    delete options.where.price_list_id
-
-    const sales_channels = options.where.sales_channel_id
-    delete options.where.sales_channel_id
-
-    const discount_condition_id = options.where.discount_condition_id
-    delete options.where.discount_condition_id
-
     const cleanedOptions = this._cleanOptions(options)
 
     let qb = this.createQueryBuilder("product")
@@ -384,35 +372,13 @@ export class ProductRepository extends Repository<Product> {
       .skip(cleanedOptions.skip)
       .take(cleanedOptions.take)
 
-    if (discount_condition_id) {
+    const discountConditionId = options.where.discount_condition_id
+    if (discountConditionId) {
       qb.innerJoin(
         "discount_condition_product",
         "dc_product",
         `dc_product.product_id = product.id AND dc_product.condition_id = :dcId`,
-        { dcId: discount_condition_id }
-      )
-    }
-
-    if (tags) {
-      qb.leftJoin("product.tags", "tags").andWhere(`tags.id IN (:...tag_ids)`, {
-        tag_ids: tags.value,
-      })
-    }
-
-    if (price_lists) {
-      qb.leftJoin("product.variants", "variants")
-        .leftJoin("variants.prices", "ma")
-        .andWhere("ma.price_list_id IN (:...price_list_ids)", {
-          price_list_ids: price_lists.value,
-        })
-    }
-
-    if (sales_channels) {
-      qb.innerJoin(
-        "product.sales_channels",
-        "sales_channels",
-        "sales_channels.id IN (:...sales_channels_ids)",
-        { sales_channels_ids: sales_channels.value }
+        { dcId: discountConditionId }
       )
     }
 

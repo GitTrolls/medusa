@@ -15,7 +15,6 @@ import {
   DiscountRuleType,
   Region,
 } from "../models"
-import { optionalBooleanMapper } from "../utils/validators/is-boolean"
 import { ExactlyOne } from "./validators/exactly-one"
 
 export type QuerySelector = {
@@ -29,12 +28,12 @@ export class FilterableDiscountProps {
 
   @IsBoolean()
   @IsOptional()
-  @Transform(({ value }) => optionalBooleanMapper.get(value))
+  @Transform(({ value }) => value === "true")
   is_dynamic?: boolean
 
   @IsBoolean()
   @IsOptional()
-  @Transform(({ value }) => optionalBooleanMapper.get(value))
+  @Transform(({ value }) => value === "true")
   is_disabled?: boolean
 
   @ValidateNested()

@@ -14,7 +14,7 @@ import { DiscountConditionRepository } from "../repositories/discount-condition"
 import { FindConfig } from "../types/common"
 import { DiscountConditionInput } from "../types/discount"
 import { TransactionBaseService } from "../interfaces"
-import { buildQuery, isDefined, PostgresError } from "../utils"
+import { buildQuery, PostgresError } from "../utils"
 
 type InjectedDependencies = {
   manager: EntityManager
@@ -50,13 +50,6 @@ class DiscountConditionService extends TransactionBaseService {
     conditionId: string,
     config?: FindConfig<DiscountCondition>
   ): Promise<DiscountCondition | never> {
-    if (!isDefined(conditionId)) {
-      throw new MedusaError(
-        MedusaError.Types.NOT_FOUND,
-        `"conditionId" must be defined`
-      )
-    }
-
     const manager = this.manager_
     const conditionRepo = manager.getCustomRepository(
       this.discountConditionRepository_
@@ -115,7 +108,7 @@ class DiscountConditionService extends TransactionBaseService {
 
   async upsertCondition(
     data: DiscountConditionInput,
-    overrideExisting = true
+    overrideExisting: boolean = true
   ): Promise<
     (
       | DiscountConditionProduct

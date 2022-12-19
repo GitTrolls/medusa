@@ -196,13 +196,6 @@ class CustomerService extends TransactionBaseService {
     email: string,
     config: FindConfig<Customer> = {}
   ): Promise<Customer | never> {
-    if (!isDefined(email)) {
-      throw new MedusaError(
-        MedusaError.Types.NOT_FOUND,
-        `"email" must be defined`
-      )
-    }
-
     return await this.retrieve_({ email: email.toLowerCase() }, config)
   }
 
@@ -254,13 +247,6 @@ class CustomerService extends TransactionBaseService {
     customerId: string,
     config: FindConfig<Customer> = {}
   ): Promise<Customer> {
-    if (!isDefined(customerId)) {
-      throw new MedusaError(
-        MedusaError.Types.NOT_FOUND,
-        `"customerId" must be defined`
-      )
-    }
-
     return this.retrieve_({ id: customerId }, config)
   }
 

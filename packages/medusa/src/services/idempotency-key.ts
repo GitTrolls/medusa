@@ -8,7 +8,6 @@ import {
   CreateIdempotencyKeyInput,
   IdempotencyCallbackResult,
 } from "../types/idempotency-key"
-import { isDefined } from "../utils"
 
 const KEY_LOCKED_TIMEOUT = 1000
 
@@ -84,13 +83,6 @@ class IdempotencyKeyService extends TransactionBaseService {
    * @return idempotency key
    */
   async retrieve(idempotencyKey: string): Promise<IdempotencyKey | never> {
-    if (!isDefined(idempotencyKey)) {
-      throw new MedusaError(
-        MedusaError.Types.NOT_FOUND,
-        `"idempotencyKey" must be defined`
-      )
-    }
-
     const idempotencyKeyRepo = this.manager_.getCustomRepository(
       this.idempotencyKeyRepository_
     )
