@@ -73,9 +73,10 @@ export class Store extends BaseEntity {
 }
 
 /**
- * @schema Store
+ * @schema store
  * title: "Store"
  * description: "Holds settings for the Store, such as name, currencies, etc."
+ * x-resourceId: store
  * type: object
  * properties:
  *   id:
@@ -95,12 +96,12 @@ export class Store extends BaseEntity {
  *       description: See a list of codes.
  *   default_currency:
  *     description: Available if the relation `default_currency` is expanded.
- *     $ref: "#/components/schemas/Currency"
+ *     $ref: "#/components/schemas/currency"
  *   currencies:
  *     description: The currencies that are enabled for the Store. Available if the relation `currencies` is expanded.
  *     type: array
  *     items:
- *       $ref: "#/components/schemas/Currency"
+ *       $ref: "#/components/schemas/currency"
  *   swap_link_template:
  *     description: "A template to generate Swap links from. Use {{cart_id}} to include the Swap's `cart_id` in the link."
  *     type: string

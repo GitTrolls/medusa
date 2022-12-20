@@ -42,7 +42,7 @@ import { FindParams } from "../../../../types/common"
  *           type: object
  *           properties:
  *             order_edit:
- *               $ref: "#/components/schemas/OrderEdit"
+ *               $ref: "#/components/schemas/order_edit"
  *   "400":
  *     $ref: "#/components/responses/400_error"
  *   "401":

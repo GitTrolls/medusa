@@ -52,7 +52,7 @@ import ProductCollectionService from "../../../../services/product-collection"
  *          type: object
  *          properties:
  *            collection:
- *              $ref: "#/components/schemas/ProductCollection"
+ *              $ref: "#/components/schemas/product_collection"
  *  "400":
  *    $ref: "#/components/responses/400_error"
  *  "401":

@@ -38,7 +38,7 @@ import InviteService from "../../../../services/invite"
  *             invites:
  *               type: array
  *               items:
- *                 $ref: "#/components/schemas/Invite"
+ *                 $ref: "#/components/schemas/invite"
  *   "400":
  *     $ref: "#/components/responses/400_error"
  *   "401":

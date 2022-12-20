@@ -75,7 +75,7 @@ import { validator } from "../../../../utils/validator"
  *           type: object
  *           properties:
  *             draft_order:
- *               $ref: "#/components/schemas/DraftOrder"
+ *               $ref: "#/components/schemas/draft-order"
  *   "400":
  *     $ref: "#/components/responses/400_error"
  *   "401":
@@ -148,7 +148,7 @@ export default async (req, res) => {
 
     draftOrder.cart = await cartService
       .withTransaction(manager)
-      .retrieveWithTotals(draftOrder.cart_id, {
+      .retrieve(draftOrder.cart_id, {
         relations: defaultAdminDraftOrdersCartRelations,
         select: defaultAdminDraftOrdersCartFields,
       })

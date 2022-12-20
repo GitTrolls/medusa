@@ -3,11 +3,12 @@ import { getRetrieveConfig, pickByConfig } from "./utils/get-query-config"
 
 import { EntityManager } from "typeorm"
 import { IsType } from "../../../../utils/validators/is-type"
-import { isDefined, MedusaError } from "medusa-core-utils"
+import { MedusaError } from "medusa-core-utils"
 import { TaxRate } from "../../../.."
 import { TaxRateService } from "../../../../services"
 import { omit } from "lodash"
 import { validator } from "../../../../utils/validator"
+import { isDefined } from "../../../../utils"
 
 /**
  * @oas [post] /tax-rates
@@ -111,7 +112,7 @@ import { validator } from "../../../../utils/validator"
  *           type: object
  *           properties:
  *             tax_rate:
- *               $ref: "#/components/schemas/TaxRate"
+ *               $ref: "#/components/schemas/tax_rate"
  *   "400":
  *     $ref: "#/components/responses/400_error"
  *   "401":

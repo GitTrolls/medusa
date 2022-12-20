@@ -117,7 +117,7 @@ import { validator } from "../../../../utils/validator"
  *           shipping_address:
  *              type: object
  *              description: "An optional shipping address to send the claim to. Defaults to the parent order's shipping address"
- *              $ref: "#/components/schemas/Address"
+ *              $ref: "#/components/schemas/address"
  *           refund_amount:
  *              description: The amount to refund the Customer when the Claim type is `refund`.
  *              type: integer
@@ -175,7 +175,7 @@ import { validator } from "../../../../utils/validator"
  *           type: object
  *           properties:
  *             order:
- *               $ref: "#/components/schemas/Order"
+ *               $ref: "#/components/schemas/order"
  *   "400":
  *     $ref: "#/components/responses/400_error"
  *   "401":

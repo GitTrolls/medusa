@@ -10,9 +10,10 @@ export class TaxProvider {
 }
 
 /**
- * @schema TaxProvider
+ * @schema tax_provider
  * title: "Tax Provider"
  * description: "The tax service used to calculate taxes"
+ * x-resourceId: tax_provider
  * type: object
  * properties:
  *   id:

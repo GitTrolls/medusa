@@ -91,9 +91,10 @@ export class Fulfillment extends BaseEntity {
 }
 
 /**
- * @schema Fulfillment
+ * @schema fulfillment
  * title: "Fulfillment"
  * description: "Fulfillments are created once store operators can prepare the purchased goods. Fulfillments will eventually be shipped and hold information about how to track shipments. Fulfillments are created through a provider, which is typically an external shipping aggregator, shipping partner og 3PL, most plugins will have asynchronous communications with these providers through webhooks in order to automatically update and synchronize the state of Fulfillments."
+ * x-resourceId: fulfillment
  * type: object
  * required:
  *  - provider_id
@@ -129,17 +130,17 @@ export class Fulfillment extends BaseEntity {
  *     example: manual
  *   provider:
  *     description: Available if the relation `provider` is expanded.
- *     $ref: "#/components/schemas/FulfillmentProvider"
+ *     $ref: "#/components/schemas/fulfillment_provider"
  *   items:
  *     description: The Fulfillment Items in the Fulfillment - these hold information about how many of each Line Item has been fulfilled. Available if the relation `items` is expanded.
  *     type: array
  *     items:
- *       $ref: "#/components/schemas/FulfillmentItem"
+ *       $ref: "#/components/schemas/fulfillment_item"
  *   tracking_links:
  *     description: The Tracking Links that can be used to track the status of the Fulfillment, these will usually be provided by the Fulfillment Provider. Available if the relation `tracking_links` is expanded.
  *     type: array
  *     items:
- *       $ref: "#/components/schemas/TrackingLink"
+ *       $ref: "#/components/schemas/tracking_link"
  *   tracking_numbers:
  *     deprecated: true
  *     description: The tracking numbers that can be used to track the status of the fulfillment.

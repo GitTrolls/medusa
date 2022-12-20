@@ -38,7 +38,7 @@ import UserService from "../../../../services/user"
  *             users:
  *               type: array
  *               items:
- *                 $ref: "#/components/schemas/User"
+ *                 $ref: "#/components/schemas/user"
  *   "400":
  *     $ref: "#/components/responses/400_error"
  *   "401":

@@ -85,7 +85,7 @@ import { validator } from "../../../../utils/validator"
  *             regions:
  *               type: array
  *               items:
- *                 $ref: "#/components/schemas/Region"
+ *                 $ref: "#/components/schemas/region"
  *   "400":
  *     $ref: "#/components/responses/400_error"
  *   "404":

@@ -1,7 +1,8 @@
 import { pick } from "lodash"
 import { FindConfig, QueryConfig, RequestQueryFields } from "../types/common"
-import { isDefined, MedusaError } from "medusa-core-utils"
+import { MedusaError } from "medusa-core-utils/dist"
 import { BaseEntity } from "../interfaces"
+import { isDefined } from "."
 
 export function pickByConfig<TModel extends BaseEntity>(
   obj: TModel | TModel[],

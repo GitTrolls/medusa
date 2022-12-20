@@ -53,7 +53,7 @@ import { validator } from "../../../../utils/validator"
  *             draft_orders:
  *               type: array
  *               items:
- *                 $ref: "#/components/schemas/DraftOrder"
+ *                 $ref: "#/components/schemas/draft-order"
  *             count:
  *               type: integer
  *               description: The total number of items available

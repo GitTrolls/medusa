@@ -122,9 +122,10 @@ export class OrderEdit extends BaseEntity {
 }
 
 /**
- * @schema OrderEdit
+ * @schema order_edit
  * title: "Order Edit"
  * description: "Order edit keeps track of order items changes."
+ * x-resourceId: order_edit
  * type: object
  * required:
  *   - order_id
@@ -142,12 +143,12 @@ export class OrderEdit extends BaseEntity {
  *     example: order_01G2SG30J8C85S4A5CHM2S1NS2
  *   order:
  *     description: Available if the relation `order` is expanded.
- *     $ref: "#/components/schemas/Order"
+ *     $ref: "#/components/schemas/order"
  *   changes:
  *     type: array
  *     description: Available if the relation `changes` is expanded.
  *     items:
- *       $ref: "#/components/schemas/OrderItemChange"
+ *       $ref: "#/components/schemas/order_item_change"
  *   internal_note:
  *     description: "An optional note with additional details about the order edit."
  *     type: string
@@ -224,14 +225,14 @@ export class OrderEdit extends BaseEntity {
  *     type: array
  *     description: Available if the relation `items` is expanded.
  *     items:
- *       $ref: "#/components/schemas/LineItem"
+ *       $ref: "#/components/schemas/line_item"
  *   payment_collection_id:
  *     type: string
  *     description: The ID of the payment collection
  *     example: paycol_01G8TJSYT9M6AVS5N4EMNFS1EK
  *   payment_collection:
  *     description: Available if the relation `payment_collection` is expanded.
- *     $ref: "#/components/schemas/PaymentCollection"
+ *     $ref: "#/components/schemas/payment_collection"
  *   created_at:
  *     type: string
  *     description: "The date with timezone at which the resource was created."

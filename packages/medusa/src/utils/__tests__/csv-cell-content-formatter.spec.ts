@@ -7,27 +7,11 @@ type Case = {
 
 const cases: [string, Case][] = [
   [
-    "should return a the exact input content",
-    {
-      str: "Hello my name is Adrien and I like writing single line content.",
-      expected:
-        'Hello my name is Adrien and I like writing single line content.',
-    },
-  ],
-  [
-    "should return a formatted string escaping the coma",
+    "should return the exact input when there is no new line char",
     {
       str: "Hello, my name is Adrien and I like writing single line content.",
       expected:
-        '"Hello, my name is Adrien and I like writing single line content."',
-    },
-  ],
-  [
-    "should return a formatted string escaping the semicolon",
-    {
-      str: "Hello; my name is Adrien and I like writing single line content.",
-      expected:
-        '"Hello; my name is Adrien and I like writing single line content."',
+        "Hello, my name is Adrien and I like writing single line content.",
     },
   ],
   [

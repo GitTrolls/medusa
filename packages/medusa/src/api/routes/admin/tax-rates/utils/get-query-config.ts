@@ -2,7 +2,7 @@ import { pick } from "lodash"
 import { defaultAdminTaxRatesFields, defaultAdminTaxRatesRelations } from "../"
 import { TaxRate } from "../../../../.."
 import { FindConfig } from "../../../../../types/common"
-import { isDefined } from "medusa-core-utils"
+import { isDefined } from "../../../../../utils"
 
 export function pickByConfig<T>(
   obj: T | T[],

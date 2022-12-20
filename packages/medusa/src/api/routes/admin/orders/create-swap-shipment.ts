@@ -75,7 +75,7 @@ import { validator } from "../../../../utils/validator"
  *           type: object
  *           properties:
  *             order:
- *               $ref: "#/components/schemas/Order"
+ *               $ref: "#/components/schemas/order"
  *   "400":
  *     $ref: "#/components/responses/400_error"
  *   "401":

@@ -57,7 +57,7 @@ import { FindParams } from "../../../../types/common"
  *               default: true
  *             discount:
  *               description: The Discount to which the condition used to belong
- *               $ref: "#/components/schemas/Discount"
+ *               $ref: "#/components/schemas/discount"
  *   "400":
  *     $ref: "#/components/responses/400_error"
  *   "401":

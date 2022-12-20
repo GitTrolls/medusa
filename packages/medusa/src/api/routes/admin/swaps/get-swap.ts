@@ -40,7 +40,7 @@ import { SwapService } from "../../../../services"
  *           type: object
  *           properties:
  *             swap:
- *               $ref: "#/components/schemas/Swap"
+ *               $ref: "#/components/schemas/swap"
  *   "400":
  *     $ref: "#/components/responses/400_error"
  *   "401":

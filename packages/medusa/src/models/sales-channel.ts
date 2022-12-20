@@ -22,9 +22,10 @@ export class SalesChannel extends SoftDeletableEntity {
 }
 
 /**
- * @schema SalesChannel
+ * @schema sales_channel
  * title: "Sales Channel"
  * description: "A Sales Channel"
+ * x-resourceId: sales_channel
  * type: object
  * required:
  *   - name

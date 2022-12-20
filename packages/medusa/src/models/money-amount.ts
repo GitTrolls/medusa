@@ -68,9 +68,10 @@ export class MoneyAmount extends SoftDeletableEntity {
 }
 
 /**
- * @schema MoneyAmount
+ * @schema money_amount
  * title: "Money Amount"
  * description: "Money Amounts represents an amount that a given Product Variant can be purcased for. Each Money Amount either has a Currency or Region associated with it to indicate the pricing in a given Currency or, for fully region-based pricing, the given price in a specific Region. If region-based pricing is used the amount will be in the currency defined for the Reigon."
+ * x-resourceId: money_amount
  * type: object
  * required:
  *   - currency_code
@@ -89,7 +90,7 @@ export class MoneyAmount extends SoftDeletableEntity {
  *       description: See a list of codes.
  *   currency:
  *     description: Available if the relation `currency` is expanded.
- *     $ref: "#/components/schemas/Currency"
+ *     $ref: "#/components/schemas/currency"
  *   amount:
  *     description: "The amount in the smallest currecny unit (e.g. cents 100 cents to charge $1) that the Product Variant will cost."
  *     type: integer
@@ -108,7 +109,7 @@ export class MoneyAmount extends SoftDeletableEntity {
  *     example: pl_01G8X3CKJXCG5VXVZ87H9KC09W
  *   price_list:
  *     description: Available if the relation `price_list` is expanded.
- *     $ref: "#/components/schemas/PriceList"
+ *     $ref: "#/components/schemas/price_list"
  *   variant_id:
  *     description: "The id of the Product Variant contained in the Line Item."
  *     type: string

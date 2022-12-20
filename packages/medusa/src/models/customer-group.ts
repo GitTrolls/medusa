@@ -30,11 +30,11 @@ export class CustomerGroup extends SoftDeletableEntity {
     this.id = generateEntityId(this.id, "cgrp")
   }
 }
-
 /**
- * @schema CustomerGroup
+ * @schema customer_group
  * title: "Customer Group"
  * description: "Represents a customer group"
+ * x-resourceId: customer_group
  * type: object
  * required:
  *   - name
@@ -57,7 +57,7 @@ export class CustomerGroup extends SoftDeletableEntity {
  *     type: array
  *     description: The price lists that are associated with the customer group. Available if the relation `price_lists` is expanded.
  *     items:
- *       $ref: "#/components/schemas/PriceList"
+ *       $ref: "#/components/schemas/price_list"
  *   created_at:
  *     type: string
  *     description: "The date with timezone at which the resource was created."
@@ -75,3 +75,4 @@ export class CustomerGroup extends SoftDeletableEntity {
  *     description: An optional key-value map with additional details
  *     example: {car: "white"}
  */
+

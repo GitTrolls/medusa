@@ -1,4 +1,4 @@
-import { isDefined, MedusaError } from "medusa-core-utils"
+import { MedusaError } from "medusa-core-utils"
 import { v4 } from "uuid"
 import { TransactionBaseService } from "../interfaces"
 import { DeepPartial, EntityManager } from "typeorm"
@@ -83,13 +83,6 @@ class IdempotencyKeyService extends TransactionBaseService {
    * @return idempotency key
    */
   async retrieve(idempotencyKey: string): Promise<IdempotencyKey | never> {
-    if (!isDefined(idempotencyKey)) {
-      throw new MedusaError(
-        MedusaError.Types.NOT_FOUND,
-        `"idempotencyKey" must be defined`
-      )
-    }
-
     const idempotencyKeyRepo = this.manager_.getCustomRepository(
       this.idempotencyKeyRepository_
     )
