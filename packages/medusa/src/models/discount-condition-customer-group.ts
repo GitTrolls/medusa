@@ -38,9 +38,10 @@ export class DiscountConditionCustomerGroup {
 }
 
 /**
- * @schema DiscountConditionCustomerGroup
+ * @schema discount_condition_customer_group
  * title: "Product Tag Discount Condition"
  * description: "Associates a discount condition with a customer group"
+ * x-resourceId: discount_condition_customer_group
  * type: object
  * required:
  *   - customer_group_id
@@ -56,10 +57,10 @@ export class DiscountConditionCustomerGroup {
  *     example: discon_01G8X9A7ESKAJXG2H0E6F1MW7A
  *   customer_group:
  *     description: Available if the relation `customer_group` is expanded.
- *     $ref: "#/components/schemas/CustomerGroup"
+ *     $ref: "#/components/schemas/customer_group"
  *   discount_condition:
  *     description: Available if the relation `discount_condition` is expanded.
- *     $ref: "#/components/schemas/DiscountCondition"
+ *     $ref: "#/components/schemas/discount_condition"
  *   created_at:
  *     type: string
  *     description: "The date with timezone at which the resource was created."

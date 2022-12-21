@@ -1,6 +1,7 @@
 import { EntityManager } from "typeorm"
 import { OrderEditService } from "../../../../services"
 import { Request, Response } from "express"
+import { IsNumber } from "class-validator"
 import {
   defaultOrderEditFields,
   defaultOrderEditRelations,
@@ -45,7 +46,7 @@ import {
  *           type: object
  *           properties:
  *             order_edit:
- *               $ref: "#/components/schemas/OrderEdit"
+ *               $ref: "#/components/schemas/order_edit"
  *   "400":
  *     $ref: "#/components/responses/400_error"
  *   "401":

@@ -16,6 +16,7 @@ export default (app) => {
     transformQuery(AdminGetVariantsParams, {
       defaultRelations: defaultAdminVariantRelations,
       defaultFields: defaultAdminVariantFields,
+      allowedFields: allowedAdminVariantFields,
       isList: true,
     }),
     middlewares.wrap(require("./list-variants").default)
@@ -47,6 +48,35 @@ export const defaultAdminVariantFields: (keyof ProductVariant)[] = [
   "created_at",
   "updated_at",
   "metadata",
+]
+
+export const allowedAdminVariantFields = [
+  "id",
+  "title",
+  "product_id",
+  "sku",
+  "barcode",
+  "ean",
+  "upc",
+  "inventory_quantity",
+  "allow_backorder",
+  "weight",
+  "length",
+  "height",
+  "width",
+  "hs_code",
+  "origin_country",
+  "mid_code",
+  "material",
+  "created_at",
+  "updated_at",
+  "metadata",
+]
+
+export const allowedAdminVariantRelations: (keyof ProductVariant)[] = [
+  "product",
+  "prices",
+  "options",
 ]
 
 export type AdminVariantsListRes = PaginatedResponse & {

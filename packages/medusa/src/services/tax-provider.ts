@@ -1,6 +1,7 @@
 import { MedusaError } from "medusa-core-utils"
 import { AwilixContainer } from "awilix"
 import { EntityManager, In } from "typeorm"
+import Redis from "ioredis"
 
 import { LineItemTaxLineRepository } from "../repositories/line-item-tax-line"
 import { ShippingMethodTaxLineRepository } from "../repositories/shipping-method-tax-line"
@@ -16,7 +17,6 @@ import {
 } from "../models"
 import { isCart } from "../types/cart"
 import {
-  ICacheService,
   ITaxService,
   ItemTaxCalculationLine,
   TaxCalculationContext,
@@ -27,6 +27,8 @@ import { TaxLinesMaps, TaxServiceRate } from "../types/tax-service"
 
 import TaxRateService from "./tax-rate"
 import EventBusService from "./event-bus"
+
+const CACHE_TIME = 30 // seconds
 
 type RegionDetails = {
   id: string
@@ -41,25 +43,24 @@ class TaxProviderService extends TransactionBaseService {
   protected transactionManager_: EntityManager
 
   protected readonly container_: AwilixContainer
-  protected readonly cacheService_: ICacheService
   protected readonly taxRateService_: TaxRateService
   protected readonly taxLineRepo_: typeof LineItemTaxLineRepository
   protected readonly smTaxLineRepo_: typeof ShippingMethodTaxLineRepository
   protected readonly taxProviderRepo_: typeof TaxProviderRepository
+  protected readonly redis_: Redis.Redis
   protected readonly eventBus_: EventBusService
 
   constructor(container: AwilixContainer) {
     super(container)
 
     this.container_ = container
-    this.cacheService_ = container["cacheService"]
     this.taxLineRepo_ = container["lineItemTaxLineRepository"]
     this.smTaxLineRepo_ = container["shippingMethodTaxLineRepository"]
     this.taxRateService_ = container["taxRateService"]
     this.eventBus_ = container["eventBusService"]
     this.taxProviderRepo_ = container["taxProviderRepository"]
-
     this.manager_ = container["manager"]
+    this.redis_ = container["redisClient"]
   }
 
   async list(): Promise<TaxProvider[]> {
@@ -75,16 +76,12 @@ class TaxProviderService extends TransactionBaseService {
   retrieveProvider(region: Region): ITaxService {
     let provider: ITaxService
     if (region.tax_provider_id) {
-      try {
-        provider = this.container_[`tp_${region.tax_provider_id}`]
-      } catch (e) {
-        // noop
-      }
+      provider = this.container_[`tp_${region.tax_provider_id}`]
     } else {
       provider = this.container_["systemTaxService"]
     }
 
-    if (!provider!) {
+    if (!provider) {
       throw new MedusaError(
         MedusaError.Types.NOT_FOUND,
         `Could not find a tax provider with id: ${region.tax_provider_id}`
@@ -383,8 +380,7 @@ class TaxProviderService extends TransactionBaseService {
     optionId: string,
     regionDetails: RegionDetails
   ): Promise<TaxServiceRate[]> {
-    const cacheKey = this.getCacheKey(optionId, regionDetails.id)
-    const cacheHit = await this.cacheService_.get<TaxServiceRate[]>(cacheKey)
+    const cacheHit = await this.getCacheEntry(optionId, regionDetails.id)
     if (cacheHit) {
       return cacheHit
     }
@@ -414,7 +410,7 @@ class TaxProviderService extends TransactionBaseService {
       ]
     }
 
-    await this.cacheService_.set(cacheKey, toReturn)
+    await this.setCache(optionId, regionDetails.id, toReturn)
 
     return toReturn
   }
@@ -430,8 +426,7 @@ class TaxProviderService extends TransactionBaseService {
     productId: string,
     region: RegionDetails
   ): Promise<TaxServiceRate[]> {
-    const cacheKey = this.getCacheKey(productId, region.id)
-    const cacheHit = await this.cacheService_.get<TaxServiceRate[]>(cacheKey)
+    const cacheHit = await this.getCacheEntry(productId, region.id)
     if (cacheHit) {
       return cacheHit
     }
@@ -463,19 +458,67 @@ class TaxProviderService extends TransactionBaseService {
       ]
     }
 
-    await this.cacheService_.set(cacheKey, toReturn)
+    await this.setCache(productId, region.id, toReturn)
 
     return toReturn
   }
 
   /**
    * The cache key to get cache hits by.
-   * @param id - the entity id to cache
+   * @param productId - the product id to cache
    * @param regionId - the region id to cache
    * @return the cache key to use for the id set
    */
-  private getCacheKey(id: string, regionId: string): string {
-    return `txrtcache:${id}:${regionId}`
+  private getCacheKey(productId: string, regionId: string): string {
+    return `txrtcache:${productId}:${regionId}`
+  }
+
+  /**
+   * Sets the cache results for a set of ids
+   * @param productId - the product id to cache
+   * @param regionId - the region id to cache
+   * @param value - tax rates to cache
+   * @return promise that resolves after the cache has been set
+   */
+  private async setCache(
+    productId: string,
+    regionId: string,
+    value: TaxServiceRate[]
+  ): Promise<null | string> {
+    const cacheKey = this.getCacheKey(productId, regionId)
+    return await this.redis_.set(
+      cacheKey,
+      JSON.stringify(value),
+      "EX",
+      CACHE_TIME
+    )
+  }
+
+  /**
+   * Gets the cache results for a set of ids
+   * @param productId - the product id to cache
+   * @param regionId - the region id to cache
+   * @return the cached result or null
+   */
+  private async getCacheEntry(
+    productId: string,
+    regionId: string
+  ): Promise<TaxServiceRate[] | null> {
+    const cacheKey = this.getCacheKey(productId, regionId)
+
+    try {
+      const cacheHit = await this.redis_.get(cacheKey)
+      if (cacheHit) {
+        // TODO: Validate that cache has correct data
+        const parsedResults = JSON.parse(cacheHit) as TaxServiceRate[]
+        return parsedResults
+      }
+    } catch (_) {
+      // noop - cache parse failed
+      await this.redis_.del(cacheKey)
+    }
+
+    return null
   }
 
   async registerInstalledProviders(providers: string[]): Promise<void> {

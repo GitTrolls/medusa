@@ -18,7 +18,7 @@ import { validator } from "../../../../utils/validator"
  *     application/json:
  *       schema:
  *         anyOf:
- *           - $ref: "#/components/schemas/AddressFields"
+ *           - $ref: "#/components/schemas/address_fields"
  * x-codeSamples:
  *   - lang: JavaScript
  *     label: JS Client
@@ -54,7 +54,7 @@ import { validator } from "../../../../utils/validator"
  *          type: object
  *          properties:
  *            customer:
- *              $ref: "#/components/schemas/Customer"
+ *              $ref: "#/components/schemas/customer"
  *  "400":
  *    $ref: "#/components/responses/400_error"
  *  "401":

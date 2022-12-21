@@ -185,7 +185,7 @@ import { pick } from "lodash"
  *             orders:
  *               type: array
  *               items:
- *                 $ref: "#/components/schemas/Order"
+ *                 $ref: "#/components/schemas/order"
  *             count:
  *               type: integer
  *               description: The total number of items available

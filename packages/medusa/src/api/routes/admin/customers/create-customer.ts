@@ -83,7 +83,7 @@ import { EntityManager } from "typeorm"
  *           type: object
  *           properties:
  *             customer:
- *               $ref: "#/components/schemas/Customer"
+ *               $ref: "#/components/schemas/customer"
  *   "400":
  *     $ref: "#/components/responses/400_error"
  *   "401":

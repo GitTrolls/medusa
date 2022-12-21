@@ -61,7 +61,7 @@ import { validator } from "../../../../utils/validator"
  *           type: object
  *           properties:
  *             tax_rate:
- *               $ref: "#/components/schemas/TaxRate"
+ *               $ref: "#/components/schemas/tax_rate"
  *   "400":
  *     $ref: "#/components/responses/400_error"
  *   "401":

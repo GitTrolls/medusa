@@ -36,9 +36,10 @@ export class ShippingProfile extends SoftDeletableEntity {
 }
 
 /**
- * @schema ShippingProfile
+ * @schema shipping_profile
  * title: "Shipping Profile"
  * description: "Shipping Profiles have a set of defined Shipping Options that can be used to fulfill a given set of Products."
+ * x-resourceId: shipping_profile
  * type: object
  * required:
  *   - name
@@ -70,7 +71,7 @@ export class ShippingProfile extends SoftDeletableEntity {
  *     description: The Shipping Options that can be used to fulfill the Products in the Shipping Profile. Available if the relation `shipping_options` is expanded.
  *     type: array
  *     items:
- *       $ref: "#/components/schemas/ShippingOption"
+ *       $ref: "#/components/schemas/shipping_option"
  *   created_at:
  *     type: string
  *     description: "The date with timezone at which the resource was created."

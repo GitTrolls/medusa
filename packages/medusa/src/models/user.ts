@@ -46,9 +46,10 @@ export class User extends SoftDeletableEntity {
 }
 
 /**
- * @schema User
+ * @schema user
  * title: "User"
  * description: "Represents a User who can manage store settings."
+ * x-resourceId: user
  * type: object
  * required:
  *   - email

@@ -19,7 +19,6 @@ import { CartUpdateProps } from "../../../../types/cart"
 import { AddressPayload } from "../../../../types/common"
 import { validator } from "../../../../utils/validator"
 import { IsType } from "../../../../utils/validators/is-type"
-
 /**
  * @oas [post] /admin/draft-orders/{id}
  * operationId: PostDraftOrdersDraftOrder
@@ -50,12 +49,12 @@ import { IsType } from "../../../../utils/validators/is-type"
  *           billing_address:
  *             description: "The Address to be used for billing purposes."
  *             anyOf:
- *               - $ref: "#/components/schemas/AddressFields"
+ *               - $ref: "#/components/schemas/address_fields"
  *               - type: string
  *           shipping_address:
  *             description: "The Address to be used for shipping."
  *             anyOf:
- *               - $ref: "#/components/schemas/AddressFields"
+ *               - $ref: "#/components/schemas/address_fields"
  *               - type: string
  *           discounts:
  *             description: "An array of Discount codes to add to the Draft Order."
@@ -110,7 +109,7 @@ import { IsType } from "../../../../utils/validators/is-type"
  *           type: object
  *           properties:
  *             draft_order:
- *               $ref: "#/components/schemas/DraftOrder"
+ *               $ref: "#/components/schemas/draft-order"
  *   "400":
  *     $ref: "#/components/responses/400_error"
  *   "401":
@@ -174,7 +173,7 @@ export default async (req, res) => {
     await cartService.update(draftOrder.cart_id, cartDataToUpdate)
   })
 
-  draftOrder.cart = await cartService.retrieveWithTotals(draftOrder.cart_id, {
+  draftOrder.cart = await cartService.retrieve(draftOrder.cart_id, {
     relations: defaultAdminDraftOrdersCartRelations,
     select: defaultAdminDraftOrdersCartFields,
   })

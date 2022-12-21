@@ -47,7 +47,7 @@ import { IsOptional, IsString } from "class-validator"
  *           properties:
  *             order_edits:
  *               type: array
- *               $ref: "#/components/schemas/OrderEdit"
+ *               $ref: "#/components/schemas/order_edit"
  *             count:
  *               type: integer
  *               description: The total number of items available

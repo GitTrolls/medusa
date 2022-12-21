@@ -3,6 +3,7 @@ import { defaultAdminGiftCardFields, defaultAdminGiftCardRelations } from "."
 
 import { GiftCardService } from "../../../../services"
 import { Type } from "class-transformer"
+import { validator } from "../../../../utils/validator"
 import { EntityManager } from "typeorm"
 
 /**
@@ -71,7 +72,7 @@ import { EntityManager } from "typeorm"
  *           type: object
  *           properties:
  *             gift_card:
- *               $ref: "#/components/schemas/GiftCard"
+ *               $ref: "#/components/schemas/gift_card"
  *   "400":
  *     $ref: "#/components/responses/400_error"
  *   "401":
@@ -86,13 +87,16 @@ import { EntityManager } from "typeorm"
  *     $ref: "#/components/responses/500_error"
  */
 export default async (req, res) => {
-  const validatedBody: AdminPostGiftCardsReq & { balance?: number } = req.validatedBody
-  validatedBody.balance = validatedBody.value
+  const validated = await validator(AdminPostGiftCardsReq, req.body)
 
   const giftCardService: GiftCardService = req.scope.resolve("giftCardService")
+
   const manager: EntityManager = req.scope.resolve("manager")
   const newly = await manager.transaction(async (transactionManager) => {
-    return await giftCardService.withTransaction(transactionManager).create(validatedBody)
+    return await giftCardService.withTransaction(transactionManager).create({
+      ...validated,
+      balance: validated.value,
+    })
   })
 
   const giftCard = await giftCardService.retrieve(newly.id, {

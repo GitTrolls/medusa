@@ -50,9 +50,6 @@ export class GiftCard extends SoftDeletableEntity {
   })
   ends_at: Date
 
-  @Column({ type: "real", nullable: true })
-  tax_rate: number | null
-
   @DbAwareColumn({ type: "jsonb", nullable: true })
   metadata: Record<string, unknown>
 
@@ -63,9 +60,10 @@ export class GiftCard extends SoftDeletableEntity {
 }
 
 /**
- * @schema GiftCard
+ * @schema gift_card
  * title: "Gift Card"
  * description: "Gift Cards are redeemable and represent a value that can be used towards the payment of an Order."
+ * x-resourceId: gift_card
  * type: object
  * required:
  *   - code
@@ -111,10 +109,6 @@ export class GiftCard extends SoftDeletableEntity {
  *     description: "The time at which the Gift Card can no longer be used."
  *     type: string
  *     format: date-time
- *   tax_rate:
- *     description: The gift cards's tax rate that will be applied on calculating totals
- *     type: number
- *     example: 0
  *   created_at:
  *     type: string
  *     description: "The date with timezone at which the resource was created."

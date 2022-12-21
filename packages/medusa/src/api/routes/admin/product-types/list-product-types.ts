@@ -112,7 +112,7 @@ import ProductTypeService from "../../../../services/product-type"
  *          type: object
  *          properties:
  *            product_types:
- *              $ref: "#/components/schemas/ProductType"
+ *              $ref: "#/components/schemas/product_type"
  *            count:
  *              type: integer
  *              description: The total number of items available

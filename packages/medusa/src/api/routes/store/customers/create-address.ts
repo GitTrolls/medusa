@@ -23,7 +23,7 @@ import { validator } from "../../../../utils/validator"
  *           address:
  *             description: "The Address to add to the Customer."
  *             allOf:
- *               - $ref: "#/components/schemas/AddressFields"
+ *               - $ref: "#/components/schemas/address_fields"
  *               - type: object
  *                 required:
  *                   - first_name
@@ -86,7 +86,7 @@ import { validator } from "../../../../utils/validator"
  *          type: object
  *          properties:
  *            customer:
- *              $ref: "#/components/schemas/Customer"
+ *              $ref: "#/components/schemas/customer"
  *  "400":
  *    $ref: "#/components/responses/400_error"
  *  "401":

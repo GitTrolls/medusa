@@ -80,9 +80,10 @@ export class DraftOrder extends BaseEntity {
 }
 
 /**
- * @schema DraftOrder
+ * @schema draft-order
  * title: "DraftOrder"
  * description: "Represents a draft order"
+ * x-resourceId: draft-order
  * type: object
  * properties:
  *   id:

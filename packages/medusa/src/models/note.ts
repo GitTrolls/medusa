@@ -42,9 +42,10 @@ export class Note extends SoftDeletableEntity {
 }
 
 /**
- * @schema Note
+ * @schema note
  * title: "Note"
  * description: "Notes are elements which we can use in association with different resources to allow users to describe additional information in relation to these."
+ * x-resourceId: note
  * type: object
  * required:
  *   - value
@@ -73,7 +74,7 @@ export class Note extends SoftDeletableEntity {
  *     example: usr_01G1G5V26F5TB3GPAPNJ8X1S3V
  *   author:
  *     description: Available if the relation `author` is expanded.
- *     $ref: "#/components/schemas/User"
+ *     $ref: "#/components/schemas/user"
  *   created_at:
  *     type: string
  *     description: "The date with timezone at which the resource was created."

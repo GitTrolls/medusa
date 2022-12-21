@@ -27,7 +27,6 @@ describe("GiftCardService", () => {
       retrieve: () => {
         return Promise.resolve({
           id: IdMap.getId("region-id"),
-          tax_rate: 19,
         })
       },
     }
@@ -58,7 +57,6 @@ describe("GiftCardService", () => {
         order_id: IdMap.getId("order-id"),
         is_disabled: true,
         code: expect.any(String),
-        tax_rate: null
       })
     })
   })

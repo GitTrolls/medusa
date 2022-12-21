@@ -1,6 +1,5 @@
 import { CartService, DraftOrderService } from "../../../../services"
 import {
-  defaultAdminDraftOrdersCartFields,
   defaultAdminDraftOrdersCartRelations,
   defaultAdminDraftOrdersFields,
   defaultAdminDraftOrdersRelations,
@@ -46,7 +45,7 @@ import { DraftOrder } from "../../../.."
  *           type: object
  *           properties:
  *             draft_order:
- *               $ref: "#/components/schemas/DraftOrder"
+ *               $ref: "#/components/schemas/draft-order"
  *   "400":
  *     $ref: "#/components/responses/400_error"
  *   "401":
@@ -73,10 +72,15 @@ export default async (req, res) => {
     relations: defaultAdminDraftOrdersRelations,
   })
 
-  draftOrder.cart = await cartService.retrieveWithTotals(draftOrder.cart_id, {
-    relations: defaultAdminDraftOrdersCartRelations,
-    select: defaultAdminDraftOrdersCartFields,
-  })
+  draftOrder.cart = await cartService.retrieveWithTotals(
+    draftOrder.cart_id,
+    {
+      relations: defaultAdminDraftOrdersCartRelations,
+    },
+    {
+      force_taxes: true,
+    }
+  )
 
   res.json({ draft_order: draftOrder })
 }

@@ -114,7 +114,7 @@ import { validator } from "../../../../utils/validator"
  *           type: object
  *           properties:
  *             shipping_option:
- *               $ref: "#/components/schemas/ShippingOption"
+ *               $ref: "#/components/schemas/shipping_option"
  *   "400":
  *     $ref: "#/components/responses/400_error"
  *   "401":
