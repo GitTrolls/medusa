@@ -50,9 +50,10 @@ export class DiscountRule extends SoftDeletableEntity {
 }
 
 /**
- * @schema DiscountRule
+ * @schema discount_rule
  * title: "Discount Rule"
  * description: "Holds the rules that governs how a Discount is calculated when applied to a Cart."
+ * x-resourceId: discount_rule
  * type: object
  * required:
  *   - type

@@ -209,12 +209,17 @@ describe("DraftOrderService", () => {
       }
     })
 
-    it("creating a draft order without items is allowed", async () => {
-      await draftOrderService.create({
-        region_id: "test-region",
-        items: [],
-        shipping_methods: []
-      })
+    it("fails on missing items", async () => {
+      try {
+        await draftOrderService.create({
+          region_id: "test-region",
+          items: [],
+        })
+      } catch (error) {
+        expect(error.message).toEqual(
+          `Items are required to create a draft order`
+        )
+      }
     })
   })
 

@@ -24,6 +24,7 @@ export default (app) => {
 }
 
 export const defaultAdminNotificationsRelations = ["resends"]
+export const allowedAdminNotificationsRelations = ["resends"]
 
 export const defaultAdminNotificationsFields = [
   "id",
@@ -32,6 +33,17 @@ export const defaultAdminNotificationsFields = [
   "event_name",
   "to",
   "provider_id",
+  "created_at",
+  "updated_at",
+]
+
+export const allowedAdminNotificationsFields = [
+  "id",
+  "resource_type",
+  "resource_id",
+  "provider_id",
+  "event_name",
+  "to",
   "created_at",
   "updated_at",
 ]

@@ -13,7 +13,14 @@ import { EntityManager } from "typeorm"
  *   content:
  *     application/json:
  *       schema:
- *         $ref: "#/components/schemas/AdminResetPasswordTokenRequest"
+ *         type: object
+ *         required:
+ *           - email
+ *         properties:
+ *           email:
+ *             description: "The Users email."
+ *             type: string
+ *             format: email
  * x-codeSamples:
  *   - lang: JavaScript
  *     label: JS Client
@@ -77,17 +84,6 @@ export default async (req, res) => {
   res.sendStatus(204)
 }
 
-/**
- * @schema AdminResetPasswordTokenRequest
- * type: object
- * required:
- *   - email
- * properties:
- *   email:
- *     description: "The Users email."
- *     type: string
- *     format: email
- */
 export class AdminResetPasswordTokenRequest {
   @IsEmail()
   email: string

@@ -13,7 +13,13 @@ import PublishableApiKeyService from "../../../../services/publishable-api-key"
  *   content:
  *     application/json:
  *       schema:
- *         $ref: "#/components/schemas/AdminPostPublishableApiKeysReq"
+ *         type: object
+ *         required:
+ *           - title
+ *         properties:
+ *           title:
+ *             description: A title for the publishable api key
+ *             type: string
  * x-authenticated: true
  * x-codeSamples:
  *   - lang: JavaScript
@@ -46,7 +52,7 @@ import PublishableApiKeyService from "../../../../services/publishable-api-key"
  *           type: object
  *           properties:
  *             publishable_api_key:
- *               $ref: "#/components/schemas/PublishableApiKey"
+ *               $ref: "#/components/schemas/publishable_api_key"
  *   "400":
  *     $ref: "#/components/responses/400_error"
  *   "401":
@@ -79,16 +85,6 @@ export default async (req: Request, res: Response) => {
   return res.status(200).json({ publishable_api_key: pubKey })
 }
 
-/**
- * @schema AdminPostPublishableApiKeysReq
- * type: object
- * required:
- *   - title
- * properties:
- *   title:
- *     description: A title for the publishable api key
- *     type: string
- */
 export class AdminPostPublishableApiKeysReq {
   @IsString()
   title: string

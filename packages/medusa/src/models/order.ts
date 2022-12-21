@@ -278,9 +278,10 @@ export class Order extends BaseEntity {
 }
 
 /**
- * @schema Order
+ * @schema order
  * title: "Order"
  * description: "Represents an order"
+ * x-resourceId: order
  * type: object
  * required:
  *   - customer_id
@@ -356,14 +357,14 @@ export class Order extends BaseEntity {
  *     example: addr_01G8ZH853YPY9B94857DY91YGW
  *   billing_address:
  *     description: Available if the relation `billing_address` is expanded.
- *     $ref: "#/components/schemas/Address"
+ *     $ref: "#/components/schemas/address"
  *   shipping_address_id:
  *     type: string
  *     description: The ID of the shipping address associated with the order
  *     example: addr_01G8ZH853YPY9B94857DY91YGW
  *   shipping_address:
  *     description: Available if the relation `shipping_address` is expanded.
- *     $ref: "#/components/schemas/Address"
+ *     $ref: "#/components/schemas/address"
  *   region_id:
  *     type: string
  *     description: The region's ID
@@ -380,7 +381,7 @@ export class Order extends BaseEntity {
  *       description: See a list of codes.
  *   currency:
  *     description: Available if the relation `currency` is expanded.
- *     $ref: "#/components/schemas/Currency"
+ *     $ref: "#/components/schemas/currency"
  *   tax_rate:
  *     description: The order's tax rate
  *     type: number
@@ -401,17 +402,17 @@ export class Order extends BaseEntity {
  *     type: array
  *     description: The shipping methods used in the order. Available if the relation `shipping_methods` is expanded.
  *     items:
- *       $ref: "#/components/schemas/ShippingMethod"
+ *       $ref: "#/components/schemas/shipping_method"
  *   payments:
  *     type: array
  *     description: The payments used in the order. Available if the relation `payments` is expanded.
  *     items:
- *       $ref: "#/components/schemas/Payment"
+ *       $ref: "#/components/schemas/payment"
  *   fulfillments:
  *     type: array
  *     description: The fulfillments used in the order. Available if the relation `fulfillments` is expanded.
  *     items:
- *       $ref: "#/components/schemas/Fulfillment"
+ *       $ref: "#/components/schemas/fulfillment"
  *   returns:
  *     type: array
  *     description: The returns associated with the order. Available if the relation `returns` is expanded.
@@ -447,17 +448,17 @@ export class Order extends BaseEntity {
  *     type: array
  *     description: The line items that belong to the order. Available if the relation `items` is expanded.
  *     items:
- *       $ref: "#/components/schemas/LineItem"
+ *       $ref: "#/components/schemas/line_item"
  *   edits:
  *     type: array
  *     description: "[EXPERIMENTAL] Order edits done on the order. Available if the relation `edits` is expanded."
  *     items:
- *       $ref: "#/components/schemas/OrderEdit"
+ *       $ref: "#/components/schemas/order_edit"
  *   gift_card_transactions:
  *     type: array
  *     description: The gift card transactions used in the order. Available if the relation `gift_card_transactions` is expanded.
  *     items:
- *       $ref: "#/components/schemas/GiftCardTransaction"
+ *       $ref: "#/components/schemas/gift_card_transaction"
  *   canceled_at:
  *     type: string
  *     description: The date the order was canceled on.

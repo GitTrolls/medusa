@@ -16,7 +16,30 @@ import { validator } from "../../../../utils/validator"
  *   content:
  *     application/json:
  *       schema:
- *         $ref: "#/components/schemas/StorePostCustomersReq"
+ *         type: object
+ *         required:
+ *           - first_name
+ *           - last_name
+ *           - email
+ *           - password
+ *         properties:
+ *           first_name:
+ *             description: "The Customer's first name."
+ *             type: string
+ *           last_name:
+ *             description: "The Customer's last name."
+ *             type: string
+ *           email:
+ *             description: "The email of the customer."
+ *             type: string
+ *             format: email
+ *           password:
+ *             description: "The Customer's password."
+ *             type: string
+ *             format: password
+ *           phone:
+ *             description: "The Customer's phone number."
+ *             type: string
  * x-codeSamples:
  *   - lang: JavaScript
  *     label: JS Client
@@ -54,7 +77,7 @@ import { validator } from "../../../../utils/validator"
  *           type: object
  *           properties:
  *             customer:
- *               $ref: "#/components/schemas/Customer"
+ *               $ref: "#/components/schemas/customer"
  *   422:
  *     description: A customer with the same email exists
  *     content:
@@ -113,33 +136,6 @@ export default async (req, res) => {
   res.status(200).json({ customer })
 }
 
-/**
- * @schema StorePostCustomersReq
- * type: object
- * required:
- *   - first_name
- *   - last_name
- *   - email
- *   - password
- * properties:
- *   first_name:
- *     description: "The Customer's first name."
- *     type: string
- *   last_name:
- *     description: "The Customer's last name."
- *     type: string
- *   email:
- *     description: "The email of the customer."
- *     type: string
- *     format: email
- *   password:
- *     description: "The Customer's password."
- *     type: string
- *     format: password
- *   phone:
- *     description: "The Customer's phone number."
- *     type: string
- */
 export class StorePostCustomersReq {
   @IsString()
   @IsOptional()

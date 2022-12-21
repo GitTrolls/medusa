@@ -54,17 +54,17 @@ import { IdempotencyKeyService } from "../../../../services"
  *                   description: Cart was successfully authorized and order was placed successfully.
  *                   properties:
  *                     order:
- *                       $ref: "#/components/schemas/Order"
+ *                       $ref: "#/components/schemas/order"
  *                 - type: object
  *                   description: Cart was successfully authorized but requires further actions.
  *                   properties:
  *                     cart:
- *                       $ref: "#/components/schemas/Cart"
+ *                       $ref: "#/components/schemas/cart"
  *                 - type: object
  *                   description: When cart is used for a swap and it has been completed successfully.
  *                   properties:
  *                     cart:
- *                       $ref: "#/components/schemas/Swap"
+ *                       $ref: "#/components/schemas/swap"
  *   "400":
  *     $ref: "#/components/responses/400_error"
  *   "404":

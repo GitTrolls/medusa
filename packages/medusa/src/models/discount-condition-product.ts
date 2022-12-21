@@ -38,9 +38,10 @@ export class DiscountConditionProduct {
 }
 
 /**
- * @schema DiscountConditionProduct
+ * @schema discount_condition_product
  * title: "Product Discount Condition"
  * description: "Associates a discount condition with a product"
+ * x-resourceId: discount_condition_product
  * type: object
  * required:
  *   - product_id
@@ -56,10 +57,10 @@ export class DiscountConditionProduct {
  *     example: discon_01G8X9A7ESKAJXG2H0E6F1MW7A
  *   product:
  *     description: Available if the relation `product` is expanded.
- *     $ref: "#/components/schemas/Product"
+ *     $ref: "#/components/schemas/product"
  *   discount_condition:
  *     description: Available if the relation `discount_condition` is expanded.
- *     $ref: "#/components/schemas/DiscountCondition"
+ *     $ref: "#/components/schemas/discount_condition"
  *   created_at:
  *     type: string
  *     description: "The date with timezone at which the resource was created."

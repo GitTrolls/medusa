@@ -15,7 +15,12 @@ import {
  *   content:
  *     application/json:
  *       schema:
- *         $ref: "#/components/schemas/StorePostCustomersCustomerAcceptClaimReq"
+ *         required:
+ *           - token
+ *         properties:
+ *           token:
+ *             description: "The invite token provided by the admin."
+ *             type: string
  * x-codeSamples:
  *   - lang: JavaScript
  *     label: JS Client
@@ -105,16 +110,6 @@ export default async (req, res) => {
   res.sendStatus(200)
 }
 
-/**
- * @schema StorePostCustomersCustomerAcceptClaimReq
- * type: object
- * required:
- *   - token
- * properties:
- *   token:
- *     description: "The invite token provided by the admin."
- *     type: string
- */
 export class StorePostCustomersCustomerAcceptClaimReq {
   @IsNotEmpty()
   @IsJWT()

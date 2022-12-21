@@ -15,7 +15,11 @@ import { EntityManager } from "typeorm"
  *   content:
  *     application/json:
  *       schema:
- *         $ref: "#/components/schemas/AdminPostShippingProfilesProfileReq"
+ *         type: object
+ *         properties:
+ *           name:
+ *             description: "The name of the Shipping Profile"
+ *             type: string
  * x-codeSamples:
  *   - lang: JavaScript
  *     label: JS Client
@@ -52,7 +56,7 @@ import { EntityManager } from "typeorm"
  *           type: object
  *           properties:
  *             shipping_profile:
- *               $ref: "#/components/schemas/ShippingProfile"
+ *               $ref: "#/components/schemas/shipping_profile"
  *   "400":
  *     $ref: "#/components/responses/400_error"
  *   "401":
@@ -89,14 +93,6 @@ export default async (req, res) => {
   res.status(200).json({ shipping_profile: data })
 }
 
-/**
- * @schema AdminPostShippingProfilesProfileReq
- * type: object
- * properties:
- *   name:
- *     description: "The name of the Shipping Profile"
- *     type: string
- */
 export class AdminPostShippingProfilesProfileReq {
   @IsString()
   @IsOptional()

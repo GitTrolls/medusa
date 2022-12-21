@@ -48,9 +48,10 @@ export class ReturnReason extends SoftDeletableEntity {
 }
 
 /**
- * @schema ReturnReason
+ * @schema return_reason
  * title: "Return Reason"
  * description: "A Reason for why a given product is returned. A Return Reason can be used on Return Items in order to indicate why a Line Item was returned."
+ * x-resourceId: return_reason
  * type: object
  * required:
  *   - value
@@ -78,10 +79,10 @@ export class ReturnReason extends SoftDeletableEntity {
  *     example: null
  *   parent_return_reason:
  *     description: Available if the relation `parent_return_reason` is expanded.
- *     $ref: "#/components/schemas/ReturnReason"
+ *     $ref: "#/components/schemas/return_reason"
  *   return_reason_children:
  *     description: Available if the relation `return_reason_children` is expanded.
- *     $ref: "#/components/schemas/ReturnReason"
+ *     $ref: "#/components/schemas/return_reason"
  *   created_at:
  *     type: string
  *     description: "The date with timezone at which the resource was created."

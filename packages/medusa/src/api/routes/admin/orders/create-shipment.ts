@@ -24,7 +24,21 @@ import { validator } from "../../../../utils/validator"
  *   content:
  *     application/json:
  *       schema:
- *         $ref: "#/components/schemas/AdminPostOrdersOrderShipmentReq"
+ *         type: object
+ *         required:
+ *           - fulfillment_id
+ *         properties:
+ *           fulfillment_id:
+ *             description: The ID of the Fulfillment.
+ *             type: string
+ *           tracking_numbers:
+ *             description: The tracking numbers for the shipment.
+ *             type: array
+ *             items:
+ *               type: string
+ *           no_notification:
+ *             description: If set to true no notification will be send related to this Shipment.
+ *             type: boolean
  * x-codeSamples:
  *   - lang: JavaScript
  *     label: JS Client
@@ -61,7 +75,7 @@ import { validator } from "../../../../utils/validator"
  *           type: object
  *           properties:
  *             order:
- *               $ref: "#/components/schemas/Order"
+ *               $ref: "#/components/schemas/order"
  *   "400":
  *     $ref: "#/components/responses/400_error"
  *   "401":
@@ -107,24 +121,6 @@ export default async (req, res) => {
   res.json({ order })
 }
 
-/**
- * @schema AdminPostOrdersOrderShipmentReq
- * type: object
- * required:
- *   - fulfillment_id
- * properties:
- *   fulfillment_id:
- *     description: The ID of the Fulfillment.
- *     type: string
- *   tracking_numbers:
- *     description: The tracking numbers for the shipment.
- *     type: array
- *     items:
- *       type: string
- *   no_notification:
- *     description: If set to true no notification will be send related to this Shipment.
- *     type: boolean
- */
 export class AdminPostOrdersOrderShipmentReq {
   @IsString()
   @IsNotEmpty()

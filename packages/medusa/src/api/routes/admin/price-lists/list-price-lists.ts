@@ -146,7 +146,7 @@ import { Type } from "class-transformer"
  *             price_lists:
  *              type: array
  *              items:
- *                $ref: "#/components/schemas/PriceList"
+ *                $ref: "#/components/schemas/price_list"
  *             count:
  *               type: integer
  *               description: The total number of items available

@@ -10,9 +10,10 @@ export class NotificationProvider {
 }
 
 /**
- * @schema NotificationProvider
+ * @schema notification_provider
  * title: "Notification Provider"
  * description: "Represents a notification provider plugin and holds its installation status."
+ * x-resourceId: notification_provider
  * type: object
  * required:
  *   - id

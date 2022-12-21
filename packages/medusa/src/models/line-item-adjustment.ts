@@ -54,9 +54,10 @@ export class LineItemAdjustment {
 }
 
 /**
- * @schema LineItemAdjustment
+ * @schema line_item_adjustment
  * title: "Line Item Adjustment"
- * description: "Represents a Line Item Adjustment"
+ * description: "Represents an Line Item Adjustment"
+ * x-resourceId: line_item_adjustment
  * type: object
  * required:
  *   - item_id
@@ -73,7 +74,7 @@ export class LineItemAdjustment {
  *     example: item_01G8ZC9GWT6B2GP5FSXRXNFNGN
  *   item:
  *     description: Available if the relation `item` is expanded.
- *     $ref: "#/components/schemas/LineItem"
+ *     $ref: "#/components/schemas/line_item"
  *   description:
  *     type: string
  *     description: The line item's adjustment description
@@ -84,7 +85,7 @@ export class LineItemAdjustment {
  *     example: disc_01F0YESMW10MGHWJKZSDDMN0VN
  *   discount:
  *     description: Available if the relation `discount` is expanded.
- *     $ref: "#/components/schemas/Discount"
+ *     $ref: "#/components/schemas/discount"
  *   amount:
  *     type: number
  *     description: The adjustment amount

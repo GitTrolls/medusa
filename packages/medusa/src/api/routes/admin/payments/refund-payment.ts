@@ -21,7 +21,20 @@ import { PaymentService } from "../../../../services"
  *   content:
  *     application/json:
  *       schema:
- *         $ref: "#/components/schemas/AdminPostPaymentRefundsReq"
+ *         type: object
+ *         required:
+ *           - amount
+ *           - reason
+ *         properties:
+ *           amount:
+ *             description: The amount to refund.
+ *             type: integer
+ *           reason:
+ *             description: The reason for the Refund.
+ *             type: string
+ *           note:
+ *             description: A note with additional details about the Refund.
+ *             type: string
  * x-codeSamples:
  *   - lang: JavaScript
  *     label: JS Client
@@ -62,7 +75,7 @@ import { PaymentService } from "../../../../services"
  *           type: object
  *           properties:
  *             refund:
- *               $ref: "#/components/schemas/Refund"
+ *               $ref: "#/components/schemas/refund"
  *   "400":
  *     $ref: "#/components/responses/400_error"
  *   "401":
@@ -93,23 +106,6 @@ export default async (req, res) => {
   res.status(200).json({ refund })
 }
 
-/**
- * @schema AdminPostPaymentRefundsReq
- * type: object
- * required:
- *   - amount
- *   - reason
- * properties:
- *   amount:
- *     description: The amount to refund.
- *     type: integer
- *   reason:
- *     description: The reason for the Refund.
- *     type: string
- *   note:
- *     description: A note with additional details about the Refund.
- *     type: string
- */
 export class AdminPostPaymentRefundsReq {
   @IsInt()
   @IsNotEmpty()

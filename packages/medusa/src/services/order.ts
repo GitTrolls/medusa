@@ -1,4 +1,5 @@
-import { isDefined, MedusaError } from "medusa-core-utils"
+import jwt, { JwtPayload } from "jsonwebtoken"
+import { MedusaError } from "medusa-core-utils"
 import { Brackets, EntityManager } from "typeorm"
 import { TransactionBaseService } from "../interfaces"
 import SalesChannelFeatureFlag from "../loaders/feature-flags/sales-channels"
@@ -17,7 +18,6 @@ import {
   Return,
   Swap,
   TrackingLink,
-  GiftCard,
 } from "../models"
 import { AddressRepository } from "../repositories/address"
 import { OrderRepository } from "../repositories/order"
@@ -28,7 +28,7 @@ import {
 } from "../types/fulfillment"
 import { UpdateOrderInput } from "../types/orders"
 import { CreateShippingMethodDto } from "../types/shipping-options"
-import { buildQuery, isString, setMetadata } from "../utils"
+import { buildQuery, isDefined, isString, setMetadata } from "../utils"
 import { FlagRouter } from "../utils/flag-router"
 import CartService from "./cart"
 import CustomerService from "./customer"
@@ -46,6 +46,8 @@ import ShippingOptionService from "./shipping-option"
 import ShippingProfileService from "./shipping-profile"
 import TotalsService from "./totals"
 import { NewTotalsService, TaxProviderService } from "./index"
+import { ConfigModule } from "../types/global"
+import logger from "../loaders/logger"
 
 export const ORDER_CART_ALREADY_EXISTS_ERROR = "Order from cart already exists"
 
@@ -95,6 +97,7 @@ class OrderService extends TransactionBaseService {
     UPDATED: "order.updated",
     CANCELED: "order.canceled",
     COMPLETED: "order.completed",
+    ORDERS_CLAIMED: "order.orders_claimed",
   }
 
   protected manager_: EntityManager
@@ -303,7 +306,6 @@ class OrderService extends TransactionBaseService {
       relationSet.add("discounts.rule")
       relationSet.add("gift_cards")
       relationSet.add("gift_card_transactions")
-      relationSet.add("gift_card_transactions.gift_card")
       relationSet.add("refunds")
       relationSet.add("shipping_methods")
       relationSet.add("shipping_methods.tax_lines")
@@ -335,13 +337,6 @@ class OrderService extends TransactionBaseService {
     orderId: string,
     config: FindConfig<Order> = {}
   ): Promise<Order> {
-    if (!isDefined(orderId)) {
-      throw new MedusaError(
-        MedusaError.Types.NOT_FOUND,
-        `"orderId" must be defined`
-      )
-    }
-
     const { totalsToSelect } = this.transformQueryForTotals(config)
 
     if (totalsToSelect?.length) {
@@ -554,7 +549,7 @@ class OrderService extends TransactionBaseService {
 
       const cart = isString(cartOrId)
         ? await cartServiceTx.retrieveWithTotals(cartOrId, {
-            relations: ["region", "payment", "items"],
+            relations: ["region", "payment"],
           })
         : cartOrId
 
@@ -568,10 +563,10 @@ class OrderService extends TransactionBaseService {
       const { payment, region, total } = cart
 
       await Promise.all(
-        cart.items.map(async (lineItem) => {
+        cart.items.map(async (item) => {
           return await inventoryServiceTx.confirmInventory(
-            lineItem.variant_id,
-            lineItem.quantity
+            item.variant_id,
+            item.quantity
           )
         })
       ).catch(async (err) => {
@@ -665,32 +660,31 @@ class OrderService extends TransactionBaseService {
         )
       }
 
-      const giftCardableAmount =
+      let gcBalance =
         (cart.region?.gift_cards_taxable
           ? cart.subtotal! - cart.discount_total!
-          : cart.total! + cart.gift_card_total!) || 0 // we re add the gift card total to compensate the fact that the decorate total already removed this amount from the total
+          : cart.total! + cart.gift_card_total!) || 0
+      const gcService = this.giftCardService_.withTransaction(manager)
 
-      let giftCardableAmountBalance = giftCardableAmount
-      const giftCardService = this.giftCardService_.withTransaction(manager)
-
-      for (const giftCard of cart.gift_cards) {
-        const newGiftCardBalance = Math.max(0, giftCard.balance - giftCardableAmountBalance)
-        const giftCardBalanceUsed = giftCard.balance - newGiftCardBalance
-
-        await giftCardService.update(giftCard.id, {
-          balance: newGiftCardBalance,
-          is_disabled: newGiftCardBalance === 0,
+      for (const g of cart.gift_cards) {
+        const newBalance = Math.max(0, g.balance - gcBalance)
+        const usage = g.balance - newBalance
+        await gcService.update(g.id, {
+          balance: newBalance,
+          is_disabled: newBalance === 0,
         })
 
-        await giftCardService.createTransaction({
-          gift_card_id: giftCard.id,
+        await gcService.createTransaction({
+          gift_card_id: g.id,
           order_id: order.id,
-          amount: giftCardBalanceUsed,
-          is_taxable: !!giftCard.tax_rate,
-          tax_rate: giftCard.tax_rate
+          amount: usage,
+          is_taxable: cart.region.gift_cards_taxable,
+          tax_rate: cart.region.gift_cards_taxable
+            ? cart.region.tax_rate
+            : null,
         })
 
-        giftCardableAmountBalance = giftCardableAmountBalance - giftCardBalanceUsed
+        gcBalance = gcBalance - usage
       }
 
       const shippingOptionServiceTx =
@@ -699,22 +693,16 @@ class OrderService extends TransactionBaseService {
 
       await Promise.all(
         [
-          cart.items.map((lineItem) => {
-            const lineItemPromises: unknown[] = [
-              lineItemServiceTx.update(lineItem.id, { order_id: order.id }),
+          cart.items.map((item) => {
+            return [
+              lineItemServiceTx.update(item.id, { order_id: order.id }),
               inventoryServiceTx.adjustInventory(
-                lineItem.variant_id,
-                -lineItem.quantity
+                item.variant_id,
+                -item.quantity
               ),
             ]
-
-            if (lineItem.is_giftcard) {
-              lineItemPromises.push(this.createGiftCardsFromLineItem_(order, lineItem, manager))
-            }
-
-            return lineItemPromises
           }),
-          cart.shipping_methods.map(async (method) => {
+          cart.shipping_methods.map((method) => {
             // TODO: Due to cascade insert we have to remove the tax_lines that have been added by the cart decorate totals.
             // Is the cascade insert really used? Also, is it really necessary to pass the entire entities when creating or updating?
             // We normally should only pass what is needed?
@@ -737,46 +725,6 @@ class OrderService extends TransactionBaseService {
 
       return order
     })
-  }
-
-  protected createGiftCardsFromLineItem_(
-    order: Order,
-    lineItem: LineItem,
-    manager: EntityManager
-  ): Promise<GiftCard>[] {
-    const createGiftCardPromises: Promise<GiftCard>[] = []
-
-    // LineItem type doesn't promise either the subtotal or quantity. Adding a check here provides
-    // additional type safety/strictness
-    if (!lineItem.subtotal || !lineItem.quantity) return createGiftCardPromises
-
-    // Subtotal is the pure value of the product/variant excluding tax, discounts, etc.
-    // We divide here by quantity to get the value of the product/variant as a lineItem
-    // contains quantity. The subtotal is multiplicative of pure price per product and quantity
-    const taxExclusivePrice = lineItem.subtotal / lineItem.quantity
-    // The tax_lines contains all the taxes that is applicable on the purchase of the gift card
-    // On utilizing the gift card, the same set of taxRate will apply to gift card
-    // We calculate the summation of all taxes and add that as a snapshot in the giftcard.tax_rate column
-    const giftCardTaxRate = lineItem.tax_lines.reduce(
-      (sum, taxLine) => sum + taxLine.rate, 0
-    )
-
-    const giftCardTxnService = this.giftCardService_.withTransaction(manager)
-
-    for (let qty = 0; qty < lineItem.quantity; qty++) {
-      const createGiftCardPromise = giftCardTxnService.create({
-        region_id: order.region_id,
-        order_id: order.id,
-        value: taxExclusivePrice,
-        balance: taxExclusivePrice,
-        metadata: lineItem.metadata,
-        tax_rate: giftCardTaxRate || null
-      })
-
-      createGiftCardPromises.push(createGiftCardPromise)
-    }
-
-    return createGiftCardPromises
   }
 
   /**

@@ -43,7 +43,7 @@ import { FindParams } from "../../../../types/common"
  *           type: object
  *           properties:
  *             discount_condition:
- *               $ref: "#/components/schemas/DiscountCondition"
+ *               $ref: "#/components/schemas/discount_condition"
  *   "400":
  *     $ref: "#/components/responses/400_error"
  *   "401":

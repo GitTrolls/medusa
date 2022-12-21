@@ -132,7 +132,7 @@ import { Type } from "class-transformer"
  *             customer_groups:
  *               type: array
  *               items:
- *                 $ref: "#/components/schemas/CustomerGroup"
+ *                 $ref: "#/components/schemas/customer_group"
  *             count:
  *               type: integer
  *               description: The total number of items available

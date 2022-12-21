@@ -49,7 +49,7 @@ import { EntityManager } from "typeorm"
  *           type: object
  *           properties:
  *             order:
- *               $ref: "#/components/schemas/DraftOrder"
+ *               $ref: "#/components/schemas/draft-order"
  *   "400":
  *     $ref: "#/components/responses/400_error"
  *   "401":
@@ -107,7 +107,7 @@ export default async (req, res) => {
     await orderService.withTransaction(manager).capturePayment(result.id)
   })
 
-  const order = await orderService.retrieveWithTotals(result.id, {
+  const order = await orderService.retrieve(result.id, {
     relations: defaultOrderRelations,
     select: defaultOrderFields,
   })

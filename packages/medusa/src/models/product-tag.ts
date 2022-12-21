@@ -19,9 +19,10 @@ export class ProductTag extends SoftDeletableEntity {
 }
 
 /**
- * @schema ProductTag
+ * @schema product_tag
  * title: "Product Tag"
  * description: "Product Tags can be added to Products for easy filtering and grouping."
+ * x-resourceId: product_tag
  * type: object
  * required:
  *   - value

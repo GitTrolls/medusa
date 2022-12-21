@@ -13,9 +13,10 @@ export class PublishableApiKeySalesChannel {
 }
 
 /**
- * @schema PublishableApiKeySalesChannel
+ * @schema publishable_api_key_sales_channel
  * title: "Publishable API key sales channel"
  * description: "Holds mapping between Publishable API keys and Sales Channels"
+ * x-resourceId: publishable_api_key_sales_channel
  * type: object
  * properties:
  *   sales_channel_id:

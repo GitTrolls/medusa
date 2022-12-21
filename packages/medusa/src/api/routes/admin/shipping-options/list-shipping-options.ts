@@ -60,7 +60,7 @@ import { validator } from "../../../../utils/validator"
  *             shipping_options:
  *               type: array
  *               items:
- *                 $ref: "#/components/schemas/ShippingOption"
+ *                 $ref: "#/components/schemas/shipping_option"
  *             count:
  *               type: integer
  *               description: The total number of items available
