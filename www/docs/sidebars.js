@@ -176,18 +176,13 @@ module.exports = {
           items: [
             {
               type: "doc",
-              id: "advanced/backend/upgrade-guides/1-3-0",
-              label: "v1.3.0"
+              id: "advanced/backend/upgrade-guides/1-7-1",
+              label: "v1.7.1"
             },
             {
               type: "doc",
-              id: "advanced/backend/upgrade-guides/1-3-6",
-              label: "v1.3.6"
-            },
-            {
-              type: "doc",
-              id: "advanced/backend/upgrade-guides/1-3-8",
-              label: "v1.3.8"
+              id: "advanced/backend/upgrade-guides/1-7-0",
+              label: "v1.7.0"
             },
             {
               type: "doc",
@@ -196,8 +191,18 @@ module.exports = {
             },
             {
               type: "doc",
-              id: "advanced/backend/upgrade-guides/1-7-0",
-              label: "v1.7.0"
+              id: "advanced/backend/upgrade-guides/1-3-8",
+              label: "v1.3.8"
+            },
+            {
+              type: "doc",
+              id: "advanced/backend/upgrade-guides/1-3-6",
+              label: "v1.3.6"
+            },
+            {
+              type: "doc",
+              id: "advanced/backend/upgrade-guides/1-3-0",
+              label: "v1.3.0"
             },
             {
               type: "doc",
@@ -264,6 +269,11 @@ module.exports = {
             },
             {
               type: "doc",
+              id: "advanced/storefront/handle-order-edits",
+              label: "Handle Order Edits"
+            },
+            {
+              type: "doc",
               id: "advanced/storefront/use-sales-channels",
               label: "Use SalesChannels APIs"
             },
@@ -307,6 +317,11 @@ module.exports = {
               type: "doc",
               id: "advanced/admin/manage-discounts",
               label: "Use Discount APIs"
+            },
+            {
+              type: "doc",
+              id: "advanced/admin/order-edit",
+              label: "Edit an Order"
             },
           ]
         },
