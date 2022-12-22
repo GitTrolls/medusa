@@ -14,8 +14,12 @@ post:
     content:
       application/json:
         schema:
-          $ref: >-
-            ../components/schemas/StorePostPaymentCollectionsBatchSessionsAuthorizeReq.yaml
+          properties:
+            session_ids:
+              description: List of Payment Session IDs to authorize.
+              type: array
+              items:
+                type: string
   x-codeSamples:
     - lang: JavaScript
       label: JS Client
@@ -40,7 +44,7 @@ post:
           schema:
             properties:
               payment_collection:
-                $ref: ../components/schemas/PaymentCollection.yaml
+                $ref: ../components/schemas/payment_collection.yaml
     '400':
       $ref: ../components/responses/400_error.yaml
     '401':

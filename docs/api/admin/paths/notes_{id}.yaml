@@ -90,7 +90,7 @@ get:
             type: object
             properties:
               note:
-                $ref: ../components/schemas/Note.yaml
+                $ref: ../components/schemas/note.yaml
     '400':
       $ref: ../components/responses/400_error.yaml
     '401':
@@ -119,7 +119,13 @@ post:
     content:
       application/json:
         schema:
-          $ref: ../components/schemas/AdminPostNotesNoteReq.yaml
+          type: object
+          required:
+            - value
+          properties:
+            value:
+              type: string
+              description: The updated description of the Note.
   x-codeSamples:
     - lang: JavaScript
       label: JS Client
@@ -143,7 +149,7 @@ post:
             type: object
             properties:
               note:
-                $ref: ../components/schemas/Note.yaml
+                $ref: ../components/schemas/note.yaml
     '400':
       $ref: ../components/responses/400_error.yaml
     '401':

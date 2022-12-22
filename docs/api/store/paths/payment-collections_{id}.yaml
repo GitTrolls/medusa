@@ -43,7 +43,7 @@ get:
             type: object
             properties:
               payment_collection:
-                $ref: ../components/schemas/PaymentCollection.yaml
+                $ref: ../components/schemas/payment_collection.yaml
     '400':
       $ref: ../components/responses/400_error.yaml
     '401':

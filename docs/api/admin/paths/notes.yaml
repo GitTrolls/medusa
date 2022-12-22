@@ -7,7 +7,21 @@ post:
     content:
       application/json:
         schema:
-          $ref: ../components/schemas/AdminPostNotesReq.yaml
+          type: object
+          required:
+            - resource_id
+            - resource_type
+            - value
+          properties:
+            resource_id:
+              type: string
+              description: The ID of the resource which the Note relates to.
+            resource_type:
+              type: string
+              description: The type of resource which the Note relates to.
+            value:
+              type: string
+              description: The content of the Note to create.
   x-codeSamples:
     - lang: JavaScript
       label: JS Client
@@ -31,7 +45,7 @@ post:
             type: object
             properties:
               note:
-                $ref: ../components/schemas/Note.yaml
+                $ref: ../components/schemas/note.yaml
     '400':
       $ref: ../components/responses/400_error.yaml
     '401':
@@ -92,7 +106,7 @@ get:
               notes:
                 type: array
                 items:
-                  $ref: ../components/schemas/Note.yaml
+                  $ref: ../components/schemas/note.yaml
               count:
                 type: integer
                 description: The total number of items available

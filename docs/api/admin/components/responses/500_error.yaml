@@ -2,7 +2,7 @@ description: Server Error
 content:
   application/json:
     schema:
-      $ref: ../schemas/Error.yaml
+      $ref: ../schemas/error.yaml
     examples:
       database:
         $ref: ../examples/database_error.yaml

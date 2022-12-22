@@ -32,7 +32,15 @@ post:
     content:
       application/json:
         schema:
-          $ref: ../components/schemas/AdminPostTaxRatesTaxRateProductTypesReq.yaml
+          type: object
+          required:
+            - product_types
+          properties:
+            product_types:
+              type: array
+              description: The IDs of the types of products to associate with this tax rate
+              items:
+                type: string
   x-codeSamples:
     - lang: JavaScript
       label: JS Client
@@ -57,7 +65,7 @@ post:
             type: object
             properties:
               tax_rate:
-                $ref: ../components/schemas/TaxRate.yaml
+                $ref: ../components/schemas/tax_rate.yaml
     '400':
       $ref: ../components/responses/400_error.yaml
     '401':
@@ -104,7 +112,17 @@ delete:
     content:
       application/json:
         schema:
-          $ref: ../components/schemas/AdminDeleteTaxRatesTaxRateProductTypesReq.yaml
+          type: object
+          required:
+            - product_types
+          properties:
+            product_types:
+              type: array
+              description: >-
+                The IDs of the types of products to remove association with this
+                tax rate
+              items:
+                type: string
   x-codeSamples:
     - lang: JavaScript
       label: JS Client
@@ -130,7 +148,7 @@ delete:
             type: object
             properties:
               tax_rate:
-                $ref: ../components/schemas/TaxRate.yaml
+                $ref: ../components/schemas/tax_rate.yaml
     '400':
       $ref: ../components/responses/400_error.yaml
     '401':

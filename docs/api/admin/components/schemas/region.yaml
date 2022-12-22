@@ -4,6 +4,7 @@ description: >-
   The is, for example, where currencies and tax rates are defined. A Region can
   consist of multiple countries to accomodate common shopping settings across
   countries.
+x-resourceId: region
 type: object
 required:
   - name
@@ -29,7 +30,7 @@ properties:
       description: See a list of codes.
   currency:
     description: Available if the relation `currency` is expanded.
-    $ref: ./Currency.yaml
+    $ref: ./currency.yaml
   tax_rate:
     description: The tax rate that should be charged on purchases in the Region.
     type: number
@@ -40,7 +41,7 @@ properties:
       `tax_rates` is expanded.
     type: array
     items:
-      $ref: ./TaxRate.yaml
+      $ref: ./tax_rate.yaml
   tax_code:
     description: >-
       The tax code used on purchases in the Region. This may be used by other
@@ -61,28 +62,28 @@ properties:
       `countries` is expanded.
     type: array
     items:
-      $ref: ./Country.yaml
+      $ref: ./country.yaml
   tax_provider_id:
     type: string
     description: The ID of the tax provider used in this region
     example: null
   tax_provider:
     description: Available if the relation `tax_provider` is expanded.
-    $ref: ./TaxProvider.yaml
+    $ref: ./tax_provider.yaml
   payment_providers:
     description: >-
       The Payment Providers that can be used to process Payments in the Region.
       Available if the relation `payment_providers` is expanded.
     type: array
     items:
-      $ref: ./PaymentProvider.yaml
+      $ref: ./payment_provider.yaml
   fulfillment_providers:
     description: >-
       The Fulfillment Providers that can be used to fulfill orders in the
       Region. Available if the relation `payment_providers` is expanded.
     type: array
     items:
-      $ref: ./FulfillmentProvider.yaml
+      $ref: ./fulfillment_provider.yaml
   includes_tax:
     description: '[EXPERIMENTAL] Does the prices for the region include tax'
     type: boolean

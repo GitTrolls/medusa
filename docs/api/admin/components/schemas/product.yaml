@@ -3,6 +3,7 @@ description: >-
   Products are a grouping of Product Variants that have common properties such
   as images and descriptions. Products can have multiple options which define
   the properties that Product Variants differ by.
+x-resourceId: product
 type: object
 required:
   - title
@@ -47,7 +48,7 @@ properties:
     description: Images of the Product. Available if the relation `images` is expanded.
     type: array
     items:
-      $ref: ./Image.yaml
+      $ref: ./image.yaml
   thumbnail:
     description: A URL to an image file that can be used to identify the Product.
     type: string
@@ -59,7 +60,7 @@ properties:
       Available if the relation `options` is expanded.
     type: array
     items:
-      $ref: ./ProductOption.yaml
+      $ref: ./product_option.yaml
   variants:
     description: >-
       The Product Variants that belong to the Product. Each will have a unique
@@ -67,7 +68,7 @@ properties:
       is expanded.
     type: array
     items:
-      $ref: ./ProductVariant.yaml
+      $ref: ./product_variant.yaml
   profile_id:
     description: >-
       The ID of the Shipping Profile that the Product belongs to. Shipping
@@ -77,7 +78,7 @@ properties:
     example: sp_01G1G5V239ENSZ5MV4JAR737BM
   profile:
     description: Available if the relation `profile` is expanded.
-    $ref: ./ShippingProfile.yaml
+    $ref: ./shipping_profile.yaml
   weight:
     description: >-
       The weight of the Product Variant. May be used in shipping rate
@@ -143,14 +144,14 @@ properties:
     example: ptyp_01G8X9A7ESKAJXG2H0E6F1MW7A
   type:
     description: Available if the relation `type` is expanded.
-    $ref: ./ProductType.yaml
+    $ref: ./product_type.yaml
   tags:
     description: >-
       The Product Tags assigned to the Product. Available if the relation `tags`
       is expanded.
     type: array
     items:
-      $ref: ./ProductTag.yaml
+      $ref: ./product_tag.yaml
   discountable:
     description: >-
       Whether the Product can be discounted. Discounts will not apply to Line

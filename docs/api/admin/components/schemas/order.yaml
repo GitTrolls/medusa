@@ -1,5 +1,6 @@
 title: Order
 description: Represents an order
+x-resourceId: order
 type: object
 required:
   - customer_id
@@ -75,14 +76,14 @@ properties:
     example: addr_01G8ZH853YPY9B94857DY91YGW
   billing_address:
     description: Available if the relation `billing_address` is expanded.
-    $ref: ./Address.yaml
+    $ref: ./address.yaml
   shipping_address_id:
     type: string
     description: The ID of the shipping address associated with the order
     example: addr_01G8ZH853YPY9B94857DY91YGW
   shipping_address:
     description: Available if the relation `shipping_address` is expanded.
-    $ref: ./Address.yaml
+    $ref: ./address.yaml
   region_id:
     type: string
     description: The region's ID
@@ -99,7 +100,7 @@ properties:
       description: See a list of codes.
   currency:
     description: Available if the relation `currency` is expanded.
-    $ref: ./Currency.yaml
+    $ref: ./currency.yaml
   tax_rate:
     description: The order's tax rate
     type: number
@@ -126,21 +127,21 @@ properties:
       The shipping methods used in the order. Available if the relation
       `shipping_methods` is expanded.
     items:
-      $ref: ./ShippingMethod.yaml
+      $ref: ./shipping_method.yaml
   payments:
     type: array
     description: >-
       The payments used in the order. Available if the relation `payments` is
       expanded.
     items:
-      $ref: ./Payment.yaml
+      $ref: ./payment.yaml
   fulfillments:
     type: array
     description: >-
       The fulfillments used in the order. Available if the relation
       `fulfillments` is expanded.
     items:
-      $ref: ./Fulfillment.yaml
+      $ref: ./fulfillment.yaml
   returns:
     type: array
     description: >-
@@ -186,21 +187,21 @@ properties:
       The line items that belong to the order. Available if the relation `items`
       is expanded.
     items:
-      $ref: ./LineItem.yaml
+      $ref: ./line_item.yaml
   edits:
     type: array
     description: >-
       [EXPERIMENTAL] Order edits done on the order. Available if the relation
       `edits` is expanded.
     items:
-      $ref: ./OrderEdit.yaml
+      $ref: ./order_edit.yaml
   gift_card_transactions:
     type: array
     description: >-
       The gift card transactions used in the order. Available if the relation
       `gift_card_transactions` is expanded.
     items:
-      $ref: ./GiftCardTransaction.yaml
+      $ref: ./gift_card_transaction.yaml
   canceled_at:
     type: string
     description: The date the order was canceled on.

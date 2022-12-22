@@ -4,6 +4,7 @@ description: >-
   to internal events such as `order.placed`. Notifications can be used to show a
   chronological timeline for communications sent to a Customer regarding an
   Order, and enables resends.
+x-resourceId: notification
 type: object
 required:
   - resource_type
@@ -49,14 +50,14 @@ properties:
     description: The resends that have been completed after the original Notification.
     type: array
     items:
-      $ref: ./NotificationResend.yaml
+      $ref: ./notification_resend.yaml
   provider_id:
     description: The id of the Notification Provider that handles the Notification.
     type: string
     example: sengrid
   provider:
     description: Available if the relation `provider` is expanded.
-    $ref: ./NotificationProvider.yaml
+    $ref: ./notification_provider.yaml
   created_at:
     type: string
     description: The date with timezone at which the resource was created.

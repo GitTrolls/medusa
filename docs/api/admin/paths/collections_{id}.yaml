@@ -90,7 +90,7 @@ get:
             type: object
             properties:
               collection:
-                $ref: ../components/schemas/ProductCollection.yaml
+                $ref: ../components/schemas/product_collection.yaml
     '400':
       $ref: ../components/responses/400_error.yaml
     '401':
@@ -119,7 +119,21 @@ post:
     content:
       application/json:
         schema:
-          $ref: ../components/schemas/AdminPostCollectionsCollectionReq.yaml
+          type: object
+          properties:
+            title:
+              type: string
+              description: The title to identify the Collection by.
+            handle:
+              type: string
+              description: >-
+                An optional handle to be used in slugs, if none is provided we
+                will kebab-case the title.
+            metadata:
+              description: >-
+                An optional set of key-value pairs to hold additional
+                information.
+              type: object
   x-codeSamples:
     - lang: JavaScript
       label: JS Client
@@ -143,7 +157,7 @@ post:
             type: object
             properties:
               collection:
-                $ref: ../components/schemas/ProductCollection.yaml
+                $ref: ../components/schemas/product_collection.yaml
     '400':
       $ref: ../components/responses/400_error.yaml
     '401':

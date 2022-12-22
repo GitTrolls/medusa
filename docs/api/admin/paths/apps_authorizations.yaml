@@ -7,7 +7,21 @@ post:
     content:
       application/json:
         schema:
-          $ref: ../components/schemas/AdminPostAppsReq.yaml
+          type: object
+          required:
+            - application_name
+            - state
+            - code
+          properties:
+            application_name:
+              type: string
+              description: Name of the application for the token to be generated for.
+            state:
+              type: string
+              description: State of the application.
+            code:
+              type: string
+              description: The code for the generated token.
   x-codeSamples:
     - lang: Shell
       label: cURL

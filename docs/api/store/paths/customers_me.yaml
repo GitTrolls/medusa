@@ -27,7 +27,7 @@ get:
             type: object
             properties:
               customer:
-                $ref: ../components/schemas/Customer.yaml
+                $ref: ../components/schemas/customer.yaml
     '400':
       $ref: ../components/responses/400_error.yaml
     '401':
@@ -49,7 +49,33 @@ post:
     content:
       application/json:
         schema:
-          $ref: ../components/schemas/StorePostCustomersCustomerReq.yaml
+          type: object
+          properties:
+            first_name:
+              description: The Customer's first name.
+              type: string
+            last_name:
+              description: The Customer's last name.
+              type: string
+            billing_address:
+              description: The Address to be used for billing purposes.
+              anyOf:
+                - $ref: ../components/schemas/address_fields.yaml
+                  description: The full billing address object
+                - type: string
+                  description: The ID of an existing billing address
+            password:
+              description: The Customer's password.
+              type: string
+            phone:
+              description: The Customer's phone number.
+              type: string
+            email:
+              description: The email of the customer.
+              type: string
+            metadata:
+              description: Metadata about the customer.
+              type: object
   x-codeSamples:
     - lang: JavaScript
       label: JS Client
@@ -72,7 +98,7 @@ post:
             type: object
             properties:
               customer:
-                $ref: ../components/schemas/Customer.yaml
+                $ref: ../components/schemas/customer.yaml
     '400':
       $ref: ../components/responses/400_error.yaml
     '401':

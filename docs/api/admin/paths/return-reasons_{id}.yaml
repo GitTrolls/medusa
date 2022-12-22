@@ -90,7 +90,7 @@ get:
             type: object
             properties:
               return_reason:
-                $ref: ../components/schemas/ReturnReason.yaml
+                $ref: ../components/schemas/return_reason.yaml
     '400':
       $ref: ../components/responses/400_error.yaml
     '401':
@@ -119,7 +119,22 @@ post:
     content:
       application/json:
         schema:
-          $ref: ../components/schemas/AdminPostReturnReasonsReasonReq.yaml
+          type: object
+          properties:
+            label:
+              description: The label to display to the Customer.
+              type: string
+            value:
+              description: >-
+                The value that the Return Reason will be identified by. Must be
+                unique.
+              type: string
+            description:
+              description: An optional description to for the Reason.
+              type: string
+            metadata:
+              description: An optional set of key-value pairs with additional information.
+              type: object
   x-codeSamples:
     - lang: JavaScript
       label: JS Client
@@ -143,7 +158,7 @@ post:
             type: object
             properties:
               return_reason:
-                $ref: ../components/schemas/ReturnReason.yaml
+                $ref: ../components/schemas/return_reason.yaml
     '400':
       $ref: ../components/responses/400_error.yaml
     '401':
