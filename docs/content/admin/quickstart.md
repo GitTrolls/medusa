@@ -103,10 +103,10 @@ This will create a new user that you can use to log into your admin panel.
 
 ## Changing the Default Port
 
-The default port is set in `package.json` in the `dev` script:
+The default port is set in `package.json` in the `develop` script:
 
 ```json
-"dev": "vite --port 7000",
+"develop": "gatsby develop -p 7000",
 ```
 
 If you wish to change the port you can simply change the `7000` to your desired port.
@@ -135,6 +135,5 @@ You can learn more about Medusa admin and its features in the [User Guide](../us
 
 ## What’s Next
 
-- Learn how to [Customize Medusa Admin](./development.md)
 - Install the [Next.js](../starters/nextjs-medusa-starter.md) or [Gatsby](../starters/gatsby-medusa-starter.md) storefront starters.
 - [Learn how you can use `create-medusa-app` to install all of Medusa’s 3 components.](../usage/create-medusa-app.mdx)
