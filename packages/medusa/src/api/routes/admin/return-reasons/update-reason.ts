@@ -20,7 +20,20 @@ import { EntityManager } from "typeorm"
  *   content:
  *     application/json:
  *       schema:
- *         $ref: "#/components/schemas/AdminPostReturnReasonsReasonReq"
+ *         type: object
+ *         properties:
+ *           label:
+ *             description: "The label to display to the Customer."
+ *             type: string
+ *           value:
+ *             description: "The value that the Return Reason will be identified by. Must be unique."
+ *             type: string
+ *           description:
+ *             description: "An optional description to for the Reason."
+ *             type: string
+ *           metadata:
+ *             description: An optional set of key-value pairs with additional information.
+ *             type: object
  * x-codeSamples:
  *   - lang: JavaScript
  *     label: JS Client
@@ -57,7 +70,7 @@ import { EntityManager } from "typeorm"
  *           type: object
  *           properties:
  *             return_reason:
- *               $ref: "#/components/schemas/ReturnReason"
+ *               $ref: "#/components/schemas/return_reason"
  *   "400":
  *     $ref: "#/components/responses/400_error"
  *   "401":
@@ -95,23 +108,6 @@ export default async (req, res) => {
   res.status(200).json({ return_reason: reason })
 }
 
-/**
- * @schema AdminPostReturnReasonsReasonReq
- * type: object
- * properties:
- *   label:
- *     description: "The label to display to the Customer."
- *     type: string
- *   value:
- *     description: "The value that the Return Reason will be identified by. Must be unique."
- *     type: string
- *   description:
- *     description: "An optional description to for the Reason."
- *     type: string
- *   metadata:
- *     description: An optional set of key-value pairs with additional information.
- *     type: object
- */
 export class AdminPostReturnReasonsReasonReq {
   @IsOptional()
   @IsString()

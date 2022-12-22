@@ -18,7 +18,11 @@ import {
  *   content:
  *     application/json:
  *       schema:
- *         $ref: "#/components/schemas/StorePostOrderEditsOrderEditDecline"
+ *         type: object
+ *         properties:
+ *           declined_reason:
+ *             type: string
+ *             description: The reason for declining the OrderEdit.
  * x-codeSamples:
  *   - lang: JavaScript
  *     label: JS Client
@@ -44,7 +48,7 @@ import {
  *           type: object
  *           properties:
  *             order_edit:
- *               $ref: "#/components/schemas/OrderEdit"
+ *               $ref: "#/components/schemas/order_edit"
  *   "400":
  *     $ref: "#/components/responses/400_error"
  *   "401":
@@ -83,14 +87,6 @@ export default async (req: Request, res: Response) => {
   res.status(200).json({ order_edit: orderEdit })
 }
 
-/**
- * @schema StorePostOrderEditsOrderEditDecline
- * type: object
- * properties:
- *   declined_reason:
- *     type: string
- *     description: The reason for declining the OrderEdit.
- */
 export class StorePostOrderEditsOrderEditDecline {
   @IsOptional()
   @IsString()

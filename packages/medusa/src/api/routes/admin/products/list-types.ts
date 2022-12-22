@@ -39,7 +39,7 @@ import { ProductService } from "../../../../services"
  *             types:
  *               type: array
  *               items:
- *                 $ref: "#/components/schemas/ProductType"
+ *                 $ref: "#/components/schemas/product_type"
  *   "400":
  *     $ref: "#/components/responses/400_error"
  *   "401":

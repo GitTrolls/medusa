@@ -17,7 +17,8 @@ import { validator } from "../../../../utils/validator"
  *   content:
  *     application/json:
  *       schema:
- *         $ref: "#/components/schemas/StorePostCustomersCustomerAddressesAddressReq"
+ *         anyOf:
+ *           - $ref: "#/components/schemas/address_fields"
  * x-codeSamples:
  *   - lang: JavaScript
  *     label: JS Client
@@ -53,7 +54,7 @@ import { validator } from "../../../../utils/validator"
  *          type: object
  *          properties:
  *            customer:
- *              $ref: "#/components/schemas/Customer"
+ *              $ref: "#/components/schemas/customer"
  *  "400":
  *    $ref: "#/components/responses/400_error"
  *  "401":
@@ -96,10 +97,5 @@ export default async (req, res) => {
   res.json({ customer })
 }
 
-/**
- * @schema StorePostCustomersCustomerAddressesAddressReq
- * anyOf:
- *   - $ref: "#/components/schemas/AddressFields"
- */
 // eslint-disable-next-line max-len
 export class StorePostCustomersCustomerAddressesAddressReq extends AddressPayload {}

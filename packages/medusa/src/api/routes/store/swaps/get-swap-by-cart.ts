@@ -1,5 +1,4 @@
 import SwapService from "../../../../services/swap"
-
 /**
  * @oas [get] /swaps/{cart_id}
  * operationId: GetSwapsSwapCartId
@@ -32,7 +31,7 @@ import SwapService from "../../../../services/swap"
  *           type: object
  *           properties:
  *             swap:
- *               $ref: "#/components/schemas/Swap"
+ *               $ref: "#/components/schemas/swap"
  *   "400":
  *     $ref: "#/components/responses/400_error"
  *   "404":

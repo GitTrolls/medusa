@@ -16,7 +16,13 @@ import { validator } from "../../../../utils/validator"
  *   content:
  *     application/json:
  *       schema:
- *         $ref: "#/components/schemas/AdminDeletePriceListPricesPricesReq"
+ *         type: object
+ *         properties:
+ *           price_ids:
+ *             description: The price id's of the Money Amounts to delete.
+ *             type: array
+ *             items:
+ *               type: string
  * x-codeSamples:
  *   - lang: JavaScript
  *     label: JS Client
@@ -103,16 +109,6 @@ export default async (req, res) => {
   res.json({ ids: validated.price_ids, object: "money-amount", deleted: true })
 }
 
-/**
- * @schema AdminDeletePriceListPricesPricesReq
- * type: object
- * properties:
- *   price_ids:
- *     description: The price id's of the Money Amounts to delete.
- *     type: array
- *     items:
- *       type: string
- */
 export class AdminDeletePriceListPricesPricesReq {
   @ArrayNotEmpty()
   @IsString({ each: true })

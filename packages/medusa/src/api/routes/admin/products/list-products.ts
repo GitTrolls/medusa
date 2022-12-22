@@ -189,7 +189,7 @@ import { FilterableProductProps } from "../../../../types/product"
  *             products:
  *               type: array
  *               items:
- *                 $ref: "#/components/schemas/Product"
+ *                 $ref: "#/components/schemas/product"
  *             count:
  *               type: integer
  *               description: The total number of items available

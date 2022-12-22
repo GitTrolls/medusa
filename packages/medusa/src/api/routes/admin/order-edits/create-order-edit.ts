@@ -16,7 +16,16 @@ import {
  *   content:
  *     application/json:
  *       schema:
- *         $ref: "#/components/schemas/AdminPostOrderEditsReq"
+ *         type: object
+ *         required:
+ *           - order_id
+ *         properties:
+ *           order_id:
+ *             description: The ID of the order to create the edit for.
+ *             type: string
+ *           internal_note:
+ *             description: An optional note to create for the order edit.
+ *             type: string
  * x-authenticated: true
  * x-codeSamples:
  *   - lang: JavaScript
@@ -50,7 +59,7 @@ import {
  *           type: object
  *           properties:
  *             order_edit:
- *               $ref: "#/components/schemas/OrderEdit"
+ *               $ref: "#/components/schemas/order_edit"
  *   "400":
  *     $ref: "#/components/responses/400_error"
  *   "401":
@@ -90,19 +99,6 @@ export default async (req: Request, res: Response) => {
   return res.json({ order_edit: orderEdit })
 }
 
-/**
- * @schema AdminPostOrderEditsReq
- * type: object
- * required:
- *   - order_id
- * properties:
- *   order_id:
- *     description: The ID of the order to create the edit for.
- *     type: string
- *   internal_note:
- *     description: An optional note to create for the order edit.
- *     type: string
- */
 export class AdminPostOrderEditsReq {
   @IsString()
   order_id: string

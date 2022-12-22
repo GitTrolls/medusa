@@ -18,7 +18,20 @@ import PublishableApiKeyService from "../../../../services/publishable-api-key"
  *   content:
  *     application/json:
  *       schema:
- *         $ref: "#/components/schemas/AdminDeletePublishableApiKeySalesChannelsBatchReq"
+ *         required:
+ *           - sales_channel_ids
+ *         properties:
+ *           sales_channel_ids:
+ *             description: The IDs of the sales channels to delete from the publishable api key
+ *             type: array
+ *             items:
+ *               type: object
+ *               required:
+ *                 - id
+ *               properties:
+ *                 id:
+ *                   type: string
+ *                   description: The ID of the sales channel
  * x-codeSamples:
  *   - lang: JavaScript
  *     label: JS Client
@@ -53,7 +66,7 @@ import PublishableApiKeyService from "../../../../services/publishable-api-key"
  *   - api_token: []
  *   - cookie_auth: []
  * tags:
- *   - PublishableApiKey
+ *   - Publishable Api Key
  * responses:
  *   200:
  *     description: OK
@@ -62,7 +75,7 @@ import PublishableApiKeyService from "../../../../services/publishable-api-key"
  *         schema:
  *           properties:
  *             publishable_api_key:
- *               $ref: "#/components/schemas/PublishableApiKey"
+ *               $ref: "#/components/schemas/publishable_api_key"
  *   "400":
  *     $ref: "#/components/responses/400_error"
  *   "401":
@@ -103,24 +116,6 @@ export default async (req: Request, res: Response): Promise<void> => {
   res.status(200).json({ publishable_api_key: publishableApiKey })
 }
 
-/**
- * @schema AdminDeletePublishableApiKeySalesChannelsBatchReq
- * type: object
- * required:
- *   - sales_channel_ids
- * properties:
- *   sales_channel_ids:
- *     description: The IDs of the sales channels to delete from the publishable api key
- *     type: array
- *     items:
- *       type: object
- *       required:
- *         - id
- *       properties:
- *         id:
- *           type: string
- *           description: The ID of the sales channel
- */
 export class AdminDeletePublishableApiKeySalesChannelsBatchReq {
   @IsArray()
   @ValidateNested({ each: true })

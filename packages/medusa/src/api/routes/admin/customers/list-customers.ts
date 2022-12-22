@@ -48,7 +48,7 @@ import customerController from "../../../../controllers/customers"
  *             customers:
  *               type: array
  *               items:
- *                 $ref: "#/components/schemas/Customer"
+ *                 $ref: "#/components/schemas/customer"
  *             count:
  *               type: integer
  *               description: The total number of items available

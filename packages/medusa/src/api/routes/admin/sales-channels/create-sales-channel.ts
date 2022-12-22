@@ -15,7 +15,19 @@ import SalesChannelService from "../../../../services/sales-channel"
  *   content:
  *     application/json:
  *       schema:
- *         $ref: "#/components/schemas/AdminPostSalesChannelsReq"
+ *         type: object
+ *         required:
+ *           - name
+ *         properties:
+ *           name:
+ *             description: The name of the Sales Channel
+ *             type: string
+ *           description:
+ *             description: The description of the Sales Channel
+ *             type: string
+ *           is_disabled:
+ *             description: Whether the Sales Channel is disabled or not.
+ *             type: boolean
  * x-codeSamples:
  *   - lang: JavaScript
  *     label: JS Client
@@ -53,7 +65,7 @@ import SalesChannelService from "../../../../services/sales-channel"
  *           type: object
  *           properties:
  *             sales_channel:
- *               $ref: "#/components/schemas/SalesChannel"
+ *               $ref: "#/components/schemas/sales_channel"
  *   "400":
  *     $ref: "#/components/responses/400_error"
  *   "401":
@@ -84,22 +96,6 @@ export default async (req: Request, res: Response) => {
   res.status(200).json({ sales_channel: salesChannel })
 }
 
-/**
- * @schema AdminPostSalesChannelsReq
- * type: object
- * required:
- *   - name
- * properties:
- *   name:
- *     description: The name of the Sales Channel
- *     type: string
- *   description:
- *     description: The description of the Sales Channel
- *     type: string
- *   is_disabled:
- *     description: Whether the Sales Channel is disabled or not.
- *     type: boolean
- */
 export class AdminPostSalesChannelsReq {
   @IsString()
   name: string

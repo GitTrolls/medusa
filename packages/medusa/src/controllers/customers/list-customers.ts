@@ -5,7 +5,7 @@ import { CustomerService } from "../../services"
 import { FindConfig } from "../../types/common"
 import { validator } from "../../utils/validator"
 import { Customer } from "../../models/customer"
-import { isDefined } from "medusa-core-utils"
+import { isDefined } from "../../utils"
 
 const listAndCount = async (
   scope,

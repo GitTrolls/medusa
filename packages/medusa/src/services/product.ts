@@ -1,6 +1,6 @@
 import { FlagRouter } from "../utils/flag-router"
 
-import { isDefined, MedusaError } from "medusa-core-utils"
+import { MedusaError } from "medusa-core-utils"
 import { EntityManager } from "typeorm"
 import { ProductVariantService, SearchService } from "."
 import { TransactionBaseService } from "../interfaces"
@@ -31,7 +31,7 @@ import {
   ProductSelector,
   UpdateProductInput,
 } from "../types/product"
-import { buildQuery, setMetadata } from "../utils"
+import { buildQuery, isDefined, setMetadata } from "../utils"
 import EventBusService from "./event-bus"
 
 type InjectedDependencies = {
@@ -182,13 +182,6 @@ class ProductService extends TransactionBaseService {
       include_discount_prices: false,
     }
   ): Promise<Product> {
-    if (!isDefined(productId)) {
-      throw new MedusaError(
-        MedusaError.Types.NOT_FOUND,
-        `"productId" must be defined`
-      )
-    }
-
     return await this.retrieve_({ id: productId }, config)
   }
 
@@ -203,13 +196,6 @@ class ProductService extends TransactionBaseService {
     productHandle: string,
     config: FindProductConfig = {}
   ): Promise<Product> {
-    if (!isDefined(productHandle)) {
-      throw new MedusaError(
-        MedusaError.Types.NOT_FOUND,
-        `"productHandle" must be defined`
-      )
-    }
-
     return await this.retrieve_({ handle: productHandle }, config)
   }
 
@@ -224,13 +210,6 @@ class ProductService extends TransactionBaseService {
     externalId: string,
     config: FindProductConfig = {}
   ): Promise<Product> {
-    if (!isDefined(externalId)) {
-      throw new MedusaError(
-        MedusaError.Types.NOT_FOUND,
-        `"externalId" must be defined`
-      )
-    }
-
     return await this.retrieve_({ external_id: externalId }, config)
   }
 

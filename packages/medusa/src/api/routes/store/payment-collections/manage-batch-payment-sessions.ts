@@ -16,7 +16,24 @@ import { PaymentCollectionService } from "../../../../services"
  *   content:
  *     application/json:
  *       schema:
- *         $ref: "#/components/schemas/StorePostPaymentCollectionsBatchSessionsReq"
+ *         properties:
+ *           sessions:
+ *             description: "An array of payment sessions related to the Payment Collection. If the session_id is not provided, existing sessions not present will be deleted and the provided ones will be created."
+ *             type: array
+ *             items:
+ *               required:
+ *                 - provider_id
+ *                 - amount
+ *               properties:
+ *                 provider_id:
+ *                   type: string
+ *                   description: The ID of the Payment Provider.
+ *                 amount:
+ *                   type: integer
+ *                   description: "The amount ."
+ *                 session_id:
+ *                   type: string
+ *                   description: "The ID of the Payment Session to be updated."
  * x-codeSamples:
  *   - lang: JavaScript
  *     label: JS Client
@@ -70,7 +87,7 @@ import { PaymentCollectionService } from "../../../../services"
  *         schema:
  *           properties:
  *             payment_collection:
- *               $ref: "#/components/schemas/PaymentCollection"
+ *               $ref: "#/components/schemas/payment_collection"
  *   "400":
  *     $ref: "#/components/responses/400_error"
  *   "401":
@@ -119,30 +136,6 @@ export class StorePostPaymentCollectionsSessionsReq {
   session_id?: string
 }
 
-/**
- * @schema StorePostPaymentCollectionsBatchSessionsReq
- * type: object
- * required:
- *   - sessions
- * properties:
- *   sessions:
- *     description: "An array of payment sessions related to the Payment Collection. If the session_id is not provided, existing sessions not present will be deleted and the provided ones will be created."
- *     type: array
- *     items:
- *       required:
- *         - provider_id
- *         - amount
- *       properties:
- *         provider_id:
- *           type: string
- *           description: The ID of the Payment Provider.
- *         amount:
- *           type: integer
- *           description: "The amount ."
- *         session_id:
- *           type: string
- *           description: "The ID of the Payment Session to be updated."
- */
 export class StorePostPaymentCollectionsBatchSessionsReq {
   @IsType([[StorePostPaymentCollectionsSessionsReq]])
   sessions: StorePostPaymentCollectionsSessionsReq[]

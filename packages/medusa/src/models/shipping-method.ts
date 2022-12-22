@@ -105,9 +105,10 @@ export class ShippingMethod {
 }
 
 /**
- * @schema ShippingMethod
+ * @schema shipping_method
  * title: "Shipping Method"
  * description: "Shipping Methods represent a way in which an Order or Return can be shipped. Shipping Methods are built from a Shipping Option, but may contain additional details, that can be necessary for the Fulfillment Provider to handle the shipment."
+ * x-resourceId: shipping_method
  * type: object
  * required:
  *   - shipping_option_id
@@ -123,7 +124,7 @@ export class ShippingMethod {
  *     example: so_01G1G5V27GYX4QXNARRQCW1N8T
  *   shipping_option:
  *     description: Available if the relation `shipping_option` is expanded.
- *     $ref: "#/components/schemas/ShippingOption"
+ *     $ref: "#/components/schemas/shipping_option"
  *   order_id:
  *     description: "The id of the Order that the Shipping Method is used on."
  *     type: string
@@ -163,7 +164,7 @@ export class ShippingMethod {
  *     type: array
  *     description: Available if the relation `tax_lines` is expanded.
  *     items:
- *       $ref: "#/components/schemas/ShippingMethodTaxLine"
+ *       $ref: "#/components/schemas/shipping_method_tax_line"
  *   price:
  *     description: "The amount to charge for the Shipping Method. The currency of the price is defined by the Region that the Order that the Shipping Method belongs to is a part of."
  *     type: integer

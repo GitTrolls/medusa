@@ -17,7 +17,24 @@ import { EntityManager } from "typeorm"
  *   content:
  *     application/json:
  *       schema:
- *         $ref: "#/components/schemas/AdminUpdateUserRequest"
+ *         type: object
+ *         properties:
+ *           first_name:
+ *             description: "The name of the User."
+ *             type: string
+ *           last_name:
+ *             description: "The name of the User."
+ *             type: string
+ *           role:
+ *             description: "Userrole assigned to the user."
+ *             type: string
+ *             enum: [admin, member, developer]
+ *           api_token:
+ *             description: "The api token of the User."
+ *             type: string
+ *           metadata:
+ *             description: An optional set of key-value pairs with additional information.
+ *             type: object
  * x-codeSamples:
  *   - lang: JavaScript
  *     label: JS Client
@@ -54,7 +71,7 @@ import { EntityManager } from "typeorm"
  *           type: object
  *           properties:
  *             user:
- *               $ref: "#/components/schemas/User"
+ *               $ref: "#/components/schemas/user"
  *   "400":
  *     $ref: "#/components/responses/400_error"
  *   "401":
@@ -84,27 +101,6 @@ export default async (req, res) => {
   res.status(200).json({ user: data })
 }
 
-/**
- * @schema AdminUpdateUserRequest
- * type: object
- * properties:
- *   first_name:
- *     description: "The name of the User."
- *     type: string
- *   last_name:
- *     description: "The name of the User."
- *     type: string
- *   role:
- *     description: "Userrole assigned to the user."
- *     type: string
- *     enum: [admin, member, developer]
- *   api_token:
- *     description: "The api token of the User."
- *     type: string
- *   metadata:
- *     description: An optional set of key-value pairs with additional information.
- *     type: object
- */
 export class AdminUpdateUserRequest {
   @IsString()
   @IsOptional()

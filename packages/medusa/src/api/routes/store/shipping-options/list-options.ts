@@ -39,7 +39,7 @@ import { validator } from "../../../../utils/validator"
  *             shipping_options:
  *               type: array
  *               items:
- *                 $ref: "#/components/schemas/ShippingOption"
+ *                 $ref: "#/components/schemas/shipping_option"
  *   "400":
  *     $ref: "#/components/responses/400_error"
  *   "404":

@@ -40,7 +40,7 @@ import { SalesChannelService } from "../../../../services"
  *           type: object
  *           properties:
  *             sales_channel:
- *               $ref: "#/components/schemas/SalesChannel"
+ *               $ref: "#/components/schemas/sales_channel"
  *   "400":
  *     $ref: "#/components/responses/400_error"
  *   "401":

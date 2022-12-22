@@ -21,9 +21,10 @@ export class Currency {
 }
 
 /**
- * @schema Currency
+ * @schema currency
  * title: "Currency"
  * description: "Currency"
+ * x-resourceId: currency
  * type: object
  * required:
  *   - code

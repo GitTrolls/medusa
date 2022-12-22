@@ -20,7 +20,7 @@ export const StripeMock = {
       if (data.customer === "cus_123456789_new") {
         return Promise.resolve({
           id: "pi_lebron",
-          amount: data.amount,
+          amount: 100,
           customer: "cus_123456789_new",
           description: data?.description,
         })
@@ -28,7 +28,7 @@ export const StripeMock = {
       if (data.customer === "cus_lebron") {
         return Promise.resolve({
           id: "pi_lebron",
-          amount: data.amount,
+          amount: 100,
           customer: "cus_lebron",
           description: data?.description,
         })

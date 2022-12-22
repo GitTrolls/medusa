@@ -18,7 +18,13 @@ import { validator } from "../../../../utils/validator"
  *   content:
  *     application/json:
  *       schema:
- *         $ref: "#/components/schemas/AdminPostRegionsRegionPaymentProvidersReq"
+ *         type: object
+ *         required:
+ *           - provider_id
+ *         properties:
+ *           provider_id:
+ *             description: "The ID of the Payment Provider to add."
+ *             type: string
  * x-codeSamples:
  *   - lang: JavaScript
  *     label: JS Client
@@ -55,7 +61,7 @@ import { validator } from "../../../../utils/validator"
  *           type: object
  *           properties:
  *             region:
- *               $ref: "#/components/schemas/Region"
+ *               $ref: "#/components/schemas/region"
  *   "400":
  *     $ref: "#/components/responses/400_error"
  *   "401":
@@ -91,16 +97,6 @@ export default async (req, res) => {
   res.status(200).json({ region })
 }
 
-/**
- * @schema AdminPostRegionsRegionPaymentProvidersReq
- * type: object
- * required:
- *   - provider_id
- * properties:
- *   provider_id:
- *     description: "The ID of the Payment Provider to add."
- *     type: string
- */
 export class AdminPostRegionsRegionPaymentProvidersReq {
   @IsString()
   provider_id: string

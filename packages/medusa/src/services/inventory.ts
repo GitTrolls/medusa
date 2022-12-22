@@ -1,8 +1,9 @@
-import { isDefined, MedusaError } from "medusa-core-utils"
+import { MedusaError } from "medusa-core-utils"
 import { TransactionBaseService } from "../interfaces"
 import { EntityManager } from "typeorm"
 import ProductVariantService from "./product-variant"
 import { ProductVariant } from "../models"
+import { isDefined } from "../utils"
 
 type InventoryServiceProps = {
   manager: EntityManager

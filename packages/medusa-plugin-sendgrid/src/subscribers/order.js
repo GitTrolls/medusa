@@ -13,7 +13,6 @@ class OrderSubscriber {
     this.notificationService_.subscribe("swap.created", "sendgrid")
     this.notificationService_.subscribe("order.items_returned", "sendgrid")
     this.notificationService_.subscribe("order.return_requested", "sendgrid")
-    this.notificationService_.subscribe("order.refund_created", "sendgrid")
   }
 }
 

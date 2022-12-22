@@ -13,13 +13,14 @@ import {
   ProductService,
   RegionService,
 } from "../../../../services"
-import { isDefined } from "medusa-core-utils"
+
 import { defaultStoreProductsRelations } from "."
 import SalesChannelFeatureFlag from "../../../../loaders/feature-flags/sales-channels"
 import { Product } from "../../../../models"
 import PricingService from "../../../../services/pricing"
 import { DateComparisonOperator } from "../../../../types/common"
 import { PriceSelectionParams } from "../../../../types/price-selection"
+import { isDefined } from "../../../../utils"
 import { FeatureFlagDecorators } from "../../../../utils/feature-flag-decorators"
 import { validator } from "../../../../utils/validator"
 import { optionalBooleanMapper } from "../../../../utils/validators/is-boolean"
@@ -161,15 +162,15 @@ import PublishableAPIKeysFeatureFlag from "../../../../loaders/feature-flags/pub
  *               type: array
  *               items:
  *                 allOf:
- *                   - $ref: "#/components/schemas/Product"
+ *                   - $ref: "#/components/schemas/product"
  *                   - type: object
  *                     properties:
  *                       variants:
  *                         type: array
  *                         items:
  *                           allOf:
- *                             - $ref: "#/components/schemas/ProductVariant"
- *                             - $ref: "#/components/schemas/ProductVariantPricesFields"
+ *                             - $ref: "#/components/schemas/product_variant"
+ *                             - $ref: "#/components/schemas/product_variant_prices_fields"
  *             count:
  *               type: integer
  *               description: The total number of items available

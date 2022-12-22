@@ -36,7 +36,7 @@ import PublishableApiKeyService from "../../../../services/publishable-api-key"
  *   - api_token: []
  *   - cookie_auth: []
  * tags:
- *   - PublishableApiKey
+ *   - PublishableApiKeys
  * responses:
  *   200:
  *     description: OK
@@ -47,7 +47,7 @@ import PublishableApiKeyService from "../../../../services/publishable-api-key"
  *           properties:
  *             publishable_api_keys:
  *               type: array
- *               $ref: "#/components/schemas/PublishableApiKey"
+ *               $ref: "#/components/schemas/publishable_api_key"
  *   "400":
  *     $ref: "#/components/responses/400_error"
  *   "401":

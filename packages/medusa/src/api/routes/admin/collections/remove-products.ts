@@ -16,7 +16,16 @@ import ProductCollectionService from "../../../../services/product-collection"
  *   content:
  *     application/json:
  *       schema:
- *         $ref: "#/components/schemas/AdminDeleteProductsFromCollectionReq"
+ *         type: object
+ *         required:
+ *           - product_ids
+ *         properties:
+ *           product_ids:
+ *             description: "An array of Product IDs to remove from the Product Collection."
+ *             type: array
+ *             items:
+ *               description: "The ID of a Product to add to the Product Collection."
+ *               type: string
  * x-codeSamples:
  *   - lang: Shell
  *     label: cURL
@@ -92,19 +101,6 @@ export default async (req: Request, res: Response) => {
   })
 }
 
-/**
- * @schema AdminDeleteProductsFromCollectionReq
- * type: object
- * required:
- *   - product_ids
- * properties:
- *   product_ids:
- *     description: "An array of Product IDs to remove from the Product Collection."
- *     type: array
- *     items:
- *       description: "The ID of a Product to add to the Product Collection."
- *       type: string
- */
 export class AdminDeleteProductsFromCollectionReq {
   @ArrayNotEmpty()
   @IsString({ each: true })

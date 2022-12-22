@@ -23,7 +23,23 @@ import { EntityManager } from "typeorm"
  *   content:
  *     application/json:
  *       schema:
- *         $ref: "#/components/schemas/AdminPostOrdersOrderRefundsReq"
+ *         type: object
+ *         required:
+ *           - amount
+ *           - reason
+ *         properties:
+ *           amount:
+ *             description: The amount to refund.
+ *             type: integer
+ *           reason:
+ *             description: The reason for the Refund.
+ *             type: string
+ *           note:
+ *             description: A note with additional details about the Refund.
+ *             type: string
+ *           no_notification:
+ *             description: If set to true no notification will be send related to this Refund.
+ *             type: boolean
  * x-codeSamples:
  *   - lang: JavaScript
  *     label: JS Client
@@ -62,7 +78,7 @@ import { EntityManager } from "typeorm"
  *           type: object
  *           properties:
  *             order:
- *               $ref: "#/components/schemas/Order"
+ *               $ref: "#/components/schemas/order"
  *   "400":
  *     $ref: "#/components/responses/400_error"
  *   "401":
@@ -100,26 +116,6 @@ export default async (req, res) => {
   res.status(200).json({ order })
 }
 
-/**
- * @schema AdminPostOrdersOrderRefundsReq
- * type: object
- * required:
- *   - amount
- *   - reason
- * properties:
- *   amount:
- *     description: The amount to refund.
- *     type: integer
- *   reason:
- *     description: The reason for the Refund.
- *     type: string
- *   note:
- *     description: A note with additional details about the Refund.
- *     type: string
- *   no_notification:
- *     description: If set to true no notification will be send related to this Refund.
- *     type: boolean
- */
 export class AdminPostOrdersOrderRefundsReq {
   @IsInt()
   @IsNotEmpty()

@@ -1,4 +1,9 @@
-import { PaymentCollection, PaymentCollectionType } from "../models"
+import {
+  Cart,
+  Customer,
+  PaymentCollection,
+  PaymentCollectionType,
+} from "../models"
 
 export type CreatePaymentCollectionInput = {
   region_id: string
@@ -20,6 +25,15 @@ export type PaymentCollectionsSessionsInput = {
   provider_id: string
 }
 
+export type PaymentProviderDataInput = {
+  resource_id: string
+  customer: Partial<Customer> | null
+  currency_code: string
+  provider_id: string
+  amount: number
+  cart_id?: string
+  cart?: Cart
+}
 export const defaultPaymentCollectionRelations = [
   "region",
   "region.payment_providers",

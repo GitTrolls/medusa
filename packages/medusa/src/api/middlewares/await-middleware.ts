@@ -17,15 +17,16 @@ export default (fn: handler): RequestHandler => {
 }
 
 /**
- * @schema MultipleErrors
+ * @schema multiple_errors
  * title: "Multiple Errors"
+ * x-resourceId: multiple_errors
  * type: object
  * properties:
  *  errors:
  *    type: array
  *    description: Array of errors
  *    items:
- *      $ref: "#/components/schemas/Error"
+ *      $ref: "#/components/schemas/error"
  *  message:
  *    type: string
  *    default: "Provided request body contains errors. Please check the data and retry the request"
