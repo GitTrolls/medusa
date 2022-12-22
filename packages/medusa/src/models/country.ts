@@ -40,9 +40,10 @@ export class Country {
 }
 
 /**
- * @schema Country
+ * @schema country
  * title: "Country"
  * description: "Country details"
+ * x-resourceId: country
  * type: object
  * required:
  *   - iso_2

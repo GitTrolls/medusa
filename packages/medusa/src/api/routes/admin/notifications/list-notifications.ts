@@ -59,7 +59,7 @@ import { validator } from "../../../../utils/validator"
  *             notifications:
  *               type: array
  *               items:
- *                 $ref: "#/components/schemas/Notification"
+ *                 $ref: "#/components/schemas/notification"
  *   "400":
  *     $ref: "#/components/responses/400_error"
  *   "401":

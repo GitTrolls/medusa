@@ -24,9 +24,10 @@ export class FulfillmentItem {
 }
 
 /**
- * @schema FulfillmentItem
+ * @schema fulfillment_item
  * title: "Fulfillment Item"
  * description: "Correlates a Line Item with a Fulfillment, keeping track of the quantity of the Line Item."
+ * x-resourceId: fulfillment_item
  * type: object
  * required:
  *   - fulfillment_id
@@ -46,7 +47,7 @@ export class FulfillmentItem {
  *     type: object
  *   item:
  *     description: Available if the relation `item` is expanded.
- *     $ref: "#/components/schemas/LineItem"
+ *     $ref: "#/components/schemas/line_item"
  *   quantity:
  *     description: "The quantity of the Line Item that is included in the Fulfillment."
  *     type: integer

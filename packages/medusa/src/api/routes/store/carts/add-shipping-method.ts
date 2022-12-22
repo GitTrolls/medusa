@@ -45,7 +45,7 @@ import { validator } from "../../../../utils/validator"
  *          type: object
  *          properties:
  *            cart:
- *              $ref: "#/components/schemas/Cart"
+ *              $ref: "#/components/schemas/cart"
  *  "400":
  *    $ref: "#/components/responses/400_error"
  *  "404":

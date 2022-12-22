@@ -48,9 +48,10 @@ export class ReturnItem {
 }
 
 /**
- * @schema ReturnItem
+ * @schema return_item
  * title: "Return Item"
  * description: "Correlates a Line Item with a Return, keeping track of the quantity of the Line Item that will be returned."
+ * x-resourceId: return_item
  * type: object
  * required:
  *   - return_id
@@ -62,14 +63,14 @@ export class ReturnItem {
  *     example: ret_01F0YET7XPCMF8RZ0Y151NZV2V
  *   return_order:
  *     description: Available if the relation `return_order` is expanded.
- *     $ref: "#/components/schemas/Return"
+ *     $ref: "#/components/schemas/return"
  *   item_id:
  *     description: "The id of the Line Item that the Return Item references."
  *     type: string
  *     example: item_01G8ZC9GWT6B2GP5FSXRXNFNGN
  *   item:
  *     description: Available if the relation `item` is expanded.
- *     $ref: "#/components/schemas/LineItem"
+ *     $ref: "#/components/schemas/line_item"
  *   quantity:
  *     description: "The quantity of the Line Item that is included in the Return."
  *     type: integer
@@ -92,7 +93,7 @@ export class ReturnItem {
  *     example: rr_01G8X82GCCV2KSQHDBHSSAH5TQ
  *   reason:
  *     description: Available if the relation `reason` is expanded.
- *     $ref: "#/components/schemas/ReturnReason"
+ *     $ref: "#/components/schemas/return_reason"
  *   note:
  *     description: "An optional note with additional details about the Return."
  *     type: string

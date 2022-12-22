@@ -122,20 +122,13 @@ describe("TotalsService", () => {
   const featureFlagRouter = new FlagRouter({
     [TaxInclusivePricingFeatureFlag.key]: false,
   })
+
   const container = {
     taxProviderService: {
       withTransaction: function () {
         return this
       },
       getTaxLines: getTaxLinesMock,
-    },
-    newTotalsService: {
-      getGiftCardTotals: jest.fn(() => {
-        return {
-          total: 0,
-          tax_total: 0,
-        }
-      }),
     },
     taxCalculationStrategy: {},
     featureFlagRouter,
@@ -895,14 +888,6 @@ describe("TotalsService", () => {
       },
       taxCalculationStrategy: {
         calculate: calculateMock,
-      },
-      newTotalsService: {
-        getGiftCardTotals: jest.fn(() => {
-          return {
-            total: 0,
-            tax_total: 0,
-          }
-        }),
       },
       featureFlagRouter,
     }

@@ -30,9 +30,10 @@ export class ShippingMethodTaxLine extends TaxLine {
 }
 
 /**
- * @schema ShippingMethodTaxLine
+ * @schema shipping_method_tax_line
  * title: "Shipping Method Tax Line"
  * description: "Shipping Method Tax Line"
+ * x-resourceId: shipping_method_tax_line
  * type: object
  * required:
  *   - shipping_method_id
@@ -49,7 +50,7 @@ export class ShippingMethodTaxLine extends TaxLine {
  *     example: sm_01F0YET7DR2E7CYVSDHM593QG2
  *   shipping_method:
  *     description: Available if the relation `shipping_method` is expanded.
- *     $ref: "#/components/schemas/ShippingMethod"
+ *     $ref: "#/components/schemas/shipping_method"
  *   code:
  *     description: "A code to identify the tax type by"
  *     type: string

@@ -20,7 +20,11 @@ import {
  *   content:
  *     application/json:
  *       schema:
- *         $ref: "#/components/schemas/AdminPostOrderEditsOrderEditReq"
+ *         type: object
+ *         properties:
+ *           internal_note:
+ *             description: An optional note to create or update for the order edit.
+ *             type: string
  * x-codeSamples:
  *   - lang: JavaScript
  *     label: JS Client
@@ -57,7 +61,7 @@ import {
  *           type: object
  *           properties:
  *             order_edit:
- *               $ref: "#/components/schemas/OrderEdit"
+ *               $ref: "#/components/schemas/order_edit"
  *   "400":
  *     $ref: "#/components/responses/400_error"
  *   "401":
@@ -99,14 +103,6 @@ export default async (req: Request, res: Response) => {
   res.status(200).json({ order_edit: orderEdit })
 }
 
-/**
- * @schema AdminPostOrderEditsOrderEditReq
- * type: object
- * properties:
- *   internal_note:
- *     description: An optional note to create or update for the order edit.
- *     type: string
- */
 export class AdminPostOrderEditsOrderEditReq {
   @IsOptional()
   @IsString()

@@ -1,5 +1,5 @@
 import { EntityManager } from "typeorm"
-import { isDefined, MedusaError } from "medusa-core-utils"
+import { MedusaError } from "medusa-core-utils"
 import reqIp from "request-ip"
 import { Type } from "class-transformer"
 import {
@@ -22,6 +22,7 @@ import { FeatureFlagDecorators } from "../../../../utils/feature-flag-decorators
 import { FlagRouter } from "../../../../utils/flag-router"
 import SalesChannelFeatureFlag from "../../../../loaders/feature-flags/sales-channels"
 import { CartCreateProps } from "../../../../types/cart"
+import { isDefined } from "../../../../utils"
 import PublishableAPIKeysFeatureFlag from "../../../../loaders/feature-flags/publishable-api-keys"
 
 /**
@@ -36,7 +37,40 @@ import PublishableAPIKeysFeatureFlag from "../../../../loaders/feature-flags/pub
  *   content:
  *     application/json:
  *       schema:
- *         $ref: "#/components/schemas/StorePostCartReq"
+ *         type: object
+ *         properties:
+ *           region_id:
+ *             type: string
+ *             description: The ID of the Region to create the Cart in.
+ *           sales_channel_id:
+ *             type: string
+ *             description: "[EXPERIMENTAL] The ID of the Sales channel to create the Cart in."
+ *           country_code:
+ *             type: string
+ *             description: "The 2 character ISO country code to create the Cart in."
+ *             externalDocs:
+ *              url: https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2#Officially_assigned_code_elements
+ *              description: See a list of codes.
+ *           items:
+ *             description: "An optional array of `variant_id`, `quantity` pairs to generate Line Items from."
+ *             type: array
+ *             items:
+ *               required:
+ *                 - variant_id
+ *                 - quantity
+ *               properties:
+ *                 variant_id:
+ *                   description: The id of the Product Variant to generate a Line Item from.
+ *                   type: string
+ *                 quantity:
+ *                   description: The quantity of the Product Variant to add
+ *                   type: integer
+ *           context:
+ *             description: "An optional object to provide context to the Cart. The `context` field is automatically populated with `ip` and `user_agent`"
+ *             type: object
+ *             example:
+ *               ip: "::1"
+ *               user_agent: "Chrome"
  * x-codeSamples:
  *   - lang: JavaScript
  *     label: JS Client
@@ -62,7 +96,7 @@ import PublishableAPIKeysFeatureFlag from "../../../../loaders/feature-flags/pub
  *           type: object
  *           properties:
  *             cart:
- *               $ref: "#/components/schemas/Cart"
+ *               $ref: "#/components/schemas/cart"
  *   "400":
  *     $ref: "#/components/responses/400_error"
  *   "404":
@@ -190,43 +224,6 @@ export class Item {
   quantity: number
 }
 
-/**
- * @schema StorePostCartReq
- * type: object
- * properties:
- *   region_id:
- *     type: string
- *     description: The ID of the Region to create the Cart in.
- *   sales_channel_id:
- *     type: string
- *     description: "[EXPERIMENTAL] The ID of the Sales channel to create the Cart in."
- *   country_code:
- *     type: string
- *     description: "The 2 character ISO country code to create the Cart in."
- *     externalDocs:
- *      url: https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2#Officially_assigned_code_elements
- *      description: See a list of codes.
- *   items:
- *     description: "An optional array of `variant_id`, `quantity` pairs to generate Line Items from."
- *     type: array
- *     items:
- *       required:
- *         - variant_id
- *         - quantity
- *       properties:
- *         variant_id:
- *           description: The id of the Product Variant to generate a Line Item from.
- *           type: string
- *         quantity:
- *           description: The quantity of the Product Variant to add
- *           type: integer
- *   context:
- *     description: "An optional object to provide context to the Cart. The `context` field is automatically populated with `ip` and `user_agent`"
- *     type: object
- *     example:
- *       ip: "::1"
- *       user_agent: "Chrome"
- */
 export class StorePostCartReq {
   @IsOptional()
   @IsString()

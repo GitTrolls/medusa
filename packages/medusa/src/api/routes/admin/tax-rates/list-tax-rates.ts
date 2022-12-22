@@ -103,7 +103,7 @@ import { validator } from "../../../../utils/validator"
  *             tax_rates:
  *               type: array
  *               items:
- *                 $ref: "#/components/schemas/TaxRate"
+ *                 $ref: "#/components/schemas/tax_rate"
  *             count:
  *               type: integer
  *               description: The total number of items available

@@ -14,10 +14,11 @@ import {
 } from "../../../../services"
 
 import { Type } from "class-transformer"
-import { isDefined, MedusaError } from "medusa-core-utils"
+import { MedusaError } from "medusa-core-utils"
 import { EntityManager } from "typeorm"
 import { Order, Return } from "../../../../models"
 import { OrdersReturnItem } from "../../../../types/orders"
+import { isDefined } from "../../../../utils"
 import { validator } from "../../../../utils/validator"
 
 /**
@@ -32,7 +33,53 @@ import { validator } from "../../../../utils/validator"
  *   content:
  *     application/json:
  *       schema:
- *         $ref: "#/components/schemas/AdminPostOrdersOrderReturnsReq"
+ *         type: object
+ *         required:
+ *           - items
+ *         properties:
+ *           items:
+ *             description: The Line Items that will be returned.
+ *             type: array
+ *             items:
+ *               required:
+ *                 - item_id
+ *                 - quantity
+ *               properties:
+ *                 item_id:
+ *                   description: The ID of the Line Item.
+ *                   type: string
+ *                 reason_id:
+ *                   description: The ID of the Return Reason to use.
+ *                   type: string
+ *                 note:
+ *                   description: An optional note with information about the Return.
+ *                   type: string
+ *                 quantity:
+ *                   description: The quantity of the Line Item.
+ *                   type: integer
+ *           return_shipping:
+ *             description: The Shipping Method to be used to handle the return shipment.
+ *             type: object
+ *             properties:
+ *               option_id:
+ *                 type: string
+ *                 description: The ID of the Shipping Option to create the Shipping Method from.
+ *               price:
+ *                 type: integer
+ *                 description: The price to charge for the Shipping Method.
+ *           note:
+ *             description: An optional note with information about the Return.
+ *             type: string
+ *           receive_now:
+ *             description: A flag to indicate if the Return should be registerd as received immediately.
+ *             type: boolean
+ *             default: false
+ *           no_notification:
+ *             description: A flag to indicate if no notifications should be emitted related to the requested Return.
+ *             type: boolean
+ *           refund:
+ *             description: The amount to refund.
+ *             type: integer
  * x-codeSamples:
  *   - lang: JavaScript
  *     label: JS Client
@@ -80,7 +127,7 @@ import { validator } from "../../../../utils/validator"
  *           type: object
  *           properties:
  *             order:
- *               $ref: "#/components/schemas/Order"
+ *               $ref: "#/components/schemas/order"
  *   "400":
  *     $ref: "#/components/responses/400_error"
  *   "401":
@@ -287,56 +334,6 @@ type ReturnObj = {
   no_notification?: boolean
 }
 
-/**
- * @schema AdminPostOrdersOrderReturnsReq
- * type: object
- * required:
- *   - items
- * properties:
- *   items:
- *     description: The Line Items that will be returned.
- *     type: array
- *     items:
- *       required:
- *         - item_id
- *         - quantity
- *       properties:
- *         item_id:
- *           description: The ID of the Line Item.
- *           type: string
- *         reason_id:
- *           description: The ID of the Return Reason to use.
- *           type: string
- *         note:
- *           description: An optional note with information about the Return.
- *           type: string
- *         quantity:
- *           description: The quantity of the Line Item.
- *           type: integer
- *   return_shipping:
- *     description: The Shipping Method to be used to handle the return shipment.
- *     type: object
- *     properties:
- *       option_id:
- *         type: string
- *         description: The ID of the Shipping Option to create the Shipping Method from.
- *       price:
- *         type: integer
- *         description: The price to charge for the Shipping Method.
- *   note:
- *     description: An optional note with information about the Return.
- *     type: string
- *   receive_now:
- *     description: A flag to indicate if the Return should be registerd as received immediately.
- *     type: boolean
- *     default: false
- *   no_notification:
- *     description: A flag to indicate if no notifications should be emitted related to the requested Return.
- *     type: boolean
- *   refund:
- *     description: The amount to refund.
- *     type: integer
- */
 export class AdminPostOrdersOrderReturnsReq {
   @IsArray()
   @ValidateNested({ each: true })

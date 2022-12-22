@@ -38,7 +38,7 @@ import { PaymentService } from "../../../../services"
  *           type: object
  *           properties:
  *             payment:
- *               $ref: "#/components/schemas/Payment"
+ *               $ref: "#/components/schemas/payment"
  *   "400":
  *     $ref: "#/components/responses/400_error"
  *   "401":

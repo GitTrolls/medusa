@@ -79,7 +79,7 @@ import { validator } from "../../../../utils/validator"
  *             regions:
  *               type: array
  *               items:
- *                 $ref: "#/components/schemas/Region"
+ *                 $ref: "#/components/schemas/region"
  *             count:
  *               type: integer
  *               description: The total number of items available

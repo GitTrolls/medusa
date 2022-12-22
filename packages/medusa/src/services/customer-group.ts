@@ -1,4 +1,4 @@
-import { isDefined, MedusaError } from "medusa-core-utils"
+import { MedusaError } from "medusa-core-utils"
 import { DeepPartial, EntityManager, ILike } from "typeorm"
 import { CustomerService } from "."
 import { CustomerGroup } from ".."
@@ -8,7 +8,13 @@ import {
 } from "../repositories/customer-group"
 import { FindConfig, Selector } from "../types/common"
 import { CustomerGroupUpdate } from "../types/customer-groups"
-import { buildQuery, isString, PostgresError, setMetadata } from "../utils"
+import {
+  buildQuery,
+  isDefined,
+  isString,
+  PostgresError,
+  setMetadata,
+} from "../utils"
 import { TransactionBaseService } from "../interfaces"
 
 type CustomerGroupConstructorProps = {
@@ -29,7 +35,6 @@ class CustomerGroupService extends TransactionBaseService {
     customerGroupRepository,
     customerService,
   }: CustomerGroupConstructorProps) {
-    // eslint-disable-next-line prefer-rest-params
     super(arguments[0])
 
     this.manager_ = manager
@@ -37,25 +42,18 @@ class CustomerGroupService extends TransactionBaseService {
     this.customerService_ = customerService
   }
 
-  async retrieve(customerGroupId: string, config = {}): Promise<CustomerGroup> {
-    if (!isDefined(customerGroupId)) {
-      throw new MedusaError(
-        MedusaError.Types.NOT_FOUND,
-        `"customerGroupId" must be defined`
-      )
-    }
-
+  async retrieve(id: string, config = {}): Promise<CustomerGroup> {
     const cgRepo = this.manager_.getCustomRepository(
       this.customerGroupRepository_
     )
 
-    const query = buildQuery({ id: customerGroupId }, config)
+    const query = buildQuery({ id }, config)
 
     const customerGroup = await cgRepo.findOne(query)
     if (!customerGroup) {
       throw new MedusaError(
         MedusaError.Types.NOT_FOUND,
-        `CustomerGroup with id ${customerGroupId} was not found`
+        `CustomerGroup with id ${id} was not found`
       )
     }
 

@@ -19,9 +19,10 @@ export class ProductType extends SoftDeletableEntity {
 }
 
 /**
- * @schema ProductType
+ * @schema product_type
  * title: "Product Type"
  * description: "Product Type can be added to Products for filtering and reporting purposes."
+ * x-resourceId: product_type
  * type: object
  * required:
  *   - value

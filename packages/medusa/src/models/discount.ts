@@ -89,9 +89,10 @@ export class Discount extends SoftDeletableEntity {
 }
 
 /**
- * @schema Discount
+ * @schema discount
  * title: "Discount"
  * description: "Represents a discount that can be applied to a cart for promotional purposes."
+ * x-resourceId: discount
  * type: object
  * required:
  *   - code
@@ -115,7 +116,7 @@ export class Discount extends SoftDeletableEntity {
  *     example: dru_01F0YESMVK96HVX7N419E3CJ7C
  *   rule:
  *     description: Available if the relation `rule` is expanded.
- *     $ref: "#/components/schemas/DiscountRule"
+ *     $ref: "#/components/schemas/discount_rule"
  *   is_disabled:
  *     description: "Whether the Discount has been disabled. Disabled discounts cannot be applied to carts"
  *     type: boolean
@@ -126,7 +127,7 @@ export class Discount extends SoftDeletableEntity {
  *     example: disc_01G8ZH853YPY9B94857DY91YGW
  *   parent_discount:
  *     description: Available if the relation `parent_discount` is expanded.
- *     $ref: "#/components/schemas/Discount"
+ *     $ref: "#/components/schemas/discount"
  *   starts_at:
  *     description: "The time at which the discount can be used."
  *     type: string

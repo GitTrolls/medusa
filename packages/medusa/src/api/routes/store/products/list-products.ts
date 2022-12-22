@@ -7,16 +7,22 @@ import {
   IsString,
   ValidateNested,
 } from "class-validator"
+import { omit, pickBy } from "lodash"
 import {
   CartService,
   ProductService,
   RegionService,
 } from "../../../../services"
+
+import { defaultStoreProductsRelations } from "."
 import SalesChannelFeatureFlag from "../../../../loaders/feature-flags/sales-channels"
+import { Product } from "../../../../models"
 import PricingService from "../../../../services/pricing"
 import { DateComparisonOperator } from "../../../../types/common"
 import { PriceSelectionParams } from "../../../../types/price-selection"
+import { isDefined } from "../../../../utils"
 import { FeatureFlagDecorators } from "../../../../utils/feature-flag-decorators"
+import { validator } from "../../../../utils/validator"
 import { optionalBooleanMapper } from "../../../../utils/validators/is-boolean"
 import { IsType } from "../../../../utils/validators/is-type"
 import { FlagRouter } from "../../../../utils/flag-router"
@@ -128,7 +134,6 @@ import PublishableAPIKeysFeatureFlag from "../../../../loaders/feature-flags/pub
  *   - (query) limit=100 {integer} Limit the number of products returned.
  *   - (query) expand {string} (Comma separated) Which fields should be expanded in each order of the result.
  *   - (query) fields {string} (Comma separated) Which fields should be included in each order of the result.
- *   - (query) order {string} the field used to order the products.
  * x-codeSamples:
  *   - lang: JavaScript
  *     label: JS Client
@@ -157,15 +162,15 @@ import PublishableAPIKeysFeatureFlag from "../../../../loaders/feature-flags/pub
  *               type: array
  *               items:
  *                 allOf:
- *                   - $ref: "#/components/schemas/Product"
+ *                   - $ref: "#/components/schemas/product"
  *                   - type: object
  *                     properties:
  *                       variants:
  *                         type: array
  *                         items:
  *                           allOf:
- *                             - $ref: "#/components/schemas/ProductVariant"
- *                             - $ref: "#/components/schemas/ProductVariantPricesFields"
+ *                             - $ref: "#/components/schemas/product_variant"
+ *                             - $ref: "#/components/schemas/product_variant_prices_fields"
  *             count:
  *               type: integer
  *               description: The total number of items available
@@ -192,34 +197,59 @@ export default async (req, res) => {
   const cartService: CartService = req.scope.resolve("cartService")
   const regionService: RegionService = req.scope.resolve("regionService")
 
-  const validated = req.validatedQuery as StoreGetProductsParams
-  let {
-    cart_id,
-    region_id: regionId,
-    currency_code: currencyCode,
-    ...filterableFields
-  } = req.filterableFields
-  const listConfig = req.listConfig
+  const featureFlagRouter: FlagRouter = req.scope.resolve("featureFlagRouter")
+
+  const validated = await validator(StoreGetProductsParams, req.query)
+
+  if (featureFlagRouter.isFeatureEnabled(PublishableAPIKeysFeatureFlag.key)) {
+    if (req.publishableApiKeyScopes?.sales_channel_id.length) {
+      validated.sales_channel_id =
+        validated.sales_channel_id ||
+        req.publishableApiKeyScopes.sales_channel_id
+    }
+  }
+
+  const filterableFields: StoreGetProductsParams = omit(validated, [
+    "fields",
+    "expand",
+    "limit",
+    "offset",
+    "cart_id",
+    "region_id",
+    "currency_code",
+  ])
 
   // get only published products for store endpoint
   filterableFields["status"] = ["published"]
 
-  const featureFlagRouter: FlagRouter = req.scope.resolve("featureFlagRouter")
-  if (featureFlagRouter.isFeatureEnabled(PublishableAPIKeysFeatureFlag.key)) {
-    if (req.publishableApiKeyScopes?.sales_channel_id.length) {
-      filterableFields.sales_channel_id =
-        filterableFields.sales_channel_id ||
-        req.publishableApiKeyScopes.sales_channel_id
+  let includeFields: (keyof Product)[] = []
+  if (validated.fields) {
+    const set = new Set(validated.fields.split(",")) as Set<keyof Product>
+    set.add("id")
+    includeFields = [...set]
+  }
 
-      listConfig.relations.push("sales_channels")
-    }
+  let expandFields: string[] = []
+  if (validated.expand) {
+    expandFields = validated.expand.split(",")
+  }
+
+  const listConfig = {
+    select: includeFields.length ? includeFields : undefined,
+    relations: expandFields.length
+      ? expandFields
+      : defaultStoreProductsRelations,
+    skip: validated.offset,
+    take: validated.limit,
   }
 
   const [rawProducts, count] = await productService.listAndCount(
-    filterableFields,
+    pickBy(filterableFields, (val) => isDefined(val)),
     listConfig
   )
 
+  let regionId = validated.region_id
+  let currencyCode = validated.currency_code
   if (validated.cart_id) {
     const cart = await cartService.retrieve(validated.cart_id, {
       select: ["id", "region_id"],
@@ -232,7 +262,7 @@ export default async (req, res) => {
   }
 
   const products = await pricingService.setProductPrices(rawProducts, {
-    cart_id: cart_id,
+    cart_id: validated.cart_id,
     region_id: regionId,
     currency_code: currencyCode,
     customer_id: req.user?.customer_id,
@@ -265,10 +295,6 @@ export class StoreGetProductsPaginationParams extends PriceSelectionParams {
   @IsOptional()
   @Type(() => Number)
   limit?: number = 100
-
-  @IsString()
-  @IsOptional()
-  order?: string
 }
 
 export class StoreGetProductsParams extends StoreGetProductsPaginationParams {

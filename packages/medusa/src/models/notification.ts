@@ -65,9 +65,10 @@ export class Notification extends BaseEntity {
 }
 
 /**
- * @schema Notification
+ * @schema notification
  * title: "Notification"
  * description: "Notifications a communications sent via Notification Providers as a reaction to internal events such as `order.placed`. Notifications can be used to show a chronological timeline for communications sent to a Customer regarding an Order, and enables resends."
+ * x-resourceId: notification
  * type: object
  * required:
  *   - resource_type
@@ -109,14 +110,14 @@ export class Notification extends BaseEntity {
  *     description: "The resends that have been completed after the original Notification."
  *     type: array
  *     items:
- *       $ref: "#/components/schemas/NotificationResend"
+ *       $ref: "#/components/schemas/notification_resend"
  *   provider_id:
  *     description: "The id of the Notification Provider that handles the Notification."
  *     type: string
  *     example: sengrid
  *   provider:
  *     description: Available if the relation `provider` is expanded.
- *     $ref: "#/components/schemas/NotificationProvider"
+ *     $ref: "#/components/schemas/notification_provider"
  *   created_at:
  *     type: string
  *     description: "The date with timezone at which the resource was created."
@@ -128,9 +129,10 @@ export class Notification extends BaseEntity {
  */
 
 /**
- * @schema NotificationResend
+ * @schema notification_resend
  * title: "Notification Resend"
  * description: "A resend of a Notification."
+ * x-resourceId: notification_resend
  * type: object
  * properties:
  *   id:
@@ -170,14 +172,14 @@ export class Notification extends BaseEntity {
  *     example: noti_01G53V9Y6CKMCGBM1P0X7C28RX
  *   parent_notification:
  *     description: Available if the relation `parent_notification` is expanded.
- *     $ref: "#/components/schemas/Notification"
+ *     $ref: "#/components/schemas/notification"
  *   provider_id:
  *     description: "The ID of the Notification Provider that handles the Notification."
  *     type: string
  *     example: sengrid
  *   provider:
  *     description: Available if the relation `provider` is expanded.
- *     $ref: "#/components/schemas/NotificationProvider"
+ *     $ref: "#/components/schemas/notification_provider"
  *   created_at:
  *     type: string
  *     description: "The date with timezone at which the resource was created."

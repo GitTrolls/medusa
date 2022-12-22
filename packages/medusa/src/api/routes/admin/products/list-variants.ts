@@ -42,7 +42,7 @@ import { validator } from "../../../../utils/validator"
  *             variants:
  *               type: array
  *               items:
- *                 $ref: "#/components/schemas/ProductVariant"
+ *                 $ref: "#/components/schemas/product_variant"
  *             count:
  *               type: integer
  *               description: The total number of items available

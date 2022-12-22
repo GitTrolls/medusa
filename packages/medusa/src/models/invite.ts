@@ -38,9 +38,10 @@ export class Invite extends SoftDeletableEntity {
 }
 
 /**
- * @schema Invite
+ * @schema invite
  * title: "Invite"
  * description: "Represents an invite"
+ * x-resourceId: invite
  * type: object
  * required:
  *   - user_email

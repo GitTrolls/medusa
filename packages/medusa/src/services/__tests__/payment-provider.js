@@ -1,15 +1,17 @@
-import { asValue, createContainer } from "awilix"
-import { MockRepository } from "medusa-test-utils"
+import { MockManager, MockRepository } from "medusa-test-utils"
 import PaymentProviderService from "../payment-provider"
-import { defaultContainer } from "../__fixtures__/payment-provider"
 import { testPayServiceMock } from "../__mocks__/test-pay"
+import { FlagRouter } from "../../utils/flag-router"
 
 describe("PaymentProviderService", () => {
   describe("retrieveProvider", () => {
-    const container = createContainer({}, defaultContainer)
-    container.register("pp_default_provider", asValue("good"))
+    const container = {
+      manager: MockManager,
+      paymentSessionRepository: MockRepository(),
+      pp_default_provider: "good",
+    }
 
-    const providerService = container.resolve("paymentProviderService")
+    const providerService = new PaymentProviderService(container)
 
     it("successfully retrieves payment provider", () => {
       const provider = providerService.retrieveProvider("default_provider")
@@ -28,78 +30,56 @@ describe("PaymentProviderService", () => {
   })
 
   describe("createSession", () => {
-    const container = createContainer({}, defaultContainer)
-    container.register(
-      "pp_default_provider",
-      asValue({
+    const createPayment = jest.fn().mockReturnValue(Promise.resolve())
+    const container = {
+      manager: MockManager,
+      paymentSessionRepository: MockRepository(),
+      pp_default_provider: {
         withTransaction: function () {
           return this
         },
-        createPayment: jest.fn().mockReturnValue(Promise.resolve({})),
-      })
-    )
+        createPayment,
+      },
+    }
 
-    const providerService = container.resolve("paymentProviderService")
+    const providerService = new PaymentProviderService(container)
 
     it("successfully creates session", async () => {
       await providerService.createSession("default_provider", {
-        object: "cart",
-        region: {
-          currency_code: "usd",
-        },
         total: 100,
       })
 
-      const defaultProvider = container.resolve("pp_default_provider")
-
-      expect(defaultProvider.createPayment).toBeCalledTimes(1)
-      expect(defaultProvider.createPayment).toBeCalledWith({
-        amount: 100,
-        object: "cart",
+      expect(createPayment).toBeCalledTimes(1)
+      expect(createPayment).toBeCalledWith({
         total: 100,
-        region: {
-          currency_code: "usd",
-        },
-        cart: {
-          context: undefined,
-          email: undefined,
-          id: undefined,
-          shipping_address: undefined,
-          shipping_methods: undefined,
-        },
-        currency_code: "usd",
       })
     })
   })
 
   describe("updateSession", () => {
-    const container = createContainer({}, defaultContainer)
-    container.register(
-      "paymentSessionRepository",
-      asValue(
-        MockRepository({
-          findOne: () =>
-            Promise.resolve({
-              id: "session",
-              provider_id: "default_provider",
-              data: {
-                id: "1234",
-              },
-            }),
-        })
-      )
-    )
-    container.register(
-      "pp_default_provider",
-      asValue({
+    const updatePayment = jest.fn().mockReturnValue(Promise.resolve())
+
+    const container = {
+      manager: MockManager,
+      paymentSessionRepository: MockRepository({
+        findOne: () =>
+          Promise.resolve({
+            id: "session",
+            provider_id: "default_provider",
+            data: {
+              id: "1234",
+            },
+          }),
+      }),
+      pp_default_provider: {
         withTransaction: function () {
           return this
         },
-        updatePayment: jest.fn().mockReturnValue(Promise.resolve()),
-      })
-    )
+        updatePayment,
+      },
+    }
 
-    const providerService = container.resolve("paymentProviderService")
+    const providerService = new PaymentProviderService(container)
 
     it("successfully creates session", async () => {
       await providerService.updateSession(
@@ -111,28 +91,15 @@ describe("PaymentProviderService", () => {
           },
         },
         {
-          object: "cart",
           total: 100,
         }
       )
 
-      const defaultProvider = container.resolve("pp_default_provider")
-
-      expect(defaultProvider.updatePayment).toBeCalledTimes(1)
-      expect(defaultProvider.updatePayment).toBeCalledWith(
+      expect(updatePayment).toBeCalledTimes(1)
+      expect(updatePayment).toBeCalledWith(
         { id: "1234" },
         {
-          object: "cart",
-          amount: 100,
           total: 100,
-          cart: {
-            context: undefined,
-            email: undefined,
-            id: undefined,
-            shipping_address: undefined,
-            shipping_methods: undefined,
-          },
-          currency_code: undefined,
         }
       )
     })
@@ -140,53 +107,50 @@ describe("PaymentProviderService", () => {
 })
 
 describe(`PaymentProviderService`, () => {
-  const container = createContainer({}, defaultContainer)
-  container.register("pp_default_provider", asValue(testPayServiceMock))
-  container.register(
-    "paymentSessionRepository",
-    asValue(
-      MockRepository({
-        findOne: () =>
-          Promise.resolve({
-            id: "session",
-            provider_id: "default_provider",
-            data: {
-              id: "1234",
-            },
-          }),
-      })
-    )
-  )
-  container.register(
-    "paymentRepository",
-    asValue(
-      MockRepository({
-        findOne: () =>
-          Promise.resolve({
+  const featureFlagRouter = new FlagRouter({
+    order_editing: false,
+  })
+
+  const container = {
+    manager: MockManager,
+    paymentSessionRepository: MockRepository({
+      findOne: () =>
+        Promise.resolve({
+          id: "session",
+          provider_id: "default_provider",
+          data: {
+            id: "1234",
+          },
+        }),
+    }),
+    paymentRepository: MockRepository({
+      findOne: () =>
+        Promise.resolve({
+          id: "pay_jadazdjk",
+          provider_id: "default_provider",
+          data: {
+            id: "1234",
+          },
+        }),
+      find: () =>
+        Promise.resolve([
+          {
             id: "pay_jadazdjk",
             provider_id: "default_provider",
             data: {
               id: "1234",
             },
-          }),
-        find: () =>
-          Promise.resolve([
-            {
-              id: "pay_jadazdjk",
-              provider_id: "default_provider",
-              data: {
-                id: "1234",
-              },
-              captured_at: new Date(),
-              amount: 100,
-              amount_refunded: 0,
-            },
-          ]),
-      })
-    )
-  )
-
-  const providerService = container.resolve("paymentProviderService")
+            captured_at: new Date(),
+            amount: 100,
+            amount_refunded: 0,
+          },
+        ]),
+    }),
+    refundRepository: MockRepository(),
+    pp_default_provider: testPayServiceMock,
+    featureFlagRouter,
+  }
+  const providerService = new PaymentProviderService(container)
 
   afterEach(() => {
     jest.clearAllMocks()
@@ -199,29 +163,12 @@ describe(`PaymentProviderService`, () => {
 
   it("successfully creates session", async () => {
     await providerService.createSession("default_provider", {
-      object: "cart",
-      region: {
-        currency_code: "usd",
-      },
       total: 100,
     })
 
     expect(testPayServiceMock.createPayment).toBeCalledTimes(1)
     expect(testPayServiceMock.createPayment).toBeCalledWith({
-      amount: 100,
-      object: "cart",
       total: 100,
-      region: {
-        currency_code: "usd",
-      },
-      cart: {
-        context: undefined,
-        email: undefined,
-        id: undefined,
-        shipping_address: undefined,
-        shipping_methods: undefined,
-      },
-      currency_code: "usd",
     })
   })
 
@@ -235,7 +182,6 @@ describe(`PaymentProviderService`, () => {
         },
       },
       {
-        object: "cart",
         total: 100,
       }
     )
@@ -244,16 +190,7 @@ describe(`PaymentProviderService`, () => {
     expect(testPayServiceMock.updatePayment).toBeCalledWith(
       { id: "1234" },
       {
-        amount: 100,
-        object: "cart",
         total: 100,
-        cart: {
-          context: undefined,
-          email: undefined,
-          id: undefined,
-          shipping_address: undefined,
-          shipping_methods: undefined,
-        },
       }
     )
   })
@@ -268,9 +205,7 @@ describe(`PaymentProviderService`, () => {
         },
       },
       {
-        provider_id: "default_provider",
-        amount: 100,
-        currency_code: "usd",
+        total: 100,
       }
     )
 

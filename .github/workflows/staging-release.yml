@@ -42,13 +42,13 @@ jobs:
       - name: Build all packages
         run: yarn build
 
-      - name: Version packages
-        run: yarn version:next
+      - name: Version staging packages
+        run: yarn version:staging
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Install Dependencies
         run: yarn install --no-immutable
         
-      - name: Publish packages under next tag
-        run: yarn release:next
+      - name: Publish staging packages
+        run: yarn release:staging
