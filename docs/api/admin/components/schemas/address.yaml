@@ -1,6 +1,5 @@
 title: Address
 description: An address.
-x-resourceId: address
 type: object
 properties:
   id:

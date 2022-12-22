@@ -2,7 +2,6 @@ title: Payment
 description: >-
   Payments represent an amount authorized with a given payment method, Payments
   can be captured, canceled or refunded.
-x-resourceId: payment
 type: object
 required:
   - amount
@@ -46,7 +45,7 @@ properties:
       description: See a list of codes.
   currency:
     description: Available if the relation `currency` is expanded.
-    $ref: ./currency.yaml
+    $ref: ./Currency.yaml
   amount_refunded:
     description: >-
       The amount of the original Payment amount that has been refunded back to
