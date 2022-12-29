@@ -201,7 +201,7 @@ get:
               products:
                 type: array
                 items:
-                  $ref: ../components/schemas/Product.yaml
+                  $ref: ../components/schemas/product.yaml
               count:
                 type: integer
                 description: The total number of items available

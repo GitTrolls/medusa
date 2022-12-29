@@ -1,12 +1,18 @@
 post:
   operationId: PostPublishableApiKeys
-  summary: Create PublishableApiKey
+  summary: Create a PublishableApiKey
   description: Creates a PublishableApiKey.
   requestBody:
     content:
       application/json:
         schema:
-          $ref: ../components/schemas/AdminPostPublishableApiKeysReq.yaml
+          type: object
+          required:
+            - title
+          properties:
+            title:
+              description: A title for the publishable api key
+              type: string
   x-authenticated: true
   x-codeSamples:
     - lang: JavaScript
@@ -31,7 +37,7 @@ post:
             type: object
             properties:
               publishable_api_key:
-                $ref: ../components/schemas/PublishableApiKey.yaml
+                $ref: ../components/schemas/publishable_api_key.yaml
     '400':
       $ref: ../components/responses/400_error.yaml
     '401':
@@ -101,7 +107,7 @@ get:
             properties:
               publishable_api_keys:
                 type: array
-                $ref: ../components/schemas/PublishableApiKey.yaml
+                $ref: ../components/schemas/publishable_api_key.yaml
     '400':
       $ref: ../components/responses/400_error.yaml
     '401':

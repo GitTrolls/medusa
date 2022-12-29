@@ -68,7 +68,7 @@ The relation is implemented in the [Order](../../../references/entities/classes/
 
 ---
 
-## See Also
+## What’s Next
 
-- [Manage Sales Channels using the Admin APIs](./manage-admin.mdx)
-- [Sales Channel’s Admin APIs Reference](/api/admin/#tag/Sales-Channel)
+- Learn how to [manage Sales Channels using the Admin APIs](./manage-admin.mdx).
+- Check out the [Sales Channel’s Admin APIs](https://docs.medusajs.com/api/admin/#tag/Sales-Channel).

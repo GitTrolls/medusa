@@ -1,6 +1,6 @@
 post:
   operationId: PostPublishableApiKeySalesChannelsChannelsBatch
-  summary: Add SalesChannels
+  summary: Add sales channel to a publishable api key scope
   description: Assign a batch of sales channels to a publishable api key.
   x-authenticated: true
   parameters:
@@ -14,8 +14,20 @@ post:
     content:
       application/json:
         schema:
-          $ref: >-
-            ../components/schemas/AdminPostPublishableApiKeySalesChannelsBatchReq.yaml
+          required:
+            - sales_channel_ids
+          properties:
+            sales_channel_ids:
+              description: The IDs of the sales channels to add to the publishable api key
+              type: array
+              items:
+                type: object
+                required:
+                  - id
+                properties:
+                  id:
+                    type: string
+                    description: The ID of the sales channel
   x-codeSamples:
     - lang: JavaScript
       label: JS Client
@@ -40,7 +52,7 @@ post:
           schema:
             properties:
               publishable_api_key:
-                $ref: ../components/schemas/PublishableApiKey.yaml
+                $ref: ../components/schemas/publishable_api_key.yaml
     '400':
       $ref: ../components/responses/400_error.yaml
     '401':
@@ -55,7 +67,7 @@ post:
       $ref: ../components/responses/500_error.yaml
 delete:
   operationId: DeletePublishableApiKeySalesChannelsChannelsBatch
-  summary: Delete SalesChannels
+  summary: Remove sales channel from a publishable api key scope
   description: Remove a batch of sales channels from a publishable api key.
   x-authenticated: true
   parameters:
@@ -69,8 +81,22 @@ delete:
     content:
       application/json:
         schema:
-          $ref: >-
-            ../components/schemas/AdminDeletePublishableApiKeySalesChannelsBatchReq.yaml
+          required:
+            - sales_channel_ids
+          properties:
+            sales_channel_ids:
+              description: >-
+                The IDs of the sales channels to delete from the publishable api
+                key
+              type: array
+              items:
+                type: object
+                required:
+                  - id
+                properties:
+                  id:
+                    type: string
+                    description: The ID of the sales channel
   x-codeSamples:
     - lang: JavaScript
       label: JS Client
@@ -95,7 +121,7 @@ delete:
           schema:
             properties:
               publishable_api_key:
-                $ref: ../components/schemas/PublishableApiKey.yaml
+                $ref: ../components/schemas/publishable_api_key.yaml
     '400':
       $ref: ../components/responses/400_error.yaml
     '401':

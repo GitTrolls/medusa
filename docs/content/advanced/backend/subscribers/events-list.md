@@ -6,8 +6,6 @@ This document details all events in Medusa, when they are triggered, and what da
 
 It is assumed you’re already familiar with [Subscribers in Medusa and how to listen to events](create-subscriber.md). You can then use the name of events from this documentation in your subscriber to listen to events.
 
----
-
 ## Legend
 
 Events in this document are listed under the entity they’re associated with. They’re listed in a table of three columns:
@@ -15,8 +13,6 @@ Events in this document are listed under the entity they’re associated with. T
 1. **Event Name:** The name you use to subscribe a handler for the event.
 2. **Description:** When this event is triggered.
 3. **Event Data Payload**: The data your handler receives as a parameter.
-
----
 
 ## Batch Jobs Events
 
@@ -212,8 +208,6 @@ Object of the following format:
 </tbody>
 </table>
 
----
-
 ## Cart Events
 
 This section holds all events related to a cart.
@@ -289,8 +283,6 @@ An object with at least the ID of the cart, however, in most cases the entire ca
 
 </tbody>
 </table>
-
----
 
 ## Claim Events
 
@@ -467,8 +459,6 @@ Object of the following format:
 </tbody>
 </table>
 
----
-
 ## Claim Item Events
 
 This section holds all events related to claim items.
@@ -563,8 +553,6 @@ Object of the following format:
 </tbody>
 </table>
 
----
-
 ## Currency Events
 
 This section holds all events related to currencies.
@@ -610,8 +598,6 @@ Object of the following format:
 
 </tbody>
 </table>
-
----
 
 ## Customer Events
 
@@ -699,8 +685,6 @@ Object of the following format:
 </tbody>
 </table>
 
----
-
 ## Draft Order Events
 
 This section holds all events related to draft orders.
@@ -771,8 +755,6 @@ Object of the following format:
 </tbody>
 </table>
 
----
-
 ## Gift Card Events
 
 This section holds all events related to gift cards.
@@ -820,8 +802,6 @@ Object of the following format:
 </tbody>
 </table>
 
----
-
 ## Invite Events
 
 This section holds all events related to invites.
@@ -868,8 +848,6 @@ Object of the following format:
 </tr>
 </tbody>
 </table>
-
----
 
 ## Note Events
 
@@ -965,8 +943,6 @@ Object of the following format:
 </tbody>
 </table>
 
----
-
 ## App Authentication Events
 
 This section holds all events related to app authentications.
@@ -1031,8 +1007,6 @@ The returned data from the method `refreshToken` in the auth handler service of 
 
 </tbody>
 </table>
-
----
 
 ## Order Events
 
@@ -1486,8 +1460,6 @@ Object of the following format:
 </tbody>
 </table>
 
----
-
 ## Order Edit Events
 
 This section holds all events related to order edits.
@@ -1665,8 +1637,6 @@ Object of the following format:
 </tbody>
 </table>
 
----
-
 ## Order Edit Item Changes Events
 
 This section holds all events related to order edit item changes.
@@ -1743,8 +1713,6 @@ Triggered when an order edit item change is deleted.
 
 </tbody>
 </table>
-
----
 
 ## Payment Events
 
@@ -1891,8 +1859,6 @@ The entire payment passed as an object. You can refer to the [Payment entity](..
 </tbody>
 </table>
 
----
-
 ## Payment Collection Events
 
 This section holds all events related to payment collections.
@@ -1987,8 +1953,6 @@ The entire payment collection passed as an object. You can refer to the [Payment
 
 </tbody>
 </table>
-
----
 
 ## Product Events
 
@@ -2087,8 +2051,6 @@ Object of the following format:
 
 </tbody>
 </table>
-
----
 
 ## Product Variant Events
 
@@ -2189,8 +2151,6 @@ Object of the following format:
 </tbody>
 </table>
 
----
-
 ## Publishable API Key Events
 
 This section holds all events related to publishable API keys.
@@ -2272,8 +2232,6 @@ Object of the following format:
 
 </tbody>
 </table>
-
----
 
 ## Region Events
 
@@ -2368,8 +2326,6 @@ Object of the following format:
 </tr>
 </tbody>
 </table>
-
----
 
 ## Sales Channel Events
 
@@ -2474,8 +2430,6 @@ Object of the following format:
 </tr>
 </tbody>
 </table>
-
----
 
 ## Swap Events
 
@@ -2727,8 +2681,6 @@ Object of the following format:
 </tbody>
 </table>
 
----
-
 ## Token Events
 
 This section holds all events related to tokens.
@@ -2777,8 +2729,6 @@ Object of the following format:
 
 </tbody>
 </table>
-
----
 
 ## User Events
 
@@ -2898,9 +2848,7 @@ Object of the following format:
 </tbody>
 </table>
 
----
+## What’s Next
 
-## See Also
-
-- [Use services in subscribers](create-subscriber.md#using-services-in-subscribers)
-- [Create a notification provider](../notification/overview.md)
+- Learn how you can [use services in subscribers](create-subscriber.md#using-services-in-subscribers).
+- Learn how to [create notifications](../notification/overview.md) in Medusa.

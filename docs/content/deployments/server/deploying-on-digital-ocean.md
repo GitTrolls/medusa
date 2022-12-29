@@ -12,7 +12,7 @@ DigitalOcean is a reliable hosting provider that provides different ways to host
 
 ### Medusa Server
 
-It is assumed that you already have a Medusa server installed locally. If you don’t, please follow the [quickstart guide](../../quickstart/quick-start.mdx).
+It is assumed that you already have a Medusa server installed locally. If you don’t, please follow the [quickstart guide](../../quickstart/quick-start.md).
 
 Furthermore, your Medusa server should be configured to work with PostgreSQL and Redis. You can follow the [Configure your Server documentation](../../usage/configurations.md) to learn how to do that.
 
@@ -31,8 +31,6 @@ If you want to use another Git Provider supported by DigitalOcean, it’s possib
 
 - Git’s CLI tool. You can follow [this documentation to learn how to install it for your operating system](../../tutorial/0-set-up-your-development-environment.mdx#git).
 
----
-
 ## Changes to package.json
 
 Change the `start` script in `package.json` to the following:
@@ -42,8 +40,6 @@ Change the `start` script in `package.json` to the following:
 ```
 
 This ensures that Migrations are run everytime the Medusa server is restarted.
-
----
 
 ## Changes to medusa-config.js
 
@@ -71,8 +67,6 @@ module.exports = {
   },
 };
 ```
-
----
 
 ## Create GitHub Repository
 
@@ -112,8 +106,6 @@ git push origin master
 ```
 
 After pushing the changes, you can find the files in your GitHub repository.
-
----
 
 ## Deploy to DigitalOcean App
 
@@ -248,8 +240,6 @@ In the new page, click on the Previously Created DigitalOcean Database radio but
 
 Once you’re done click Attach Database. This will add the Redis database to the list of resources of your App and will trigger a redeploy of the App.
 
----
-
 ## Test your Server
 
 Once the redeployment is complete, copy the URL of the App which can be found under the App’s name.
@@ -259,8 +249,6 @@ Once the redeployment is complete, copy the URL of the App which can be found un
 Then, go to `<YOUR_APP_URL>/store/products`. If the deployment was successful, you should receive a JSON response.
 
 ![JSON response with list of products](https://res.cloudinary.com/dza7lstvk/image/upload/v1668002196/Medusa%20Docs/Digital%20Ocean/5xTdMbY_pqwyzy.png)
-
----
 
 ## Run Commands on Your Server
 
@@ -277,8 +265,6 @@ Make sure to replace `<EMAIL>` and `<PASSWORD>` with the credentials you want to
 
 ![Console in the DigitalOcean App](https://res.cloudinary.com/dza7lstvk/image/upload/v1668002204/Medusa%20Docs/Digital%20Ocean/9RMfD4C_u0mdqs.png)
 
----
-
 ## Add Environment Variables
 
 You’ll likely need to add environment variables later such as Admin Cross-Origin Resource Sharing (CORS) and Store CORS variables.
@@ -293,9 +279,7 @@ Then, scroll down and find Environment Variables. You can expand the environment
 
 Once you click Save, the environment variables will be saved and a redeployment will be triggered.
 
----
+## What’s Next
 
-## See Also
-
-- [Deploy the Medusa Admin to Netlify](../admin/deploying-on-netlify.md).
-- [Deploy the Gatsby Storefront to Netlify](../storefront/deploying-gatsby-on-netlify.md).
+- Learn [how to deploy the Medusa Admin to Netlify](../admin/deploying-on-netlify.md).
+- Learn [how to deploy the Gatsby Storefront to Netlify](../storefront/deploying-gatsby-on-netlify.md).

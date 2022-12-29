@@ -5,7 +5,7 @@ import { PaymentCollectionService } from "../../../../services"
 /**
  * @oas [post] /payment-collections/{id}/sessions/{session_id}/authorize
  * operationId: "PostPaymentCollectionsSessionsSessionAuthorize"
- * summary: "Authorize Payment Session"
+ * summary: "Authorize a Payment Session of a Payment Collection"
  * description: "Authorizes a Payment Session of a Payment Collection."
  * x-authenticated: false
  * parameters:
@@ -30,7 +30,7 @@ import { PaymentCollectionService } from "../../../../services"
  *   - api_token: []
  *   - cookie_auth: []
  * tags:
- *   - PaymentCollection
+ *   - Payment
  * responses:
  *   200:
  *     description: OK

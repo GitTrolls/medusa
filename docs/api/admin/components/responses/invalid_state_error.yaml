@@ -2,7 +2,7 @@ description: Invalid State Error
 content:
   application/json:
     schema:
-      $ref: ../schemas/Error.yaml
+      $ref: ../schemas/error.yaml
     example:
       code: unknown_error
       message: >-

@@ -53,7 +53,7 @@ get:
               currencies:
                 type: array
                 items:
-                  $ref: ../components/schemas/Currency.yaml
+                  $ref: ../components/schemas/currency.yaml
               count:
                 type: integer
                 description: The total number of items available

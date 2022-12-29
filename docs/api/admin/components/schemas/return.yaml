@@ -3,6 +3,7 @@ description: >-
   Return orders hold information about Line Items that a Customer wishes to send
   back, along with how the items will be returned. Returns can be used as part
   of a Swap.
+x-resourceId: return
 type: object
 required:
   - refund_amount
@@ -26,7 +27,7 @@ properties:
       the relation `items` is expanded.
     type: array
     items:
-      $ref: ./ReturnItem.yaml
+      $ref: ./return_item.yaml
   swap_id:
     description: The ID of the Swap that the Return is a part of.
     type: string
@@ -55,7 +56,7 @@ properties:
       the relation `shipping_method` is expanded.
     type: array
     items:
-      $ref: ./ShippingMethod.yaml
+      $ref: ./shipping_method.yaml
   shipping_data:
     description: >-
       Data about the return shipment as provided by the Fulfilment Provider that

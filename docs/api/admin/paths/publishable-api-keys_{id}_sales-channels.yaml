@@ -1,6 +1,6 @@
 get:
   operationId: GetPublishableApiKeySalesChannels
-  summary: List SalesChannels
+  summary: List PublishableApiKey's SalesChannels
   description: List PublishableApiKey's SalesChannels
   x-authenticated: true
   parameters:
@@ -8,11 +8,6 @@ get:
       name: id
       required: true
       description: The ID of the Publishable Api Key.
-      schema:
-        type: string
-    - in: query
-      name: q
-      description: Query used for searching sales channels' names and descriptions.
       schema:
         type: string
   x-codeSamples:
@@ -41,7 +36,7 @@ get:
               sales_channels:
                 type: array
                 items:
-                  $ref: ../components/schemas/SalesChannel.yaml
+                  $ref: ../components/schemas/sales_channel.yaml
     '400':
       $ref: ../components/responses/400_error.yaml
     '401':

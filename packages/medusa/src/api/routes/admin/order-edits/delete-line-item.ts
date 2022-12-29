@@ -9,7 +9,7 @@ import {
 /**
  * @oas [delete] /order-edits/{id}/items/{item_id}
  * operationId: "DeleteOrderEditsOrderEditLineItemsLineItem"
- * summary: "Delete a Line Item"
+ * summary: "Delete line items from an order edit and create change item"
  * description: "Delete line items from an order edit and create change item"
  * x-authenticated: true
  * parameters:

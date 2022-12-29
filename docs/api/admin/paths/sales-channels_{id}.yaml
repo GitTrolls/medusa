@@ -90,7 +90,7 @@ get:
             type: object
             properties:
               sales_channel:
-                $ref: ../components/schemas/SalesChannel.yaml
+                $ref: ../components/schemas/sales_channel.yaml
     '400':
       $ref: ../components/responses/400_error.yaml
     '401':
@@ -119,7 +119,17 @@ post:
     content:
       application/json:
         schema:
-          $ref: ../components/schemas/AdminPostSalesChannelsSalesChannelReq.yaml
+          type: object
+          properties:
+            name:
+              type: string
+              description: Name of the sales channel.
+            description:
+              type: string
+              description: Sales Channel description.
+            is_disabled:
+              type: boolean
+              description: Indication of if the sales channel is active.
   x-codeSamples:
     - lang: JavaScript
       label: JS Client
@@ -143,7 +153,7 @@ post:
             type: object
             properties:
               sales_channel:
-                $ref: ../components/schemas/SalesChannel.yaml
+                $ref: ../components/schemas/sales_channel.yaml
     '400':
       $ref: ../components/responses/400_error.yaml
     '401':

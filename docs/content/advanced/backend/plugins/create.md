@@ -16,8 +16,6 @@ If you run into any errors while installing the CLI tool, check out the [trouble
 
 :::
 
----
-
 ## Initialize Project
 
 The recommended way to create a plugin is using the Medusa CLI. Run the following command to create a new Medusa project:
@@ -29,8 +27,6 @@ medusa new medusa-plugin-custom
 Where `medusa-plugin-custom` is the name of the plugin you’re creating. In Medusa, plugins are named based on their functionalities.
 
 By convention, all plugin names start with `medusa` followed by a descriptive name of what the plugin does. For example, the Stripe plugin is named `medusa-payment-stripe`.
-
----
 
 ## Changes to package.json
 
@@ -149,8 +145,6 @@ npm install --save-dev cross-env
 - `repository`: The repository that holds your plugin’s codebase.
 - `keywords`: This should hold the keywords that are related to your plugin. It’s recommended that all plugins use the keywords `medusa-plugin` or `medusa`.
 
----
-
 ## Develop your Plugin
 
 Now, You can start developing your plugin. This can include adding services, endpoints, entities, or anything that's relevant to your plugin.
@@ -201,8 +195,6 @@ This guide doesn't cover how to create different files and components. If you’
 - How to [create a subscriber](../subscribers/create-subscriber.md)
 - How to [create an entity](./../entities/index.md)
 - How to [create a migration](../migrations/index.md)
-
----
 
 ## Add Plugin Configuration
 
@@ -255,8 +247,6 @@ export default (rootDirectory, options) => {
 Make sure to include in the README of your plugin the configurations that can be passed to a plugin.
 
 :::
-
----
 
 ## Test Your Plugin
 
@@ -364,8 +354,6 @@ It is safe to ignore any `cross-env: command not found` error you may receive.
 
 :::
 
----
-
 ## NPM Ignore File
 
 Not all files that you use while developing your plugin are necessary to be published.
@@ -398,8 +386,6 @@ Dockerfile
 medusa-db.sql
 develop.sh
 ```
-
----
 
 ## Publish Plugin
 
@@ -453,8 +439,6 @@ Then, publish the new update:
 npm publish
 ```
 
----
-
 ## Add Plugin to Medusa’s Repository
 
 All officially-supported plugins are available in the [`packages` directory of the Medusa GitHub repository](https://github.com/medusajs/medusa/tree/master/packages).
@@ -467,8 +451,6 @@ Before contributing to the Medusa repository, please check out the [contribution
 
 :::
 
----
-
 ## Install a Plugin
 
 To install any published plugin, you can run the following command on any Medusa server project:
@@ -477,10 +459,8 @@ To install any published plugin, you can run the following command on any Medusa
 npm install medusa-plugin-custom
 ```
 
----
+## What’s Next
 
-## See Also
-
-- [Available official plugins](https://github.com/medusajs/medusa/tree/master/packages)
-- [Services reference](references/services/../../../../../references/services/classes/AuthService.md)
-- [Events reference](../subscribers/events-list.md)
+- Check out [available Services in Medusa](references/services/../../../../../references/services/classes/AuthService.md) that you can use in your plugin.
+- Check out [available events](../subscribers/events-list.md) that you can listen to in Subscribers.
+- Check out [available official plugins](https://github.com/medusajs/medusa/tree/master/packages).

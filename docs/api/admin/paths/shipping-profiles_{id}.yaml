@@ -90,7 +90,7 @@ get:
             type: object
             properties:
               shipping_profile:
-                $ref: ../components/schemas/ShippingProfile.yaml
+                $ref: ../components/schemas/shipping_profile.yaml
     '400':
       $ref: ../components/responses/400_error.yaml
     '401':
@@ -118,7 +118,11 @@ post:
     content:
       application/json:
         schema:
-          $ref: ../components/schemas/AdminPostShippingProfilesProfileReq.yaml
+          type: object
+          properties:
+            name:
+              description: The name of the Shipping Profile
+              type: string
   x-codeSamples:
     - lang: JavaScript
       label: JS Client
@@ -142,7 +146,7 @@ post:
             type: object
             properties:
               shipping_profile:
-                $ref: ../components/schemas/ShippingProfile.yaml
+                $ref: ../components/schemas/shipping_profile.yaml
     '400':
       $ref: ../components/responses/400_error.yaml
     '401':

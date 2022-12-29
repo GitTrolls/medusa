@@ -1,6 +1,6 @@
 delete:
   operationId: DeletePaymentCollectionsPaymentCollection
-  summary: Del a PaymentCollection
+  summary: Delete a Payment Collection
   description: Deletes a Payment Collection
   x-authenticated: true
   parameters:
@@ -49,7 +49,7 @@ delete:
       $ref: ../components/responses/unauthorized.yaml
 get:
   operationId: GetPaymentCollectionsPaymentCollection
-  summary: Get a PaymentCollection
+  summary: Retrieve an PaymentCollection
   description: Retrieves a PaymentCollection.
   x-authenticated: true
   parameters:
@@ -92,7 +92,7 @@ get:
             type: object
             properties:
               payment_collection:
-                $ref: ../components/schemas/PaymentCollection.yaml
+                $ref: ../components/schemas/payment_collection.yaml
     '400':
       $ref: ../components/responses/400_error.yaml
     '401':
@@ -107,7 +107,7 @@ get:
       $ref: ../components/responses/500_error.yaml
 post:
   operationId: PostPaymentCollectionsPaymentCollection
-  summary: Update PaymentCollection
+  summary: Updates a PaymentCollection
   description: Updates a PaymentCollection.
   x-authenticated: true
   parameters:
@@ -121,7 +121,18 @@ post:
     content:
       application/json:
         schema:
-          $ref: ../components/schemas/AdminUpdatePaymentCollectionsReq.yaml
+          type: object
+          properties:
+            description:
+              description: >-
+                An optional description to create or update the payment
+                collection.
+              type: string
+            metadata:
+              description: >-
+                An optional set of key-value pairs to hold additional
+                information.
+              type: object
   x-codeSamples:
     - lang: JavaScript
       label: JS Client
@@ -145,7 +156,7 @@ post:
             type: object
             properties:
               payment_collection:
-                $ref: ../components/schemas/PaymentCollection.yaml
+                $ref: ../components/schemas/payment_collection.yaml
     '400':
       $ref: ../components/responses/400_error.yaml
     '401':

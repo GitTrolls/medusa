@@ -11,7 +11,7 @@ import {
 /**
  * @oas [post] /order-edits/{id}
  * operationId: "PostOrderEditsOrderEdit"
- * summary: "Update an OrderEdit"
+ * summary: "Updates an OrderEdit"
  * description: "Updates a OrderEdit."
  * x-authenticated: true
  * parameters:

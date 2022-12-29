@@ -14,8 +14,6 @@ Whether you want to implement something differently, introduce a new future as p
 
 All the packages are part of a [Yarn workspace](https://classic.yarnpkg.com/lang/en/docs/workspaces/). So, when you run a command in the root of the project, such as `yarn build`, it goes through all registered packages in the workspace under the `packages` directory and runs the `build` command in each of those packages.
 
----
-
 ## Prerequisites
 
 ### Yarn
@@ -53,21 +51,9 @@ In the directory of your forked GitHub repository, run the following command to 
 medusa-dev --set-path-to-repo `pwd`
 ```
 
----
-
 ## Run Tests in the Repository
 
 In this section, you’ll learn how to run tests in the Medusa repository. This is helpful after you customize any of Medusa’s packages and want to make sure everything is still working as expected.
-
-### Set System Environment Variables
-
-Before you can run the tests, make sure you set the following system environment variables:
-
-```bash
-DB_HOST=<YOUR_DB_HOST>
-DB_USERNAME=<YOUR_DB_USERNAME>
-DB_PASSWORD=<YOUR_PASSWORD>
-```
 
 ### Run Unit Tests
 
@@ -107,8 +93,6 @@ To run the plugin integration tests, run the following command in the root direc
 ```bash
 yarn test:integration:plugins
 ```
-
----
 
 ## Test in a Local Server
 
@@ -162,9 +146,7 @@ medusa-dev -q
 medusa-dev --packages @medusajs/medusa-cli medusa-file-minio
 ```
 
----
+## What’s Next
 
-## See Also
-
-- [Create a Plugin](../advanced/backend/plugins/create.md)
-- [Contribution Guidelines](https://github.com/medusajs/medusa/blob/master/CONTRIBUTING.md)
+- Check out our [contribution guidelines](https://github.com/medusajs/medusa/blob/master/CONTRIBUTING.md).
+- Learn how to [create a plugin](../advanced/backend/plugins/create.md).

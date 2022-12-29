@@ -14,7 +14,13 @@ post:
     content:
       application/json:
         schema:
-          $ref: ../components/schemas/AdminPostRegionsRegionPaymentProvidersReq.yaml
+          type: object
+          required:
+            - provider_id
+          properties:
+            provider_id:
+              description: The ID of the Payment Provider to add.
+              type: string
   x-codeSamples:
     - lang: JavaScript
       label: JS Client
@@ -39,7 +45,7 @@ post:
             type: object
             properties:
               region:
-                $ref: ../components/schemas/Region.yaml
+                $ref: ../components/schemas/region.yaml
     '400':
       $ref: ../components/responses/400_error.yaml
     '401':

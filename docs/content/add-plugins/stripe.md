@@ -18,13 +18,9 @@ You can also follow this video guide to learn how the setup works:
 
 Using the `medusa-payment-stripe` plugin, this guide shows you how to set up your Medusa project with Stripe as a payment provider.
 
----
-
 ## Prerequisites
 
 Before you proceed with this guide, make sure you create a [Stripe account](https://stripe.com). You’ll later retrieve the API Keys and secrets from your account to connect Medusa to your Stripe account.
-
----
 
 ## Medusa Server
 
@@ -99,8 +95,6 @@ After the Webhook is created, you’ll see "Signing secret" in the Webhook detai
 STRIPE_WEBHOOK_SECRET=whsec_...
 ```
 
----
-
 ## Admin Setup
 
 This section will guide you through adding Stripe as a payment provider in a region using your Medusa admin dashboard.
@@ -114,8 +108,6 @@ If you don’t have a Medusa admin installed, make sure to follow along with [th
 ### Add Stripe to Regions
 
 You can refer to [this documentation in the user guide](../user-guide/regions/providers.mdx#manage-payment-providers) to learn how to add a payment provider like Stripe to a region.
-
----
 
 ## Storefront Setup
 
@@ -354,8 +346,6 @@ If you run your server and storefront now, you’ll see the Stripe UI element an
 
 ![Stripe Form](https://res.cloudinary.com/dza7lstvk/image/upload/v1668001190/Medusa%20Docs/Stripe/NOi8THw_xv3zsx.png)
 
----
-
 ## Capture Payments
 
 After the customer places an order, you’ll be able to see the order on the admin panel. In the payment information under the “Payment” section, you should see a “Capture” button.
@@ -366,8 +356,6 @@ Clicking this button allows you to capture the payment for an order. You can als
 
 Refunding or Capturing payments is reflected in your Stripe’s dashboard as well. This gives you access to all of Stripe’s analytical capabilities.
 
----
-
-## See Also
+## What’s Next
 
 - Check out [more plugins](https://github.com/medusajs/medusa/tree/master/packages) you can add to your store.
