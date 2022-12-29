@@ -42,6 +42,8 @@ These methods are used at different points in the Checkout flow as well as when 
 
 ![Checkout Flow - Payment](https://res.cloudinary.com/dza7lstvk/image/upload/v1668001750/Medusa%20Docs/Diagrams/WeDr0ph_idcrir.jpg)
 
+---
+
 ## Create a Payment Provider
 
 The first step to create a payment provider is to create a JavaScript or TypeScript file in `src/services`. The file's name should be the name of the payment provider.
@@ -414,6 +416,8 @@ async cancelPayment(payment: Payment): Promise<Data> {
 }
 ```
 
+---
+
 ## Optional Methods
 
 ### retrieveSavedMethods
@@ -428,7 +432,7 @@ This method returns an array of saved payment methods retrieved from the third-p
 
 :::note
 
-If you’re using Medusa’s [Next.js](../../../starters/nextjs-medusa-starter.md) or [Gatsby](../../../starters/gatsby-medusa-starter.md) storefront starters, note that the presentation of this method is not implemented. You’ll need to implement the UI and pages for this method based on your implementation and the provider you are using.
+If you’re using Medusa’s [Next.js](../../../starters/nextjs-medusa-starter.mdx) or [Gatsby](../../../starters/gatsby-medusa-starter.mdx) storefront starters, note that the presentation of this method is not implemented. You’ll need to implement the UI and pages for this method based on your implementation and the provider you are using.
 
 :::
 
@@ -457,7 +461,9 @@ async retrieveSavedMethods(customer: Customer): Promise<Data[]> {
 }
 ```
 
-## What’s Next
+---
 
-- Check out the Payment Providers for [Stripe](https://github.com/medusajs/medusa/tree/2e6622ec5d0ae19d1782e583e099000f0a93b051/packages/medusa-payment-stripe) and [PayPal](https://github.com/medusajs/medusa/tree/2e6622ec5d0ae19d1782e583e099000f0a93b051/packages/medusa-payment-paypal) for implementation examples.
-- Learn more about the [frontend checkout flow](./../../storefront/how-to-implement-checkout-flow.mdx).
+## See Also
+
+- Implementation Examples: [Stripe](https://github.com/medusajs/medusa/tree/2e6622ec5d0ae19d1782e583e099000f0a93b051/packages/medusa-payment-stripe) and [PayPal](https://github.com/medusajs/medusa/tree/2e6622ec5d0ae19d1782e583e099000f0a93b051/packages/medusa-payment-paypal) payment providers.
+- [Implement checkout flow on the storefront](./../../storefront/how-to-implement-checkout-flow.mdx).

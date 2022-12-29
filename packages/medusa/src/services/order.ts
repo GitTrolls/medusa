@@ -220,7 +220,6 @@ class OrderService extends TransactionBaseService {
         alias: "order",
         innerJoin: {
           shipping_address: "order.shipping_address",
-          customer: "order.customer",
         },
       }
 
@@ -234,9 +233,6 @@ class OrderService extends TransactionBaseService {
             })
               .orWhere(`order.email ILIKE :q`, { q: `%${q}%` })
               .orWhere(`display_id::varchar(255) ILIKE :dId`, { dId: `${q}` })
-              .orWhere(`customer.first_name ILIKE :q`, { q: `%${q}%` })
-              .orWhere(`customer.last_name ILIKE :q`, { q: `%${q}%` })
-              .orWhere(`customer.phone ILIKE :q`, { q: `%${q}%` })
           })
         )
       }

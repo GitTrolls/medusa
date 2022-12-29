@@ -10,6 +10,8 @@ As a developer, you can use PayPal’s SDKs and APIs to integrate PayPal as a pa
 
 Using the `medusa-payment-paypal` plugin, this guide shows you how to set up your Medusa server with PayPal as a payment provider.
 
+---
+
 ## Prerequisites
 
 Before you proceed with this guide, make sure you create a [PayPal account](https://www.paypal.com). You also need a PayPal Developer account and retrieve the Client ID and Client Secret. You can learn more about how to do that in [PayPal’s documentation](https://developer.paypal.com/api/rest/).
@@ -20,7 +22,9 @@ Webhooks are used in scenarios where the customer might leave the page during th
 
 Additionally, you need a Medusa server installed and set up. If not, you can follow the [quickstart guide](https://docs.medusajs.com/quickstart/quick-start) to get started.
 
-You also need [Medusa Admin](../admin/quickstart.md) installed to enable PayPal as a payment provider. You can alternatively use the [REST APIs](https://docs.medusajs.com/api/admin).
+You also need [Medusa Admin](../admin/quickstart.mdx) installed to enable PayPal as a payment provider. You can alternatively use the [REST APIs](https://docs.medusajs.com/api/admin).
+
+---
 
 ## Medusa Server
 
@@ -68,6 +72,8 @@ const plugins = [
 
 That’s all you need to install PayPal on your Medusa server!
 
+---
+
 ## Admin Setup
 
 This section will guide you through adding PayPal as a payment provider in a region using your Medusa admin dashboard.
@@ -76,11 +82,13 @@ This step is required for you to be able to use PayPal as a payment provider in 
 
 ### Admin Prerequisites
 
-If you don’t have a Medusa admin installed, make sure to follow along with [the guide on how to install it](../admin/quickstart.md) before continuing with this section.
+If you don’t have a Medusa admin installed, make sure to follow along with [the guide on how to install it](../admin/quickstart.mdx) before continuing with this section.
 
 ### Add PayPal to Regions
 
 You can refer to [this documentation in the user guide](../user-guide/regions/providers.mdx#manage-payment-providers) to learn how to add a payment provider like PayPal to a region.
+
+---
 
 ## Storefront Setup
 
@@ -115,7 +123,7 @@ In Medusa, by default, payments are authorized during checkout, but the payment 
 
 ### Add to Next.js Storefront
 
-Medusa has a Next.js storefront that you can easily use with your Medusa server. If you don’t have the storefront installed, you can follow [this quickstart guide](../starters/nextjs-medusa-starter.md).
+Medusa has a Next.js storefront that you can easily use with your Medusa server. If you don’t have the storefront installed, you can follow [this quickstart guide](../starters/nextjs-medusa-starter.mdx).
 
 In your `.env.local` file (or the file you’re using for your environment variables), add the following variable:
 
@@ -133,7 +141,7 @@ You can test out the payment with PayPal using your sandbox account.
 
 ### Add to Gatsby Storefront
 
-Medusa also has a Gatsby storefront that you can use as your ecommerce storefront. If you don’t have the storefront installed, you can follow [this quickstart guide](../starters/gatsby-medusa-starter.md).
+Medusa also has a Gatsby storefront that you can use as your ecommerce storefront. If you don’t have the storefront installed, you can follow [this quickstart guide](../starters/gatsby-medusa-starter.mdx).
 
 In your `.env.development` file (or the file you’re using for your environment variables) add the following variable with its value set to the Client ID:
 
@@ -384,6 +392,8 @@ If you run the Medusa server and the storefront server, you should see the PayPa
 
 ![PayPal Button](https://res.cloudinary.com/dza7lstvk/image/upload/v1668000492/Medusa%20Docs/PayPal/PsibgPY_xtqdli.png)
 
+---
+
 ## Capture Payments
 
 After the customer places an order, you can see the order on the admin panel. In the payment information under the “Payment” section, you should see a “Capture” button.
@@ -394,6 +404,8 @@ Clicking this button lets you capture the payment for an order. You can also ref
 
 Refunding or Capturing payments is reflected in your PayPal dashboard as well.
 
-## What's Next
+---
+
+## See Also
 
 - Check out [more plugins](https://github.com/medusajs/medusa/tree/master/packages) you can add to your store.
