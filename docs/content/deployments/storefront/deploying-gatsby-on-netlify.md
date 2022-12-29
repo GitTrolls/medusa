@@ -12,13 +12,11 @@ Alternatively, you can use this button to deploy the Gatsby Storefront to Netlif
   <img src="https://www.netlify.com/img/deploy/button.svg" alt="Deploy to Netlify" class="no-zoom-img" />
 </a>
 
----
-
 ## Prerequisites
 
 ### Medusa Components
 
-Before proceeding with this documentation, it is assumed you already have the Gatsby storefront installed locally. If not, please go through the [quickstart guide](../../starters/gatsby-medusa-starter.mdx) first.
+Before proceeding with this documentation, it is assumed you already have the Gatsby storefront installed locally. If not, please go through the [quickstart guide](../../starters/gatsby-medusa-starter.md) first.
 
 Additionally, this documentation does not cover how to deploy the Medusa server. If you want to deploy the Medusa server, [check out one of the deployment documentation related to the Medusa server](../server/index.mdx).
 
@@ -36,8 +34,6 @@ If you want to use another Git Provider, it’s possible to follow along with th
 ### Required Tools
 
 - Git’s CLI tool. You can follow [this documentation to learn how to install it for your operating system](../../tutorial/0-set-up-your-development-environment.mdx#git).
-
----
 
 ## Create GitHub Repository
 
@@ -77,8 +73,6 @@ git push origin master
 ```
 
 After pushing the changes, you can find the files in your GitHub repository.
-
----
 
 ## Deploy to Netlify
 
@@ -297,8 +291,6 @@ The Gatsby storefront will then open in your browser.
 
 Before you can use the Gatsby storefront, you must add the URL as an environment variable on your deployed Medusa server.
 
----
-
 ## Configure CORS Variable on the Medusa Server
 
 To send requests to the Medusa server from the Gatsby storefront, you must set the `STORE_CORS` environment variable on your server to the Gatsby storefront’s URL.
@@ -319,9 +311,7 @@ Where `<STOREFRONT_URL>` is the URL of your Gatsby storefront that you just depl
 
 Then, restart your Medusa server. Once the server is running again, you can use your Gatsby storefront.
 
----
+## What’s Next
 
-## See Also
-
-- [Deploy the Medusa Admin](../admin/index.mdx)
-- [Configure your Medusa server](../../usage/configurations.md)
+- Learn how to [deploy the Medusa Admin](../admin/index.mdx).
+- Learn more about [Medusa’s configurations](../../usage/configurations.md).

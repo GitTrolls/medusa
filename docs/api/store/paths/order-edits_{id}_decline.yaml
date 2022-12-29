@@ -13,7 +13,11 @@ post:
     content:
       application/json:
         schema:
-          $ref: ../components/schemas/StorePostOrderEditsOrderEditDecline.yaml
+          type: object
+          properties:
+            declined_reason:
+              type: string
+              description: The reason for declining the OrderEdit.
   x-codeSamples:
     - lang: JavaScript
       label: JS Client
@@ -34,7 +38,7 @@ post:
             type: object
             properties:
               order_edit:
-                $ref: ../components/schemas/OrderEdit.yaml
+                $ref: ../components/schemas/order_edit.yaml
     '400':
       $ref: ../components/responses/400_error.yaml
     '401':

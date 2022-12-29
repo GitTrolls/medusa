@@ -20,15 +20,11 @@ You can alternatively use Typeorm's `generate` command to generate a Migration f
 
 :::
 
----
-
 ## Write Migration File
 
 The migration file contains the necessary commands to create the database columns, foreign keys, and more.
 
 You can learn more about writing the migration file in You can learn more about writing migrations in [Typeorm’s Documentation](https://typeorm.io/migrations).
-
----
 
 ## Build Files
 
@@ -37,8 +33,6 @@ Before you can run the migrations you need to run the build command to transpile
 ```bash npm2yarn
 npm run build
 ```
-
----
 
 ## Run Migration
 
@@ -50,8 +44,6 @@ medusa migrations run
 
 If you check your database now you should see that the change defined by the migration has been applied successfully.
 
----
-
 ## What’s Next
 
-- [Set up your development server](../../../tutorial/0-set-up-your-development-environment.mdx).
+- Learn more about [setting up your development server](../../../tutorial/0-set-up-your-development-environment.mdx).

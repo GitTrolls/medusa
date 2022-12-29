@@ -11,7 +11,7 @@ import {
 /**
  * @oas [post] /order-edits/{id}/items
  * operationId: "PostOrderEditsEditLineItems"
- * summary: "Add a Line Item"
+ * summary: "Add an line item to an order (edit)"
  * description: "Create an OrderEdit LineItem."
  * parameters:
  *   - (path) id=* {string} The ID of the Order Edit.

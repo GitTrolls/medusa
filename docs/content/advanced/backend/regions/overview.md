@@ -111,7 +111,7 @@ The relation between the `Region` and `TaxRate` entities is available on both en
 
 ---
 
-## See Also
+## What’s Next
 
-- [Use Regions in a storefront](../../storefront/use-regions.mdx).
-- [Use Regions in the admin](../../admin/manage-regions.mdx).
+- Learn [how to use regions in a storefront using the store REST APIs](../../storefront/use-regions.mdx).
+- Learn how to [manage regions using the admin REST APIs](../../admin/manage-regions.mdx).

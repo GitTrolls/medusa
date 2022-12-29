@@ -2,7 +2,7 @@ description: Invalid Request Error
 content:
   application/json:
     schema:
-      $ref: ../schemas/Error.yaml
+      $ref: ../schemas/error.yaml
     example:
       code: invalid_request_error
       message: Discount with code TEST already exists.

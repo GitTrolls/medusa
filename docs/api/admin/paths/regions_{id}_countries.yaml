@@ -14,7 +14,17 @@ post:
     content:
       application/json:
         schema:
-          $ref: ../components/schemas/AdminPostRegionsRegionCountriesReq.yaml
+          type: object
+          required:
+            - country_code
+          properties:
+            country_code:
+              description: The 2 character ISO code for the Country.
+              type: string
+              externalDocs:
+                url: >-
+                  https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2#Officially_assigned_code_elements
+                description: See a list of codes.
   x-codeSamples:
     - lang: JavaScript
       label: JS Client
@@ -38,7 +48,7 @@ post:
             type: object
             properties:
               region:
-                $ref: ../components/schemas/Region.yaml
+                $ref: ../components/schemas/region.yaml
     '400':
       $ref: ../components/responses/400_error.yaml
     '401':

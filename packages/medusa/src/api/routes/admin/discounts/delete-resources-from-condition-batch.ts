@@ -11,7 +11,7 @@ import { FindParams } from "../../../../types/common"
 /**
  * @oas [delete] /discounts/{discount_id}/conditions/{condition_id}/batch
  * operationId: "DeleteDiscountsDiscountConditionsConditionBatch"
- * summary: "Delete Batch Resources"
+ * summary: "Delete a batch of resources from a discount condition"
  * description: "Delete a batch of resources from a discount condition."
  * x-authenticated: true
  * parameters:

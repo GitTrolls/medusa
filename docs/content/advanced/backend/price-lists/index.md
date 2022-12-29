@@ -81,7 +81,7 @@ Since the line item belongs to a cart, there’s no need to pass the `region_id`
 
 ---
 
-## See Also
+## What’s Next
 
-- [Price Selection Strategy Overview](../price-selection-strategy/index.md).
-- [Use the PriceList Admin APIs](./use-api.mdx).
+- Learn more about [price selection strategies](../price-selection-strategy/index.md).
+- Learn [how to use the PriceList Admin APIs](./use-api.mdx).

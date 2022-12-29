@@ -83,7 +83,7 @@ get:
               collections:
                 type: array
                 items:
-                  $ref: ../components/schemas/ProductCollection.yaml
+                  $ref: ../components/schemas/product_collection.yaml
               count:
                 type: integer
                 description: The total number of items available

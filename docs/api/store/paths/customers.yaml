@@ -6,7 +6,30 @@ post:
     content:
       application/json:
         schema:
-          $ref: ../components/schemas/StorePostCustomersReq.yaml
+          type: object
+          required:
+            - first_name
+            - last_name
+            - email
+            - password
+          properties:
+            first_name:
+              description: The Customer's first name.
+              type: string
+            last_name:
+              description: The Customer's last name.
+              type: string
+            email:
+              description: The email of the customer.
+              type: string
+              format: email
+            password:
+              description: The Customer's password.
+              type: string
+              format: password
+            phone:
+              description: The Customer's phone number.
+              type: string
   x-codeSamples:
     - lang: JavaScript
       label: JS Client
@@ -27,7 +50,7 @@ post:
             type: object
             properties:
               customer:
-                $ref: ../components/schemas/Customer.yaml
+                $ref: ../components/schemas/customer.yaml
     '400':
       $ref: ../components/responses/400_error.yaml
     '404':

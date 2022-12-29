@@ -9,7 +9,7 @@ import {
 /**
  * @oas [post] /orders/customer/confirm
  * operationId: "PostOrdersCustomerOrderClaimsCustomerOrderClaimAccept"
- * summary: "Verify an Order Claim"
+ * summary: "Verify a claim to orders"
  * description: "Verifies the claim order token provided to the customer upon request of order ownership"
  * requestBody:
  *   content:
@@ -44,7 +44,7 @@ import {
  *   - api_token: []
  *   - cookie_auth: []
  * tags:
- *   - Order
+ *   - Invite
  * responses:
  *   200:
  *     description: OK

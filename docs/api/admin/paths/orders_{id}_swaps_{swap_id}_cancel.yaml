@@ -40,7 +40,7 @@ post:
             type: object
             properties:
               order:
-                $ref: ../components/schemas/Order.yaml
+                $ref: ../components/schemas/order.yaml
     '400':
       $ref: ../components/responses/400_error.yaml
     '401':

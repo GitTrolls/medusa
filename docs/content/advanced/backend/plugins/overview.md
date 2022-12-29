@@ -14,8 +14,6 @@ An alternative approach is developing a custom way of handling payment on your e
 
 Plugins run within the same process as the core Medusa server eliminating the need for extra server capacity, infrastructure, and maintenance. As a result, plugins can use all other services as dependencies and access the database.
 
----
-
 ## Using Existing Plugins
 
 ### Official Plugins
@@ -50,9 +48,7 @@ If you’re installing an official plugin from the Medusa repository, you can fi
 
 For community plugins, please refer to the installation instructions of that plugin to learn about any required configurations.
 
----
+## What’s Next
 
-## See Also
-
-- [Create your own plugin](create.md)
-- [Create a fulfillment provider](../shipping/add-fulfillment-provider.md) or a [payment provider](../payment/how-to-create-payment-provider.md)
+- Learn how to [create your own plugin](create.md).
+- Learn how to [create a fulfillment provider](../shipping/add-fulfillment-provider.md) or a [payment provider](../payment/how-to-create-payment-provider.md).

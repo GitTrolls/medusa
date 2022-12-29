@@ -14,8 +14,20 @@ post:
     content:
       application/json:
         schema:
-          $ref: >-
-            ../components/schemas/AdminPostCustomerGroupsGroupCustomersBatchReq.yaml
+          type: object
+          required:
+            - customer_ids
+          properties:
+            customer_ids:
+              description: The ids of the customers to add
+              type: array
+              items:
+                required:
+                  - id
+                properties:
+                  id:
+                    description: ID of the customer
+                    type: string
   x-codeSamples:
     - lang: JavaScript
       label: JS Client
@@ -41,7 +53,7 @@ post:
             type: object
             properties:
               customer_group:
-                $ref: ../components/schemas/CustomerGroup.yaml
+                $ref: ../components/schemas/customer_group.yaml
     '400':
       $ref: ../components/responses/400_error.yaml
     '401':
@@ -70,8 +82,20 @@ delete:
     content:
       application/json:
         schema:
-          $ref: >-
-            ../components/schemas/AdminDeleteCustomerGroupsGroupCustomerBatchReq.yaml
+          type: object
+          required:
+            - customer_ids
+          properties:
+            customer_ids:
+              description: The ids of the customers to remove
+              type: array
+              items:
+                required:
+                  - id
+                properties:
+                  id:
+                    description: ID of the customer
+                    type: string
   x-codeSamples:
     - lang: JavaScript
       label: JS Client
@@ -97,7 +121,7 @@ delete:
             type: object
             properties:
               customer_group:
-                $ref: ../components/schemas/CustomerGroup.yaml
+                $ref: ../components/schemas/customer_group.yaml
     '400':
       $ref: ../components/responses/400_error.yaml
     '401':

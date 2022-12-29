@@ -24,7 +24,7 @@ get:
               return_reasons:
                 type: array
                 items:
-                  $ref: ../components/schemas/ReturnReason.yaml
+                  $ref: ../components/schemas/return_reason.yaml
     '400':
       $ref: ../components/responses/400_error.yaml
     '404':

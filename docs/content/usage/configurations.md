@@ -4,17 +4,13 @@ In this document, you’ll learn what configurations you can add to your Medusa 
 
 ## Prerequisites
 
-This document assumes you already followed along with the [“Set up your development environment” documentation](../tutorial/0-set-up-your-development-environment.mdx) and have [installed a Medusa server](../quickstart/quick-start.mdx#create-a-medusa-server).
-
----
+This document assumes you already followed along with the [“Set up your development environment” documentation](../tutorial/0-set-up-your-development-environment.mdx) and have [installed a Medusa server](../quickstart/quick-start.md#create-a-medusa-server).
 
 ## Medusa Configurations File
 
 The configurations for your Medusa server are in `medusa-config.js`. This includes database, Redis, and plugin configurations, among other configurations.
 
 Some of the configurations mentioned in this document are already defined in `medusa-config.js` with default values. It’s important that you know what these configurations are used for and how to set them.
-
----
 
 ## Environment Variables
 
@@ -27,8 +23,6 @@ By default, Medusa loads environment variables from the system’s environment v
 This change in how environment variables are loaded was introduced in version 1.3.0. You can learn more in the [upgrade guide for version 1.3.0](../advanced/backend/upgrade-guides/1-3-0.md).
 
 :::
-
----
 
 ## Database Configuration
 
@@ -60,7 +54,7 @@ Where `database_type` is `sqlite` and `database_database` is the location you wa
 
 :::note
 
-Before getting started with configuring PostgreSQL, you should have created a PostgreSQL database. You can check how to create a database in [PostgreSQL's documentation](https://www.postgresql.org/docs/current/sql-createdatabase.html).
+Before getting started with configuring PostgreSQL, you should have created a PostgreSQL `database`. You can check how to create a database in [PostgreSQL's documentation](https://www.postgresql.org/docs/current/sql-createdatabase.html).
 
 :::
 
@@ -72,16 +66,13 @@ module.exports = {
     //...other configurations
     database_type: "postgres",
     database_url: DATABASE_URL,
-    database_schema: process.env.DATABASE_SCHEMA //optional
   },
 };
 ```
 
 Where `database_type` is `postgres` and `DATABASE_URL` is the URL connection string to your PostgreSQL database. You can check out how to format it in [PostgreSQL’s documentation](https://www.postgresql.org/docs/current/libpq-connect.html).
 
-You can optionally set the `database_schema` option. By default, its value is `public`.
-
-It's recommended to set the Database URL as an environment variable:
+It is recommended to set the Database URL as an environment variable:
 
 ```bash
 DATABASE_URL=<YOUR_DATABASE_URL>
@@ -115,8 +106,6 @@ module.exports = {
   },
 };
 ```
-
----
 
 ## Redis
 
@@ -155,8 +144,6 @@ You can learn more about Subscribers and events in the [Subscriber documentation
 
 :::
 
----
-
 ## JWT Secret
 
 Medusa uses JSON Web Token (JWT) to handle user authentication. To set the JWT secret:
@@ -186,8 +173,6 @@ In a development environment, if this option is not set the default secret is �
 
 :::
 
----
-
 ## Cookie Secret
 
 This configuration is used to sign the session ID cookie. To set the cookie secret:
@@ -216,8 +201,6 @@ Where `<YOUR_COOKIE_SECRET>` is the Cookie secret you want to use.
 In a development environment, if this option is not set the default secret is “supersecret”. However, in production, if this option is not set an error will be thrown and your server will crash.
 
 :::
-
----
 
 ## CORS Configurations
 
@@ -290,8 +273,6 @@ Make sure that the URL is without a backslash at the end. For example, you shoul
 
 :::
 
----
-
 ## Plugins
 
 On your Medusa server, you can use Plugins to add custom features or integrate third-party services. For example, installing a plugin to use Stripe as a payment provider.
@@ -346,10 +327,8 @@ It is recommended to use environment variables to store values of options instea
 
 :::
 
----
+## What’s Next
 
-## See Also
-
-- Check out the [Next.js](../starters/nextjs-medusa-starter.mdx) and [Gatsby](../starters/gatsby-medusa-starter.mdx) starter storefronts
-- [Install the Medusa admin](../admin/quickstart.mdx)
-- [Deploy the Medusa server](../deployments/server/index.mdx)
+- Check out the [Next.js](../starters/nextjs-medusa-starter.md) and [Gatsby](../starters/gatsby-medusa-starter.md) starter storefronts.
+- Install the [Medusa admin](../admin/quickstart.md).
+- Learn about [deploying the Medusa server](../deployments/server/index.mdx).

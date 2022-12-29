@@ -69,8 +69,6 @@ Be careful with your file names as it can cause unclear errors in Typeorm. Make 
 
 :::
 
----
-
 ## Access a Custom Entity
 
 :::note
@@ -127,10 +125,8 @@ To delete soft-deletable entities that extend the `SoftDeletableEntity` class, y
 await postRepository.softDelete(post.id);
 ```
 
----
+## What’s Next
 
-## See Also
-
-- [Entities' reference](../../../references/entities/classes/Address.md)
-- [Migrations Overview](../migrations/overview.md)
-- [Create a Services](../services/create-service.md)
+- Check out Medusa's entities in the [Entities' reference](../../../references/entities/classes/Address.md).
+- Learn about [migrations](../migrations/overview.md).
+- Learn more about [Services](../services/create-service.md) and how to use them.

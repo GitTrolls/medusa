@@ -1,7 +1,7 @@
 import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
 
-# How to Manage Discounts using Admin APIs
+# Manage Discounts using Admin APIs
 
 In this document, you’ll learn how to use the Admin’s Discount APIs to manage discounts, discount conditions, and more.
 
@@ -29,13 +29,11 @@ You can use Medusa’s Admin APIs to achieve more functionalities as well. Check
 
 :::
 
----
-
 # Prerequisites
 
 ### Medusa Components
 
-It is assumed that you already have a Medusa server installed and set up. If not, you can follow the [quickstart guide](../../quickstart/quick-start.mdx) to get started.
+It is assumed that you already have a Medusa server installed and set up. If not, you can follow the [quickstart guide](../../quickstart/quick-start.md) to get started.
 
 ### JS Client
 
@@ -48,8 +46,6 @@ If you follow the JS Client code blocks, it’s assumed you already have [Medusa
 You must be an authenticated admin user before following along with the steps in the tutorial.
 
 You can learn more about [authenticating as an admin user in the API reference](/api/admin/#section/Authentication).
-
----
 
 ## Create a Discount
 
@@ -139,8 +135,6 @@ This request accepts [many request-body parameters](/api/admin/#tag/Discount/ope
 
 This request returns the full `discount` object.
 
----
-
 ## Update Discount
 
 You can update any of the discount’s information, configurations, and conditions by sending a request to the [Update Discount](/api/admin/#tag/Discount/operation/PostDiscountsDiscount) endpoint.
@@ -202,8 +196,6 @@ This request accepts the discount ID as a path parameter. You can pass the param
 You can check the [API reference](/api/admin/#tag/Discount/operation/PostDiscountsDiscount) for all the accepted parameters to update the discount.
 
 This updates the discount’s information and returns the full updated `discount` object in the response.
-
----
 
 ## Manage Conditions
 
@@ -449,8 +441,6 @@ This request accepts as a path parameter the discount ID and the condition ID.
 
 It returns the `discount` object in the response.
 
----
-
 ## Delete Discount
 
 You can delete a discount by sending a request to the [Delete Discount](/api/admin/#tag/Discount/operation/DeleteDiscountsDiscount) endpoint:
@@ -498,9 +488,7 @@ It returns in the response the following fields:
 - `object`: A string indicating the type of object deleted. By default, its value is `discount`.
 - `deleted`: A boolean value indicating whether the discount was deleted or not.
 
----
+## What’s Next
 
-## See Also
-
-- [Discounts API reference](/api/admin/#tag/Discount)
-- [Use Discounts on the storefront](../storefront/use-discounts-in-checkout.mdx)
+- Check out more [Admin Discount APIs in the API reference](/api/admin/#tag/Discount).
+- Learn how you can [use Discounts on the storefront](../storefront/use-discounts-in-checkout.mdx).

@@ -1,6 +1,6 @@
 post:
   operationId: PostOrdersCustomerOrderClaimsCustomerOrderClaimAccept
-  summary: Verify an Order Claim
+  summary: Verify a claim to orders
   description: >-
     Verifies the claim order token provided to the customer upon request of
     order ownership
@@ -8,7 +8,12 @@ post:
     content:
       application/json:
         schema:
-          $ref: ../components/schemas/StorePostCustomersCustomerAcceptClaimReq.yaml
+          required:
+            - token
+          properties:
+            token:
+              description: The invite token provided by the admin.
+              type: string
   x-codeSamples:
     - lang: JavaScript
       label: JS Client
@@ -22,7 +27,7 @@ post:
     - api_token: []
     - cookie_auth: []
   tags:
-    - Order
+    - Invite
   responses:
     '200':
       description: OK

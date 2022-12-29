@@ -14,7 +14,7 @@ import { PaymentCollectionType } from "../../../../models"
 /**
  * @oas [post] /order-edits/{id}/request
  * operationId: "PostOrderEditsOrderEditRequest"
- * summary: "Request Confirmation"
+ * summary: "Request order edit confirmation"
  * description: "Request customer confirmation of an Order Edit"
  * x-authenticated: true
  * parameters:

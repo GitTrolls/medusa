@@ -40,7 +40,7 @@ post:
             type: object
             properties:
               discount:
-                $ref: ../components/schemas/Discount.yaml
+                $ref: ../components/schemas/discount.yaml
     '400':
       $ref: ../components/responses/400_error.yaml
     '401':
@@ -96,7 +96,7 @@ delete:
             type: object
             properties:
               discount:
-                $ref: ../components/schemas/Discount.yaml
+                $ref: ../components/schemas/discount.yaml
     '400':
       $ref: ../components/responses/400_error.yaml
     '401':

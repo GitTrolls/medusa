@@ -1,7 +1,0 @@
-type: object
-required:
-  - name
-properties:
-  name:
-    description: The name of the Shipping Profile
-    type: string

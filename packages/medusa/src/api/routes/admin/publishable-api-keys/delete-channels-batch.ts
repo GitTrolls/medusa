@@ -9,7 +9,7 @@ import PublishableApiKeyService from "../../../../services/publishable-api-key"
 /**
  * @oas [delete] /publishable-api-keys/{id}/sales-channels/batch
  * operationId: "DeletePublishableApiKeySalesChannelsChannelsBatch"
- * summary: "Delete SalesChannels"
+ * summary: "Remove sales channel from a publishable api key scope"
  * description: "Remove a batch of sales channels from a publishable api key."
  * x-authenticated: true
  * parameters:

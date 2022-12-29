@@ -4,7 +4,7 @@ import { PaymentCollectionService } from "../../../../services"
 /**
  * @oas [post] /payment-collections/{id}/authorize
  * operationId: "PostPaymentCollectionsPaymentCollectionAuthorize"
- * summary: "Mark Authorized"
+ * summary: "Set the status of PaymentCollection as Authorized"
  * description: "Sets the status of PaymentCollection as Authorized."
  * x-authenticated: true
  * parameters:

@@ -6,7 +6,7 @@ import { PaymentCollectionService } from "../../../../services"
 /**
  * @oas [post] /payment-collections/{id}
  * operationId: "PostPaymentCollectionsPaymentCollection"
- * summary: "Update PaymentCollection"
+ * summary: "Updates a PaymentCollection"
  * description: "Updates a PaymentCollection."
  * x-authenticated: true
  * parameters:

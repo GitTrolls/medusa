@@ -5,7 +5,7 @@ import { FindParams } from "../../../../types/common"
 /**
  * @oas [get] /order-edits/{id}
  * operationId: "GetOrderEditsOrderEdit"
- * summary: "Get an OrderEdit"
+ * summary: "Retrieve an OrderEdit"
  * description: "Retrieves a OrderEdit."
  * x-authenticated: true
  * parameters:
