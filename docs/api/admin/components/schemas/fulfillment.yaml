@@ -7,7 +7,6 @@ description: >-
   plugins will have asynchronous communications with these providers through
   webhooks in order to automatically update and synchronize the state of
   Fulfillments.
-x-resourceId: fulfillment
 type: object
 required:
   - provider_id
@@ -45,7 +44,7 @@ properties:
     example: manual
   provider:
     description: Available if the relation `provider` is expanded.
-    $ref: ./fulfillment_provider.yaml
+    $ref: ./FulfillmentProvider.yaml
   items:
     description: >-
       The Fulfillment Items in the Fulfillment - these hold information about
@@ -53,7 +52,7 @@ properties:
       `items` is expanded.
     type: array
     items:
-      $ref: ./fulfillment_item.yaml
+      $ref: ./FulfillmentItem.yaml
   tracking_links:
     description: >-
       The Tracking Links that can be used to track the status of the
@@ -61,7 +60,7 @@ properties:
       Available if the relation `tracking_links` is expanded.
     type: array
     items:
-      $ref: ./tracking_link.yaml
+      $ref: ./TrackingLink.yaml
   tracking_numbers:
     deprecated: true
     description: >-
