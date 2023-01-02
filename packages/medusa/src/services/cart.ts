@@ -42,11 +42,8 @@ import CustomerService from "./customer"
 import DiscountService from "./discount"
 import EventBusService from "./event-bus"
 import GiftCardService from "./gift-card"
-import {
-  NewTotalsService,
-  ProductVariantInventoryService,
-  SalesChannelService,
-} from "./index"
+import { NewTotalsService, SalesChannelService } from "./index"
+import InventoryService from "./inventory"
 import LineItemService from "./line-item"
 import LineItemAdjustmentService from "./line-item-adjustment"
 import PaymentProviderService from "./payment-provider"
@@ -82,10 +79,10 @@ type InjectedDependencies = {
   giftCardService: GiftCardService
   totalsService: TotalsService
   newTotalsService: NewTotalsService
+  inventoryService: InventoryService
   customShippingOptionService: CustomShippingOptionService
   lineItemAdjustmentService: LineItemAdjustmentService
   priceSelectionStrategy: IPriceSelectionStrategy
-  productVariantInventoryService: ProductVariantInventoryService
 }
 
 type TotalsConfig = {
@@ -125,12 +122,11 @@ class CartService extends TransactionBaseService {
   protected readonly taxProviderService_: TaxProviderService
   protected readonly totalsService_: TotalsService
   protected readonly newTotalsService_: NewTotalsService
+  protected readonly inventoryService_: InventoryService
   protected readonly customShippingOptionService_: CustomShippingOptionService
   protected readonly priceSelectionStrategy_: IPriceSelectionStrategy
   protected readonly lineItemAdjustmentService_: LineItemAdjustmentService
   protected readonly featureFlagRouter_: FlagRouter
-  // eslint-disable-next-line max-len
-  protected readonly productVariantInventoryService_: ProductVariantInventoryService
 
   constructor({
     manager,
@@ -152,13 +148,13 @@ class CartService extends TransactionBaseService {
     newTotalsService,
     addressRepository,
     paymentSessionRepository,
+    inventoryService,
     customShippingOptionService,
     lineItemAdjustmentService,
     priceSelectionStrategy,
     salesChannelService,
     featureFlagRouter,
     storeService,
-    productVariantInventoryService,
   }: InjectedDependencies) {
     // eslint-disable-next-line prefer-rest-params
     super(arguments[0])
@@ -181,6 +177,7 @@ class CartService extends TransactionBaseService {
     this.newTotalsService_ = newTotalsService
     this.addressRepository_ = addressRepository
     this.paymentSessionRepository_ = paymentSessionRepository
+    this.inventoryService_ = inventoryService
     this.customShippingOptionService_ = customShippingOptionService
     this.taxProviderService_ = taxProviderService
     this.lineItemAdjustmentService_ = lineItemAdjustmentService
@@ -188,7 +185,6 @@ class CartService extends TransactionBaseService {
     this.salesChannelService_ = salesChannelService
     this.featureFlagRouter_ = featureFlagRouter
     this.storeService_ = storeService
-    this.productVariantInventoryService_ = productVariantInventoryService
   }
 
   /**
@@ -588,10 +584,6 @@ class CartService extends TransactionBaseService {
       return true
     }
 
-    if (!lineItem.variant_id) {
-      return true
-    }
-
     const lineItemVariant = lineItem.variant?.product_id
       ? lineItem.variant
       : await this.productVariantService_
@@ -635,18 +627,11 @@ class CartService extends TransactionBaseService {
 
         if (this.featureFlagRouter_.isFeatureEnabled("sales_channels")) {
           if (config.validateSalesChannels) {
-            if (lineItem.variant_id) {
-              const lineItemIsValid = await this.validateLineItem(
-                cart,
-                lineItem as LineItemValidateData
+            if (!(await this.validateLineItem(cart, lineItem))) {
+              throw new MedusaError(
+                MedusaError.Types.INVALID_DATA,
+                `The product "${lineItem.title}" must belongs to the sales channel on which the cart has been created.`
               )
-
-              if (!lineItemIsValid) {
-                throw new MedusaError(
-                  MedusaError.Types.INVALID_DATA,
-                  `The product "${lineItem.title}" must belongs to the sales channel on which the cart has been created.`
-                )
-              }
             }
           }
         }
@@ -679,22 +664,9 @@ class CartService extends TransactionBaseService {
           : lineItem.quantity
 
         // Confirm inventory or throw error
-        if (lineItem.variant_id) {
-          const isCovered =
-            await this.productVariantInventoryService_.confirmInventory(
-              lineItem.variant_id,
-              quantity,
-              { salesChannelId: cart.sales_channel_id }
-            )
-
-          if (!isCovered) {
-            throw new MedusaError(
-              MedusaError.Types.NOT_ALLOWED,
-              `Variant with id: ${lineItem.variant_id} does not have the required inventory`,
-              MedusaError.Codes.INSUFFICIENT_INVENTORY
-            )
-          }
-        }
+        await this.inventoryService_
+          .withTransaction(transactionManager)
+          .confirmInventory(lineItem.variant_id, quantity)
 
         if (currentItem) {
           await lineItemServiceTx.update(currentItem.id, {
@@ -765,13 +737,7 @@ class CartService extends TransactionBaseService {
           if (config.validateSalesChannels) {
             const areValid = await Promise.all(
               items.map(async (item) => {
-                if (item.variant_id) {
-                  return await this.validateLineItem(
-                    cart,
-                    item as LineItemValidateData
-                  )
-                }
-                return true
+                return await this.validateLineItem(cart, item)
               })
             )
 
@@ -796,10 +762,8 @@ class CartService extends TransactionBaseService {
 
         const lineItemServiceTx =
           this.lineItemService_.withTransaction(transactionManager)
-        const productVariantInventoryServiceTx =
-          this.productVariantInventoryService_.withTransaction(
-            transactionManager
-          )
+        const inventoryServiceTx =
+          this.inventoryService_.withTransaction(transactionManager)
 
         const existingItems = await lineItemServiceTx.list(
           {
@@ -833,22 +797,10 @@ class CartService extends TransactionBaseService {
             ? (currentItem.quantity += item.quantity)
             : item.quantity
 
-          if (item.variant_id) {
-            const isSufficient =
-              await productVariantInventoryServiceTx.confirmInventory(
-                item.variant_id,
-                item.quantity,
-                { salesChannelId: cart.sales_channel_id }
-              )
-
-            if (!isSufficient) {
-              throw new MedusaError(
-                MedusaError.Types.NOT_ALLOWED,
-                `Variant with id: ${item.variant_id} does not have the required inventory`,
-                MedusaError.Codes.INSUFFICIENT_INVENTORY
-              )
-            }
-          }
+          await inventoryServiceTx.confirmInventory(
+            item.variant_id,
+            item.quantity
+          )
 
           if (currentItem) {
             lineItemsToUpdate[currentItem.id] = {
@@ -921,12 +873,13 @@ class CartService extends TransactionBaseService {
   ): Promise<Cart> {
     return await this.atomicPhase_(
       async (transactionManager: EntityManager) => {
-        const lineItem = await this.lineItemService_.retrieve(lineItemId, {
-          select: ["id", "quantity", "variant_id", "cart_id"],
+        const cart = await this.retrieve(cartId, {
+          relations: ["items", "items.adjustments", "payment_sessions"],
         })
 
-        if (lineItem.cart_id !== cartId) {
-          // Ensure that the line item exists in the cart
+        // Ensure that the line item exists in the cart
+        const lineItemExists = cart.items.find((i) => i.id === lineItemId)
+        if (!lineItemExists) {
           throw new MedusaError(
             MedusaError.Types.INVALID_DATA,
             "A line item with the provided id doesn't exist in the cart"
@@ -934,31 +887,18 @@ class CartService extends TransactionBaseService {
         }
 
         if (lineItemUpdate.quantity) {
-          if (lineItem.variant_id) {
-            const select: (keyof Cart)[] = ["id"]
-            if (
-              this.featureFlagRouter_.isFeatureEnabled(
-                SalesChannelFeatureFlag.key
-              )
-            ) {
-              select.push("sales_channel_id")
-            }
+          const hasInventory = await this.inventoryService_
+            .withTransaction(transactionManager)
+            .confirmInventory(
+              lineItemExists.variant_id,
+              lineItemUpdate.quantity
+            )
 
-            const cart = await this.retrieve(cartId, { select: select })
-
-            const hasInventory =
-              await this.productVariantInventoryService_.confirmInventory(
-                lineItem.variant_id,
-                lineItemUpdate.quantity,
-                { salesChannelId: cart.sales_channel_id }
-              )
-
-            if (!hasInventory) {
-              throw new MedusaError(
-                MedusaError.Types.NOT_ALLOWED,
-                "Inventory doesn't cover the desired quantity"
-              )
-            }
+          if (!hasInventory) {
+            throw new MedusaError(
+              MedusaError.Types.NOT_ALLOWED,
+              "Inventory doesn't cover the desired quantity"
+            )
           }
         }
 
@@ -2069,10 +2009,6 @@ class CartService extends TransactionBaseService {
       cart.items = (
         await Promise.all(
           cart.items.map(async (item) => {
-            if (!item.variant_id) {
-              return item
-            }
-
             const availablePrice = await this.priceSelectionStrategy_
               .withTransaction(transactionManager)
               .calculateVariantPrice(item.variant_id, {
@@ -2088,13 +2024,14 @@ class CartService extends TransactionBaseService {
               availablePrice !== undefined &&
               availablePrice.calculatedPrice !== null
             ) {
-              return await lineItemServiceTx.update(item.id, {
+              return lineItemServiceTx.update(item.id, {
                 has_shipping: false,
                 unit_price: availablePrice.calculatedPrice,
               })
+            } else {
+              await lineItemServiceTx.delete(item.id)
+              return
             }
-
-            return await lineItemServiceTx.delete(item.id)
           })
         )
       )
