@@ -34,14 +34,23 @@ minio server ~/minio --console-address :9090 --address :9001
 
 ### Create a MinIO bucket
 
-After installing MinIO and logging into the Console, you can create a bucket that will store the files of your Medusa server by following these steps:
+After installing MinIO and logging into the Console, click on “Create Bucket” to create a new bucket that will store the files of your Medusa server.
 
-1. Click on the “Create Bucket” button
-2. For the Bucket Name field, enter a name for the bucket. By MinIO’s requirement, the name can only consist of lower case characters, numbers, dots (`.`), and hyphens (`-`).
-3. Click on the Create Bucket button.
-4. On the bucket's page, click on the cog icon at the top right to configure the bucket.
-5. Click on the edit icon next to Access Policy.
-6. In the pop-up that opens, change the selected value to “public” and click Set.
+![Create Bucket](https://res.cloudinary.com/dza7lstvk/image/upload/v1668000345/Medusa%20Docs/MinIO/PwLldKt_vm4r6d.png)
+
+Then, in the form, enter a name for the bucket and click on Create Bucket. By MinIO’s requirement, the name can only consist of lower case characters, numbers, dots (`.`), and hyphens (`-`).
+
+![Bucket Info](https://res.cloudinary.com/dza7lstvk/image/upload/v1668000356/Medusa%20Docs/MinIO/UB477rl_opdmzj.png)
+
+After creating the bucket, click on the cog icon at the top right to configure the bucket.
+
+![Configure Bucket](https://res.cloudinary.com/dza7lstvk/image/upload/v1668000369/Medusa%20Docs/MinIO/0pB8RIM_bxo20d.png)
+
+Then, click on the edit icon next to Access Policy. This will open a pop-up.
+
+![Access Policy](https://res.cloudinary.com/dza7lstvk/image/upload/v1668000379/Medusa%20Docs/MinIO/qo3QQz4_asdtgb.png)
+
+In the pop-up, change the selected value to “public” and click Set.
 
 :::warning
 
@@ -51,12 +60,19 @@ Changing the Access Policy to public will allow anyone to access your bucket. Av
 
 ### Generate Access Keys
 
-To generate access keys for your plugin:
+From the sidebar of your MinIO console, click on Identity then Service Accounts.
 
-1. From the sidebar of your MinIO console, click on Access Keys
-2. Click on the "Create access key" button
-3. This will open a new form with randomly-generated keys. Click on the Create button.
-4. A pop-up will then show the value for your Access Key and Secret Key. Copy them to use in the next section.
+![Service Accounts Sidebar](https://res.cloudinary.com/dza7lstvk/image/upload/v1668000392/Medusa%20Docs/MinIO/CkTbrEc_ni2hlz.png)
+
+Then, click on Create Service Account.
+
+![Create Service Account](https://res.cloudinary.com/dza7lstvk/image/upload/v1668000403/Medusa%20Docs/MinIO/a000HQf_noszz2.png)
+
+This will generate a random Access Key and Secret Key for you.
+
+![Generated Keys](https://res.cloudinary.com/dza7lstvk/image/upload/v1668000415/Medusa%20Docs/MinIO/my4c7zU_yyw6fw.png)
+
+Click on Create. A pop-up will then show the value for your Access Key and Secret Key. Copy them to use in the next section.
 
 :::caution
 
