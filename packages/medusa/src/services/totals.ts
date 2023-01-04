@@ -1,5 +1,4 @@
 import { isDefined, MedusaError } from "medusa-core-utils"
-import { EntityManager } from "typeorm"
 import {
   ITaxCalculationStrategy,
   TaxCalculationContext,
@@ -26,10 +25,14 @@ import {
   LineDiscountAmount,
   SubtotalOptions,
 } from "../types/totals"
-import { NewTotalsService, TaxProviderService } from "./index"
+import {
+  TaxProviderService,
+  NewTotalsService,
+} from "./index"
+import { EntityManager } from "typeorm"
 
-import TaxInclusivePricingFeatureFlag from "../loaders/feature-flags/tax-inclusive-pricing"
 import { calculatePriceTaxAmount } from "../utils"
+import TaxInclusivePricingFeatureFlag from "../loaders/feature-flags/tax-inclusive-pricing"
 import { FlagRouter } from "../utils/flag-router"
 
 type ShippingMethodTotals = {
@@ -803,7 +806,7 @@ class TotalsService extends TransactionBaseService {
 
     // Tax Information
     if (options.include_tax) {
-      // When we have an order with a tax rate we know that it is an
+      // When we have an order with a nulled or undefined tax rate we know that it is an
       // order from the old tax system. The following is a backward compat
       // calculation.
       if (isOrder(cartOrOrder) && cartOrOrder.tax_rate != null) {
@@ -976,11 +979,14 @@ class TotalsService extends TransactionBaseService {
       giftCardable = subtotal - discountTotal
     }
 
-    return await this.newTotalsService_.getGiftCardTotals(giftCardable, {
-      region: cartOrOrder.region,
-      giftCards: cartOrOrder.gift_cards || [],
-      giftCardTransactions: cartOrOrder["gift_card_transactions"] || [],
-    })
+    return await this.newTotalsService_.getGiftCardTotals(
+      giftCardable,
+      {
+        region: cartOrOrder.region,
+        giftCards: cartOrOrder.gift_cards || [],
+        giftCardTransactions: cartOrOrder['gift_card_transactions'] || []
+      }
+    )
   }
 
   /**
