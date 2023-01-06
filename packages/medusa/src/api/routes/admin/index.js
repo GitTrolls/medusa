@@ -28,7 +28,6 @@ import returnRoutes from "./returns"
 import salesChannelRoutes from "./sales-channels"
 import shippingOptionRoutes from "./shipping-options"
 import shippingProfileRoutes from "./shipping-profiles"
-import stockLocationRoutes from "./stock-locations"
 import storeRoutes from "./store"
 import swapRoutes from "./swaps"
 import taxRateRoutes from "./tax-rates"
@@ -99,7 +98,6 @@ export default (app, container, config) => {
   salesChannelRoutes(route)
   shippingOptionRoutes(route, featureFlagRouter)
   shippingProfileRoutes(route)
-  stockLocationRoutes(route)
   storeRoutes(route)
   swapRoutes(route)
   taxRateRoutes(route)

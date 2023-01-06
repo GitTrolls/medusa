@@ -2,23 +2,20 @@ import { MedusaError } from "medusa-core-utils"
 import { EntityManager, In } from "typeorm"
 import { DeepPartial } from "typeorm/common/DeepPartial"
 
-import { TransactionBaseService } from "../interfaces"
-import OrderEditingFeatureFlag from "../loaders/feature-flags/order-editing"
-import TaxInclusivePricingFeatureFlag from "../loaders/feature-flags/tax-inclusive-pricing"
+import { CartRepository } from "../repositories/cart"
+import { LineItemRepository } from "../repositories/line-item"
+import { LineItemTaxLineRepository } from "../repositories/line-item-tax-line"
 import {
   LineItem,
   LineItemAdjustment,
   LineItemTaxLine,
   ProductVariant,
 } from "../models"
-import { CartRepository } from "../repositories/cart"
-import { LineItemRepository } from "../repositories/line-item"
-import { LineItemTaxLineRepository } from "../repositories/line-item-tax-line"
 import { FindConfig, Selector } from "../types/common"
-import { GenerateInputData, GenerateLineItemContext } from "../types/line-item"
-import { ProductVariantPricing } from "../types/pricing"
-import { buildQuery, isString, setMetadata } from "../utils"
 import { FlagRouter } from "../utils/flag-router"
+import LineItemAdjustmentService from "./line-item-adjustment"
+import OrderEditingFeatureFlag from "../loaders/feature-flags/order-editing"
+import TaxInclusivePricingFeatureFlag from "../loaders/feature-flags/tax-inclusive-pricing"
 import {
   PricingService,
   ProductService,
@@ -26,7 +23,10 @@ import {
   RegionService,
   TaxProviderService,
 } from "./index"
-import LineItemAdjustmentService from "./line-item-adjustment"
+import { buildQuery, isString, setMetadata } from "../utils"
+import { TransactionBaseService } from "../interfaces"
+import { GenerateInputData, GenerateLineItemContext } from "../types/line-item"
+import { ProductVariantPricing } from "../types/pricing"
 
 type InjectedDependencies = {
   manager: EntityManager
@@ -159,7 +159,6 @@ class LineItemService extends TransactionBaseService {
                 unit_price: -1 * lineItem.unit_price,
                 quantity: lineItem.return_item.quantity,
                 allow_discounts: lineItem.allow_discounts,
-                includes_tax: !!lineItem.includes_tax,
                 tax_lines: lineItem.tax_lines.map((taxLine) => {
                   return itemTaxLineRepo.create({
                     name: taxLine.name,
