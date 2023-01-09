@@ -133,7 +133,6 @@ export type CreateProductInput = {
   mid_code?: string
   material?: string
   metadata?: Record<string, unknown>
-  external_id?: string | null
 }
 
 export type CreateProductProductTagInput = {

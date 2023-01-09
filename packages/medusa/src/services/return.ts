@@ -16,17 +16,14 @@ import { FindConfig, Selector } from "../types/common"
 import { OrdersReturnItem } from "../types/orders"
 import { CreateReturnInput, UpdateReturnInput } from "../types/return"
 import { buildQuery, setMetadata } from "../utils"
-
-import {
-  FulfillmentProviderService,
-  ProductVariantInventoryService,
-  LineItemService,
-  OrderService,
-  ReturnReasonService,
-  ShippingOptionService,
-  TaxProviderService,
-  TotalsService,
-} from "."
+import FulfillmentProviderService from "./fulfillment-provider"
+import InventoryService from "./inventory"
+import LineItemService from "./line-item"
+import OrderService from "./order"
+import ReturnReasonService from "./return-reason"
+import ShippingOptionService from "./shipping-option"
+import TaxProviderService from "./tax-provider"
+import TotalsService from "./totals"
 
 type InjectedDependencies = {
   manager: EntityManager
@@ -38,8 +35,8 @@ type InjectedDependencies = {
   returnReasonService: ReturnReasonService
   taxProviderService: TaxProviderService
   fulfillmentProviderService: FulfillmentProviderService
+  inventoryService: InventoryService
   orderService: OrderService
-  productVariantInventoryService: ProductVariantInventoryService
 }
 
 type Transformer = (
@@ -60,9 +57,8 @@ class ReturnService extends TransactionBaseService {
   protected readonly shippingOptionService_: ShippingOptionService
   protected readonly fulfillmentProviderService_: FulfillmentProviderService
   protected readonly returnReasonService_: ReturnReasonService
+  protected readonly inventoryService_: InventoryService
   protected readonly orderService_: OrderService
-  // eslint-disable-next-line
-  protected readonly productVariantInventoryService_: ProductVariantInventoryService
 
   constructor({
     manager,
@@ -74,10 +70,9 @@ class ReturnService extends TransactionBaseService {
     returnReasonService,
     taxProviderService,
     fulfillmentProviderService,
+    inventoryService,
     orderService,
-    productVariantInventoryService,
   }: InjectedDependencies) {
-    // eslint-disable-next-line prefer-rest-params
     super(arguments[0])
 
     this.manager_ = manager
@@ -89,8 +84,8 @@ class ReturnService extends TransactionBaseService {
     this.shippingOptionService_ = shippingOptionService
     this.fulfillmentProviderService_ = fulfillmentProviderService
     this.returnReasonService_ = returnReasonService
+    this.inventoryService_ = inventoryService
     this.orderService_ = orderService
-    this.productVariantInventoryService_ = productVariantInventoryService
   }
 
   /**
@@ -229,7 +224,7 @@ class ReturnService extends TransactionBaseService {
       )
     }
 
-    const returnable = item.quantity - item.returned_quantity!
+    const returnable = item.quantity - item.returned_quantity
     if (quantity > returnable) {
       throw new MedusaError(
         MedusaError.Types.NOT_ALLOWED,
@@ -567,8 +562,7 @@ class ReturnService extends TransactionBaseService {
     returnId: string,
     receivedItems: OrdersReturnItem[],
     refundAmount?: number,
-    allowMismatch = false,
-    context: { locationId?: string } = {}
+    allowMismatch = false
   ): Promise<Return | never> {
     return await this.atomicPhase_(async (manager) => {
       const returnRepository = manager.getCustomRepository(
@@ -594,7 +588,7 @@ class ReturnService extends TransactionBaseService {
 
       const order = await this.orderService_
         .withTransaction(manager)
-        .retrieve(orderId!, {
+        .retrieve(orderId, {
           relations: [
             "items",
             "returns",
@@ -658,7 +652,6 @@ class ReturnService extends TransactionBaseService {
       const now = new Date()
       const updateObj = {
         ...returnObj,
-        location_id: context.locationId || returnObj.location_id,
         status: returnStatus,
         items: newLines,
         refund_amount: totalRefundableAmount,
@@ -676,15 +669,12 @@ class ReturnService extends TransactionBaseService {
         })
       }
 
-      const productVarInventoryTx =
-        this.productVariantInventoryService_.withTransaction(manager)
-
+      const inventoryServiceTx = this.inventoryService_.withTransaction(manager)
       for (const line of newLines) {
         const orderItem = order.items.find((i) => i.id === line.item_id)
-        if (orderItem && orderItem.variant_id) {
-          await productVarInventoryTx.adjustInventory(
+        if (orderItem) {
+          await inventoryServiceTx.adjustInventory(
             orderItem.variant_id,
-            result.location_id!,
             line.received_quantity
           )
         }

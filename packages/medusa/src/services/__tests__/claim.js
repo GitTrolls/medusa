@@ -1,6 +1,6 @@
 import { IdMap, MockRepository, MockManager } from "medusa-test-utils"
 import ClaimService from "../claim"
-import { ProductVariantInventoryServiceMock } from "../__mocks__/product-variant-inventory"
+import { InventoryServiceMock } from "../__mocks__/inventory"
 
 const withTransactionMock = jest.fn()
 const eventBusService = {
@@ -79,11 +79,7 @@ describe("ClaimService", () => {
     }
 
     const lineItemService = {
-      generate: jest.fn((d, _, q) => ({
-        id: "test_item",
-        variant_id: d,
-        quantity: q,
-      })),
+      generate: jest.fn((d, _, q) => ({ variant_id: d, quantity: q })),
       retrieve: () => Promise.resolve({}),
       list: () => Promise.resolve([{}]),
       withTransaction: function () {
@@ -92,8 +88,8 @@ describe("ClaimService", () => {
       },
     }
 
-    const productVariantInventoryService = {
-      ...ProductVariantInventoryServiceMock,
+    const inventoryService = {
+      ...InventoryServiceMock,
       withTransaction: function () {
         withTransactionMock("inventory")
         return this
@@ -117,7 +113,7 @@ describe("ClaimService", () => {
       returnService,
       lineItemService,
       claimItemService,
-      productVariantInventoryService,
+      inventoryService,
       eventBusService,
     })
 
@@ -155,15 +151,17 @@ describe("ClaimService", () => {
         1
       )
 
-      expect(
-        productVariantInventoryService.reserveQuantity
-      ).toHaveBeenCalledTimes(1)
-      expect(
-        productVariantInventoryService.reserveQuantity
-      ).toHaveBeenCalledWith("var_123", 1, {
-        lineItemId: "test_item",
-        salesChannelId: undefined,
-      })
+      expect(inventoryService.confirmInventory).toHaveBeenCalledTimes(1)
+      expect(inventoryService.confirmInventory).toHaveBeenCalledWith(
+        "var_123",
+        1
+      )
+      expect(withTransactionMock).toHaveBeenCalledWith("inventory")
+      expect(inventoryService.adjustInventory).toHaveBeenCalledTimes(1)
+      expect(inventoryService.adjustInventory).toHaveBeenCalledWith(
+        "var_123",
+        -1
+      )
 
       expect(withTransactionMock).toHaveBeenCalledWith("claimItem")
       expect(claimItemService.create).toHaveBeenCalledTimes(1)
@@ -186,7 +184,6 @@ describe("ClaimService", () => {
         order_id: "1234",
         additional_items: [
           {
-            id: "test_item",
             variant_id: "var_123",
             quantity: 1,
           },
@@ -265,6 +262,7 @@ describe("ClaimService", () => {
             },
           ],
         })
+        console.warn(res)
       } catch (e) {
         expect(e.message).toEqual(
           `Variant with id: var_123 does not have the required inventory`
