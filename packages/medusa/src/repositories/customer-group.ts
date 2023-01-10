@@ -114,14 +114,10 @@ export class CustomerGroupRepository extends Repository<CustomerGroup> {
     }
 
     if (relations.length === 0) {
-      const options = { ...idsOrOptionsWithoutRelations }
-
-      // Since we are finding by the ids that have been retrieved above and those ids are already
-      // applying skip/take. Remove those options to avoid getting no results
-      delete options.skip
-      delete options.take
-
-      const toReturn = await this.findByIds(entitiesIds, options)
+      const toReturn = await this.findByIds(
+        entitiesIds,
+        idsOrOptionsWithoutRelations
+      )
       return [toReturn, toReturn.length]
     }
 

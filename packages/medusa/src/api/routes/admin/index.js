@@ -28,7 +28,6 @@ import returnRoutes from "./returns"
 import salesChannelRoutes from "./sales-channels"
 import shippingOptionRoutes from "./shipping-options"
 import shippingProfileRoutes from "./shipping-profiles"
-import stockLocationRoutes from "./stock-locations"
 import storeRoutes from "./store"
 import swapRoutes from "./swaps"
 import taxRateRoutes from "./tax-rates"
@@ -37,7 +36,6 @@ import userRoutes, { unauthenticatedUserRoutes } from "./users"
 import variantRoutes from "./variants"
 import paymentCollectionRoutes from "./payment-collections"
 import paymentRoutes from "./payments"
-import productCategoryRoutes from "./product-categories"
 import { parseCorsOrigins } from "medusa-core-utils"
 
 const route = Router()
@@ -100,7 +98,6 @@ export default (app, container, config) => {
   salesChannelRoutes(route)
   shippingOptionRoutes(route, featureFlagRouter)
   shippingProfileRoutes(route)
-  stockLocationRoutes(route)
   storeRoutes(route)
   swapRoutes(route)
   taxRateRoutes(route)
@@ -109,7 +106,6 @@ export default (app, container, config) => {
   variantRoutes(route)
   paymentCollectionRoutes(route)
   paymentRoutes(route)
-  productCategoryRoutes(route)
 
   return app
 }

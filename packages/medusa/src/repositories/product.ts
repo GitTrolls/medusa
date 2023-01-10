@@ -1,17 +1,7 @@
 import { flatten, groupBy, map, merge } from "lodash"
-import {
-  Brackets,
-  EntityRepository,
-  FindOperator,
-  In,
-  Repository,
-} from "typeorm"
+import { Brackets, EntityRepository, FindOperator, In, Repository, } from "typeorm"
 import { PriceList, Product, SalesChannel } from "../models"
-import {
-  ExtendedFindConfig,
-  Selector,
-  WithRequiredProperty,
-} from "../types/common"
+import { ExtendedFindConfig, Selector, WithRequiredProperty, } from "../types/common"
 import { applyOrdering } from "../utils/repository"
 
 export type ProductSelector = Omit<Selector<Product>, "tags"> & {
@@ -238,14 +228,10 @@ export class ProductRepository extends Repository<Product> {
     }
 
     if (relations.length === 0) {
-      const options = { ...idsOrOptionsWithoutRelations }
-
-      // Since we are finding by the ids that have been retrieved above and those ids are already
-      // applying skip/take. Remove those options to avoid getting no results
-      delete options.skip
-      delete options.take
-
-      const toReturn = await this.findByIds(entitiesIds, options)
+      const toReturn = await this.findByIds(
+        entitiesIds,
+        idsOrOptionsWithoutRelations
+      )
       return [toReturn, toReturn.length]
     }
 

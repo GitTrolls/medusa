@@ -53,11 +53,11 @@ class ManualPaymentService extends PaymentService {
    * @returns {object} same data
    */
   async updatePayment(sessionData) {
-    return sessionData
+    return sessionData.data
   }
 
   async updatePaymentNew(sessionData) {
-    return sessionData
+    return sessionData.data
   }
 
   /**
@@ -67,7 +67,7 @@ class ManualPaymentService extends PaymentService {
    * @returns {object} existing data merged with update data
    */
   async updatePaymentData(sessionData, update) {
-    return { ...sessionData, ...update.data }
+    return { ...sessionData.data, ...update.data }
   }
 
   async deletePayment() {
@@ -85,7 +85,7 @@ class ManualPaymentService extends PaymentService {
 
   /**
    * Returns the data currently held in a status
-   * @param {object} session - payment method data from cart
+   * @param {object} paymentData - payment method data from cart
    * @returns {object} the current data
    */
   async getPaymentData(session) {

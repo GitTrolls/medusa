@@ -8,7 +8,6 @@ const {
   ShippingProfile,
   ProductVariant,
   Image,
-  Store,
 } = require("@medusajs/medusa")
 
 module.exports = async (connection, data = {}) => {

@@ -65,7 +65,6 @@ describe("GET /admin/products/:id", () => {
             "tags",
             "type",
             "collection",
-            "sales_channels",
           ],
         }
       )

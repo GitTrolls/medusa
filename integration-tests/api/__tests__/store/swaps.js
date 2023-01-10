@@ -114,7 +114,6 @@ describe("/store/carts", () => {
           cart_id: expect.stringMatching(/^cart_*/),
           cart: {
             id: expect.stringMatching(/^cart_*/),
-            sales_channel_id: expect.any(String),
             billing_address_id: "test-billing-address",
             type: "swap",
             created_at: expect.any(String),
@@ -202,7 +201,6 @@ describe("/store/carts", () => {
           cart_id: expect.stringMatching(/^cart_*/),
           cart: {
             id: expect.stringMatching(/^cart_*/),
-            sales_channel_id: expect.any(String),
             billing_address_id: "test-billing-address",
             shipping_address_id: "test-shipping-address",
             type: "swap",

@@ -1,13 +1,8 @@
-import {
-  FulfillmentService,
-  OrderService,
-  ProductVariantInventoryService,
-} from "../../../../services"
+import { FulfillmentService, OrderService } from "../../../../services"
 import { defaultAdminOrdersFields, defaultAdminOrdersRelations } from "."
 
 import { EntityManager } from "typeorm"
 import { MedusaError } from "medusa-core-utils"
-import { Fulfillment } from "../../../../models"
 
 /**
  * @oas [post] /orders/{id}/fulfillments/{fulfillment_id}/cancel
@@ -66,9 +61,6 @@ export default async (req, res) => {
   const { id, fulfillment_id } = req.params
 
   const orderService: OrderService = req.scope.resolve("orderService")
-  const productVariantInventoryService: ProductVariantInventoryService =
-    req.scope.resolve("productVariantInventoryService")
-
   const fulfillmentService: FulfillmentService =
     req.scope.resolve("fulfillmentService")
 
@@ -83,18 +75,9 @@ export default async (req, res) => {
 
   const manager: EntityManager = req.scope.resolve("manager")
   await manager.transaction(async (transactionManager) => {
-    await orderService
+    return await orderService
       .withTransaction(transactionManager)
       .cancelFulfillment(fulfillment_id)
-
-    const fulfillment = await fulfillmentService
-      .withTransaction(transactionManager)
-      .retrieve(fulfillment_id, { relations: ["items", "items.item"] })
-
-    await adjustInventoryForCancelledFulfillment(fulfillment, {
-      productVariantInventoryService:
-        productVariantInventoryService.withTransaction(transactionManager),
-    })
   })
 
   const order = await orderService.retrieve(id, {
@@ -103,24 +86,4 @@ export default async (req, res) => {
   })
 
   res.json({ order })
-}
-
-export const adjustInventoryForCancelledFulfillment = async (
-  fulfillment: Fulfillment,
-  context: {
-    productVariantInventoryService: ProductVariantInventoryService
-  }
-) => {
-  const { productVariantInventoryService } = context
-  await Promise.all(
-    fulfillment.items.map(async ({ item, quantity }) => {
-      if (item.variant_id) {
-        await productVariantInventoryService.adjustInventory(
-          item.variant_id,
-          fulfillment.location_id!,
-          quantity
-        )
-      }
-    })
-  )
 }

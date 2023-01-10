@@ -7,7 +7,6 @@ import {
 } from "../models"
 
 export type PaymentSessionInput = {
-  payment_session_id?: string
   provider_id: string
   // TODO: Support legacy payment provider API> Once we are ready to break the api then we can remove the Cart type
   cart:

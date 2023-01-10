@@ -1,6 +1,6 @@
 import { IdMap, MockManager, MockRepository } from "medusa-test-utils"
 import OrderService from "../order"
-import { ProductVariantInventoryServiceMock } from "../__mocks__/product-variant-inventory"
+import { InventoryServiceMock } from "../__mocks__/inventory"
 import { LineItemServiceMock } from "../__mocks__/line-item"
 import { newTotalsServiceMock } from "../__mocks__/new-totals"
 import { taxProviderServiceMock } from "../__mocks__/tax-provider"
@@ -53,8 +53,8 @@ describe("OrderService", () => {
     },
   }
 
-  const productVariantInventoryService = {
-    ...ProductVariantInventoryServiceMock,
+  const inventoryService = {
+    ...InventoryServiceMock,
   }
 
   describe("createFromCart", () => {
@@ -150,7 +150,7 @@ describe("OrderService", () => {
       regionService,
       eventBusService,
       cartService,
-      productVariantInventoryService,
+      inventoryService,
     })
 
     beforeEach(async () => {
@@ -193,9 +193,7 @@ describe("OrderService", () => {
         discount_total: 0,
       }
 
-      orderService.cartService_.retrieveWithTotals = jest.fn(() =>
-        Promise.resolve(cart)
-      )
+      orderService.cartService_.retrieveWithTotals = jest.fn(() => Promise.resolve(cart))
 
       await orderService.createFromCart("cart_id")
       const order = {
@@ -226,6 +224,16 @@ describe("OrderService", () => {
         }
       )
 
+      expect(inventoryService.adjustInventory).toHaveBeenCalledTimes(2)
+      expect(inventoryService.adjustInventory).toHaveBeenCalledWith(
+        "variant-2",
+        -1
+      )
+      expect(inventoryService.adjustInventory).toHaveBeenCalledWith(
+        "variant-1",
+        -1
+      )
+
       expect(lineItemService.update).toHaveBeenCalledTimes(2)
       expect(lineItemService.update).toHaveBeenCalledWith("item_1", {
         order_id: "id",
@@ -248,24 +256,21 @@ describe("OrderService", () => {
       const lineItemWithGiftCard = {
         id: "item_1",
         variant_id: "variant-1",
-        // quantity: 2,
+        quantity: 2,
         is_giftcard: true,
         subtotal: giftCardValue * totalGiftCardsPurchased,
         quantity: totalGiftCardsPurchased,
         metadata: {},
-        tax_lines: [
-          {
-            rate: taxLineRateOne,
-          },
-          {
-            rate: taxLineRateTwo,
-          },
-        ],
+        tax_lines: [{
+          rate: taxLineRateOne
+        }, {
+          rate: taxLineRateTwo
+        }]
       }
 
       const lineItemWithoutGiftCard = {
         ...lineItemWithGiftCard,
-        is_giftcard: false,
+        is_giftcard: false
       }
 
       const cartWithGiftcard = {
@@ -297,29 +302,23 @@ describe("OrderService", () => {
       }
 
       it("creates gift cards when a lineItem contains a gift card variant", async () => {
-        orderService.cartService_.retrieveWithTotals = jest.fn(() =>
-          Promise.resolve(cartWithGiftcard)
-        )
+        orderService.cartService_.retrieveWithTotals = jest.fn(() => Promise.resolve(cartWithGiftcard))
 
         await orderService.createFromCart("id")
 
-        expect(giftCardService.create).toHaveBeenCalledTimes(
-          totalGiftCardsPurchased
-        )
+        expect(giftCardService.create).toHaveBeenCalledTimes(totalGiftCardsPurchased)
         expect(giftCardService.create).toHaveBeenCalledWith({
           order_id: "id",
           region_id: "test",
           value: giftCardValue,
           balance: giftCardValue,
           metadata: {},
-          tax_rate: expectedGiftCardTaxRate,
+          tax_rate: expectedGiftCardTaxRate
         })
       })
 
       it("does not create gift cards when a lineItem doesn't contains a gift card variant", async () => {
-        orderService.cartService_.retrieveWithTotals = jest.fn(() =>
-          Promise.resolve(cartWithoutGiftcard)
-        )
+        orderService.cartService_.retrieveWithTotals = jest.fn(() => Promise.resolve(cartWithoutGiftcard))
 
         await orderService.createFromCart("id")
 
@@ -488,6 +487,45 @@ describe("OrderService", () => {
 
       expect(orderRepo.save).toHaveBeenCalledWith(order)
     })
+
+    it("fails because an item does not have the required inventory", async () => {
+      const cart = {
+        id: "cart_id",
+        email: "test@test.com",
+        customer_id: "cus_1234",
+        payment: {
+          id: "testpayment",
+          amount: 100,
+          status: "authorized",
+        },
+        region_id: "test",
+        region: {
+          id: "test",
+          currency_code: "eur",
+          name: "test",
+          tax_rate: 25,
+        },
+        gift_cards: [],
+        shipping_address_id: "1234",
+        billing_address_id: "1234",
+        discounts: [],
+        shipping_methods: [{ id: "method_1" }],
+        items: [
+          { id: "item_1", variant_id: "variant-1", quantity: 12 },
+          { id: "item_2", variant_id: "variant-2", quantity: 1 },
+        ],
+        total: 100,
+      }
+      orderService.cartService_.retrieveWithTotals = () => Promise.resolve(cart)
+      const res = orderService.createFromCart(cart)
+      await expect(res).rejects.toThrow(
+        "Variant with id: variant-1 does not have the required inventory"
+      )
+      // check to see if payment is cancelled
+      expect(
+        orderService.paymentProviderService_.cancelPayment
+      ).toHaveBeenCalledTimes(1)
+    })
   })
 
   describe("retrieve", () => {
@@ -647,25 +685,12 @@ describe("OrderService", () => {
               payment_status: "paid",
               status: "pending",
             })
-          case IdMap.getId("refunded-order"):
-            return Promise.resolve({
-              fulfillment_status: "fulfilled",
-              payment_status: "refunded",
-              refunds: [
-                {
-                  order_id: IdMap.getId("refunded-order"),
-                },
-              ],
-              status: "pending",
-            })
           default:
             return Promise.resolve({
               fulfillment_status: "not_fulfilled",
               payment_status: "awaiting",
               status: "pending",
-              fulfillments: [
-                { id: "fulfillment_test", canceled_at: now, items: [] },
-              ],
+              fulfillments: [{ id: "fulfillment_test", canceled_at: now }],
               payments: [{ id: "payment_test" }],
               items: [
                 { id: "item_1", variant_id: "variant-1", quantity: 12 },
@@ -698,7 +723,7 @@ describe("OrderService", () => {
       paymentProviderService,
       fulfillmentService,
       eventBusService,
-      productVariantInventoryService,
+      inventoryService,
     })
 
     beforeEach(async () => {
@@ -718,13 +743,23 @@ describe("OrderService", () => {
         id: "payment_test",
       })
 
+      expect(inventoryService.adjustInventory).toHaveBeenCalledTimes(2)
+      expect(inventoryService.adjustInventory).toHaveBeenCalledWith(
+        "variant-1",
+        12
+      )
+      expect(inventoryService.adjustInventory).toHaveBeenCalledWith(
+        "variant-2",
+        1
+      )
+
       expect(orderRepo.save).toHaveBeenCalledTimes(1)
       expect(orderRepo.save).toHaveBeenCalledWith({
         fulfillment_status: "canceled",
         payment_status: "canceled",
         canceled_at: expect.any(Date),
         status: "canceled",
-        fulfillments: [{ id: "fulfillment_test", canceled_at: now, items: [] }],
+        fulfillments: [{ id: "fulfillment_test", canceled_at: now }],
         payments: [{ id: "payment_test" }],
         items: [
           {
@@ -739,12 +774,6 @@ describe("OrderService", () => {
           },
         ],
       })
-    })
-
-    it("fails if order has refunds", async () => {
-      await expect(
-        orderService.cancel(IdMap.getId("refunded-order"))
-      ).rejects.toThrow("Order with refund(s) cannot be canceled")
     })
   })
 
@@ -934,8 +963,7 @@ describe("OrderService", () => {
             quantity: 2,
           },
         ],
-        { metadata: {}, order_id: "test-order" },
-        { location_id: undefined }
+        { metadata: {}, order_id: "test-order" }
       )
 
       expect(lineItemService.update).toHaveBeenCalledTimes(1)
@@ -967,8 +995,7 @@ describe("OrderService", () => {
             quantity: 2,
           },
         ],
-        { metadata: {}, order_id: "partial" },
-        { location_id: undefined }
+        { metadata: {}, order_id: "partial" }
       )
 
       expect(lineItemService.update).toHaveBeenCalledTimes(1)
@@ -1000,8 +1027,7 @@ describe("OrderService", () => {
             quantity: 1,
           },
         ],
-        { metadata: {}, order_id: "test" },
-        { location_id: undefined }
+        { metadata: {}, order_id: "test" }
       )
 
       expect(lineItemService.update).toHaveBeenCalledTimes(1)
@@ -1014,34 +1040,6 @@ describe("OrderService", () => {
         ...order,
         fulfillment_status: "partially_fulfilled",
       })
-    })
-
-    it("Calls createFulfillment with locationId", async () => {
-      await orderService.createFulfillment(
-        "test",
-        [
-          {
-            item_id: "item_1",
-            quantity: 1,
-          },
-        ],
-        {
-          location_id: "loc_1",
-        }
-      )
-
-      expect(fulfillmentService.createFulfillment).toHaveBeenCalledTimes(1)
-      expect(fulfillmentService.createFulfillment).toHaveBeenCalledWith(
-        order,
-        [
-          {
-            item_id: "item_1",
-            quantity: 1,
-          },
-        ],
-        { metadata: {}, order_id: "test", no_notification: undefined },
-        { locationId: "loc_1" }
-      )
     })
 
     it("fails if order is canceled", async () => {
