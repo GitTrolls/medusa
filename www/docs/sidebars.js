@@ -370,11 +370,6 @@ module.exports = {
         },
         {
           type: "doc",
-          id: "advanced/backend/endpoints/add-middleware",
-          label: "Add a Middleware"
-        },
-        {
-          type: "doc",
           id: "advanced/backend/services/create-service",
           label: "Create a Service"
         },

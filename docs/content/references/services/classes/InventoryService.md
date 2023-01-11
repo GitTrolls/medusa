@@ -1,22 +1,22 @@
-# Class: ProductTypeService
+# Class: InventoryService
 
 ## Hierarchy
 
 - `TransactionBaseService`
 
-  ↳ **`ProductTypeService`**
+  ↳ **`InventoryService`**
 
 ## Constructors
 
 ### constructor
 
-• **new ProductTypeService**(`__namedParameters`)
+• **new InventoryService**(`__namedParameters`)
 
 #### Parameters
 
 | Name | Type |
 | :------ | :------ |
-| `__namedParameters` | `Object` |
+| `__namedParameters` | `InventoryServiceProps` |
 
 #### Overrides
 
@@ -24,7 +24,7 @@ TransactionBaseService.constructor
 
 #### Defined in
 
-[packages/medusa/src/services/product-type.ts:15](https://github.com/medusajs/medusa/blob/d843bc102/packages/medusa/src/services/product-type.ts#L15)
+[packages/medusa/src/services/inventory.ts:18](https://github.com/medusajs/medusa/blob/d843bc102/packages/medusa/src/services/inventory.ts#L18)
 
 ## Properties
 
@@ -66,7 +66,17 @@ TransactionBaseService.manager\_
 
 #### Defined in
 
-[packages/medusa/src/services/product-type.ts:10](https://github.com/medusajs/medusa/blob/d843bc102/packages/medusa/src/services/product-type.ts#L10)
+[packages/medusa/src/services/inventory.ts:15](https://github.com/medusajs/medusa/blob/d843bc102/packages/medusa/src/services/inventory.ts#L15)
+
+___
+
+### productVariantService\_
+
+• `Protected` `Readonly` **productVariantService\_**: [`ProductVariantService`](ProductVariantService.md)
+
+#### Defined in
+
+[packages/medusa/src/services/inventory.ts:13](https://github.com/medusajs/medusa/blob/d843bc102/packages/medusa/src/services/inventory.ts#L13)
 
 ___
 
@@ -80,19 +90,34 @@ TransactionBaseService.transactionManager\_
 
 #### Defined in
 
-[packages/medusa/src/services/product-type.ts:11](https://github.com/medusajs/medusa/blob/d843bc102/packages/medusa/src/services/product-type.ts#L11)
+[packages/medusa/src/services/inventory.ts:16](https://github.com/medusajs/medusa/blob/d843bc102/packages/medusa/src/services/inventory.ts#L16)
 
-___
+## Methods
 
-### typeRepository\_
+### adjustInventory
 
-• `Protected` `Readonly` **typeRepository\_**: typeof `ProductTypeRepository`
+▸ **adjustInventory**(`variantId`, `adjustment`): `Promise`<`undefined` \| `ProductVariant`\>
+
+Updates the inventory of a variant based on a given adjustment.
+
+#### Parameters
+
+| Name | Type | Description |
+| :------ | :------ | :------ |
+| `variantId` | `string` | the id of the variant to update |
+| `adjustment` | `number` | the number to adjust the inventory quantity by |
+
+#### Returns
+
+`Promise`<`undefined` \| `ProductVariant`\>
+
+resolves to the update result.
 
 #### Defined in
 
-[packages/medusa/src/services/product-type.ts:13](https://github.com/medusajs/medusa/blob/d843bc102/packages/medusa/src/services/product-type.ts#L13)
+[packages/medusa/src/services/inventory.ts:31](https://github.com/medusajs/medusa/blob/d843bc102/packages/medusa/src/services/inventory.ts#L31)
 
-## Methods
+___
 
 ### atomicPhase\_
 
@@ -133,79 +158,30 @@ TransactionBaseService.atomicPhase\_
 
 ___
 
-### list
+### confirmInventory
 
-▸ **list**(`selector?`, `config?`): `Promise`<`ProductType`[]\>
+▸ **confirmInventory**(`variantId`, `quantity`): `Promise`<`boolean`\>
 
-Lists product types
-
-#### Parameters
-
-| Name | Type | Description |
-| :------ | :------ | :------ |
-| `selector` | `Selector`<`ProductType`\> & { `discount_condition_id?`: `string` ; `q?`: `string`  } | the query object for find |
-| `config` | `FindConfig`<`ProductType`\> | the config to be used for find |
-
-#### Returns
-
-`Promise`<`ProductType`[]\>
-
-the result of the find operation
-
-#### Defined in
-
-[packages/medusa/src/services/product-type.ts:55](https://github.com/medusajs/medusa/blob/d843bc102/packages/medusa/src/services/product-type.ts#L55)
-
-___
-
-### listAndCount
-
-▸ **listAndCount**(`selector?`, `config?`): `Promise`<[`ProductType`[], `number`]\>
-
-Lists product types and adds count.
+Checks if the inventory of a variant can cover a given quantity. Will
+return true if the variant doesn't have managed inventory or if the variant
+allows backorders or if the inventory quantity is greater than `quantity`.
 
 #### Parameters
 
 | Name | Type | Description |
 | :------ | :------ | :------ |
-| `selector` | `Selector`<`ProductType`\> & { `discount_condition_id?`: `string` ; `q?`: `string`  } | the query object for find |
-| `config` | `FindConfig`<`ProductType`\> | the config to be used for find |
+| `variantId` | `undefined` \| ``null`` \| `string` | the id of the variant to check |
+| `quantity` | `number` | the number of units to check availability for |
 
 #### Returns
 
-`Promise`<[`ProductType`[], `number`]\>
+`Promise`<`boolean`\>
 
-the result of the find operation
-
-#### Defined in
-
-[packages/medusa/src/services/product-type.ts:72](https://github.com/medusajs/medusa/blob/d843bc102/packages/medusa/src/services/product-type.ts#L72)
-
-___
-
-### retrieve
-
-▸ **retrieve**(`id`, `config?`): `Promise`<`ProductType`\>
-
-Gets a product type by id.
-Throws in case of DB Error and if product was not found.
-
-#### Parameters
-
-| Name | Type | Description |
-| :------ | :------ | :------ |
-| `id` | `string` | id of the product to get. |
-| `config` | `FindConfig`<`ProductType`\> | object that defines what should be included in the   query response |
-
-#### Returns
-
-`Promise`<`ProductType`\>
-
-the result of the find one operation.
+true if the inventory covers the quantity
 
 #### Defined in
 
-[packages/medusa/src/services/product-type.ts:30](https://github.com/medusajs/medusa/blob/d843bc102/packages/medusa/src/services/product-type.ts#L30)
+[packages/medusa/src/services/inventory.ts:64](https://github.com/medusajs/medusa/blob/d843bc102/packages/medusa/src/services/inventory.ts#L64)
 
 ___
 
@@ -235,7 +211,7 @@ ___
 
 ### withTransaction
 
-▸ **withTransaction**(`transactionManager?`): [`ProductTypeService`](ProductTypeService.md)
+▸ **withTransaction**(`transactionManager?`): [`InventoryService`](InventoryService.md)
 
 #### Parameters
 
@@ -245,7 +221,7 @@ ___
 
 #### Returns
 
-[`ProductTypeService`](ProductTypeService.md)
+[`InventoryService`](InventoryService.md)
 
 #### Inherited from
 

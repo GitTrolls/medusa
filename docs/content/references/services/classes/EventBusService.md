@@ -19,7 +19,7 @@ subscribers when events happen. Events will run asynchronously.
 
 #### Defined in
 
-[packages/medusa/src/services/event-bus.ts:73](https://github.com/medusajs/medusa/blob/6dafb5154/packages/medusa/src/services/event-bus.ts#L73)
+[packages/medusa/src/services/event-bus.ts:48](https://github.com/medusajs/medusa/blob/d843bc102/packages/medusa/src/services/event-bus.ts#L48)
 
 ## Properties
 
@@ -29,7 +29,7 @@ subscribers when events happen. Events will run asynchronously.
 
 #### Defined in
 
-[packages/medusa/src/services/event-bus.ts:57](https://github.com/medusajs/medusa/blob/6dafb5154/packages/medusa/src/services/event-bus.ts#L57)
+[packages/medusa/src/services/event-bus.ts:35](https://github.com/medusajs/medusa/blob/d843bc102/packages/medusa/src/services/event-bus.ts#L35)
 
 ___
 
@@ -39,17 +39,7 @@ ___
 
 #### Defined in
 
-[packages/medusa/src/services/event-bus.ts:71](https://github.com/medusajs/medusa/blob/6dafb5154/packages/medusa/src/services/event-bus.ts#L71)
-
-___
-
-### eventToSubscribersMap\_
-
-• `Protected` `Readonly` **eventToSubscribersMap\_**: `Map`<`string` \| `symbol`, `SubscriberDescriptor`[]\>
-
-#### Defined in
-
-[packages/medusa/src/services/event-bus.ts:62](https://github.com/medusajs/medusa/blob/6dafb5154/packages/medusa/src/services/event-bus.ts#L62)
+[packages/medusa/src/services/event-bus.ts:46](https://github.com/medusajs/medusa/blob/d843bc102/packages/medusa/src/services/event-bus.ts#L46)
 
 ___
 
@@ -59,7 +49,7 @@ ___
 
 #### Defined in
 
-[packages/medusa/src/services/event-bus.ts:61](https://github.com/medusajs/medusa/blob/6dafb5154/packages/medusa/src/services/event-bus.ts#L61)
+[packages/medusa/src/services/event-bus.ts:39](https://github.com/medusajs/medusa/blob/d843bc102/packages/medusa/src/services/event-bus.ts#L39)
 
 ___
 
@@ -69,7 +59,7 @@ ___
 
 #### Defined in
 
-[packages/medusa/src/services/event-bus.ts:59](https://github.com/medusajs/medusa/blob/6dafb5154/packages/medusa/src/services/event-bus.ts#L59)
+[packages/medusa/src/services/event-bus.ts:37](https://github.com/medusajs/medusa/blob/d843bc102/packages/medusa/src/services/event-bus.ts#L37)
 
 ___
 
@@ -79,7 +69,17 @@ ___
 
 #### Defined in
 
-[packages/medusa/src/services/event-bus.ts:58](https://github.com/medusajs/medusa/blob/6dafb5154/packages/medusa/src/services/event-bus.ts#L58)
+[packages/medusa/src/services/event-bus.ts:36](https://github.com/medusajs/medusa/blob/d843bc102/packages/medusa/src/services/event-bus.ts#L36)
+
+___
+
+### observers\_
+
+• `Protected` `Readonly` **observers\_**: `Map`<`string` \| `symbol`, `Subscriber`<`unknown`\>[]\>
+
+#### Defined in
+
+[packages/medusa/src/services/event-bus.ts:40](https://github.com/medusajs/medusa/blob/d843bc102/packages/medusa/src/services/event-bus.ts#L40)
 
 ___
 
@@ -89,7 +89,7 @@ ___
 
 #### Defined in
 
-[packages/medusa/src/services/event-bus.ts:68](https://github.com/medusajs/medusa/blob/6dafb5154/packages/medusa/src/services/event-bus.ts#L68)
+[packages/medusa/src/services/event-bus.ts:43](https://github.com/medusajs/medusa/blob/d843bc102/packages/medusa/src/services/event-bus.ts#L43)
 
 ___
 
@@ -99,7 +99,7 @@ ___
 
 #### Defined in
 
-[packages/medusa/src/services/event-bus.ts:66](https://github.com/medusajs/medusa/blob/6dafb5154/packages/medusa/src/services/event-bus.ts#L66)
+[packages/medusa/src/services/event-bus.ts:41](https://github.com/medusajs/medusa/blob/d843bc102/packages/medusa/src/services/event-bus.ts#L41)
 
 ___
 
@@ -109,7 +109,7 @@ ___
 
 #### Defined in
 
-[packages/medusa/src/services/event-bus.ts:67](https://github.com/medusajs/medusa/blob/6dafb5154/packages/medusa/src/services/event-bus.ts#L67)
+[packages/medusa/src/services/event-bus.ts:42](https://github.com/medusajs/medusa/blob/d843bc102/packages/medusa/src/services/event-bus.ts#L42)
 
 ___
 
@@ -119,7 +119,7 @@ ___
 
 #### Defined in
 
-[packages/medusa/src/services/event-bus.ts:69](https://github.com/medusajs/medusa/blob/6dafb5154/packages/medusa/src/services/event-bus.ts#L69)
+[packages/medusa/src/services/event-bus.ts:44](https://github.com/medusajs/medusa/blob/d843bc102/packages/medusa/src/services/event-bus.ts#L44)
 
 ___
 
@@ -129,7 +129,7 @@ ___
 
 #### Defined in
 
-[packages/medusa/src/services/event-bus.ts:60](https://github.com/medusajs/medusa/blob/6dafb5154/packages/medusa/src/services/event-bus.ts#L60)
+[packages/medusa/src/services/event-bus.ts:38](https://github.com/medusajs/medusa/blob/d843bc102/packages/medusa/src/services/event-bus.ts#L38)
 
 ___
 
@@ -139,7 +139,7 @@ ___
 
 #### Defined in
 
-[packages/medusa/src/services/event-bus.ts:70](https://github.com/medusajs/medusa/blob/6dafb5154/packages/medusa/src/services/event-bus.ts#L70)
+[packages/medusa/src/services/event-bus.ts:45](https://github.com/medusajs/medusa/blob/d843bc102/packages/medusa/src/services/event-bus.ts#L45)
 
 ## Methods
 
@@ -176,7 +176,7 @@ void
 
 #### Defined in
 
-[packages/medusa/src/services/event-bus.ts:416](https://github.com/medusajs/medusa/blob/6dafb5154/packages/medusa/src/services/event-bus.ts#L416)
+[packages/medusa/src/services/event-bus.ts:279](https://github.com/medusajs/medusa/blob/d843bc102/packages/medusa/src/services/event-bus.ts#L279)
 
 ___
 
@@ -198,7 +198,7 @@ Calls all subscribers when an event occurs.
 | :------ | :------ | :------ |
 | `eventName` | `string` | the name of the event to be process. |
 | `data` | `T` | the data to send to the subscriber. |
-| `options` | `Record`<`string`, `unknown`\> & `EmitOptions` | options to add the job with |
+| `options` | `EmitOptions` | options to add the job with |
 
 #### Returns
 
@@ -208,7 +208,7 @@ the job from our queue
 
 #### Defined in
 
-[packages/medusa/src/services/event-bus.ts:223](https://github.com/medusajs/medusa/blob/6dafb5154/packages/medusa/src/services/event-bus.ts#L223)
+[packages/medusa/src/services/event-bus.ts:167](https://github.com/medusajs/medusa/blob/d843bc102/packages/medusa/src/services/event-bus.ts#L167)
 
 ___
 
@@ -222,7 +222,7 @@ ___
 
 #### Defined in
 
-[packages/medusa/src/services/event-bus.ts:280](https://github.com/medusajs/medusa/blob/6dafb5154/packages/medusa/src/services/event-bus.ts#L280)
+[packages/medusa/src/services/event-bus.ts:209](https://github.com/medusajs/medusa/blob/d843bc102/packages/medusa/src/services/event-bus.ts#L209)
 
 ___
 
@@ -236,7 +236,7 @@ ___
 
 #### Defined in
 
-[packages/medusa/src/services/event-bus.ts:270](https://github.com/medusajs/medusa/blob/6dafb5154/packages/medusa/src/services/event-bus.ts#L270)
+[packages/medusa/src/services/event-bus.ts:199](https://github.com/medusajs/medusa/blob/d843bc102/packages/medusa/src/services/event-bus.ts#L199)
 
 ___
 
@@ -250,13 +250,13 @@ ___
 
 #### Defined in
 
-[packages/medusa/src/services/event-bus.ts:275](https://github.com/medusajs/medusa/blob/6dafb5154/packages/medusa/src/services/event-bus.ts#L275)
+[packages/medusa/src/services/event-bus.ts:204](https://github.com/medusajs/medusa/blob/d843bc102/packages/medusa/src/services/event-bus.ts#L204)
 
 ___
 
 ### subscribe
 
-▸ **subscribe**(`event`, `subscriber`, `context?`): [`EventBusService`](EventBusService.md)
+▸ **subscribe**(`event`, `subscriber`): [`EventBusService`](EventBusService.md)
 
 Adds a function to a list of event subscribers.
 
@@ -265,8 +265,7 @@ Adds a function to a list of event subscribers.
 | Name | Type | Description |
 | :------ | :------ | :------ |
 | `event` | `string` \| `symbol` | the event that the subscriber will listen for. |
-| `subscriber` | `Subscriber`<`unknown`\> | the function to be called when a certain event |
-| `context?` | `SubscriberContext` | context to use when attaching subscriber happens. Subscribers must return a Promise. |
+| `subscriber` | `Subscriber`<`unknown`\> | the function to be called when a certain event happens. Subscribers must return a Promise. |
 
 #### Returns
 
@@ -276,7 +275,7 @@ this
 
 #### Defined in
 
-[packages/medusa/src/services/event-bus.ts:153](https://github.com/medusajs/medusa/blob/6dafb5154/packages/medusa/src/services/event-bus.ts#L153)
+[packages/medusa/src/services/event-bus.ts:127](https://github.com/medusajs/medusa/blob/d843bc102/packages/medusa/src/services/event-bus.ts#L127)
 
 ___
 
@@ -301,7 +300,7 @@ this
 
 #### Defined in
 
-[packages/medusa/src/services/event-bus.ts:196](https://github.com/medusajs/medusa/blob/6dafb5154/packages/medusa/src/services/event-bus.ts#L196)
+[packages/medusa/src/services/event-bus.ts:145](https://github.com/medusajs/medusa/blob/d843bc102/packages/medusa/src/services/event-bus.ts#L145)
 
 ___
 
@@ -321,13 +320,13 @@ ___
 
 #### Defined in
 
-[packages/medusa/src/services/event-bus.ts:121](https://github.com/medusajs/medusa/blob/6dafb5154/packages/medusa/src/services/event-bus.ts#L121)
+[packages/medusa/src/services/event-bus.ts:96](https://github.com/medusajs/medusa/blob/d843bc102/packages/medusa/src/services/event-bus.ts#L96)
 
 ___
 
 ### worker\_
 
-▸ **worker_**<`T`\>(`job`): `Promise`<`unknown`\>
+▸ **worker_**<`T`\>(`job`): `Promise`<`unknown`[]\>
 
 Handles incoming jobs.
 
@@ -341,14 +340,17 @@ Handles incoming jobs.
 
 | Name | Type | Description |
 | :------ | :------ | :------ |
-| `job` | `BullJob`<`T`\> | The job object |
+| `job` | `Object` | The job object |
+| `job.data` | `Object` | - |
+| `job.data.data` | `T` | - |
+| `job.data.eventName` | `string` | - |
 
 #### Returns
 
-`Promise`<`unknown`\>
+`Promise`<`unknown`[]\>
 
 resolves to the results of the subscriber calls.
 
 #### Defined in
 
-[packages/medusa/src/services/event-bus.ts:315](https://github.com/medusajs/medusa/blob/6dafb5154/packages/medusa/src/services/event-bus.ts#L315)
+[packages/medusa/src/services/event-bus.ts:244](https://github.com/medusajs/medusa/blob/d843bc102/packages/medusa/src/services/event-bus.ts#L244)

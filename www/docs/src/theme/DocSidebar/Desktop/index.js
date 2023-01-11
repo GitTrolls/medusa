@@ -9,7 +9,6 @@ import DocSidebarItem from '@theme/DocSidebarItem';
 import SearchBar from '../../SearchBar';
 import useIsBrowser from '@docusaurus/useIsBrowser';
 import AnnouncementBar from '@theme/AnnouncementBar';
-import {useWindowSize} from '@docusaurus/theme-common';
 
 function DocSidebarDesktop({path, sidebar, onCollapse, isHidden}) {
   const {
@@ -21,7 +20,6 @@ function DocSidebarDesktop({path, sidebar, onCollapse, isHidden}) {
   } = useThemeConfig();
   const isBrowser = useIsBrowser()
   const sidebarRef = useRef(null)
-  const windowSize = useWindowSize();
 
   useEffect(() => {
     if (isBrowser && sidebarRef.current) {
@@ -57,7 +55,7 @@ function DocSidebarDesktop({path, sidebar, onCollapse, isHidden}) {
       ref={sidebarRef}>
       {hideOnScroll && <Logo tabIndex={-1} className={styles.sidebarLogo} />}
       <div className={styles.sidebarSearchContainer}>
-        {windowSize !== 'mobile' && <SearchBar />}
+        <SearchBar />
       </div>
       <AnnouncementBar />
       <Content path={path} sidebar={sidebar} />
