@@ -108,8 +108,8 @@ export class LineItem extends BaseEntity {
   @Column()
   title: string
 
-  @Column({ nullable: true, type: "text" })
-  description: string | null
+  @Column({ nullable: true })
+  description: string
 
   @Column({ type: "text", nullable: true })
   thumbnail: string | null
@@ -126,15 +126,15 @@ export class LineItem extends BaseEntity {
   @Column({ default: true })
   allow_discounts: boolean
 
-  @Column({ nullable: true, type: "boolean" })
-  has_shipping: boolean | null
+  @Column({ nullable: true })
+  has_shipping: boolean
 
   @Column({ type: "int" })
   unit_price: number
 
   @Index()
-  @Column({ nullable: true, type: "text" })
-  variant_id: string | null
+  @Column({ nullable: true })
+  variant_id: string
 
   @ManyToOne(() => ProductVariant, { eager: true })
   @JoinColumn({ name: "variant_id" })
@@ -144,13 +144,13 @@ export class LineItem extends BaseEntity {
   quantity: number
 
   @Column({ nullable: true, type: "int" })
-  fulfilled_quantity: number | null
+  fulfilled_quantity: number
 
   @Column({ nullable: true, type: "int" })
-  returned_quantity: number | null
+  returned_quantity: number
 
   @Column({ nullable: true, type: "int" })
-  shipped_quantity: number | null
+  shipped_quantity: number
 
   @DbAwareColumn({ type: "jsonb", nullable: true })
   metadata: Record<string, unknown>

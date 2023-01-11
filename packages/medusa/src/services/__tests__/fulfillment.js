@@ -1,6 +1,5 @@
 import { IdMap, MockManager, MockRepository } from "medusa-test-utils"
 import FulfillmentService from "../fulfillment"
-import { ProductVariantInventoryServiceMock } from "../__mocks__/product-variant-inventory"
 
 describe("FulfillmentService", () => {
   describe("createFulfillment", () => {
@@ -35,7 +34,6 @@ describe("FulfillmentService", () => {
       fulfillmentRepository,
       shippingProfileService,
       lineItemRepository,
-      productVariantInventoryService: ProductVariantInventoryServiceMock,
     })
 
     beforeEach(async () => {
@@ -53,12 +51,12 @@ describe("FulfillmentService", () => {
               },
             },
           ],
-          items: [{ id: IdMap.getId("test-line"), quantity: 9 }],
+          items: [{ id: IdMap.getId("test-line"), quantity: 10 }],
         },
         [
           {
             item_id: IdMap.getId("test-line"),
-            quantity: 9,
+            quantity: 10,
           },
         ],
         { order_id: "test", metadata: {} }
@@ -68,7 +66,7 @@ describe("FulfillmentService", () => {
       expect(fulfillmentRepository.create).toHaveBeenCalledWith({
         order_id: "test",
         provider_id: "GLS Express",
-        items: [{ item_id: IdMap.getId("test-line"), quantity: 9 }],
+        items: [{ item_id: IdMap.getId("test-line"), quantity: 10 }],
         data: expect.anything(),
         metadata: {},
       })
@@ -134,7 +132,6 @@ describe("FulfillmentService", () => {
       fulfillmentProviderService,
       fulfillmentRepository,
       lineItemService,
-      productVariantInventoryService: ProductVariantInventoryServiceMock,
     })
 
     beforeEach(async () => {

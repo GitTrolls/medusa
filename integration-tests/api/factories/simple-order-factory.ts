@@ -1,13 +1,36 @@
 import { Connection } from "typeorm"
 import faker from "faker"
-import { Discount, FulfillmentStatus, Order, PaymentStatus, Refund, } from "@medusajs/medusa"
-import { DiscountFactoryData, simpleDiscountFactory, } from "./simple-discount-factory"
+import {
+  Customer,
+  Order,
+  PaymentStatus,
+  FulfillmentStatus,
+} from "@medusajs/medusa"
+import {
+  DiscountFactoryData,
+  simpleDiscountFactory,
+} from "./simple-discount-factory"
 import { RegionFactoryData, simpleRegionFactory } from "./simple-region-factory"
-import { LineItemFactoryData, simpleLineItemFactory, } from "./simple-line-item-factory"
-import { AddressFactoryData, simpleAddressFactory, } from "./simple-address-factory"
-import { ShippingMethodFactoryData, simpleShippingMethodFactory, } from "./simple-shipping-method-factory"
-import { SalesChannelFactoryData, simpleSalesChannelFactory, } from "./simple-sales-channel-factory"
-import { CustomerFactoryData, simpleCustomerFactory, } from "./simple-customer-factory"
+import {
+  LineItemFactoryData,
+  simpleLineItemFactory,
+} from "./simple-line-item-factory"
+import {
+  AddressFactoryData,
+  simpleAddressFactory,
+} from "./simple-address-factory"
+import {
+  ShippingMethodFactoryData,
+  simpleShippingMethodFactory,
+} from "./simple-shipping-method-factory"
+import {
+  SalesChannelFactoryData,
+  simpleSalesChannelFactory,
+} from "./simple-sales-channel-factory"
+import {
+  CustomerFactoryData,
+  simpleCustomerFactory,
+} from "./simple-customer-factory"
 
 export type OrderFactoryData = {
   id?: string
@@ -23,12 +46,11 @@ export type OrderFactoryData = {
   shipping_address?: AddressFactoryData
   shipping_methods?: ShippingMethodFactoryData[]
   sales_channel?: SalesChannelFactoryData
-  refunds: Refund[]
 }
 
 export const simpleOrderFactory = async (
   connection: Connection,
-  data: OrderFactoryData = {} as OrderFactoryData,
+  data: OrderFactoryData = {},
   seed?: number
 ): Promise<Order> => {
   if (typeof seed !== "undefined") {
@@ -41,13 +63,13 @@ export const simpleOrderFactory = async (
   let regionId: string
   let taxRate: number
   if (typeof data.region === "string") {
-    currencyCode = data.currency_code as string
+    currencyCode = data.currency_code
     regionId = data.region
-    taxRate = data.tax_rate as number
+    taxRate = data.tax_rate
   } else {
     const region = await simpleRegionFactory(connection, data.region)
     taxRate =
-      (typeof data.tax_rate !== "undefined" ? data.tax_rate : region.tax_rate) as number
+      typeof data.tax_rate !== "undefined" ? data.tax_rate : region.tax_rate
     currencyCode = region.currency_code
     regionId = region.id
   }
@@ -58,7 +80,7 @@ export const simpleOrderFactory = async (
     email: data.email ?? undefined,
   })
 
-  let discounts: Discount[] = []
+  let discounts = []
   if (typeof data.discounts !== "undefined") {
     discounts = await Promise.all(
       data.discounts.map((d) => simpleDiscountFactory(connection, d, seed))
@@ -87,7 +109,6 @@ export const simpleOrderFactory = async (
     tax_rate: taxRate,
     shipping_address_id: address.id,
     sales_channel_id: sales_channel?.id ?? null,
-    refunds: data.refunds ?? []
   })
 
   const order = await manager.save(toSave)
@@ -110,7 +131,7 @@ export const simpleOrderFactory = async (
     }) || []
 
   for (const item of items) {
-    await simpleLineItemFactory(connection, { ...item, order_id: id } as unknown as LineItemFactoryData)
+    await simpleLineItemFactory(connection, { ...item, order_id: id })
   }
 
   return order

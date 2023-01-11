@@ -1,6 +1,6 @@
-import { SalesChannel, Store } from "@medusajs/medusa"
-import faker from "faker"
 import { Connection } from "typeorm"
+import faker from "faker"
+import { Store } from "@medusajs/medusa"
 
 export type StoreFactoryData = {
   swap_link_template?: string
@@ -20,14 +20,5 @@ export const simpleStoreFactory = async (
 
   store.swap_link_template = data.swap_link_template ?? "something/{cart_id}"
 
-  await manager.insert(SalesChannel, {
-    id: "test-channel",
-    name: "Default"
-  })
-
-  const storeToSave = await manager.save(store)
-
-  await manager.query(`update store set default_sales_channel_id = 'test-channel' where id = '${storeToSave!.id}'`)
-
-  return storeToSave!
+  return await manager.save(store)
 }

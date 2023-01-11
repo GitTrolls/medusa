@@ -78,7 +78,7 @@ const DbTestUtil = {
 const instance = DbTestUtil
 
 module.exports = {
-  initDb: async function ({ cwd, database_extra }) {
+  initDb: async function ({ cwd }) {
     const configPath = path.resolve(path.join(cwd, `medusa-config.js`))
     const { projectConfig, featureFlags } = require(configPath)
 
@@ -98,7 +98,6 @@ module.exports = {
         database: projectConfig.database_database,
         synchronize: true,
         entities,
-        extra: database_extra ?? {},
       })
 
       instance.setDb(dbConnection)
@@ -138,7 +137,6 @@ module.exports = {
         url: DB_URL,
         entities: enabledEntities,
         migrations: enabledMigrations,
-        extra: database_extra ?? {},
         name: "integration-tests",
       })
 

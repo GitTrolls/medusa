@@ -1,6 +1,6 @@
 import { isDefined, MedusaError } from "medusa-core-utils"
 import { EntityManager } from "typeorm"
-import { ProductVariantInventoryService, ShippingProfileService } from "."
+import { ShippingProfileService } from "."
 import { TransactionBaseService } from "../interfaces"
 import { Fulfillment, LineItem, ShippingMethod } from "../models"
 import { FulfillmentRepository } from "../repositories/fulfillment"
@@ -27,7 +27,6 @@ type InjectedDependencies = {
   fulfillmentRepository: typeof FulfillmentRepository
   trackingLinkRepository: typeof TrackingLinkRepository
   lineItemRepository: typeof LineItemRepository
-  productVariantInventoryService: ProductVariantInventoryService
 }
 
 /**
@@ -44,8 +43,6 @@ class FulfillmentService extends TransactionBaseService {
   protected readonly fulfillmentRepository_: typeof FulfillmentRepository
   protected readonly trackingLinkRepository_: typeof TrackingLinkRepository
   protected readonly lineItemRepository_: typeof LineItemRepository
-  // eslint-disable-next-line max-len
-  protected readonly productVariantInventoryService_: ProductVariantInventoryService
 
   constructor({
     manager,
@@ -56,7 +53,6 @@ class FulfillmentService extends TransactionBaseService {
     lineItemService,
     fulfillmentProviderService,
     lineItemRepository,
-    productVariantInventoryService,
   }: InjectedDependencies) {
     // eslint-disable-next-line prefer-rest-params
     super(arguments[0])
@@ -70,7 +66,6 @@ class FulfillmentService extends TransactionBaseService {
     this.shippingProfileService_ = shippingProfileService
     this.lineItemService_ = lineItemService
     this.fulfillmentProviderService_ = fulfillmentProviderService
-    this.productVariantInventoryService_ = productVariantInventoryService
   }
 
   partitionItems_(
@@ -78,11 +73,6 @@ class FulfillmentService extends TransactionBaseService {
     items: LineItem[]
   ): FulfillmentItemPartition[] {
     const partitioned: FulfillmentItemPartition[] = []
-
-    if (shippingMethods.length === 1) {
-      return [{ items, shipping_method: shippingMethods[0] }]
-    }
-
     // partition order items to their dedicated shipping method
     for (const method of shippingMethods) {
       const temp: FulfillmentItemPartition = {
@@ -92,11 +82,15 @@ class FulfillmentService extends TransactionBaseService {
 
       // for each method find the items in the order, that are associated
       // with the profile on the current shipping method
-      const methodProfile = method.shipping_option.profile_id
+      if (shippingMethods.length === 1) {
+        temp.items = items
+      } else {
+        const methodProfile = method.shipping_option.profile_id
 
-      temp.items = items.filter(({ variant }) => {
-        variant.product.profile_id === methodProfile
-      })
+        temp.items = items.filter(({ variant }) => {
+          variant.product.profile_id === methodProfile
+        })
+      }
       partitioned.push(temp)
     }
     return partitioned
@@ -151,7 +145,7 @@ class FulfillmentService extends TransactionBaseService {
       return null
     }
 
-    if (quantity > item.quantity - item.fulfilled_quantity!) {
+    if (quantity > item.quantity - item.fulfilled_quantity) {
       throw new MedusaError(
         MedusaError.Types.NOT_ALLOWED,
         "Cannot fulfill more items than have been purchased"
@@ -211,10 +205,8 @@ class FulfillmentService extends TransactionBaseService {
   async createFulfillment(
     order: CreateFulfillmentOrder,
     itemsToFulfill: FulFillmentItemType[],
-    custom: Partial<Fulfillment> = {},
-    context: { locationId?: string } = {}
+    custom: Partial<Fulfillment> = {}
   ): Promise<Fulfillment[]> {
-    const { locationId } = context
     return await this.atomicPhase_(async (manager) => {
       const fulfillmentRepository = manager.getCustomRepository(
         this.fulfillmentRepository_
@@ -237,7 +229,6 @@ class FulfillmentService extends TransactionBaseService {
             provider_id: shipping_method.shipping_option.provider_id,
             items: items.map((i) => ({ item_id: i.id, quantity: i.quantity })),
             data: {},
-            location_id: locationId,
           })
 
           const result = await fulfillmentRepository.save(ful)
@@ -292,15 +283,13 @@ class FulfillmentService extends TransactionBaseService {
 
       const lineItemServiceTx = this.lineItemService_.withTransaction(manager)
 
-      await Promise.all(
-        fulfillment.items.map(async (fItem) => {
-          const item = await lineItemServiceTx.retrieve(fItem.item_id)
-          const fulfilledQuantity = item.fulfilled_quantity! - fItem.quantity
-          await lineItemServiceTx.update(item.id, {
-            fulfilled_quantity: fulfilledQuantity,
-          })
+      for (const fItem of fulfillment.items) {
+        const item = await lineItemServiceTx.retrieve(fItem.item_id)
+        const fulfilledQuantity = item.fulfilled_quantity - fItem.quantity
+        await lineItemServiceTx.update(item.id, {
+          fulfilled_quantity: fulfilledQuantity,
         })
-      )
+      }
 
       const fulfillmentRepo = manager.getCustomRepository(
         this.fulfillmentRepository_

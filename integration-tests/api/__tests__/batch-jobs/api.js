@@ -123,30 +123,28 @@ describe("/admin/batch-jobs", () => {
 
       expect(response.status).toEqual(200)
       expect(response.data.batch_jobs.length).toEqual(3)
-      expect(response.data).toEqual(
-        expect.objectContaining({
-          batch_jobs: expect.arrayContaining([
-            expect.objectContaining({
-              id: "job_3",
-              created_at: expect.any(String),
-              updated_at: expect.any(String),
-              created_by: "admin_user",
-            }),
-            expect.objectContaining({
-              id: "job_2",
-              created_at: expect.any(String),
-              updated_at: expect.any(String),
-              created_by: "admin_user",
-            }),
-            expect.objectContaining({
-              id: "job_1",
-              created_at: expect.any(String),
-              updated_at: expect.any(String),
-              created_by: "admin_user",
-            }),
-          ]),
-        })
-      )
+      expect(response.data).toMatchSnapshot({
+        batch_jobs: [
+          {
+            id: "job_3",
+            created_at: expect.any(String),
+            updated_at: expect.any(String),
+            created_by: "admin_user",
+          },
+          {
+            id: "job_2",
+            created_at: expect.any(String),
+            updated_at: expect.any(String),
+            created_by: "admin_user",
+          },
+          {
+            id: "job_1",
+            created_at: expect.any(String),
+            updated_at: expect.any(String),
+            created_by: "admin_user",
+          },
+        ],
+      })
     })
   })
 
@@ -209,15 +207,13 @@ describe("/admin/batch-jobs", () => {
       )
 
       expect(response.status).toEqual(201)
-      expect(response.data.batch_job).toEqual(
-        expect.objectContaining({
-          created_by: "admin_user",
-          status: "created",
-          id: expect.any(String),
-          created_at: expect.any(String),
-          updated_at: expect.any(String),
-        })
-      )
+      expect(response.data.batch_job).toMatchSnapshot({
+        created_by: "admin_user",
+        status: "created",
+        id: expect.any(String),
+        created_at: expect.any(String),
+        updated_at: expect.any(String),
+      })
     })
   })
 
@@ -276,14 +272,12 @@ describe("/admin/batch-jobs", () => {
       )
 
       expect(response.status).toEqual(200)
-      expect(response.data.batch_job).toEqual(
-        expect.objectContaining({
-          created_at: expect.any(String),
-          updated_at: expect.any(String),
-          canceled_at: expect.any(String),
-          status: "canceled",
-        })
-      )
+      expect(response.data.batch_job).toMatchSnapshot({
+        created_at: expect.any(String),
+        updated_at: expect.any(String),
+        canceled_at: expect.any(String),
+        status: "canceled",
+      })
     })
 
     it("Fails to cancel a batch job created by a different user", async () => {

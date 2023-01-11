@@ -54,6 +54,7 @@ export default class CacheService implements ICacheService {
    * @param key
    */
   async invalidate(key: string): Promise<void> {
+    await this.redis_.del()
     const keys = await this.redis_.keys(key)
     const pipeline = this.redis_.pipeline()
 

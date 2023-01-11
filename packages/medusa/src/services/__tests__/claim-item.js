@@ -5,7 +5,7 @@ import ClaimItemService from "../claim-item"
 const withTransactionMock = jest.fn()
 const eventBusService = {
   emit: jest.fn(),
-  withTransaction: function () {
+  withTransaction: function() {
     withTransactionMock("eventBus")
     return this
   },
@@ -25,20 +25,20 @@ describe("ClaimItemService", () => {
 
     const claimTagRepo = MockRepository({
       findOne: () => Promise.resolve(),
-      create: (d) => d,
+      create: d => d,
     })
 
     const claimImgRepo = MockRepository({
       findOne: () => Promise.resolve(),
-      create: (d) => d,
+      create: d => d,
     })
 
     const claimItemRepo = MockRepository({
-      create: (d) => ({ id: "ci_1234", ...d }),
+      create: d => ({ id: "ci_1234", ...d }),
     })
 
     const lineItemService = {
-      withTransaction: function () {
+      withTransaction: function() {
         withTransactionMock("lineItem")
         return this
       },
@@ -59,10 +59,7 @@ describe("ClaimItemService", () => {
 
     it("successfully creates a claim item", async () => {
       lineItemService.retrieve = jest.fn(() =>
-        Promise.resolve({
-          variant_id: "var_1",
-          fulfilled_quantity: 1,
-        })
+        Promise.resolve({ fulfilled_quantity: 1 })
       )
       await claimItemService.create(testItem)
 
@@ -83,7 +80,6 @@ describe("ClaimItemService", () => {
       expect(claimItemRepo.create).toHaveBeenCalledWith({
         claim_order_id: "claim_13",
         item_id: "itm_1",
-        variant_id: "var_1",
         reason: "production_failure",
         note: "Details",
         quantity: 1,
@@ -94,10 +90,7 @@ describe("ClaimItemService", () => {
 
     it("normalizes claim tag value", async () => {
       lineItemService.retrieve = jest.fn(() =>
-        Promise.resolve({
-          variant_id: "var_1",
-          fulfilled_quantity: 1,
-        })
+        Promise.resolve({ fulfilled_quantity: 1 })
       )
       await claimItemService.create({
         ...testItem,
@@ -111,10 +104,7 @@ describe("ClaimItemService", () => {
 
     it("fails if fulfilled_quantity < quantity", async () => {
       lineItemService.retrieve = jest.fn(() =>
-        Promise.resolve({
-          variant_id: "var_1",
-          fulfilled_quantity: 0,
-        })
+        Promise.resolve({ fulfilled_quantity: 0 })
       )
       await expect(claimItemService.create(testItem)).rejects.toThrow(
         "Cannot claim more of an item than has been fulfilled"
