@@ -35,4 +35,5 @@ Subscribers are useful in many use cases, including:
 ## See Also
 
 - [Create a Subscriber](create-subscriber.md).
+- [Events architecture overview](../events/architecture.md)
 - [Events reference](events-list.md).
