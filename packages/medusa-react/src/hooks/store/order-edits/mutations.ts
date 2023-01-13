@@ -1,18 +1,14 @@
+import { useMutation, UseMutationOptions, useQueryClient } from "react-query"
 import { Response } from "@medusajs/medusa-js"
-import {
-  useMutation,
-  UseMutationOptions,
-  useQueryClient,
-} from "@tanstack/react-query"
 
 import {
   StoreOrderEditsRes,
   StorePostOrderEditsOrderEditDecline,
 } from "@medusajs/medusa"
 
-import { orderEditQueryKeys } from "."
-import { useMedusa } from "../../../contexts"
 import { buildOptions } from "../../utils/buildOptions"
+import { useMedusa } from "../../../contexts"
+import { orderEditQueryKeys } from "."
 
 export const useDeclineOrderEdit = (
   id: string,

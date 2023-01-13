@@ -30,7 +30,7 @@ describe("POST /admin/order-edits/:id/confirm", () => {
     it("calls orderService confirm", () => {
       expect(orderEditServiceMock.confirm).toHaveBeenCalledTimes(1)
       expect(orderEditServiceMock.confirm).toHaveBeenCalledWith(orderEditId, {
-        confirmedBy: "admin_user",
+        loggedInUserId: "admin_user",
       })
     })
 

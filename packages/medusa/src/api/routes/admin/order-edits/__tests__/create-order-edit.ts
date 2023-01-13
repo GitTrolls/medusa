@@ -1,7 +1,7 @@
 import { IdMap } from "medusa-test-utils"
 import { request } from "../../../../../helpers/test-request"
-import OrderEditingFeatureFlag from "../../../../../loaders/feature-flags/order-editing"
 import { orderEditServiceMock } from "../../../../../services/__mocks__/order-edit"
+import OrderEditingFeatureFlag from "../../../../../loaders/feature-flags/order-editing"
 
 describe("POST /admin/order-edits", () => {
   describe("successfully create an order edit", () => {
@@ -41,7 +41,7 @@ describe("POST /admin/order-edits", () => {
           internal_note: internalNote,
         },
         {
-          createdBy: IdMap.getId("admin_user"),
+          loggedInUserId: IdMap.getId("admin_user"),
         }
       )
     })

@@ -1,9 +1,9 @@
 import { Request, Response } from "express"
-import { EntityManager } from "typeorm"
 import { OrderEditService } from "../../../../services"
+import { EntityManager } from "typeorm"
 import {
   defaultOrderEditFields,
-  defaultOrderEditRelations
+  defaultOrderEditRelations,
 } from "../../../../types/order-edit"
 
 /**
@@ -68,7 +68,7 @@ export default async (req: Request, res: Response) => {
   await manager.transaction(async (transactionManager) => {
     await orderEditService
       .withTransaction(transactionManager)
-      .confirm(id, { confirmedBy: userId })
+      .confirm(id, { loggedInUserId: userId })
   })
 
   let orderEdit = await orderEditService.retrieve(id, {

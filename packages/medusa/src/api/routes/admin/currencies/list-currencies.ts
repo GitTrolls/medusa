@@ -42,7 +42,21 @@ import { FeatureFlagDecorators } from "../../../../utils/feature-flag-decorators
  *     content:
  *       application/json:
  *         schema:
- *           $ref: "#/components/schemas/AdminCurrenciesListRes"
+ *           type: object
+ *           properties:
+ *             currencies:
+ *               type: array
+ *               items:
+ *                 $ref: "#/components/schemas/Currency"
+ *             count:
+ *               type: integer
+ *               description: The total number of items available
+ *             offset:
+ *               type: integer
+ *               description: The number of items skipped before these items
+ *             limit:
+ *               type: integer
+ *               description: The number of items per page
  */
 export default async (req: ExtendedRequest<Currency>, res) => {
   const currencyService: CurrencyService = req.scope.resolve("currencyService")
