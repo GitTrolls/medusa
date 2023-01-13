@@ -1,13 +1,5 @@
 import { IdMap, MockRepository, MockManager } from "medusa-test-utils"
 import ProductCategoryService from "../product-category"
-import { EventBusService } from "../"
-
-const eventBusService = {
-  emit: jest.fn(),
-  withTransaction: function () {
-    return this
-  },
-} as unknown as EventBusService
 
 describe("ProductCategoryService", () => {
   const validProdCategoryId = "skinny-jeans"
@@ -30,7 +22,6 @@ describe("ProductCategoryService", () => {
     const productCategoryService = new ProductCategoryService({
       manager: MockManager,
       productCategoryRepository,
-      eventBusService,
     })
 
     beforeEach(async () => { jest.clearAllMocks() })
@@ -74,7 +65,6 @@ describe("ProductCategoryService", () => {
     const productCategoryService = new ProductCategoryService({
       manager: MockManager,
       productCategoryRepository,
-      eventBusService,
     })
 
     beforeEach(async () => { jest.clearAllMocks() })
@@ -109,15 +99,12 @@ describe("ProductCategoryService", () => {
 
   describe("create", () => {
     const productCategoryRepository = MockRepository({
-      findOne: (query) => Promise.resolve({ id: IdMap.getId(validProdCategoryId) }),
-      create: () => Promise.resolve({ id: IdMap.getId(validProdCategoryId) }),
-      save: (record) => Promise.resolve(record),
+      findOne: query => Promise.resolve({ id: IdMap.getId("jeans") }),
     })
 
     const productCategoryService = new ProductCategoryService({
       manager: MockManager,
       productCategoryRepository,
-      eventBusService,
     })
 
     beforeEach(async () => {
@@ -125,23 +112,12 @@ describe("ProductCategoryService", () => {
     })
 
     it("successfully creates a product category", async () => {
-      await productCategoryService.create({ name: validProdCategoryId })
+      await productCategoryService.create({ name: "jeans" })
 
       expect(productCategoryRepository.create).toHaveBeenCalledTimes(1)
       expect(productCategoryRepository.create).toHaveBeenCalledWith({
-        name: validProdCategoryId,
+        name: "jeans",
       })
-    })
-
-    it("emits a message on successful create", async () => {
-      await productCategoryService.create({ name: validProdCategoryId })
-
-      expect(eventBusService.emit).toHaveBeenCalledTimes(1)
-      expect(eventBusService.emit).toHaveBeenCalledWith(
-        "product-category.created", {
-          "id": IdMap.getId(validProdCategoryId)
-        }
-      )
     })
   })
 
@@ -162,7 +138,7 @@ describe("ProductCategoryService", () => {
         }
 
         return Promise.resolve({
-          id: IdMap.getId(validProdCategoryId),
+          id: IdMap.getId("jeans"),
           category_children: []
         })
       },
@@ -174,18 +150,17 @@ describe("ProductCategoryService", () => {
     const productCategoryService = new ProductCategoryService({
       manager: MockManager,
       productCategoryRepository,
-      eventBusService,
     })
 
     beforeEach(async () => { jest.clearAllMocks() })
 
     it("successfully deletes a product category", async () => {
       const result = await productCategoryService.delete(
-        IdMap.getId(validProdCategoryId)
+        IdMap.getId("jeans")
       )
 
       expect(productCategoryRepository.delete).toBeCalledTimes(1)
-      expect(productCategoryRepository.delete).toBeCalledWith(IdMap.getId(validProdCategoryId))
+      expect(productCategoryRepository.delete).toBeCalledWith(IdMap.getId("jeans"))
     })
 
     it("returns without failure on not-found product category id", async () => {
@@ -202,85 +177,6 @@ describe("ProductCategoryService", () => {
 
       expect(categoryResponse.message).toBe(
         `Deleting ProductCategory (with-children) with category children is not allowed`
-      )
-    })
-
-    it("emits a message on successful delete", async () => {
-      const result = await productCategoryService.delete(
-        IdMap.getId(validProdCategoryId)
-      )
-
-      expect(eventBusService.emit).toHaveBeenCalledTimes(1)
-      expect(eventBusService.emit).toHaveBeenCalledWith(
-        "product-category.deleted", {
-          "id": IdMap.getId(validProdCategoryId)
-        }
-      )
-    })
-  })
-
-  describe("update", () => {
-    const productCategoryRepository = MockRepository({
-      findOne: query => {
-        if (query.where.id === IdMap.getId(invalidProdCategoryId)) {
-          return null
-        }
-
-        return Promise.resolve({ id: IdMap.getId(validProdCategoryId) })
-      },
-      findDescendantsTree: (productCategory) => {
-        return Promise.resolve(productCategory)
-      },
-    })
-
-    const productCategoryService = new ProductCategoryService({
-      manager: MockManager,
-      productCategoryRepository,
-      eventBusService,
-    })
-
-    beforeEach(async () => {
-      jest.clearAllMocks()
-    })
-
-    it("successfully updates a product category", async () => {
-      await productCategoryService.update(
-        IdMap.getId(validProdCategoryId), {
-          name: "bathrobes",
-        }
-      )
-
-      expect(productCategoryRepository.save).toHaveBeenCalledTimes(1)
-      expect(productCategoryRepository.save).toHaveBeenCalledWith({
-        id: IdMap.getId(validProdCategoryId),
-        name: "bathrobes",
-      })
-    })
-
-    it("fails on not-found Id product category", async () => {
-      const error = await productCategoryService.update(
-        IdMap.getId(invalidProdCategoryId), {
-          name: "bathrobes",
-        }
-      ).catch(e => e)
-
-      expect(error.message).toBe(
-        `ProductCategory with id: ${IdMap.getId(invalidProdCategoryId)} was not found`
-      )
-    })
-
-    it("emits a message on successful update", async () => {
-      const result = await productCategoryService.update(
-        IdMap.getId(validProdCategoryId), {
-          name: "bathrobes",
-        }
-      )
-
-      expect(eventBusService.emit).toHaveBeenCalledTimes(1)
-      expect(eventBusService.emit).toHaveBeenCalledWith(
-        "product-category.updated", {
-          "id": IdMap.getId(validProdCategoryId)
-        }
       )
     })
   })

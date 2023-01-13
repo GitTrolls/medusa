@@ -1,15 +1,15 @@
-import { IsOptional, IsString } from "class-validator"
 import { EntityManager } from "typeorm"
-import { PaymentCollectionType } from "../../../../models"
+import { IsOptional, IsString } from "class-validator"
 import {
   OrderEditService,
   OrderService,
-  PaymentCollectionService
+  PaymentCollectionService,
 } from "../../../../services"
 import {
   defaultOrderEditFields,
-  defaultOrderEditRelations
+  defaultOrderEditRelations,
 } from "../../../../types/order-edit"
+import { PaymentCollectionType } from "../../../../models"
 
 /**
  * @oas [post] /order-edits/{id}/request
@@ -82,7 +82,7 @@ export default async (req, res) => {
       orderEditService.withTransaction(transactionManager)
 
     const orderEdit = await orderEditServiceTx.requestConfirmation(id, {
-      requestedBy: loggedInUser,
+      loggedInUserId: loggedInUser,
     })
 
     const total = await orderEditServiceTx.getTotals(orderEdit.id)
