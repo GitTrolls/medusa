@@ -1,5 +1,4 @@
 import MedusaError from "./error"
-import KeyManager from "./key-manager"
 import Client, { Config } from "./request"
 import Admin from "./resources/admin"
 import AuthResource from "./resources/auth"
@@ -7,17 +6,18 @@ import CartsResource from "./resources/carts"
 import CollectionsResource from "./resources/collections"
 import CustomersResource from "./resources/customers"
 import GiftCardsResource from "./resources/gift-cards"
-import OrderEditsResource from "./resources/order-edits"
 import OrdersResource from "./resources/orders"
+import OrderEditsResource from "./resources/order-edits"
 import PaymentCollectionsResource from "./resources/payment-collections"
 import PaymentMethodsResource from "./resources/payment-methods"
-import ProductTypesResource from "./resources/product-types"
 import ProductsResource from "./resources/products"
+import ProductTypesResource from "./resources/product-types"
 import RegionsResource from "./resources/regions"
 import ReturnReasonsResource from "./resources/return-reasons"
 import ReturnsResource from "./resources/returns"
 import ShippingOptionsResource from "./resources/shipping-options"
 import SwapsResource from "./resources/swaps"
+import KeyManager from "./key-manager"
 
 class Medusa {
   private client: Client
@@ -78,4 +78,5 @@ class Medusa {
 
 export default Medusa
 export { default as KeyManager } from "./key-manager"
+
 export * from "./typings"
