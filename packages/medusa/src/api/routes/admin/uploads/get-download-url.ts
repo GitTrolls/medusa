@@ -45,7 +45,11 @@ import { IsString } from "class-validator"
  *     content:
  *       application/json:
  *         schema:
- *           $ref: "#/components/schemas/AdminUploadsDownloadUrlRes"
+ *           type: object
+ *           properties:
+ *             download_url:
+ *               type: string
+ *               description: The Download URL of the file
  *   "400":
  *     $ref: "#/components/responses/400_error"
  *   "401":

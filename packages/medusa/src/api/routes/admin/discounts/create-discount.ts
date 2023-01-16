@@ -87,7 +87,10 @@ import { FindParams } from "../../../../types/common"
  *     content:
  *       application/json:
  *         schema:
- *           $ref: "#/components/schemas/AdminDiscountsRes"
+ *           type: object
+ *           properties:
+ *             discount:
+ *               $ref: "#/components/schemas/Discount"
  *   "400":
  *     $ref: "#/components/responses/400_error"
  *   "401":

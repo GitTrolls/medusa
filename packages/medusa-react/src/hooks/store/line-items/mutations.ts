@@ -1,9 +1,9 @@
 import {
   StoreCartsRes,
-  StorePostCartsCartLineItemsItemReq,
   StorePostCartsCartLineItemsReq,
+  StorePostCartsCartLineItemsItemReq,
 } from "@medusajs/medusa"
-import { useMutation, UseMutationOptions } from "@tanstack/react-query"
+import { useMutation, UseMutationOptions } from "react-query"
 import { useMedusa } from "../../../contexts"
 
 export const useCreateLineItem = (

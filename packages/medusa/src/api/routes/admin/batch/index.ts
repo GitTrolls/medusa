@@ -42,35 +42,12 @@ export default (app) => {
   return app
 }
 
-/**
- * @schema AdminBatchJobRes
- * type: object
- * properties:
- *   batch_job:
- *     $ref: "#/components/schemas/BatchJob"
- */
 export type AdminBatchJobRes = {
   batch_job: BatchJob
 }
 
-/**
- * @schema AdminBatchJobListRes
- * type: object
- * properties:
- *   batch_jobs:
- *      type: array
- *      items:
- *        $ref: "#/components/schemas/BatchJob"
- *   count:
- *      type: integer
- *      description: The total number of items available
- *   offset:
- *      type: integer
- *      description: The number of items skipped before these items
- *   limit:
- *      type: integer
- *      description: The number of items per page
- */
+export type AdminBatchJobDeleteRes = DeleteResponse
+
 export type AdminBatchJobListRes = PaginatedResponse & {
   batch_jobs: BatchJob[]
 }

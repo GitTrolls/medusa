@@ -6,13 +6,13 @@ import {
   createContainer,
   Resolver,
 } from "awilix"
+import { mkdirSync, rmSync, writeFileSync } from "fs"
 import Logger from "../logger"
+import { resolve } from "path"
 import {
   ConfigModule,
   MedusaContainer,
   ModuleResolution,
-  MODULE_RESOURCE_TYPE,
-  MODULE_SCOPE,
 } from "../../types/global"
 import registerModules from "../module"
 import { trackInstallation } from "../__mocks__/medusa-telemetry"
@@ -90,14 +90,6 @@ describe("modules loader", () => {
           key: "testService",
           defaultPackage: "testService",
           label: "TestService",
-          defaultModuleDeclaration: {
-            scope: MODULE_SCOPE.INTERNAL,
-            resources: MODULE_RESOURCE_TYPE.SHARED,
-          },
-        },
-        moduleDeclaration: {
-          scope: MODULE_SCOPE.INTERNAL,
-          resources: MODULE_RESOURCE_TYPE.SHARED,
         },
       },
     }
@@ -122,14 +114,6 @@ describe("modules loader", () => {
           key: "testService",
           defaultPackage: "testService",
           label: "TestService",
-          defaultModuleDeclaration: {
-            scope: MODULE_SCOPE.INTERNAL,
-            resources: MODULE_RESOURCE_TYPE.SHARED,
-          },
-        },
-        moduleDeclaration: {
-          scope: MODULE_SCOPE.INTERNAL,
-          resources: MODULE_RESOURCE_TYPE.SHARED,
         },
       },
     }
@@ -165,14 +149,6 @@ describe("modules loader", () => {
           key: "testService",
           defaultPackage: "testService",
           label: "TestService",
-          defaultModuleDeclaration: {
-            scope: MODULE_SCOPE.INTERNAL,
-            resources: MODULE_RESOURCE_TYPE.SHARED,
-          },
-        },
-        moduleDeclaration: {
-          scope: MODULE_SCOPE.INTERNAL,
-          resources: MODULE_RESOURCE_TYPE.SHARED,
         },
       },
     }
@@ -201,14 +177,6 @@ describe("modules loader", () => {
           key: "testService",
           defaultPackage: "testService",
           label: "TestService",
-          defaultModuleDeclaration: {
-            scope: MODULE_SCOPE.INTERNAL,
-            resources: MODULE_RESOURCE_TYPE.SHARED,
-          },
-        },
-        moduleDeclaration: {
-          scope: MODULE_SCOPE.INTERNAL,
-          resources: MODULE_RESOURCE_TYPE.SHARED,
         },
       },
     }
@@ -239,14 +207,6 @@ describe("modules loader", () => {
           defaultPackage: "testService",
           label: "TestService",
           isRequired: true,
-          defaultModuleDeclaration: {
-            scope: MODULE_SCOPE.INTERNAL,
-            resources: MODULE_RESOURCE_TYPE.SHARED,
-          },
-        },
-        moduleDeclaration: {
-          scope: MODULE_SCOPE.INTERNAL,
-          resources: MODULE_RESOURCE_TYPE.SHARED,
         },
       },
     }
@@ -259,76 +219,6 @@ describe("modules loader", () => {
     } catch (err) {
       expect(err.message).toEqual(
         "No service found in module. Make sure that your module exports a service."
-      )
-    }
-  })
-
-  it("throws error if no scope is defined to the module", async () => {
-    expect.assertions(1)
-    const moduleResolutions: Record<string, ModuleResolution> = {
-      testService: {
-        resolutionPath: "@modules/no-service",
-        definition: {
-          registrationName: "testService",
-          key: "testService",
-          defaultPackage: "testService",
-          label: "TestService",
-          isRequired: true,
-          defaultModuleDeclaration: {
-            scope: MODULE_SCOPE.INTERNAL,
-            resources: MODULE_RESOURCE_TYPE.SHARED,
-          },
-        },
-        // @ts-ignore
-        moduleDeclaration: {
-          resources: MODULE_RESOURCE_TYPE.SHARED,
-        },
-      },
-    }
-
-    const configModule = buildConfigModule({
-      moduleResolutions,
-    })
-    try {
-      await registerModules({ container, configModule, logger: Logger })
-    } catch (err) {
-      expect(err.message).toEqual(
-        "The module TestService has to define its scope (internal | external)"
-      )
-    }
-  })
-
-  it("throws error if resources is not set when scope is defined as internal", async () => {
-    expect.assertions(1)
-    const moduleResolutions: Record<string, ModuleResolution> = {
-      testService: {
-        resolutionPath: "@modules/no-service",
-        definition: {
-          registrationName: "testService",
-          key: "testService",
-          defaultPackage: "testService",
-          label: "TestService",
-          isRequired: true,
-          defaultModuleDeclaration: {
-            scope: MODULE_SCOPE.INTERNAL,
-            resources: MODULE_RESOURCE_TYPE.SHARED,
-          },
-        },
-        // @ts-ignore
-        moduleDeclaration: {
-          scope: MODULE_SCOPE.INTERNAL,
-        },
-      },
-    }
-
-    const configModule = buildConfigModule({
-      moduleResolutions,
-    })
-    try {
-      await registerModules({ container, configModule, logger: Logger })
-    } catch (err) {
-      expect(err.message).toEqual(
-        "The module TestService is missing its resources config"
       )
     }
   })

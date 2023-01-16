@@ -1,5 +1,6 @@
 import { IdMap } from "medusa-test-utils"
 import { request } from "../../../../../helpers/test-request"
+import OrderEditingFeatureFlag from "../../../../../loaders/feature-flags/order-editing"
 import { orderEditServiceMock } from "../../../../../services/__mocks__/order-edit"
 
 describe("POST /admin/order-edits/:id/cancel", () => {
@@ -16,7 +17,8 @@ describe("POST /admin/order-edits/:id/cancel", () => {
             jwt: {
               userId: IdMap.getId("admin_user"),
             },
-          }
+          },
+          flags: [OrderEditingFeatureFlag],
         }
       )
     })
@@ -28,7 +30,7 @@ describe("POST /admin/order-edits/:id/cancel", () => {
     it("calls orderService cancel", () => {
       expect(orderEditServiceMock.cancel).toHaveBeenCalledTimes(1)
       expect(orderEditServiceMock.cancel).toHaveBeenCalledWith(orderEditId, {
-        canceledBy: IdMap.getId("admin_user"),
+        loggedInUserId: IdMap.getId("admin_user"),
       })
     })
 

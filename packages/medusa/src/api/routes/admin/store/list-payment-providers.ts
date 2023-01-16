@@ -33,7 +33,12 @@ import { PaymentProviderService } from "../../../../services"
  *     content:
  *       application/json:
  *         schema:
- *           $ref: "#/components/schemas/AdminPaymentProvidersList"
+ *           type: object
+ *           properties:
+ *             payment_providers:
+ *               type: array
+ *               items:
+ *                 $ref: "#/components/schemas/PaymentProvider"
  *   "400":
  *     $ref: "#/components/responses/400_error"
  *   "401":

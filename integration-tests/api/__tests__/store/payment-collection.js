@@ -18,7 +18,7 @@ const {
 
 jest.setTimeout(30000)
 
-describe("/store/payment-collections", () => {
+describe("[MEDUSA_FF_ORDER_EDITING] /store/payment-collections", () => {
   let medusaProcess
   let dbConnection
 
@@ -27,6 +27,7 @@ describe("/store/payment-collections", () => {
     const cwd = path.resolve(path.join(__dirname, "..", ".."))
     const [process, connection] = await startServerWithEnvironment({
       cwd,
+      env: { MEDUSA_FF_ORDER_EDITING: true },
     })
     dbConnection = connection
     medusaProcess = process

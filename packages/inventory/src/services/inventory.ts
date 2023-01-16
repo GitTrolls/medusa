@@ -1,76 +1,46 @@
+import { MedusaError } from "medusa-core-utils"
 import {
-  ConfigurableModuleDeclaration,
-  CreateInventoryItemInput,
-  CreateInventoryLevelInput,
-  CreateReservationItemInput,
-  FilterableInventoryItemProps,
-  FilterableInventoryLevelProps,
-  FilterableReservationItemProps,
   FindConfig,
-  IEventBusService,
   IInventoryService,
-  InventoryItemDTO,
-  InventoryLevelDTO,
-  MODULE_RESOURCE_TYPE,
-  ReservationItemDTO,
-  TransactionBaseService,
+  FilterableInventoryItemProps,
+  FilterableReservationItemProps,
+  CreateInventoryItemInput,
+  CreateReservationItemInput,
+  FilterableInventoryLevelProps,
+  CreateInventoryLevelInput,
   UpdateInventoryLevelInput,
   UpdateReservationItemInput,
+  IEventBusService,
+  InventoryItemDTO,
+  ReservationItemDTO,
+  InventoryLevelDTO,
 } from "@medusajs/medusa"
-import { MedusaError } from "medusa-core-utils"
 
-import { EntityManager } from "typeorm"
 import {
   InventoryItemService,
-  InventoryLevelService,
   ReservationItemService,
+  InventoryLevelService,
 } from "./"
 
 type InjectedDependencies = {
-  manager: EntityManager
   eventBusService: IEventBusService
 }
 
-export default class InventoryService
-  extends TransactionBaseService
-  implements IInventoryService
-{
+export default class InventoryService implements IInventoryService {
   protected readonly eventBusService_: IEventBusService
-  protected manager_: EntityManager
-  protected transactionManager_: EntityManager | undefined
   protected readonly inventoryItemService_: InventoryItemService
   protected readonly reservationItemService_: ReservationItemService
   protected readonly inventoryLevelService_: InventoryLevelService
 
-  constructor(
-    { eventBusService, manager }: InjectedDependencies,
-    options?: unknown,
-    moduleDeclaration?: ConfigurableModuleDeclaration
-  ) {
-    // @ts-ignore
-    super(...arguments)
-
-    if (moduleDeclaration?.resources !== MODULE_RESOURCE_TYPE.SHARED) {
-      throw new MedusaError(
-        MedusaError.Types.INVALID_ARGUMENT,
-        "At the moment this module can only be used with shared resources"
-      )
-    }
-
+  constructor({ eventBusService }: InjectedDependencies) {
     this.eventBusService_ = eventBusService
-    this.manager_ = manager
 
-    this.inventoryItemService_ = new InventoryItemService({
-      eventBusService,
-      manager,
-    })
+    this.inventoryItemService_ = new InventoryItemService({ eventBusService })
     this.inventoryLevelService_ = new InventoryLevelService({
       eventBusService,
-      manager,
     })
     this.reservationItemService_ = new ReservationItemService({
       eventBusService,
-      manager,
       inventoryLevelService: this.inventoryLevelService_,
     })
   }

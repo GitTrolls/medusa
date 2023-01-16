@@ -1,9 +1,10 @@
 import { IdMap } from "medusa-test-utils"
 import { request } from "../../../../../helpers/test-request"
 import { orderEditServiceMock } from "../../../../../services/__mocks__/order-edit"
+import OrderEditingFeatureFlag from "../../../../../loaders/feature-flags/order-editing"
 import {
   defaultOrderEditFields,
-  defaultOrderEditRelations
+  defaultOrderEditRelations,
 } from "../../../../../types/order-edit"
 
 describe("GET /admin/order-edits/:id", () => {
@@ -18,6 +19,7 @@ describe("GET /admin/order-edits/:id", () => {
             userId: IdMap.getId("admin_user"),
           },
         },
+        flags: [OrderEditingFeatureFlag],
       })
     })
 

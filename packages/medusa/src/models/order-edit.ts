@@ -2,7 +2,6 @@ import {
   AfterLoad,
   BeforeInsert,
   Column,
-  Entity,
   Index,
   JoinColumn,
   ManyToOne,
@@ -10,9 +9,11 @@ import {
   OneToOne,
 } from "typeorm"
 
+import OrderEditingFeatureFlag from "../loaders/feature-flags/order-editing"
+import { FeatureFlagEntity } from "../utils/feature-flag-decorators"
+import { resolveDbType } from "../utils/db-aware-column"
 import { BaseEntity } from "../interfaces"
 import { generateEntityId } from "../utils"
-import { resolveDbType } from "../utils/db-aware-column"
 
 import { LineItem, Order, OrderItemChange, PaymentCollection } from "."
 
@@ -24,7 +25,7 @@ export enum OrderEditStatus {
   CANCELED = "canceled",
 }
 
-@Entity()
+@FeatureFlagEntity(OrderEditingFeatureFlag.key)
 export class OrderEdit extends BaseEntity {
   @Index()
   @Column()
@@ -43,7 +44,7 @@ export class OrderEdit extends BaseEntity {
   internal_note?: string
 
   @Column()
-  created_by: string // customer, user, third party, etc.
+  created_by: string // customer or user ID
 
   @Column({ nullable: true })
   requested_by?: string // customer or user ID

@@ -1,21 +1,17 @@
+import { useMutation, UseMutationOptions, useQueryClient } from "react-query"
 import { Response } from "@medusajs/medusa-js"
-import {
-  useMutation,
-  UseMutationOptions,
-  useQueryClient,
-} from "@tanstack/react-query"
 
 import {
-  AdminPostPublishableApiKeySalesChannelsBatchReq,
-  AdminPostPublishableApiKeysPublishableApiKeyReq,
-  AdminPostPublishableApiKeysReq,
   AdminPublishableApiKeyDeleteRes,
   AdminPublishableApiKeysRes,
+  AdminPostPublishableApiKeysPublishableApiKeyReq,
+  AdminPostPublishableApiKeysReq,
+  AdminPostPublishableApiKeySalesChannelsBatchReq,
 } from "@medusajs/medusa"
 
-import { adminPublishableApiKeysKeys } from "."
-import { useMedusa } from "../../../contexts"
 import { buildOptions } from "../../utils/buildOptions"
+import { useMedusa } from "../../../contexts"
+import { adminPublishableApiKeysKeys } from "."
 
 export const useAdminCreatePublishableApiKey = (
   options?: UseMutationOptions<

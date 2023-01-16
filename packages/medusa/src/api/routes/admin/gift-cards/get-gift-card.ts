@@ -35,7 +35,10 @@ import { defaultAdminGiftCardFields, defaultAdminGiftCardRelations } from "./"
  *     content:
  *       application/json:
  *         schema:
- *           $ref: "#/components/schemas/AdminGiftCardsRes"
+ *           type: object
+ *           properties:
+ *             gift_card:
+ *               $ref: "#/components/schemas/GiftCard"
  *   "400":
  *     $ref: "#/components/responses/400_error"
  *   "401":

@@ -51,7 +51,10 @@ import { validator } from "../../../../utils/validator"
  *     content:
  *       application/json:
  *         schema:
- *           $ref: "#/components/schemas/AdminBatchJobRes"
+ *           type: object
+ *           properties:
+ *            batch_job:
+ *              $ref: "#/components/schemas/BatchJob"
  *   "400":
  *     $ref: "#/components/responses/400_error"
  *   "401":

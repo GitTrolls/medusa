@@ -21,10 +21,8 @@ import {
   FeatureFlagDecorators,
 } from "../utils/feature-flag-decorators"
 
-import { BaseEntity } from "../interfaces/models/base-entity"
-import { generateEntityId } from "../utils/generate-entity-id"
-import { manualAutoIncrement } from "../utils/manual-auto-increment"
 import { Address } from "./address"
+import { BaseEntity } from "../interfaces/models/base-entity"
 import { Cart } from "./cart"
 import { ClaimOrder } from "./claim-order"
 import { Currency } from "./currency"
@@ -35,7 +33,6 @@ import { Fulfillment } from "./fulfillment"
 import { GiftCard } from "./gift-card"
 import { GiftCardTransaction } from "./gift-card-transaction"
 import { LineItem } from "./line-item"
-import { OrderEdit } from "./order-edit"
 import { Payment } from "./payment"
 import { Refund } from "./refund"
 import { Region } from "./region"
@@ -43,6 +40,10 @@ import { Return } from "./return"
 import { SalesChannel } from "./sales-channel"
 import { ShippingMethod } from "./shipping-method"
 import { Swap } from "./swap"
+import { generateEntityId } from "../utils/generate-entity-id"
+import { manualAutoIncrement } from "../utils/manual-auto-increment"
+import { OrderEdit } from "./order-edit"
+import OrderEditingFeatureFlag from "../loaders/feature-flags/order-editing"
 
 export enum OrderStatus {
   PENDING = "pending",
@@ -210,7 +211,12 @@ export class Order extends BaseEntity {
   @JoinColumn({ name: "draft_order_id" })
   draft_order: DraftOrder
 
-  @OneToMany(() => OrderEdit, (oe) => oe.order)
+  @FeatureFlagDecorators(OrderEditingFeatureFlag.key, [
+    OneToMany(
+      () => OrderEdit,
+      (oe) => oe.order
+    ),
+  ])
   edits: OrderEdit[]
 
   @OneToMany(() => LineItem, (lineItem) => lineItem.order, {
