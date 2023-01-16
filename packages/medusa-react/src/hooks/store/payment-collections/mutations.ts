@@ -1,21 +1,17 @@
+import { useMutation, UseMutationOptions, useQueryClient } from "react-query"
 import { Response } from "@medusajs/medusa-js"
-import {
-  useMutation,
-  UseMutationOptions,
-  useQueryClient,
-} from "@tanstack/react-query"
 
 import {
-  StorePaymentCollectionSessionsReq,
   StorePaymentCollectionsRes,
-  StorePaymentCollectionsSessionRes,
-  StorePostPaymentCollectionsBatchSessionsAuthorizeReq,
   StorePostPaymentCollectionsBatchSessionsReq,
+  StorePostPaymentCollectionsBatchSessionsAuthorizeReq,
+  StorePaymentCollectionSessionsReq,
+  StorePaymentCollectionsSessionRes,
 } from "@medusajs/medusa"
 
-import { paymentCollectionQueryKeys } from "."
-import { useMedusa } from "../../../contexts"
 import { buildOptions } from "../../utils/buildOptions"
+import { useMedusa } from "../../../contexts"
+import { paymentCollectionQueryKeys } from "."
 
 export const useManageMultiplePaymentSessions = (
   id: string,

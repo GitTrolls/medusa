@@ -1,7 +1,6 @@
 import {
   BeforeInsert,
   Column,
-  Entity,
   Index,
   JoinColumn,
   JoinTable,
@@ -9,10 +8,13 @@ import {
   ManyToOne,
 } from "typeorm"
 
-import { Currency, Payment, PaymentSession, Region } from "."
 import { SoftDeletableEntity } from "../interfaces/models/soft-deletable-entity"
-import { generateEntityId } from "../utils"
 import { DbAwareColumn } from "../utils/db-aware-column"
+import { generateEntityId } from "../utils"
+import { Currency, Payment, PaymentSession, Region } from "."
+
+import OrderEditingFeatureFlag from "../loaders/feature-flags/order-editing"
+import { FeatureFlagEntity } from "../utils/feature-flag-decorators"
 
 export enum PaymentCollectionStatus {
   NOT_PAID = "not_paid",
@@ -26,7 +28,7 @@ export enum PaymentCollectionType {
   ORDER_EDIT = "order_edit",
 }
 
-@Entity()
+@FeatureFlagEntity(OrderEditingFeatureFlag.key)
 export class PaymentCollection extends SoftDeletableEntity {
   @DbAwareColumn({ type: "enum", enum: PaymentCollectionType })
   type: PaymentCollectionType

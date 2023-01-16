@@ -36,7 +36,19 @@ import { ReturnReasonService } from "../../../../services"
  *     content:
  *       application/json:
  *         schema:
- *           $ref: "#/components/schemas/AdminReturnReasonsDeleteRes"
+ *           type: object
+ *           properties:
+ *             id:
+ *               type: string
+ *               description: The ID of the deleted return reason
+ *             object:
+ *               type: string
+ *               description: The type of the object that was deleted.
+ *               default: return_reason
+ *             deleted:
+ *               type: boolean
+ *               description: Whether or not the items were deleted.
+ *               default: true
  *   "400":
  *     $ref: "#/components/responses/400_error"
  *   "401":

@@ -40,7 +40,21 @@ import ProductCollectionService from "../../../../services/product-collection"
  *    content:
  *      application/json:
  *        schema:
- *          $ref: "#/components/schemas/AdminDeleteProductsFromCollectionRes"
+ *          type: object
+ *          properties:
+ *            id:
+ *              type: string
+ *              description: "The ID of the collection"
+ *            object:
+ *              type: string
+ *              description: "The type of object the removal was executed on"
+ *              default: product-collection
+ *            removed_products:
+ *              description: "The IDs of the products removed from the collection"
+ *              type: array
+ *              items:
+ *                description: "The ID of a Product to add to the Product Collection."
+ *                type: string
  *  "400":
  *    $ref: "#/components/responses/400_error"
  *  "401":

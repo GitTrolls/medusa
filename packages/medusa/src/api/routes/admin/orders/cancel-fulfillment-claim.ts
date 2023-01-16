@@ -45,7 +45,10 @@ import { MedusaError } from "medusa-core-utils"
  *     content:
  *       application/json:
  *         schema:
- *           $ref: "#/components/schemas/AdminOrdersRes"
+ *           type: object
+ *           properties:
+ *             order:
+ *               $ref: "#/components/schemas/Order"
  *   "400":
  *     $ref: "#/components/responses/400_error"
  *   "401":

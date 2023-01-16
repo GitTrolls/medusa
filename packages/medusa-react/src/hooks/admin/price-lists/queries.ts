@@ -1,12 +1,12 @@
 import {
-  AdminGetPriceListPaginationParams,
   AdminGetPriceListsPriceListProductsParams,
-  AdminPriceListRes,
+  AdminGetPriceListPaginationParams,
   AdminPriceListsListRes,
+  AdminPriceListRes,
   AdminProductsListRes,
 } from "@medusajs/medusa"
 import { Response } from "@medusajs/medusa-js"
-import { useQuery } from "@tanstack/react-query"
+import { useQuery } from "react-query"
 import { useMedusa } from "../../../contexts"
 import { UseQueryOptionsWrapper } from "../../../types"
 import { queryKeysFactory } from "../../utils/index"
@@ -21,7 +21,7 @@ export const adminPriceListKeys = {
       "products" as const,
       { ...(query || {}) },
     ] as const
-  },
+  }
 }
 
 type PriceListQueryKeys = typeof adminPriceListKeys

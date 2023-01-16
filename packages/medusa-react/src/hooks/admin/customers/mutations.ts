@@ -1,8 +1,4 @@
-import {
-  useMutation,
-  UseMutationOptions,
-  useQueryClient,
-} from "@tanstack/react-query"
+import { useMutation, UseMutationOptions, useQueryClient } from "react-query"
 
 import { AdminCustomersRes, AdminPostCustomersReq } from "@medusajs/medusa"
 import { Response } from "@medusajs/medusa-js"

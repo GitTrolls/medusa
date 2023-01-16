@@ -36,7 +36,19 @@ import UserService from "../../../../services/user"
  *     content:
  *       application/json:
  *         schema:
- *           $ref: "#/components/schemas/AdminDeleteUserRes"
+ *           type: object
+ *           properties:
+ *             id:
+ *               type: string
+ *               description: The ID of the deleted user.
+ *             object:
+ *               type: string
+ *               description: The type of the object that was deleted.
+ *               default: user
+ *             deleted:
+ *               type: boolean
+ *               description: Whether or not the items were deleted.
+ *               default: true
  *   "400":
  *     $ref: "#/components/responses/400_error"
  *   "401":

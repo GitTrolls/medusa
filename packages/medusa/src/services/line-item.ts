@@ -3,6 +3,7 @@ import { EntityManager, In } from "typeorm"
 import { DeepPartial } from "typeorm/common/DeepPartial"
 
 import { TransactionBaseService } from "../interfaces"
+import OrderEditingFeatureFlag from "../loaders/feature-flags/order-editing"
 import TaxInclusivePricingFeatureFlag from "../loaders/feature-flags/tax-inclusive-pricing"
 import {
   LineItem,
@@ -69,7 +70,6 @@ class LineItemService extends TransactionBaseService {
     taxProviderService,
     featureFlagRouter,
   }: InjectedDependencies) {
-    // eslint-disable-next-line prefer-rest-params
     super(arguments[0])
 
     this.manager_ = manager
@@ -348,7 +348,9 @@ class LineItemService extends TransactionBaseService {
       rawLineItem.includes_tax = unitPriceIncludesTax
     }
 
-    rawLineItem.order_edit_id = context.order_edit_id || null
+    if (this.featureFlagRouter_.isFeatureEnabled(OrderEditingFeatureFlag.key)) {
+      rawLineItem.order_edit_id = context.order_edit_id || null
+    }
 
     const lineItemRepo = transactionManager.getCustomRepository(
       this.lineItemRepository_

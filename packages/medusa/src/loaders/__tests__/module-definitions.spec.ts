@@ -1,9 +1,5 @@
-import {
-  ConfigModule,
-  ModuleDefinition,
-  MODULE_RESOURCE_TYPE,
-  MODULE_SCOPE,
-} from "../../types/global"
+// import resolveCwd from "resolve-cwd"
+import { ConfigModule } from "../../types/global"
 import ModuleDefinitionLoader from "../module-definitions"
 import MODULE_DEFINITIONS from "../module-definitions/definitions"
 
@@ -11,17 +7,13 @@ const RESOLVED_PACKAGE = "@medusajs/test-service-resolved"
 jest.mock("resolve-cwd", () => jest.fn(() => RESOLVED_PACKAGE))
 
 describe("module definitions loader", () => {
-  const defaultDefinition: ModuleDefinition = {
+  const defaultDefinition = {
     key: "testService",
     registrationName: "testService",
     defaultPackage: "@medusajs/test-service",
     label: "TestService",
     isRequired: false,
     canOverride: true,
-    defaultModuleDeclaration: {
-      scope: MODULE_SCOPE.INTERNAL,
-      resources: MODULE_RESOURCE_TYPE.SHARED,
-    },
   }
 
   beforeEach(() => {
@@ -41,10 +33,6 @@ describe("module definitions loader", () => {
       resolutionPath: defaultDefinition.defaultPackage,
       definition: defaultDefinition,
       options: {},
-      moduleDeclaration: {
-        scope: "internal",
-        resources: "shared",
-      },
     })
   })
 
@@ -94,10 +82,6 @@ describe("module definitions loader", () => {
         resolutionPath: false,
         definition: definition,
         options: {},
-        moduleDeclaration: {
-          scope: "internal",
-          resources: "shared",
-        },
       })
     })
   })
@@ -116,10 +100,6 @@ describe("module definitions loader", () => {
         resolutionPath: RESOLVED_PACKAGE,
         definition: defaultDefinition,
         options: {},
-        moduleDeclaration: {
-          scope: "internal",
-          resources: "shared",
-        },
       })
     })
   })
@@ -132,7 +112,6 @@ describe("module definitions loader", () => {
         modules: {
           [defaultDefinition.key]: {
             resolve: defaultDefinition.defaultPackage,
-            resources: MODULE_RESOURCE_TYPE.ISOLATED,
           },
         },
       } as ConfigModule)
@@ -141,11 +120,6 @@ describe("module definitions loader", () => {
         resolutionPath: RESOLVED_PACKAGE,
         definition: defaultDefinition,
         options: {},
-        moduleDeclaration: {
-          scope: "internal",
-          resources: "isolated",
-          resolve: defaultDefinition.defaultPackage,
-        },
       })
     })
 
@@ -164,11 +138,6 @@ describe("module definitions loader", () => {
         resolutionPath: defaultDefinition.defaultPackage,
         definition: defaultDefinition,
         options: { test: 123 },
-        moduleDeclaration: {
-          scope: "internal",
-          resources: "shared",
-          options: { test: 123 },
-        },
       })
     })
 
@@ -180,8 +149,6 @@ describe("module definitions loader", () => {
           [defaultDefinition.key]: {
             resolve: defaultDefinition.defaultPackage,
             options: { test: 123 },
-            scope: "internal",
-            resources: "isolated",
           },
         },
       } as unknown as ConfigModule)
@@ -190,12 +157,6 @@ describe("module definitions loader", () => {
         resolutionPath: RESOLVED_PACKAGE,
         definition: defaultDefinition,
         options: { test: 123 },
-        moduleDeclaration: {
-          scope: "internal",
-          resources: "isolated",
-          resolve: defaultDefinition.defaultPackage,
-          options: { test: 123 },
-        },
       })
     })
   })

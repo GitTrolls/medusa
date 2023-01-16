@@ -1,5 +1,4 @@
 import { IdMap, MockManager, MockRepository } from "medusa-test-utils"
-import { OrderEditItemChangeType, OrderEditStatus } from "../../models"
 import {
   EventBusService,
   LineItemService,
@@ -7,16 +6,17 @@ import {
   OrderEditService,
   OrderService,
   TaxProviderService,
-  TotalsService
+  TotalsService,
 } from "../index"
-import LineItemAdjustmentService from "../line-item-adjustment"
+import { OrderEditItemChangeType, OrderEditStatus } from "../../models"
+import { OrderServiceMock } from "../__mocks__/order"
 import { EventBusServiceMock } from "../__mocks__/event-bus"
 import { LineItemServiceMock } from "../__mocks__/line-item"
-import { LineItemAdjustmentServiceMock } from "../__mocks__/line-item-adjustment"
-import { OrderServiceMock } from "../__mocks__/order"
+import { TotalsServiceMock } from "../__mocks__/totals"
 import { orderEditItemChangeServiceMock } from "../__mocks__/order-edit-item-change"
 import { taxProviderServiceMock } from "../__mocks__/tax-provider"
-import { TotalsServiceMock } from "../__mocks__/totals"
+import { LineItemAdjustmentServiceMock } from "../__mocks__/line-item-adjustment"
+import LineItemAdjustmentService from "../line-item-adjustment"
 
 const orderEditToUpdate = {
   id: IdMap.getId("order-edit-to-update"),
@@ -223,7 +223,7 @@ describe("OrderEditService", () => {
       internal_note: "internal note",
     }
     await orderEditService.create(data, {
-      createdBy: IdMap.getId("admin_user"),
+      loggedInUserId: IdMap.getId("admin_user"),
     })
 
     expect(orderEditRepository.create).toHaveBeenCalledTimes(1)
@@ -261,7 +261,7 @@ describe("OrderEditService", () => {
         IdMap.getId("requested-order-edit"),
         {
           declinedReason: "I requested a different color for the new product",
-          declinedBy: "admin_user",
+          loggedInUserId: "admin_user",
         }
       )
 
@@ -279,7 +279,7 @@ describe("OrderEditService", () => {
       await expect(
         orderEditService.decline(IdMap.getId("confirmed-order-edit"), {
           declinedReason: "I requested a different color for the new product",
-          declinedBy: "admin_user",
+          loggedInUserId: "admin_user",
         })
       ).rejects.toThrowError(
         "Cannot decline an order edit with status confirmed."
@@ -291,7 +291,7 @@ describe("OrderEditService", () => {
         IdMap.getId("declined-order-edit"),
         {
           declinedReason: "I requested a different color for the new product",
-          declinedBy: "admin_user",
+          loggedInUserId: "admin_user",
         }
       )
 
@@ -335,7 +335,7 @@ describe("OrderEditService", () => {
         } as any)
 
         result = await orderEditService.requestConfirmation(orderEditId, {
-          requestedBy: userId,
+          loggedInUserId: userId,
         })
       })
 
@@ -367,7 +367,7 @@ describe("OrderEditService", () => {
 
       beforeEach(async () => {
         result = await orderEditService.requestConfirmation(orderEditId, {
-          requestedBy: userId,
+          loggedInUserId: userId,
         })
       })
 
@@ -381,7 +381,7 @@ describe("OrderEditService", () => {
         const id = IdMap.getId("order-edit-with-changes")
         const userId = IdMap.getId("user-id")
 
-        await orderEditService.cancel(id, { canceledBy: userId })
+        await orderEditService.cancel(id, { loggedInUserId: userId })
 
         expect(orderEditRepository.save).toHaveBeenCalledWith({
           ...orderEditWithChanges,
@@ -401,7 +401,7 @@ describe("OrderEditService", () => {
         const userId = IdMap.getId("user-id")
 
         const result = await orderEditService.cancel(id, {
-          canceledBy: userId,
+          loggedInUserId: userId,
         })
 
         expect(result).toEqual(expect.objectContaining({ status: "canceled" }))
@@ -418,7 +418,7 @@ describe("OrderEditService", () => {
           const userId = IdMap.getId("user-id")
 
           try {
-            await orderEditService.cancel(id, { canceledBy: userId })
+            await orderEditService.cancel(id, { loggedInUserId: userId })
           } catch (err) {
             expect(err.message).toEqual(
               `Cannot cancel order edit with status ${status}`
@@ -433,7 +433,7 @@ describe("OrderEditService", () => {
         const id = IdMap.getId("order-edit-with-changes")
         const userId = IdMap.getId("user-id")
 
-        await orderEditService.confirm(id, { confirmedBy: userId })
+        await orderEditService.confirm(id, { loggedInUserId: userId })
 
         expect(orderEditRepository.save).toHaveBeenCalledWith({
           ...orderEditWithChanges,
@@ -453,7 +453,7 @@ describe("OrderEditService", () => {
         const userId = IdMap.getId("user-id")
 
         const result = await orderEditService.confirm(id, {
-          confirmedBy: userId,
+          loggedInUserId: userId,
         })
 
         expect(result).toEqual(expect.objectContaining({ status: "confirmed" }))

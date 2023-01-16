@@ -1,9 +1,6 @@
 import { Router } from "express"
 
-import middlewares, {
-  transformQuery,
-  transformBody,
-} from "../../../middlewares"
+import middlewares, { transformQuery, transformBody } from "../../../middlewares"
 import { isFeatureFlagEnabled } from "../../../middlewares/feature-flag-enabled"
 import deleteProductCategory from "./delete-product-category"
 
@@ -19,11 +16,6 @@ import createProductCategory, {
   AdminPostProductCategoriesReq,
   AdminPostProductCategoriesParams,
 } from "./create-product-category"
-
-import updateProductCategory, {
-  AdminPostProductCategoriesCategoryReq,
-  AdminPostProductCategoriesCategoryParams,
-} from "./update-product-category"
 
 const route = Router()
 
@@ -62,17 +54,6 @@ export default (app) => {
       isList: false,
     }),
     middlewares.wrap(getProductCategory)
-  )
-
-  route.post(
-    "/:id",
-    transformQuery(AdminPostProductCategoriesCategoryParams, {
-      defaultFields: defaultProductCategoryFields,
-      defaultRelations: defaultAdminProductCategoryRelations,
-      isList: false,
-    }),
-    transformBody(AdminPostProductCategoriesCategoryReq),
-    middlewares.wrap(updateProductCategory)
   )
 
   route.delete("/:id", middlewares.wrap(deleteProductCategory))
