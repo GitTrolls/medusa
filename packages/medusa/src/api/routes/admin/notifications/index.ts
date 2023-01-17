@@ -36,26 +36,10 @@ export const defaultAdminNotificationsFields = [
   "updated_at",
 ]
 
-/**
- * @schema AdminNotificationsListRes
- * type: object
- * properties:
- *   notifications:
- *     type: array
- *     items:
- *       $ref: "#/components/schemas/Notification"
- */
 export type AdminNotificationsListRes = {
   notifications: Notification[]
 }
 
-/**
- * @schema AdminNotificationsRes
- * type: object
- * properties:
- *   notification:
- *     $ref: "#/components/schemas/Notification"
- */
 export type AdminNotificationsRes = {
   notification: Notification
 }

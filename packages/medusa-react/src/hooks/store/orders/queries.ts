@@ -1,9 +1,9 @@
-import { StoreGetOrdersParams, StoreOrdersRes } from "@medusajs/medusa"
-import { Response } from "@medusajs/medusa-js"
-import { useQuery } from "@tanstack/react-query"
+import { queryKeysFactory } from "../../utils/index"
+import { StoreOrdersRes, StoreGetOrdersParams } from "@medusajs/medusa"
+import { useQuery } from "react-query"
 import { useMedusa } from "../../../contexts"
 import { UseQueryOptionsWrapper } from "../../../types"
-import { queryKeysFactory } from "../../utils/index"
+import { Response } from "@medusajs/medusa-js"
 
 const ORDERS_QUERY_KEY = `orders` as const
 

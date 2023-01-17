@@ -32,7 +32,10 @@ import { CartService } from "../../../../services"
  *     content:
  *       application/json:
  *         schema:
- *           $ref: "#/components/schemas/StoreCartsRes"
+ *           type: object
+ *           properties:
+ *             cart:
+ *               $ref: "#/components/schemas/Cart"
  *   "400":
  *     $ref: "#/components/responses/400_error"
  *   "404":

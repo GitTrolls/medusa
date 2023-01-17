@@ -40,16 +40,9 @@ export default ({ modules }: ConfigModule) => {
       )
     }
 
-    const moduleDeclaration =
-      typeof moduleConfiguration === "object" ? moduleConfiguration : {}
-
     moduleResolutions[definition.key] = {
       resolutionPath,
       definition,
-      moduleDeclaration: {
-        ...definition.defaultModuleDeclaration,
-        ...moduleDeclaration,
-      },
       options:
         typeof moduleConfiguration === "object"
           ? moduleConfiguration.options ?? {}

@@ -34,7 +34,12 @@ import { ProductService } from "../../../../services"
  *     content:
  *       application/json:
  *         schema:
- *           $ref: "#/components/schemas/AdminProductsListTypesRes"
+ *           type: object
+ *           properties:
+ *             types:
+ *               type: array
+ *               items:
+ *                 $ref: "#/components/schemas/ProductType"
  *   "400":
  *     $ref: "#/components/responses/400_error"
  *   "401":

@@ -42,7 +42,10 @@ import {
  *     content:
  *       application/json:
  *         schema:
- *           $ref: "#/components/schemas/AdminOrderEditsRes"
+ *           type: object
+ *           properties:
+ *             order_edit:
+ *               $ref: "#/components/schemas/OrderEdit"
  *   "400":
  *     $ref: "#/components/responses/400_error"
  *   "401":

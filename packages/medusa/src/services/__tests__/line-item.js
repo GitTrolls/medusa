@@ -4,6 +4,7 @@ import LineItemService from "../line-item"
 import { PricingServiceMock } from "../__mocks__/pricing"
 import { ProductVariantServiceMock } from "../__mocks__/product-variant"
 import { RegionServiceMock } from "../__mocks__/region"
+
 ;[true, false].forEach((isTaxInclusiveEnabled) => {
   describe(`tax inclusive flag set to: ${isTaxInclusiveEnabled}`, () => {
     describe("LineItemService", () => {
@@ -427,7 +428,6 @@ describe("LineItemService", () => {
           thumbnail: "",
           variant_id: IdMap.getId("test-variant"),
           quantity: 1,
-          order_edit_id: null,
           allow_discounts: undefined,
           is_giftcard: undefined,
           metadata: {},
@@ -464,7 +464,6 @@ describe("LineItemService", () => {
           variant_id: IdMap.getId("test-variant"),
           quantity: 1,
           allow_discounts: undefined,
-          order_edit_id: null,
           is_giftcard: undefined,
           metadata: {},
           should_merge: true,
@@ -586,7 +585,6 @@ describe("LineItemService", () => {
           variant_id: IdMap.getId("test-variant"),
           quantity: 1,
           allow_discounts: undefined,
-          order_edit_id: null,
           is_giftcard: undefined,
           metadata: {},
           should_merge: true,
@@ -623,7 +621,6 @@ describe("LineItemService", () => {
           quantity: 1,
           allow_discounts: undefined,
           is_giftcard: undefined,
-          order_edit_id: null,
           metadata: {},
           should_merge: true,
           includes_tax: false,

@@ -1,5 +1,4 @@
 import CustomerService from "../../../../services/customer"
-
 /**
  * @oas [get] /auth/{email}
  * operationId: "GetAuthEmail"
@@ -33,7 +32,11 @@ import CustomerService from "../../../../services/customer"
  *    content:
  *      application/json:
  *        schema:
- *          $ref: "#/components/schemas/StoreGetAuthEmailRes"
+ *          type: object
+ *          properties:
+ *            exists:
+ *              type: boolean
+ *              description: Whether email exists or not.
  *  "400":
  *    $ref: "#/components/responses/400_error"
  *  "404":

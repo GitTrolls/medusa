@@ -60,7 +60,10 @@ import { validator } from "../../../../utils/validator"
  *     content:
  *       application/json:
  *         schema:
- *           $ref: "#/components/schemas/AdminRegionsRes"
+ *           type: object
+ *           properties:
+ *             region:
+ *               $ref: "#/components/schemas/Region"
  *   "400":
  *     $ref: "#/components/responses/400_error"
  *   "401":

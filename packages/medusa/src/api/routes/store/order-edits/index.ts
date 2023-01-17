@@ -1,20 +1,26 @@
 import { Router } from "express"
-import { OrderEdit } from "../../../../models"
-import { FindParams } from "../../../../types/common"
-import {
-  defaultStoreOrderEditFields,
-  defaultStoreOrderEditRelations,
-} from "../../../../types/order-edit"
 import middlewares, {
   transformBody,
   transformQuery,
 } from "../../../middlewares"
+import { FindParams } from "../../../../types/common"
+import { isFeatureFlagEnabled } from "../../../middlewares/feature-flag-enabled"
+import OrderEditingFeatureFlag from "../../../../loaders/feature-flags/order-editing"
+import {
+  defaultStoreOrderEditFields,
+  defaultStoreOrderEditRelations,
+} from "../../../../types/order-edit"
+import { OrderEdit } from "../../../../models"
 import { StorePostOrderEditsOrderEditDecline } from "./decline-order-edit"
 
 const route = Router()
 
 export default (app) => {
-  app.use("/order-edits", route)
+  app.use(
+    "/order-edits",
+    isFeatureFlagEnabled(OrderEditingFeatureFlag.key),
+    route
+  )
 
   route.get(
     "/:id",
@@ -41,13 +47,6 @@ export default (app) => {
   return app
 }
 
-/**
- * @schema StoreOrderEditsRes
- * type: object
- * properties:
- *   order_edit:
- *     $ref: "#/components/schemas/OrderEdit"
- */
 export type StoreOrderEditsRes = {
   order_edit: Omit<
     OrderEdit,

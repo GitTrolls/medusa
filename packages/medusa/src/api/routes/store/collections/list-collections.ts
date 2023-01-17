@@ -78,7 +78,21 @@ import { Type } from "class-transformer"
  *    content:
  *      application/json:
  *        schema:
- *          $ref: "#/components/schemas/StoreCollectionsListRes"
+ *          type: object
+ *          properties:
+ *            collections:
+ *               type: array
+ *               items:
+ *                 $ref: "#/components/schemas/ProductCollection"
+ *            count:
+ *               type: integer
+ *               description: The total number of items available
+ *            offset:
+ *               type: integer
+ *               description: The number of items skipped before these items
+ *            limit:
+ *               type: integer
+ *               description: The number of items per page
  *  "400":
  *    $ref: "#/components/responses/400_error"
  *  "404":

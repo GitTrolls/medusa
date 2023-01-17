@@ -39,7 +39,10 @@ import { FindParams } from "../../../../types/common"
  *     content:
  *       application/json:
  *         schema:
- *           $ref: "#/components/schemas/AdminStockLocationsRes"
+ *           type: object
+ *           properties:
+ *             stock_location:
+ *               $ref: "#/components/schemas/StockLocationDTO"
  */
 export default async (req: Request, res: Response) => {
   const { id } = req.params

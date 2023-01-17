@@ -31,7 +31,10 @@ import { OrderService } from "../../../../services"
  *     content:
  *       application/json:
  *         schema:
- *           $ref: "#/components/schemas/StoreOrdersRes"
+ *           type: object
+ *           properties:
+ *             order:
+ *               $ref: "#/components/schemas/Order"
  *   "400":
  *     $ref: "#/components/responses/400_error"
  *   "404":

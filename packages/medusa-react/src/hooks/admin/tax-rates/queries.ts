@@ -1,10 +1,10 @@
 import {
-  AdminGetTaxRatesParams,
-  AdminTaxRatesListRes,
   AdminTaxRatesRes,
+  AdminTaxRatesListRes,
+  AdminGetTaxRatesParams,
 } from "@medusajs/medusa"
 import { Response } from "@medusajs/medusa-js"
-import { useQuery } from "@tanstack/react-query"
+import { useQuery } from "react-query"
 import { useMedusa } from "../../../contexts"
 import { UseQueryOptionsWrapper } from "../../../types"
 import { queryKeysFactory } from "../../utils/index"

@@ -43,7 +43,20 @@ import { IsOptional, IsString } from "class-validator"
  *     content:
  *       application/json:
  *         schema:
- *           $ref: "#/components/schemas/AdminOrderEditsListRes"
+ *           type: object
+ *           properties:
+ *             order_edits:
+ *               type: array
+ *               $ref: "#/components/schemas/OrderEdit"
+ *             count:
+ *               type: integer
+ *               description: The total number of items available
+ *             offset:
+ *               type: integer
+ *               description: The number of items skipped before these items
+ *             limit:
+ *               type: integer
+ *               description: The number of items per page
  *   "400":
  *     $ref: "#/components/responses/400_error"
  *   "401":

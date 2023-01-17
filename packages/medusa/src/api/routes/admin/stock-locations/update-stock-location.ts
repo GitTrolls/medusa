@@ -1,6 +1,6 @@
 import { Request, Response } from "express"
 import { Type } from "class-transformer"
-import { IsObject, IsOptional, IsString, ValidateNested } from "class-validator"
+import { ValidateNested, IsOptional, IsString, IsObject } from "class-validator"
 
 import { IStockLocationService } from "../../../../interfaces"
 import { FindParams } from "../../../../types/common"
@@ -53,7 +53,10 @@ import { FindParams } from "../../../../types/common"
  *     content:
  *       application/json:
  *         schema:
- *           $ref: "#/components/schemas/AdminStockLocationsRes"
+ *           type: object
+ *           properties:
+ *             stock_location:
+ *               $ref: "#/components/schemas/StockLocationDTO"
  *   "400":
  *     $ref: "#/components/responses/400_error"
  *   "401":

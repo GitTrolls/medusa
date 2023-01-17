@@ -39,7 +39,12 @@ import { Selector } from "../../../../types/common"
  *     content:
  *       application/json:
  *         schema:
- *           $ref: "#/components/schemas/AdminReturnReasonsListRes"
+ *           type: object
+ *           properties:
+ *             return_reasons:
+ *               type: array
+ *               items:
+ *                 $ref: "#/components/schemas/ReturnReason"
  *   "400":
  *     $ref: "#/components/responses/400_error"
  *   "401":

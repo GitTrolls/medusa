@@ -83,13 +83,6 @@ export const defaultStoreOrdersFields = [
   "total",
 ] as (keyof Order)[]
 
-/**
- * @schema StoreOrdersRes
- * type: object
- * properties:
- *   order:
- *     $ref: "#/components/schemas/Order"
- */
 export type StoreOrdersRes = {
   order: Order
 }
