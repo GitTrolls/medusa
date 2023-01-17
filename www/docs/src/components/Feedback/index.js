@@ -1,10 +1,9 @@
-import React, { useRef, useState, useEffect } from 'react';
+import React, { useRef, useState } from 'react';
 import { CSSTransition, SwitchTransition } from 'react-transition-group';
 import './index.css';
 
 import useIsBrowser from '@docusaurus/useIsBrowser';
 import {useLocation} from '@docusaurus/router';
-import uuid from 'react-uuid';
 
 export default function Feedback ({
   event,
@@ -22,68 +21,45 @@ export default function Feedback ({
   const inlineFeedbackRef = useRef(null);
   const inlineQuestionRef = useRef(null);
   const inlineMessageRef = useRef(null)
-  const [positiveFeedback, setPositiveFeedback] = useState(false);
+  const [positiveFeedback, setPositiveFeedbac] = useState(false);
   const [message, setMessage] = useState("");
-  const [id, setId] = useState(null)
   const nodeRef = submittedFeedback ? inlineMessageRef : (showForm ? inlineQuestionRef : inlineFeedbackRef);
 
   const isBrowser = useIsBrowser();
   const location = useLocation();
 
   function handleFeedback (e) {
-    const feedback = e.target.classList.contains('positive');
-    submitFeedback(e, feedback)
-    setPositiveFeedback(feedback);
+    submitFeedback()
+    setPositiveFeedbac(e.target.classList.contains('positive'));
     setShowForm(true);
   }
 
-  function submitFeedback (e, feedback = null) {
-    console.log(id, feedback, (feedback !== null && feedback) || (feedback === null && positiveFeedback) ? 'yes' : 'no')
+  function submitFeedback () {
     if (isBrowser) {
-      console.log("here1");
       if (window.analytics) {
-        console.log("here3");
         if (showForm) {
           setLoading(true);
         }
-        console.log("here4");
         window.analytics.track(event, {
           url: location.pathname,
           label: document.title,
-          feedback: (feedback !== null && feedback) || (feedback === null && positiveFeedback) ? 'yes' : 'no',
-          message,
-          uuid: id
+          feedback: positiveFeedback ? 'yes' : 'no',
+          message
         }, function () {
-          console.log("here5");
           if (showForm) {
             setLoading(false);
-            console.log("here6");
-            resetForm();
+            setShowForm(false);
+            setSubmittedFeedback(true);
           }
         })
       } else {
-        console.log("here7");
         if (showForm) {
-          console.log("here8");
-          resetForm();
+          setShowForm(false);
+          setSubmittedFeedback(true);
         }
       }
     }
   }
-
-  function resetForm () {
-    setShowForm(false);
-    setSubmittedFeedback(true);
-    if (message) {
-      setId(null);
-    }
-  }
-
-  useEffect(() => {
-    if (!id) {
-      setId(uuid())
-    }
-  }, [id])
 
   return (
     <div className='feedback-container'>

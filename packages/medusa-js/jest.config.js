@@ -1,12 +1,7 @@
 module.exports = {
-  globals: {
-    "ts-jest": {
-      diagnostics: false,
-      isolatedModules: true,
-    },
-  },
   transform: {
-    ".(ts|tsx)$": require.resolve("ts-jest/dist/"),
+    "^.+\\.(t|j)sx?$": require.resolve("ts-jest"),
   },
-  testEnvironment: "jsdom",
+  testRegex: "(/tests/.*|(\\.|/)(test|spec))\\.(jsx?|tsx?)$",
+  moduleFileExtensions: ["ts", "tsx", "js", "jsx", "json", "node"],
 }

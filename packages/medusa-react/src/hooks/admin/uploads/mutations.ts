@@ -4,9 +4,14 @@ import {
   AdminPostUploadsDownloadUrlReq,
   AdminUploadsDownloadUrlRes,
   AdminUploadsRes,
+  IAdminPostUploadsFileReq,
 } from "@medusajs/medusa"
-import { AdminCreateUploadPayload, Response } from "@medusajs/medusa-js"
-import { useMutation, UseMutationOptions, useQueryClient } from "react-query"
+import { Response } from "@medusajs/medusa-js"
+import {
+  useMutation,
+  UseMutationOptions,
+  useQueryClient,
+} from "@tanstack/react-query"
 import { useMedusa } from "../../../contexts"
 import { buildOptions } from "../../utils/buildOptions"
 
@@ -14,13 +19,13 @@ export const useAdminUploadFile = (
   options?: UseMutationOptions<
     Response<AdminUploadsRes>,
     Error,
-    AdminCreateUploadPayload
+    IAdminPostUploadsFileReq
   >
 ) => {
   const { client } = useMedusa()
   const queryClient = useQueryClient()
 
-  return useMutation((payload: AdminCreateUploadPayload) => {
+  return useMutation((payload: IAdminPostUploadsFileReq) => {
     return client.admin.uploads.create(payload)
   }, buildOptions(queryClient, undefined, options))
 }
@@ -29,13 +34,13 @@ export const useAdminUploadProtectedFile = (
   options?: UseMutationOptions<
     Response<AdminUploadsRes>,
     Error,
-    AdminCreateUploadPayload
+    IAdminPostUploadsFileReq
   >
 ) => {
   const { client } = useMedusa()
   const queryClient = useQueryClient()
 
-  return useMutation((payload: AdminCreateUploadPayload) => {
+  return useMutation((payload: IAdminPostUploadsFileReq) => {
     return client.admin.uploads.createProtected(payload)
   }, buildOptions(queryClient, undefined, options))
 }
