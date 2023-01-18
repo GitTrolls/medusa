@@ -4,10 +4,16 @@ import { Order } from "../../../.."
 import {
   DeleteResponse,
   FindParams,
-  PaginatedResponse
+  PaginatedResponse,
 } from "../../../../types/common"
 import { FlagRouter } from "../../../../utils/flag-router"
-import middlewares, { transformQuery } from "../../../middlewares"
+import middlewares, {
+  transformBody,
+  transformQuery,
+} from "../../../middlewares"
+import { checkRegisteredModules } from "../../../middlewares/check-registered-modules"
+import { AdminOrdersOrderLineItemReservationReq } from "./create-reservation-for-line-item"
+import { AdminGetOrdersOrderReservationsParams } from "./get-reservations"
 import { AdminGetOrdersParams } from "./list-orders"
 
 const route = Router()
@@ -227,15 +233,60 @@ export default (app, featureFlagRouter: FlagRouter) => {
     middlewares.wrap(require("./create-claim-shipment").default)
   )
 
+  route.get(
+    "/:id/reservations",
+    checkRegisteredModules({
+      inventoryService:
+        "Inventory is not enabled. Please add an Inventory module to enable this functionality.",
+    }),
+    transformQuery(AdminGetOrdersOrderReservationsParams, {
+      isList: true,
+    }),
+    middlewares.wrap(require("./get-reservations").default)
+  )
+
+  route.post(
+    "/:id/line-items/:line_item_id/reserve",
+    checkRegisteredModules({
+      inventoryService:
+        "Inventory is not enabled. Please add an Inventory module to enable this functionality.",
+    }),
+    transformBody(AdminOrdersOrderLineItemReservationReq),
+    middlewares.wrap(require("./create-reservation-for-line-item").default)
+  )
+
   return app
 }
 
+/**
+ * @schema AdminOrdersRes
+ * type: object
+ * properties:
+ *   order:
+ *     $ref: "#/components/schemas/Order"
+ */
 export type AdminOrdersRes = {
   order: Order
 }
 
-export type AdminDeleteRes = DeleteResponse
-
+/**
+ * @schema AdminOrdersListRes
+ * type: object
+ * properties:
+ *   orders:
+ *     type: array
+ *     items:
+ *       $ref: "#/components/schemas/Order"
+ *   count:
+ *     type: integer
+ *     description: The total number of items available
+ *   offset:
+ *     type: integer
+ *     description: The number of items skipped before these items
+ *   limit:
+ *     type: integer
+ *     description: The number of items per page
+ */
 export type AdminOrdersListRes = PaginatedResponse & {
   orders: Order[]
 }
@@ -361,4 +412,3 @@ export * from "./refund-payment"
 export * from "./request-return"
 export * from "./update-claim"
 export * from "./update-order"
-
