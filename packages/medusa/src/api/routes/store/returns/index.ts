@@ -12,13 +12,6 @@ export default (app) => {
   return app
 }
 
-/**
- * @schema StoreReturnsRes
- * type: object
- * properties:
- *   return:
- *     $ref: "#/components/schemas/Return"
- */
 export type StoreReturnsRes = {
   return: Return
 }

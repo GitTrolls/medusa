@@ -37,7 +37,19 @@ import { OrderEditService } from "../../../../services"
  *     content:
  *       application/json:
  *         schema:
- *           $ref: "#/components/schemas/AdminOrderEditItemChangeDeleteRes"
+ *           type: object
+ *           properties:
+ *             id:
+ *               type: string
+ *               description: The ID of the deleted Order Edit Item Change.
+ *             object:
+ *               type: string
+ *               description: The type of the object that was deleted.
+ *               format: item_change
+ *             deleted:
+ *               type: boolean
+ *               description: Whether or not the Order Edit Item Change was deleted.
+ *               default: true
  *   "400":
  *     $ref: "#/components/responses/400_error"
  */

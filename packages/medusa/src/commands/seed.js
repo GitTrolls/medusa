@@ -1,37 +1,20 @@
-import express from "express"
+import path from "path"
 import fs from "fs"
+import express from "express"
+import { createConnection } from "typeorm"
 import { sync as existsSync } from "fs-exists-cached"
 import { getConfigFile } from "medusa-core-utils"
 import { track } from "medusa-telemetry"
-import path from "path"
-import { ConnectionOptions, createConnection } from "typeorm"
 
-import loaders from "../loaders"
 import { handleConfigError } from "../loaders/config"
 import Logger from "../loaders/logger"
+import loaders from "../loaders"
 
 import featureFlagLoader from "../loaders/feature-flags"
 
-import {
-  ProductService,
-  ProductVariantService,
-  RegionService,
-  ShippingOptionService,
-  ShippingProfileService,
-  StoreService,
-  UserService,
-} from "../services"
-import { ConfigModule } from "../types/global"
-import { CreateProductInput } from "../types/product"
 import getMigrations from "./utils/get-migrations"
 
-type SeedOptions = {
-  directory: string
-  migrate: boolean
-  seedFile: string
-}
-
-const seed = async function ({ directory, migrate, seedFile }: SeedOptions) {
+const t = async function ({ directory, migrate, seedFile }) {
   track("CLI_SEED")
   let resolvedPath = seedFile
 
@@ -47,8 +30,7 @@ const seed = async function ({ directory, migrate, seedFile }: SeedOptions) {
     }
   }
 
-  const { configModule, error }: { configModule: ConfigModule; error?: any } =
-    getConfigFile(directory, `medusa-config`)
+  const { configModule, error } = getConfigFile(directory, `medusa-config`)
 
   if (error) {
     handleConfigError(error)
@@ -59,8 +41,7 @@ const seed = async function ({ directory, migrate, seedFile }: SeedOptions) {
   const dbType = configModule.projectConfig.database_type
   if (migrate && dbType !== "sqlite") {
     const migrationDirs = await getMigrations(directory, featureFlagRouter)
-
-    const connectionOptions = {
+    const connection = await createConnection({
       type: configModule.projectConfig.database_type,
       database: configModule.projectConfig.database_database,
       schema: configModule.projectConfig.database_schema,
@@ -68,9 +49,7 @@ const seed = async function ({ directory, migrate, seedFile }: SeedOptions) {
       extra: configModule.projectConfig.database_extra || {},
       migrations: migrationDirs,
       logging: true,
-    } as ConnectionOptions
-
-    const connection = await createConnection(connectionOptions)
+    })
 
     await connection.runMigrations()
     await connection.close()
@@ -81,38 +60,29 @@ const seed = async function ({ directory, migrate, seedFile }: SeedOptions) {
   const { container } = await loaders({
     directory,
     expressApp: app,
-    isTest: false,
   })
 
   const manager = container.resolve("manager")
 
-  const storeService: StoreService = container.resolve("storeService")
-  const userService: UserService = container.resolve("userService")
-  const regionService: RegionService = container.resolve("regionService")
-  const productService: ProductService = container.resolve("productService")
-  /* eslint-disable */
-  const productVariantService: ProductVariantService = container.resolve("productVariantService")
-  const shippingOptionService: ShippingOptionService = container.resolve("shippingOptionService")
-  const shippingProfileService: ShippingProfileService = container.resolve("shippingProfileService")
-  /* eslint-enable */
+  const storeService = container.resolve("storeService")
+  const userService = container.resolve("userService")
+  const regionService = container.resolve("regionService")
+  const productService = container.resolve("productService")
+  const productVariantService = container.resolve("productVariantService")
+  const shippingOptionService = container.resolve("shippingOptionService")
+  const shippingProfileService = container.resolve("shippingProfileService")
 
   await manager.transaction(async (tx) => {
-    const {
-      store: seededStore,
-      regions,
-      products,
-      shipping_options,
-      users,
-    } = JSON.parse(fs.readFileSync(resolvedPath, `utf-8`))
+    const { store, regions, products, shipping_options, users } = JSON.parse(
+      fs.readFileSync(resolvedPath, `utf-8`)
+    )
 
     const gcProfile = await shippingProfileService.retrieveGiftCardDefault()
     const defaultProfile = await shippingProfileService.retrieveDefault()
 
-    if (seededStore) {
-      await storeService.withTransaction(tx).update(seededStore)
+    if (store) {
+      await storeService.withTransaction(tx).update(store)
     }
-
-    const store = await storeService.retrieve()
 
     for (const u of users) {
       const pass = u.password
@@ -142,9 +112,9 @@ const seed = async function ({ directory, migrate, seedFile }: SeedOptions) {
         so.region_id = regionIds[so.region_id]
       }
 
-      so.profile_id = defaultProfile!.id
+      so.profile_id = defaultProfile.id
       if (so.is_giftcard) {
-        so.profile_id = gcProfile!.id
+        so.profile_id = gcProfile.id
         delete so.is_giftcard
       }
 
@@ -158,20 +128,16 @@ const seed = async function ({ directory, migrate, seedFile }: SeedOptions) {
       // default to the products being visible
       p.status = p.status || "published"
 
-      p.sales_channels = [{ id: store.default_sales_channel_id }]
-
-      p.profile_id = defaultProfile!.id
+      p.profile_id = defaultProfile.id
       if (p.is_giftcard) {
-        p.profile_id = gcProfile!.id
+        p.profile_id = gcProfile.id
       }
 
-      const newProd = await productService
-        .withTransaction(tx)
-        .create(p as CreateProductInput)
+      const newProd = await productService.withTransaction(tx).create(p)
 
       if (variants && variants.length) {
         const optionIds = p.options.map(
-          (o) => newProd.options.find((newO) => newO.title === o.title)?.id
+          (o) => newProd.options.find((newO) => newO.title === o.title).id
         )
 
         for (const v of variants) {
@@ -194,4 +160,4 @@ const seed = async function ({ directory, migrate, seedFile }: SeedOptions) {
   track("CLI_SEED_COMPLETED")
 }
 
-export default seed
+export default t

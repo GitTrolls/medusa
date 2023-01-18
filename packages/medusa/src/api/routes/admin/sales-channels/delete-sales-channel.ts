@@ -38,7 +38,19 @@ import { SalesChannelService } from "../../../../services/"
  *     content:
  *       application/json:
  *         schema:
- *           $ref: "#/components/schemas/AdminSalesChannelsDeleteRes"
+ *           type: object
+ *           properties:
+ *             id:
+ *               type: string
+ *               description: The ID of the deleted sales channel
+ *             object:
+ *               type: string
+ *               description: The type of the object that was deleted.
+ *               default: sales-channel
+ *             deleted:
+ *               type: boolean
+ *               description: Whether or not the items were deleted.
+ *               default: true
  *   "400":
  *     $ref: "#/components/responses/400_error"
  *   "401":

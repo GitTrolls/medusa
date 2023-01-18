@@ -37,7 +37,19 @@ import PublishableApiKeyService from "../../../../services/publishable-api-key"
  *     content:
  *       application/json:
  *         schema:
- *           $ref: "#/components/schemas/AdminPublishableApiKeyDeleteRes"
+ *           type: object
+ *           properties:
+ *             id:
+ *               type: string
+ *               description: The ID of the deleted PublishableApiKey.
+ *             object:
+ *               type: string
+ *               description: The type of the object that was deleted.
+ *               format: publishable_api_key
+ *             deleted:
+ *               type: boolean
+ *               description: Whether the PublishableApiKeys was deleted.
+ *               default: true
  *   "400":
  *     $ref: "#/components/responses/400_error"
  */

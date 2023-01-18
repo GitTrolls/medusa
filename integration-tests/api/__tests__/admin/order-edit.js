@@ -3,7 +3,7 @@ const path = require("path")
 const startServerWithEnvironment =
   require("../../../helpers/start-server-with-environment").default
 const { useApi } = require("../../../helpers/use-api")
-const { useDb, initDb } = require("../../../helpers/use-db")
+const { useDb } = require("../../../helpers/use-db")
 const adminSeeder = require("../../helpers/admin-seeder")
 const {
   simpleOrderEditFactory,
@@ -21,7 +21,6 @@ const {
   simpleRegionFactory,
 } = require("../../factories")
 const { OrderEditItemChangeType, OrderEdit } = require("@medusajs/medusa")
-const setupServer = require("../../../helpers/setup-server")
 
 jest.setTimeout(30000)
 
@@ -31,17 +30,19 @@ const adminHeaders = {
   },
 }
 
-describe("/admin/order-edits", () => {
+describe("[MEDUSA_FF_ORDER_EDITING] /admin/order-edits", () => {
   let medusaProcess
   let dbConnection
   const adminUserId = "admin_user"
 
   beforeAll(async () => {
     const cwd = path.resolve(path.join(__dirname, "..", ".."))
-    dbConnection = await initDb({ cwd })
-    medusaProcess = await setupServer({
+    const [process, connection] = await startServerWithEnvironment({
       cwd,
+      env: { MEDUSA_FF_ORDER_EDITING: true },
     })
+    dbConnection = connection
+    medusaProcess = process
   })
 
   afterAll(async () => {

@@ -39,7 +39,10 @@ import { EntityManager } from "typeorm"
  *     content:
  *       application/json:
  *         schema:
- *           $ref: "#/components/schemas/AdminReturnsCancelRes"
+ *           type: object
+ *           properties:
+ *             order:
+ *               $ref: "#/components/schemas/Order"
  *   "400":
  *     $ref: "#/components/responses/400_error"
  *   "401":

@@ -109,7 +109,19 @@ import ProductTypeService from "../../../../services/product-type"
  *    content:
  *      application/json:
  *        schema:
- *          $ref: "#/components/schemas/StoreProductTypesListRes"
+ *          type: object
+ *          properties:
+ *            product_types:
+ *              $ref: "#/components/schemas/ProductType"
+ *            count:
+ *              type: integer
+ *              description: The total number of items available
+ *            offset:
+ *              type: integer
+ *              description: The number of items skipped before these items
+ *            limit:
+ *              type: integer
+ *              description: The number of items per page
  *  "400":
  *    $ref: "#/components/responses/400_error"
  *  "401":

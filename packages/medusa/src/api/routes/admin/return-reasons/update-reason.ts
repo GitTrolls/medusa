@@ -54,7 +54,10 @@ import { EntityManager } from "typeorm"
  *     content:
  *       application/json:
  *         schema:
- *           $ref: "#/components/schemas/AdminReturnReasonsRes"
+ *           type: object
+ *           properties:
+ *             return_reason:
+ *               $ref: "#/components/schemas/ReturnReason"
  *   "400":
  *     $ref: "#/components/responses/400_error"
  *   "401":

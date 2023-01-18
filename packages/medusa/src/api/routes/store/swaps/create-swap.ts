@@ -80,7 +80,10 @@ import { validator } from "../../../../utils/validator"
  *     content:
  *       application/json:
  *         schema:
- *           $ref: "#/components/schemas/StoreSwapsRes"
+ *           type: object
+ *           properties:
+ *             swap:
+ *               $ref: "#/components/schemas/Swap"
  *   "400":
  *     $ref: "#/components/responses/400_error"
  *   "404":

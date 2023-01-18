@@ -1,5 +1,5 @@
-import { StorePostSwapsReq, StoreSwapsRes } from "@medusajs/medusa"
-import { useMutation, UseMutationOptions } from "@tanstack/react-query"
+import { StoreSwapsRes, StorePostSwapsReq } from "@medusajs/medusa"
+import { useMutation, UseMutationOptions } from "react-query"
 import { useMedusa } from "../../../contexts"
 
 export const useCreateSwap = (

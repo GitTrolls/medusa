@@ -11,7 +11,6 @@ import OrderEditsResource from "./resources/order-edits"
 import OrdersResource from "./resources/orders"
 import PaymentCollectionsResource from "./resources/payment-collections"
 import PaymentMethodsResource from "./resources/payment-methods"
-import ProductTagsResource from "./resources/product-tags"
 import ProductTypesResource from "./resources/product-types"
 import ProductsResource from "./resources/products"
 import RegionsResource from "./resources/regions"
@@ -41,7 +40,6 @@ class Medusa {
   public giftCards: GiftCardsResource
   public paymentMethods: PaymentMethodsResource
   public paymentCollections: PaymentCollectionsResource
-  public productTags: ProductTagsResource
 
   constructor(config: Config) {
     this.client = new Client(config)
@@ -65,7 +63,6 @@ class Medusa {
     this.giftCards = new GiftCardsResource(this.client)
     this.paymentMethods = new PaymentMethodsResource(this.client)
     this.paymentCollections = new PaymentCollectionsResource(this.client)
-    this.productTags = new ProductTagsResource(this.client)
   }
 
   /**

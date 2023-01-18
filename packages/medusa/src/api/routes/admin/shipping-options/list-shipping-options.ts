@@ -55,7 +55,15 @@ import { validator } from "../../../../utils/validator"
  *     content:
  *       application/json:
  *         schema:
- *           $ref: "#/components/schemas/AdminShippingOptionsListRes"
+ *           type: object
+ *           properties:
+ *             shipping_options:
+ *               type: array
+ *               items:
+ *                 $ref: "#/components/schemas/ShippingOption"
+ *             count:
+ *               type: integer
+ *               description: The total number of items available
  *   "400":
  *     $ref: "#/components/responses/400_error"
  *   "401":

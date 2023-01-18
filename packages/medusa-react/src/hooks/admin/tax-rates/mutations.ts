@@ -1,24 +1,20 @@
+import { adminTaxRateKeys } from "./queries"
 import {
+  AdminTaxRatesRes,
+  AdminTaxRatesDeleteRes,
   AdminDeleteTaxRatesTaxRateProductsReq,
   AdminDeleteTaxRatesTaxRateProductTypesReq,
   AdminDeleteTaxRatesTaxRateShippingOptionsReq,
   AdminPostTaxRatesReq,
+  AdminPostTaxRatesTaxRateReq,
   AdminPostTaxRatesTaxRateProductsReq,
   AdminPostTaxRatesTaxRateProductTypesReq,
-  AdminPostTaxRatesTaxRateReq,
   AdminPostTaxRatesTaxRateShippingOptionsReq,
-  AdminTaxRatesDeleteRes,
-  AdminTaxRatesRes,
 } from "@medusajs/medusa"
 import { Response } from "@medusajs/medusa-js"
-import {
-  useMutation,
-  UseMutationOptions,
-  useQueryClient,
-} from "@tanstack/react-query"
+import { useMutation, UseMutationOptions, useQueryClient } from "react-query"
 import { useMedusa } from "../../../contexts/medusa"
 import { buildOptions } from "../../utils/buildOptions"
-import { adminTaxRateKeys } from "./queries"
 
 export const useAdminCreateTaxRate = (
   options?: UseMutationOptions<

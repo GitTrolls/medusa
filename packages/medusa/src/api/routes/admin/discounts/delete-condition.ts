@@ -42,7 +42,22 @@ import { FindParams } from "../../../../types/common"
  *     content:
  *       application/json:
  *         schema:
- *           $ref: "#/components/schemas/AdminDiscountConditionsDeleteRes"
+ *           type: object
+ *           properties:
+ *             id:
+ *               type: string
+ *               description: The ID of the deleted DiscountCondition
+ *             object:
+ *               type: string
+ *               description: The type of the object that was deleted.
+ *               default: discount-condition
+ *             deleted:
+ *               type: boolean
+ *               description: Whether the discount condition was deleted successfully or not.
+ *               default: true
+ *             discount:
+ *               description: The Discount to which the condition used to belong
+ *               $ref: "#/components/schemas/Discount"
  *   "400":
  *     $ref: "#/components/responses/400_error"
  *   "401":

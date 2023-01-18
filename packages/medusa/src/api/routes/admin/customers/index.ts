@@ -1,6 +1,6 @@
 import { Router } from "express"
 import { Customer } from "../../../.."
-import { PaginatedResponse } from "../../../../types/common"
+import { DeleteResponse, PaginatedResponse } from "../../../../types/common"
 import middlewares from "../../../middlewares"
 
 const route = Router()
@@ -20,35 +20,12 @@ export default (app) => {
   return app
 }
 
-/**
- * @schema AdminCustomersRes
- * type: object
- * properties:
- *   customer:
- *     $ref: "#/components/schemas/Customer"
- */
 export type AdminCustomersRes = {
   customer: Customer
 }
 
-/**
- * @schema AdminCustomersListRes
- * type: object
- * properties:
- *   customers:
- *     type: array
- *     items:
- *       $ref: "#/components/schemas/Customer"
- *   count:
- *     type: integer
- *     description: The total number of items available
- *   offset:
- *     type: integer
- *     description: The number of items skipped before these items
- *   limit:
- *     type: integer
- *     description: The number of items per page
- */
+export type AdminCustomersDeleteRes = DeleteResponse
+
 export type AdminCustomersListRes = PaginatedResponse & {
   customers: Customer[]
 }

@@ -44,7 +44,19 @@ import { IsString } from "class-validator"
  *     content:
  *       application/json:
  *         schema:
- *           $ref: "#/components/schemas/AdminDeleteUploadsRes"
+ *           type: object
+ *           properties:
+ *             id:
+ *               type: string
+ *               description: The file key of the upload deleted
+ *             object:
+ *               type: string
+ *               description: The type of the object that was deleted.
+ *               default: file
+ *             deleted:
+ *               type: boolean
+ *               description: Whether or not the items were deleted.
+ *               default: true
  *   "400":
  *     $ref: "#/components/responses/400_error"
  *   "401":

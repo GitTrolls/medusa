@@ -59,7 +59,10 @@ import { PaymentService } from "../../../../services"
  *     content:
  *       application/json:
  *         schema:
- *           $ref: "#/components/schemas/AdminRefundRes"
+ *           type: object
+ *           properties:
+ *             refund:
+ *               $ref: "#/components/schemas/Refund"
  *   "400":
  *     $ref: "#/components/responses/400_error"
  *   "401":

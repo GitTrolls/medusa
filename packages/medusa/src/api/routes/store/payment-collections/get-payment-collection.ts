@@ -37,7 +37,10 @@ import { FindParams } from "../../../../types/common"
  *     content:
  *       application/json:
  *         schema:
- *           $ref: "#/components/schemas/StorePaymentCollectionsRes"
+ *           type: object
+ *           properties:
+ *             payment_collection:
+ *               $ref: "#/components/schemas/PaymentCollection"
  *   "400":
  *     $ref: "#/components/responses/400_error"
  *   "401":

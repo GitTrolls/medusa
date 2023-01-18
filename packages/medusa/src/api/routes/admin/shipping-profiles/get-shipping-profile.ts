@@ -40,7 +40,10 @@ import { ShippingProfileService } from "../../../../services"
  *     content:
  *       application/json:
  *         schema:
- *           $ref: "#/components/schemas/AdminShippingProfilesRes"
+ *           type: object
+ *           properties:
+ *             shipping_profile:
+ *               $ref: "#/components/schemas/ShippingProfile"
  *   "400":
  *     $ref: "#/components/responses/400_error"
  *   "401":

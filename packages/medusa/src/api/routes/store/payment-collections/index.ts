@@ -5,16 +5,23 @@ import middlewares, {
   transformQuery,
 } from "../../../middlewares"
 
-import { PaymentCollection, PaymentSession } from "../../../../models"
-import { StorePostPaymentCollectionsBatchSessionsAuthorizeReq } from "./authorize-batch-payment-sessions"
-import { GetPaymentCollectionsParams } from "./get-payment-collection"
+import OrderEditingFeatureFlag from "../../../../loaders/feature-flags/order-editing"
+import { isFeatureFlagEnabled } from "../../../middlewares/feature-flag-enabled"
+
 import { StorePostPaymentCollectionsBatchSessionsReq } from "./manage-batch-payment-sessions"
+import { GetPaymentCollectionsParams } from "./get-payment-collection"
+import { PaymentCollection, PaymentSession } from "../../../../models"
 import { StorePaymentCollectionSessionsReq } from "./manage-payment-session"
+import { StorePostPaymentCollectionsBatchSessionsAuthorizeReq } from "./authorize-batch-payment-sessions"
 
 const route = Router()
 
 export default (app, container) => {
-  app.use("/payment-collections", route)
+  app.use(
+    "/payment-collections",
+    isFeatureFlagEnabled(OrderEditingFeatureFlag.key),
+    route
+  )
 
   route.get(
     "/:id",
@@ -71,30 +78,16 @@ export const defaultPaymentCollectionFields = [
 
 export const defaulPaymentCollectionRelations = ["region", "payment_sessions"]
 
-/**
- * @schema StorePaymentCollectionsRes
- * type: object
- * properties:
- *   payment_collection:
- *     $ref: "#/components/schemas/PaymentCollection"
- */
 export type StorePaymentCollectionsRes = {
   payment_collection: PaymentCollection
 }
 
-/**
- * @schema StorePaymentCollectionsSessionRes
- * type: object
- * properties:
- *   payment_session:
- *     $ref: "#/components/schemas/PaymentSession"
- */
 export type StorePaymentCollectionsSessionRes = {
   payment_session: PaymentSession
 }
 
-export * from "./authorize-batch-payment-sessions"
 export * from "./get-payment-collection"
-export * from "./manage-batch-payment-sessions"
 export * from "./manage-payment-session"
+export * from "./manage-batch-payment-sessions"
 export * from "./refresh-payment-session"
+export * from "./authorize-batch-payment-sessions"

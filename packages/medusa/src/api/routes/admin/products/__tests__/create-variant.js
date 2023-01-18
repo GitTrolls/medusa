@@ -39,7 +39,6 @@ describe("POST /admin/products/:id/variants", () => {
         IdMap.getId("productWithOptions"),
         {
           inventory_quantity: 0,
-          manage_inventory: true,
           title: "Test Product Variant",
           options: [],
           prices: [

@@ -37,7 +37,9 @@ import { PaymentCollectionService } from "../../../../services"
  *     content:
  *       application/json:
  *         schema:
- *           $ref: "#/components/schemas/StorePaymentCollectionsSessionRes"
+ *           properties:
+ *             payment_session:
+ *               $ref: "#/components/schemas/PaymentSession"
  *   "400":
  *     $ref: "#/components/responses/400_error"
  *   "401":

@@ -88,10 +88,10 @@ class PayPalProviderService extends PaymentService {
    * @returns {object} the data to be stored with the payment session.
    */
   async createPayment(cart) {
-    const { region_id, id, resource_id, total } = cart
+    const { region_id } = cart
     const { currency_code } = await this.regionService_.retrieve(region_id)
 
-    const amount = total
+    const amount = cart.total
 
     const request = new PayPal.orders.OrdersCreateRequest()
     request.requestBody({
@@ -101,7 +101,7 @@ class PayPalProviderService extends PaymentService {
       },
       purchase_units: [
         {
-          custom_id: resource_id ?? id,
+          custom_id: cart.id,
           amount: {
             currency_code: currency_code.toUpperCase(),
             value: roundToTwo(
@@ -216,7 +216,7 @@ class PayPalProviderService extends PaymentService {
    */
   async updatePayment(sessionData, cart) {
     try {
-      const { region_id, total } = cart
+      const { region_id } = cart
       const { currency_code } = await this.regionService_.retrieve(region_id)
 
       const request = new PayPal.orders.OrdersPatchRequest(sessionData.id)
@@ -228,7 +228,7 @@ class PayPalProviderService extends PaymentService {
             amount: {
               currency_code: currency_code.toUpperCase(),
               value: roundToTwo(
-                humanizeAmount(total, currency_code),
+                humanizeAmount(cart.total, currency_code),
                 currency_code
               ),
             },

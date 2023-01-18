@@ -1,7 +1,2 @@
-const migrations = []
-const loaders = []
-
-export default {
-  migrations,
-  loaders,
-}
+export const migrations = []
+export const loaders = []

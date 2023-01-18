@@ -151,7 +151,30 @@ import PublishableAPIKeysFeatureFlag from "../../../../loaders/feature-flags/pub
  *     content:
  *       application/json:
  *         schema:
- *           $ref: "#/components/schemas/StoreProductsListRes"
+ *           type: object
+ *           properties:
+ *             products:
+ *               type: array
+ *               items:
+ *                 allOf:
+ *                   - $ref: "#/components/schemas/Product"
+ *                   - type: object
+ *                     properties:
+ *                       variants:
+ *                         type: array
+ *                         items:
+ *                           allOf:
+ *                             - $ref: "#/components/schemas/ProductVariant"
+ *                             - $ref: "#/components/schemas/ProductVariantPricesFields"
+ *             count:
+ *               type: integer
+ *               description: The total number of items available
+ *             offset:
+ *               type: integer
+ *               description: The number of items skipped before these items
+ *             limit:
+ *               type: integer
+ *               description: The number of items per page
  *   "400":
  *     $ref: "#/components/responses/400_error"
  *   "404":

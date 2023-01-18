@@ -1,5 +1,5 @@
-import { rest } from "msw"
 import { fixtures } from "../data"
+import { rest } from "msw"
 
 export const storeHandlers = [
   rest.get("/store/products", (req, res, ctx) => {
@@ -550,15 +550,4 @@ export const storeHandlers = [
       )
     }
   ),
-
-  rest.get("/store/product-tags", (req, res, ctx) => {
-    return res(
-      ctx.status(200),
-      ctx.json({
-        product_tags: fixtures.list("product_tag", 10),
-        limit: 5,
-        offset: 0,
-      })
-    )
-  }),
 ]

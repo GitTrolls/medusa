@@ -33,7 +33,12 @@ import InviteService from "../../../../services/invite"
  *     content:
  *       application/json:
  *         schema:
- *           $ref: "#/components/schemas/AdminListInvitesRes"
+ *           type: object
+ *           properties:
+ *             invites:
+ *               type: array
+ *               items:
+ *                 $ref: "#/components/schemas/Invite"
  *   "400":
  *     $ref: "#/components/responses/400_error"
  *   "401":

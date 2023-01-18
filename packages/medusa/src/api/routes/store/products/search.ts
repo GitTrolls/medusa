@@ -39,7 +39,11 @@ import { validator } from "../../../../utils/validator"
  *     content:
  *       application/json:
  *         schema:
- *           $ref: "#/components/schemas/StorePostSearchRes"
+ *           type: object
+ *           properties:
+ *             hits:
+ *               type: array
+ *               description: Array of results. The format of the items depends on the search engine installed on the server.
  *   "400":
  *     $ref: "#/components/responses/400_error"
  *   "404":
