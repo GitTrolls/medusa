@@ -211,7 +211,10 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/AdminAppsRes'
+                type: object
+                properties:
+                  apps:
+                    $ref: '#/components/schemas/OAuth'
         '400':
           $ref: '#/components/responses/400_error'
         '401':
@@ -247,7 +250,12 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/AdminAppsListRes'
+                type: object
+                properties:
+                  apps:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/OAuth'
         '400':
           $ref: '#/components/responses/400_error'
         '401':
@@ -314,7 +322,10 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/AdminAuthRes'
+                type: object
+                properties:
+                  user:
+                    $ref: '#/components/schemas/User'
         '400':
           $ref: '#/components/responses/400_error'
         '401':
@@ -408,7 +419,10 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/AdminAuthRes'
+                type: object
+                properties:
+                  user:
+                    $ref: '#/components/schemas/User'
         '400':
           $ref: '#/components/responses/400_error'
         '401':
@@ -468,7 +482,10 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/AdminBatchJobRes'
+                type: object
+                properties:
+                  batch_job:
+                    $ref: '#/components/schemas/BatchJob'
         '400':
           $ref: '#/components/responses/400_error'
         '401':
@@ -528,7 +545,10 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/AdminBatchJobRes'
+                type: object
+                properties:
+                  batch_job:
+                    $ref: '#/components/schemas/BatchJob'
         '400':
           $ref: '#/components/responses/400_error'
         '401':
@@ -595,7 +615,10 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/AdminBatchJobRes'
+                type: object
+                properties:
+                  batch_job:
+                    $ref: '#/components/schemas/BatchJob'
         '400':
           $ref: '#/components/responses/400_error'
         '401':
@@ -883,7 +906,21 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/AdminBatchJobListRes'
+                type: object
+                properties:
+                  batch_jobs:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/BatchJob'
+                  count:
+                    type: integer
+                    description: The total number of items available
+                  offset:
+                    type: integer
+                    description: The number of items skipped before these items
+                  limit:
+                    type: integer
+                    description: The number of items per page
         '400':
           $ref: '#/components/responses/400_error'
         '401':
@@ -943,7 +980,10 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/AdminBatchJobRes'
+                type: object
+                properties:
+                  batch_job:
+                    $ref: '#/components/schemas/BatchJob'
         '400':
           $ref: '#/components/responses/400_error'
         '401':
@@ -1001,7 +1041,10 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/AdminCollectionsRes'
+                type: object
+                properties:
+                  collection:
+                    $ref: '#/components/schemas/ProductCollection'
         '400':
           $ref: '#/components/responses/400_error'
         '401':
@@ -1058,7 +1101,21 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/AdminDeleteProductsFromCollectionRes'
+                type: object
+                properties:
+                  id:
+                    type: string
+                    description: The ID of the collection
+                  object:
+                    type: string
+                    description: The type of object the removal was executed on
+                    default: product-collection
+                  removed_products:
+                    description: The IDs of the products removed from the collection
+                    type: array
+                    items:
+                      description: The ID of a Product to add to the Product Collection.
+                      type: string
         '400':
           $ref: '#/components/responses/400_error'
         '401':
@@ -1124,7 +1181,10 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/AdminCollectionsRes'
+                type: object
+                properties:
+                  collection:
+                    $ref: '#/components/schemas/ProductCollection'
         '400':
           $ref: '#/components/responses/400_error'
         '401':
@@ -1277,7 +1337,21 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/AdminCollectionsListRes'
+                type: object
+                properties:
+                  collections:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/ProductCollection'
+                  count:
+                    type: integer
+                    description: The total number of items available
+                  offset:
+                    type: integer
+                    description: The number of items skipped before these items
+                  limit:
+                    type: integer
+                    description: The number of items per page
         '400':
           $ref: '#/components/responses/400_error'
         '401':
@@ -1337,7 +1411,19 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/AdminCollectionsDeleteRes'
+                type: object
+                properties:
+                  id:
+                    type: string
+                    description: The ID of the deleted Collection
+                  object:
+                    type: string
+                    description: The type of the object that was deleted.
+                    default: product-collection
+                  deleted:
+                    type: boolean
+                    description: Whether the collection was deleted successfully or not.
+                    default: true
         '400':
           $ref: '#/components/responses/400_error'
         '401':
@@ -1396,7 +1482,10 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/AdminCollectionsRes'
+                type: object
+                properties:
+                  collection:
+                    $ref: '#/components/schemas/ProductCollection'
         '400':
           $ref: '#/components/responses/400_error'
         '401':
@@ -1468,7 +1557,10 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/AdminCollectionsRes'
+                type: object
+                properties:
+                  collection:
+                    $ref: '#/components/schemas/ProductCollection'
         '400':
           $ref: '#/components/responses/400_error'
         '401':
@@ -1546,7 +1638,21 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/AdminCurrenciesListRes'
+                type: object
+                properties:
+                  currencies:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Currency'
+                  count:
+                    type: integer
+                    description: The total number of items available
+                  offset:
+                    type: integer
+                    description: The number of items skipped before these items
+                  limit:
+                    type: integer
+                    description: The number of items per page
   '/currencies/{code}':
     post:
       operationId: PostCurrenciesCurrency
@@ -1604,7 +1710,10 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/AdminCurrenciesRes'
+                type: object
+                properties:
+                  currency:
+                    $ref: '#/components/schemas/Currency'
   '/customer-groups/{id}/customers/batch':
     post:
       operationId: PostCustomerGroupsGroupCustomersBatch
@@ -1675,7 +1784,10 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/AdminCustomerGroupsRes'
+                type: object
+                properties:
+                  customer_group:
+                    $ref: '#/components/schemas/CustomerGroup'
         '400':
           $ref: '#/components/responses/400_error'
         '401':
@@ -1757,7 +1869,10 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/AdminCustomerGroupsRes'
+                type: object
+                properties:
+                  customer_group:
+                    $ref: '#/components/schemas/CustomerGroup'
         '400':
           $ref: '#/components/responses/400_error'
         '401':
@@ -1819,7 +1934,10 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/AdminCustomerGroupsRes'
+                type: object
+                properties:
+                  customer_group:
+                    $ref: '#/components/schemas/CustomerGroup'
         '400':
           $ref: '#/components/responses/400_error'
         '401':
@@ -2002,7 +2120,21 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/AdminCustomerGroupsListRes'
+                type: object
+                properties:
+                  customer_groups:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/CustomerGroup'
+                  count:
+                    type: integer
+                    description: The total number of items available
+                  offset:
+                    type: integer
+                    description: The number of items skipped before these items
+                  limit:
+                    type: integer
+                    description: The number of items per page
         '400':
           $ref: '#/components/responses/400_error'
         '401':
@@ -2062,7 +2194,21 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/AdminCustomerGroupsDeleteRes'
+                type: object
+                properties:
+                  id:
+                    type: string
+                    description: The ID of the deleted customer group.
+                  object:
+                    type: string
+                    description: The type of the object that was deleted.
+                    default: customer_group
+                  deleted:
+                    type: boolean
+                    description: >-
+                      Whether the customer group was deleted successfully or
+                      not.
+                    default: true
         '400':
           $ref: '#/components/responses/400_error'
         '401':
@@ -2135,7 +2281,10 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/AdminCustomerGroupsRes'
+                type: object
+                properties:
+                  customer_group:
+                    $ref: '#/components/schemas/CustomerGroup'
         '400':
           $ref: '#/components/responses/400_error'
         '401':
@@ -2207,7 +2356,10 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/AdminCustomerGroupsRes'
+                type: object
+                properties:
+                  customer_group:
+                    $ref: '#/components/schemas/CustomerGroup'
         '400':
           $ref: '#/components/responses/400_error'
         '401':
@@ -2267,7 +2419,21 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/AdminCustomersListRes'
+                type: object
+                properties:
+                  customers:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Customer'
+                  count:
+                    type: integer
+                    description: The total number of items available
+                  offset:
+                    type: integer
+                    description: The number of items skipped before these items
+                  limit:
+                    type: integer
+                    description: The number of items per page
         '400':
           $ref: '#/components/responses/400_error'
         '401':
@@ -2339,7 +2505,10 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/AdminCustomersRes'
+                type: object
+                properties:
+                  customer:
+                    $ref: '#/components/schemas/Customer'
         '400':
           $ref: '#/components/responses/400_error'
         '401':
@@ -2414,7 +2583,21 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/AdminCustomersListRes'
+                type: object
+                properties:
+                  customers:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Customer'
+                  count:
+                    type: integer
+                    description: The total number of items available
+                  offset:
+                    type: integer
+                    description: The number of items skipped before these items
+                  limit:
+                    type: integer
+                    description: The number of items per page
         '400':
           $ref: '#/components/responses/400_error'
         '401':
@@ -2484,7 +2667,10 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/AdminCustomersRes'
+                type: object
+                properties:
+                  customer:
+                    $ref: '#/components/schemas/Customer'
         '400':
           $ref: '#/components/responses/400_error'
         '401':
@@ -2566,7 +2752,10 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/AdminCustomersRes'
+                type: object
+                properties:
+                  customer:
+                    $ref: '#/components/schemas/Customer'
         '400':
           $ref: '#/components/responses/400_error'
         '401':
@@ -2632,7 +2821,10 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/AdminDiscountsRes'
+                type: object
+                properties:
+                  discount:
+                    $ref: '#/components/schemas/Discount'
         '400':
           $ref: '#/components/responses/400_error'
         '401':
@@ -2699,7 +2891,10 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/AdminDiscountsRes'
+                type: object
+                properties:
+                  discount:
+                    $ref: '#/components/schemas/Discount'
         '400':
           $ref: '#/components/responses/400_error'
         '401':
@@ -2795,7 +2990,10 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/AdminDiscountsRes'
+                type: object
+                properties:
+                  discount:
+                    $ref: '#/components/schemas/Discount'
         '400':
           $ref: '#/components/responses/400_error'
         '401':
@@ -2890,7 +3088,10 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/AdminDiscountsRes'
+                type: object
+                properties:
+                  discount:
+                    $ref: '#/components/schemas/Discount'
         '400':
           $ref: '#/components/responses/400_error'
         '401':
@@ -2982,7 +3183,10 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/AdminDiscountsRes'
+                type: object
+                properties:
+                  discount:
+                    $ref: '#/components/schemas/Discount'
         '400':
           $ref: '#/components/responses/400_error'
         '401':
@@ -3077,7 +3281,10 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/AdminDiscountsRes'
+                type: object
+                properties:
+                  discount:
+                    $ref: '#/components/schemas/Discount'
         '400':
           $ref: '#/components/responses/400_error'
         '401':
@@ -3187,7 +3394,21 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/AdminDiscountsListRes'
+                type: object
+                properties:
+                  discounts:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Discount'
+                  count:
+                    type: integer
+                    description: The total number of items available
+                  offset:
+                    type: integer
+                    description: The number of items skipped before these items
+                  limit:
+                    type: integer
+                    description: The number of items per page
         '400':
           $ref: '#/components/responses/400_error'
         '401':
@@ -3259,7 +3480,10 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/AdminDiscountsRes'
+                type: object
+                properties:
+                  discount:
+                    $ref: '#/components/schemas/Discount'
         '400':
           $ref: '#/components/responses/400_error'
         '401':
@@ -3356,7 +3580,24 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/AdminDiscountConditionsDeleteRes'
+                type: object
+                properties:
+                  id:
+                    type: string
+                    description: The ID of the deleted DiscountCondition
+                  object:
+                    type: string
+                    description: The type of the object that was deleted.
+                    default: discount-condition
+                  deleted:
+                    type: boolean
+                    description: >-
+                      Whether the discount condition was deleted successfully or
+                      not.
+                    default: true
+                  discount:
+                    description: The Discount to which the condition used to belong
+                    $ref: '#/components/schemas/Discount'
         '400':
           $ref: '#/components/responses/400_error'
         '401':
@@ -3432,7 +3673,10 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/AdminDiscountConditionsRes'
+                type: object
+                properties:
+                  discount_condition:
+                    $ref: '#/components/schemas/DiscountCondition'
         '400':
           $ref: '#/components/responses/400_error'
         '401':
@@ -3533,7 +3777,10 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/AdminDiscountsRes'
+                type: object
+                properties:
+                  discount:
+                    $ref: '#/components/schemas/Discount'
         '400':
           $ref: '#/components/responses/400_error'
         '401':
@@ -3593,7 +3840,19 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/AdminDiscountsDeleteRes'
+                type: object
+                properties:
+                  id:
+                    type: string
+                    description: The ID of the deleted Discount
+                  object:
+                    type: string
+                    description: The type of the object that was deleted.
+                    default: discount
+                  deleted:
+                    type: boolean
+                    description: Whether the discount was deleted successfully or not.
+                    default: true
         '400':
           $ref: '#/components/responses/400_error'
         '401':
@@ -3662,7 +3921,10 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/AdminDiscountsRes'
+                type: object
+                properties:
+                  discount:
+                    $ref: '#/components/schemas/Discount'
         '400':
           $ref: '#/components/responses/400_error'
         '401':
@@ -3750,7 +4012,10 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/AdminDiscountsRes'
+                type: object
+                properties:
+                  discount:
+                    $ref: '#/components/schemas/Discount'
         '400':
           $ref: '#/components/responses/400_error'
         '401':
@@ -3816,7 +4081,10 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/AdminDiscountsRes'
+                type: object
+                properties:
+                  discount:
+                    $ref: '#/components/schemas/Discount'
         '400':
           $ref: '#/components/responses/400_error'
         '401':
@@ -3886,7 +4154,10 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/AdminDiscountsRes'
+                type: object
+                properties:
+                  discount:
+                    $ref: '#/components/schemas/Discount'
         '400':
           $ref: '#/components/responses/400_error'
         '401':
@@ -3974,7 +4245,10 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/AdminDraftOrdersRes'
+                type: object
+                properties:
+                  draft_order:
+                    $ref: '#/components/schemas/DraftOrder'
         '400':
           $ref: '#/components/responses/400_error'
         '401':
@@ -4046,7 +4320,21 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/AdminDraftOrdersListRes'
+                type: object
+                properties:
+                  draft_orders:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/DraftOrder'
+                  count:
+                    type: integer
+                    description: The total number of items available
+                  offset:
+                    type: integer
+                    description: The number of items skipped before these items
+                  limit:
+                    type: integer
+                    description: The number of items per page
         '400':
           $ref: '#/components/responses/400_error'
         '401':
@@ -4119,7 +4407,10 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/AdminDraftOrdersRes'
+                type: object
+                properties:
+                  draft_order:
+                    $ref: '#/components/schemas/DraftOrder'
         '400':
           $ref: '#/components/responses/400_error'
         '401':
@@ -4179,7 +4470,19 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/AdminDraftOrdersDeleteRes'
+                type: object
+                properties:
+                  id:
+                    type: string
+                    description: The ID of the deleted Draft Order.
+                  object:
+                    type: string
+                    description: The type of the object that was deleted.
+                    default: draft-order
+                  deleted:
+                    type: boolean
+                    description: Whether the draft order was deleted successfully or not.
+                    default: true
         '400':
           $ref: '#/components/responses/400_error'
         '401':
@@ -4238,7 +4541,10 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/AdminDraftOrdersRes'
+                type: object
+                properties:
+                  draft_order:
+                    $ref: '#/components/schemas/DraftOrder'
         '400':
           $ref: '#/components/responses/400_error'
         '401':
@@ -4305,7 +4611,10 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/AdminDraftOrdersRes'
+                type: object
+                properties:
+                  draft_order:
+                    $ref: '#/components/schemas/DraftOrder'
         '400':
           $ref: '#/components/responses/400_error'
         '401':
@@ -4385,7 +4694,10 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/AdminDraftOrdersRes'
+                type: object
+                properties:
+                  draft_order:
+                    $ref: '#/components/schemas/DraftOrder'
         '400':
           $ref: '#/components/responses/400_error'
         '401':
@@ -4445,8 +4757,10 @@ paths:
           content:
             application/json:
               schema:
-                $ref: >-
-                  #/components/schemas/AdminPostDraftOrdersDraftOrderRegisterPaymentRes
+                type: object
+                properties:
+                  order:
+                    $ref: '#/components/schemas/DraftOrder'
         '400':
           $ref: '#/components/responses/400_error'
         '401':
@@ -4519,7 +4833,10 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/AdminDraftOrdersRes'
+                type: object
+                properties:
+                  draft_order:
+                    $ref: '#/components/schemas/DraftOrder'
         '400':
           $ref: '#/components/responses/400_error'
         '401':
@@ -4587,7 +4904,10 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/AdminGiftCardsRes'
+                type: object
+                properties:
+                  gift_card:
+                    $ref: '#/components/schemas/GiftCard'
         '400':
           $ref: '#/components/responses/400_error'
         '401':
@@ -4657,7 +4977,21 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/AdminGiftCardsListRes'
+                type: object
+                properties:
+                  gift_cards:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/GiftCard'
+                  count:
+                    type: integer
+                    description: The total number of items available
+                  offset:
+                    type: integer
+                    description: The number of items skipped before these items
+                  limit:
+                    type: integer
+                    description: The number of items per page
         '400':
           $ref: '#/components/responses/400_error'
         '401':
@@ -4717,7 +5051,19 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/AdminGiftCardsDeleteRes'
+                type: object
+                properties:
+                  id:
+                    type: string
+                    description: The ID of the deleted Gift Card
+                  object:
+                    type: string
+                    description: The type of the object that was deleted.
+                    default: gift-card
+                  deleted:
+                    type: boolean
+                    description: Whether the gift card was deleted successfully or not.
+                    default: true
         '400':
           $ref: '#/components/responses/400_error'
         '401':
@@ -4776,7 +5122,10 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/AdminGiftCardsRes'
+                type: object
+                properties:
+                  gift_card:
+                    $ref: '#/components/schemas/GiftCard'
         '400':
           $ref: '#/components/responses/400_error'
         '401':
@@ -4850,7 +5199,10 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/AdminGiftCardsRes'
+                type: object
+                properties:
+                  gift_card:
+                    $ref: '#/components/schemas/GiftCard'
         '400':
           $ref: '#/components/responses/400_error'
         '401':
@@ -5045,7 +5397,12 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/AdminListInvitesRes'
+                type: object
+                properties:
+                  invites:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Invite'
         '400':
           $ref: '#/components/responses/400_error'
         '401':
@@ -5061,8 +5418,8 @@ paths:
   '/invites/{invite_id}':
     delete:
       operationId: DeleteInvitesInvite
-      summary: Delete an Invite
-      description: Deletes an Invite
+      summary: Create an Invite
+      description: Creates an Invite and triggers an 'invite' created event
       x-authenticated: true
       parameters:
         - in: path
@@ -5105,7 +5462,19 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/AdminInviteDeleteRes'
+                type: object
+                properties:
+                  id:
+                    type: string
+                    description: The ID of the deleted Invite.
+                  object:
+                    type: string
+                    description: The type of the object that was deleted.
+                    format: invite
+                  deleted:
+                    type: boolean
+                    description: Whether or not the Invite was deleted.
+                    default: true
         '400':
           $ref: '#/components/responses/400_error'
         '401':
@@ -5235,7 +5604,10 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/AdminNotesRes'
+                type: object
+                properties:
+                  note:
+                    $ref: '#/components/schemas/Note'
         '400':
           $ref: '#/components/responses/400_error'
         '401':
@@ -5303,7 +5675,21 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/AdminNotesListRes'
+                type: object
+                properties:
+                  notes:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Note'
+                  count:
+                    type: integer
+                    description: The total number of items available
+                  offset:
+                    type: integer
+                    description: The number of items skipped before these items
+                  limit:
+                    type: integer
+                    description: The number of items per page
         '400':
           $ref: '#/components/responses/400_error'
         '401':
@@ -5363,7 +5749,19 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/AdminNotesDeleteRes'
+                type: object
+                properties:
+                  id:
+                    type: string
+                    description: The ID of the deleted Note.
+                  object:
+                    type: string
+                    description: The type of the object that was deleted.
+                    default: note
+                  deleted:
+                    type: boolean
+                    description: Whether or not the Note was deleted.
+                    default: true
         '400':
           $ref: '#/components/responses/400_error'
         '401':
@@ -5422,7 +5820,10 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/AdminNotesRes'
+                type: object
+                properties:
+                  note:
+                    $ref: '#/components/schemas/Note'
         '400':
           $ref: '#/components/responses/400_error'
         '401':
@@ -5494,7 +5895,10 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/AdminNotesRes'
+                type: object
+                properties:
+                  note:
+                    $ref: '#/components/schemas/Note'
         '400':
           $ref: '#/components/responses/400_error'
         '401':
@@ -5602,7 +6006,12 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/AdminNotificationsListRes'
+                type: object
+                properties:
+                  notifications:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Notification'
         '400':
           $ref: '#/components/responses/400_error'
         '401':
@@ -5669,7 +6078,10 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/AdminNotificationsRes'
+                type: object
+                properties:
+                  notification:
+                    $ref: '#/components/schemas/Notification'
         '400':
           $ref: '#/components/responses/400_error'
         '401':
@@ -5742,7 +6154,10 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/AdminOrderEditsRes'
+                type: object
+                properties:
+                  order_edit:
+                    $ref: '#/components/schemas/OrderEdit'
         '400':
           $ref: '#/components/responses/400_error'
         '401':
@@ -5801,7 +6216,10 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/AdminOrderEditsRes'
+                type: object
+                properties:
+                  order_edit:
+                    $ref: '#/components/schemas/OrderEdit'
         '400':
           $ref: '#/components/responses/400_error'
         '401':
@@ -5856,7 +6274,10 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/AdminOrderEditsRes'
+                type: object
+                properties:
+                  order_edit:
+                    $ref: '#/components/schemas/OrderEdit'
         '400':
           $ref: '#/components/responses/400_error'
         '401':
@@ -5914,7 +6335,10 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/AdminOrderEditsRes'
+                type: object
+                properties:
+                  order_edit:
+                    $ref: '#/components/schemas/OrderEdit'
         '400':
           $ref: '#/components/responses/400_error'
         '401':
@@ -5998,7 +6422,20 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/AdminOrderEditsListRes'
+                type: object
+                properties:
+                  order_edits:
+                    type: array
+                    $ref: '#/components/schemas/OrderEdit'
+                  count:
+                    type: integer
+                    description: The total number of items available
+                  offset:
+                    type: integer
+                    description: The number of items skipped before these items
+                  limit:
+                    type: integer
+                    description: The number of items per page
         '400':
           $ref: '#/components/responses/400_error'
         '401':
@@ -6063,7 +6500,10 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/AdminOrderEditsRes'
+                type: object
+                properties:
+                  order_edit:
+                    $ref: '#/components/schemas/OrderEdit'
         '400':
           $ref: '#/components/responses/400_error'
         '401':
@@ -6139,7 +6579,10 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/AdminOrderEditsRes'
+                type: object
+                properties:
+                  order_edit:
+                    $ref: '#/components/schemas/OrderEdit'
         '400':
           $ref: '#/components/responses/400_error'
         '401':
@@ -6206,7 +6649,19 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/AdminOrderEditItemChangeDeleteRes'
+                type: object
+                properties:
+                  id:
+                    type: string
+                    description: The ID of the deleted Order Edit Item Change.
+                  object:
+                    type: string
+                    description: The type of the object that was deleted.
+                    format: item_change
+                  deleted:
+                    type: boolean
+                    description: Whether or not the Order Edit Item Change was deleted.
+                    default: true
         '400':
           $ref: '#/components/responses/400_error'
   '/order-edits/{id}':
@@ -6255,7 +6710,19 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/AdminOrderEditDeleteRes'
+                type: object
+                properties:
+                  id:
+                    type: string
+                    description: The ID of the deleted Order Edit.
+                  object:
+                    type: string
+                    description: The type of the object that was deleted.
+                    format: order_edit
+                  deleted:
+                    type: boolean
+                    description: Whether or not the Order Edit was deleted.
+                    default: true
         '400':
           $ref: '#/components/responses/400_error'
     get:
@@ -6313,7 +6780,10 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/AdminOrderEditsRes'
+                type: object
+                properties:
+                  order_edit:
+                    $ref: '#/components/schemas/OrderEdit'
         '400':
           $ref: '#/components/responses/400_error'
         '401':
@@ -6384,7 +6854,10 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/AdminOrderEditsRes'
+                type: object
+                properties:
+                  order_edit:
+                    $ref: '#/components/schemas/OrderEdit'
         '400':
           $ref: '#/components/responses/400_error'
         '401':
@@ -6443,7 +6916,10 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/AdminOrderEditsRes'
+                type: object
+                properties:
+                  order_edit:
+                    $ref: '#/components/schemas/OrderEdit'
         '400':
           $ref: '#/components/responses/400_error'
         '401':
@@ -6512,7 +6988,10 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/AdminOrdersRes'
+                type: object
+                properties:
+                  order:
+                    $ref: '#/components/schemas/Order'
         '400':
           $ref: '#/components/responses/400_error'
         '401':
@@ -6597,7 +7076,10 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/AdminOrdersRes'
+                type: object
+                properties:
+                  order:
+                    $ref: '#/components/schemas/Order'
         '400':
           $ref: '#/components/responses/400_error'
         '401':
@@ -6664,7 +7146,10 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/AdminOrdersRes'
+                type: object
+                properties:
+                  order:
+                    $ref: '#/components/schemas/Order'
         '400':
           $ref: '#/components/responses/400_error'
         '401':
@@ -6738,7 +7223,10 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/AdminOrdersRes'
+                type: object
+                properties:
+                  order:
+                    $ref: '#/components/schemas/Order'
         '400':
           $ref: '#/components/responses/400_error'
         '401':
@@ -6812,7 +7300,10 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/AdminOrdersRes'
+                type: object
+                properties:
+                  order:
+                    $ref: '#/components/schemas/Order'
         '400':
           $ref: '#/components/responses/400_error'
         '401':
@@ -6879,7 +7370,10 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/AdminOrdersRes'
+                type: object
+                properties:
+                  order:
+                    $ref: '#/components/schemas/Order'
         '400':
           $ref: '#/components/responses/400_error'
         '401':
@@ -6942,7 +7436,10 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/AdminOrdersRes'
+                type: object
+                properties:
+                  order:
+                    $ref: '#/components/schemas/Order'
         '400':
           $ref: '#/components/responses/400_error'
         '401':
@@ -7009,7 +7506,10 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/AdminOrdersRes'
+                type: object
+                properties:
+                  order:
+                    $ref: '#/components/schemas/Order'
         '400':
           $ref: '#/components/responses/400_error'
         '401':
@@ -7069,7 +7569,10 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/AdminOrdersRes'
+                type: object
+                properties:
+                  order:
+                    $ref: '#/components/schemas/Order'
         '400':
           $ref: '#/components/responses/400_error'
         '401':
@@ -7129,7 +7632,10 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/AdminOrdersRes'
+                type: object
+                properties:
+                  order:
+                    $ref: '#/components/schemas/Order'
         '400':
           $ref: '#/components/responses/400_error'
         '401':
@@ -7209,7 +7715,10 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/AdminOrdersRes'
+                type: object
+                properties:
+                  order:
+                    $ref: '#/components/schemas/Order'
         '400':
           $ref: '#/components/responses/400_error'
         '401':
@@ -7294,7 +7803,10 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/AdminOrdersRes'
+                type: object
+                properties:
+                  order:
+                    $ref: '#/components/schemas/Order'
         '400':
           $ref: '#/components/responses/400_error'
         '401':
@@ -7379,89 +7891,10 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/AdminOrdersRes'
-        '400':
-          $ref: '#/components/responses/400_error'
-        '401':
-          $ref: '#/components/responses/unauthorized'
-        '404':
-          $ref: '#/components/responses/not_found_error'
-        '409':
-          $ref: '#/components/responses/invalid_state_error'
-        '422':
-          $ref: '#/components/responses/invalid_request_error'
-        '500':
-          $ref: '#/components/responses/500_error'
-  '/orders/{id}/line-items/{line_item_id}/reserve':
-    post:
-      operationId: PostOrdersOrderLineItemReservations
-      summary: Create a Reservation for a line item
-      description: >-
-        Creates a Reservation for a line item at a specified location,
-        optionally for a partial quantity.
-      x-authenticated: true
-      parameters:
-        - in: path
-          name: id
-          required: true
-          description: The ID of the Order.
-          schema:
-            type: string
-        - in: path
-          name: line_item_id
-          required: true
-          description: The ID of the Line item.
-          schema:
-            type: string
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/AdminOrdersOrderLineItemReservationReq'
-      x-codeSamples:
-        - lang: JavaScript
-          label: JS Client
-          source: >
-            import Medusa from "@medusajs/medusa-js"
-
-            const medusa = new Medusa({ baseUrl: MEDUSA_BACKEND_URL, maxRetries:
-            3 })
-
-            // must be previously logged in or use api token
-
-            medusa.admin.orders.createReservation(order_id, line_item_id, {
-              location_id
-            })
-
-            .then(({ reservation }) => {
-              console.log(reservation.id);
-            });
-        - lang: Shell
-          label: cURL
-          source: >
-            curl --location --request POST
-            'https://medusa-url.com/admin/orders/{id}/line-items/{line_item_id}/reservations'
-            \
-
-            --header 'Authorization: Bearer {api_token}' \
-
-            --header 'Content-Type: application/json' \
-
-            --data-raw '{
-                "location_id": "loc_1"
-            }'
-      security:
-        - api_token: []
-        - cookie_auth: []
-      tags:
-        - Order
-      responses:
-        '200':
-          description: OK
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/AdminPostReservationsReq'
+                type: object
+                properties:
+                  order:
+                    $ref: '#/components/schemas/Order'
         '400':
           $ref: '#/components/responses/400_error'
         '401':
@@ -7534,7 +7967,10 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/AdminOrdersRes'
+                type: object
+                properties:
+                  order:
+                    $ref: '#/components/schemas/Order'
         '400':
           $ref: '#/components/responses/400_error'
         '401':
@@ -7614,7 +8050,10 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/AdminOrdersRes'
+                type: object
+                properties:
+                  order:
+                    $ref: '#/components/schemas/Order'
         '400':
           $ref: '#/components/responses/400_error'
         '401':
@@ -7699,7 +8138,10 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/AdminOrdersRes'
+                type: object
+                properties:
+                  order:
+                    $ref: '#/components/schemas/Order'
         '400':
           $ref: '#/components/responses/400_error'
         '401':
@@ -7772,7 +8214,10 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/AdminOrdersRes'
+                type: object
+                properties:
+                  order:
+                    $ref: '#/components/schemas/Order'
         '400':
           $ref: '#/components/responses/400_error'
         '401':
@@ -7845,7 +8290,10 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/AdminOrdersRes'
+                type: object
+                properties:
+                  order:
+                    $ref: '#/components/schemas/Order'
         '400':
           $ref: '#/components/responses/400_error'
         '401':
@@ -7905,7 +8353,10 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/AdminOrdersRes'
+                type: object
+                properties:
+                  order:
+                    $ref: '#/components/schemas/Order'
         '400':
           $ref: '#/components/responses/400_error'
         '401':
@@ -7977,79 +8428,10 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/AdminOrdersRes'
-        '400':
-          $ref: '#/components/responses/400_error'
-        '401':
-          $ref: '#/components/responses/unauthorized'
-        '404':
-          $ref: '#/components/responses/not_found_error'
-        '409':
-          $ref: '#/components/responses/invalid_state_error'
-        '422':
-          $ref: '#/components/responses/invalid_request_error'
-        '500':
-          $ref: '#/components/responses/500_error'
-  '/orders/{id}/reservations':
-    get:
-      operationId: GetOrdersOrderReservations
-      summary: Get reservations for an Order
-      description: Retrieves reservations for an Order
-      x-authenticated: true
-      parameters:
-        - in: path
-          name: id
-          required: true
-          description: The ID of the Order.
-          schema:
-            type: string
-        - in: query
-          name: offset
-          description: How many reservations to skip before the results.
-          schema:
-            type: integer
-            default: 0
-        - in: query
-          name: limit
-          description: Limit the number of reservations returned.
-          schema:
-            type: integer
-            default: 20
-      x-codeSamples:
-        - lang: JavaScript
-          label: JS Client
-          source: >
-            import Medusa from "@medusajs/medusa-js"
-
-            const medusa = new Medusa({ baseUrl: MEDUSA_BACKEND_URL, maxRetries:
-            3 })
-
-            // must be previously logged in or use api token
-
-            medusa.admin.orders.retrieveReservations(order_id)
-
-            .then(({ reservations }) => {
-              console.log(reservations[0].id);
-            });
-        - lang: Shell
-          label: cURL
-          source: >
-            curl --location --request GET
-            'https://medusa-url.com/admin/orders/{id}/reservations' \
-
-            --header 'Authorization: Bearer {api_token}'
-      security:
-        - api_token: []
-        - cookie_auth: []
-      tags:
-        - Order
-      responses:
-        '200':
-          description: OK
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/AdminGetReservationReservationsReq'
+                type: object
+                properties:
+                  order:
+                    $ref: '#/components/schemas/Order'
         '400':
           $ref: '#/components/responses/400_error'
         '401':
@@ -8316,7 +8698,21 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/AdminOrdersListRes'
+                type: object
+                properties:
+                  orders:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Order'
+                  count:
+                    type: integer
+                    description: The total number of items available
+                  offset:
+                    type: integer
+                    description: The number of items skipped before these items
+                  limit:
+                    type: integer
+                    description: The number of items per page
         '400':
           $ref: '#/components/responses/400_error'
         '401':
@@ -8386,7 +8782,10 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/AdminOrdersRes'
+                type: object
+                properties:
+                  order:
+                    $ref: '#/components/schemas/Order'
         '400':
           $ref: '#/components/responses/400_error'
         '401':
@@ -8461,7 +8860,10 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/AdminOrdersRes'
+                type: object
+                properties:
+                  order:
+                    $ref: '#/components/schemas/Order'
         '400':
           $ref: '#/components/responses/400_error'
         '401':
@@ -8547,7 +8949,10 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/AdminOrdersRes'
+                type: object
+                properties:
+                  order:
+                    $ref: '#/components/schemas/Order'
         '400':
           $ref: '#/components/responses/400_error'
         '401':
@@ -8626,7 +9031,10 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/AdminOrdersRes'
+                type: object
+                properties:
+                  order:
+                    $ref: '#/components/schemas/Order'
         '400':
           $ref: '#/components/responses/400_error'
         '401':
@@ -8685,7 +9093,19 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/AdminPaymentCollectionDeleteRes'
+                type: object
+                properties:
+                  id:
+                    type: string
+                    description: The ID of the deleted Payment Collection.
+                  object:
+                    type: string
+                    description: The type of the object that was deleted.
+                    format: payment_collection
+                  deleted:
+                    type: boolean
+                    description: Whether or not the Payment Collection was deleted.
+                    default: true
         '400':
           $ref: '#/components/responses/400_error'
         '401':
@@ -8745,7 +9165,10 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/AdminPaymentCollectionsRes'
+                type: object
+                properties:
+                  payment_collection:
+                    $ref: '#/components/schemas/PaymentCollection'
         '400':
           $ref: '#/components/responses/400_error'
         '401':
@@ -8816,7 +9239,10 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/AdminPaymentCollectionsRes'
+                type: object
+                properties:
+                  payment_collection:
+                    $ref: '#/components/schemas/PaymentCollection'
         '400':
           $ref: '#/components/responses/400_error'
         '401':
@@ -8875,7 +9301,10 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/AdminPaymentCollectionsRes'
+                type: object
+                properties:
+                  payment_collection:
+                    $ref: '#/components/schemas/PaymentCollection'
         '400':
           $ref: '#/components/responses/400_error'
         '401':
@@ -8935,7 +9364,10 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/AdminPaymentRes'
+                type: object
+                properties:
+                  payment:
+                    $ref: '#/components/schemas/Payment'
         '400':
           $ref: '#/components/responses/400_error'
         '401':
@@ -8995,7 +9427,10 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/AdminPaymentRes'
+                type: object
+                properties:
+                  payment:
+                    $ref: '#/components/schemas/Payment'
         '400':
           $ref: '#/components/responses/400_error'
         '401':
@@ -9072,7 +9507,10 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/AdminRefundRes'
+                type: object
+                properties:
+                  refund:
+                    $ref: '#/components/schemas/Refund'
         '400':
           $ref: '#/components/responses/400_error'
         '401':
@@ -9157,7 +9595,10 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/AdminPriceListRes'
+                type: object
+                properties:
+                  price_list:
+                    $ref: '#/components/schemas/PriceList'
         '400':
           $ref: '#/components/responses/400_error'
         '401':
@@ -9235,7 +9676,21 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/AdminPriceListDeleteBatchRes'
+                type: object
+                properties:
+                  ids:
+                    type: array
+                    items:
+                      type: string
+                      description: The IDs of the deleted Money Amounts (Prices).
+                  object:
+                    type: string
+                    description: The type of the object that was deleted.
+                    default: money-amount
+                  deleted:
+                    type: boolean
+                    description: Whether or not the items were deleted.
+                    default: true
         '400':
           $ref: '#/components/responses/400_error'
         '401':
@@ -9321,7 +9776,10 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/AdminPriceListRes'
+                type: object
+                properties:
+                  price_list:
+                    $ref: '#/components/schemas/PriceList'
         '400':
           $ref: '#/components/responses/400_error'
         '401':
@@ -9514,7 +9972,21 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/AdminPriceListsListRes'
+                type: object
+                properties:
+                  price_lists:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/PriceList'
+                  count:
+                    type: integer
+                    description: The total number of items available
+                  offset:
+                    type: integer
+                    description: The number of items skipped before these items
+                  limit:
+                    type: integer
+                    description: The number of items per page
         '400':
           $ref: '#/components/responses/400_error'
         '401':
@@ -9574,7 +10046,19 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/AdminPriceListDeleteRes'
+                type: object
+                properties:
+                  id:
+                    type: string
+                    description: The ID of the deleted Price List.
+                  object:
+                    type: string
+                    description: The type of the object that was deleted.
+                    default: price-list
+                  deleted:
+                    type: boolean
+                    description: Whether or not the items were deleted.
+                    default: true
         '400':
           $ref: '#/components/responses/400_error'
         '401':
@@ -9633,7 +10117,10 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/AdminPriceListRes'
+                type: object
+                properties:
+                  price_list:
+                    $ref: '#/components/schemas/PriceList'
         '400':
           $ref: '#/components/responses/400_error'
         '401':
@@ -9705,7 +10192,10 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/AdminPriceListRes'
+                type: object
+                properties:
+                  price_list:
+                    $ref: '#/components/schemas/PriceList'
         '400':
           $ref: '#/components/responses/400_error'
         '401':
@@ -9775,7 +10265,21 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/AdminPriceListDeleteProductPricesRes'
+                type: object
+                properties:
+                  ids:
+                    type: array
+                    description: The price ids that have been deleted.
+                    items:
+                      type: string
+                  object:
+                    type: string
+                    description: The type of the object that was deleted.
+                    default: money-amount
+                  deleted:
+                    type: boolean
+                    description: Whether or not the items were deleted.
+                    default: true
         '400':
           $ref: '#/components/responses/400_error'
         '401':
@@ -9845,7 +10349,21 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/AdminPriceListDeleteVariantPricesRes'
+                type: object
+                properties:
+                  ids:
+                    type: array
+                    description: The price ids that have been deleted.
+                    items:
+                      type: string
+                  object:
+                    type: string
+                    description: The type of the object that was deleted.
+                    default: money-amount
+                  deleted:
+                    type: boolean
+                    description: Whether or not the items were deleted.
+                    default: true
         '400':
           $ref: '#/components/responses/400_error'
         '401':
@@ -10071,7 +10589,21 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/AdminPriceListsProductsListRes'
+                type: object
+                properties:
+                  products:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Product'
+                  count:
+                    type: integer
+                    description: The total number of items available
+                  offset:
+                    type: integer
+                    description: The number of items skipped before these items
+                  limit:
+                    type: integer
+                    description: The number of items per page
         '400':
           $ref: '#/components/responses/400_error'
         '401':
@@ -10189,20 +10721,6 @@ paths:
           schema:
             type: integer
             default: 100
-        - in: query
-          name: expand
-          description: >-
-            (Comma separated) Which fields should be expanded in the product
-            category.
-          schema:
-            type: string
-        - in: query
-          name: fields
-          description: >-
-            (Comma separated) Which fields should be included in the product
-            category.
-          schema:
-            type: string
       x-codeSamples:
         - lang: Shell
           label: cURL
@@ -10328,78 +10846,6 @@ paths:
             'https://medusa-url.com/admin/product-categories/{id}' \
 
             --header 'Authorization: Bearer {api_token}'
-      security:
-        - api_token: []
-        - cookie_auth: []
-      tags:
-        - Product Category
-      responses:
-        '200':
-          description: OK
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  product_category:
-                    $ref: '#/components/schemas/ProductCategory'
-        '400':
-          $ref: '#/components/responses/400_error'
-        '401':
-          $ref: '#/components/responses/unauthorized'
-        '404':
-          $ref: '#/components/responses/not_found_error'
-        '409':
-          $ref: '#/components/responses/invalid_state_error'
-        '422':
-          $ref: '#/components/responses/invalid_request_error'
-        '500':
-          $ref: '#/components/responses/500_error'
-    post:
-      operationId: PostProductCategoriesCategory
-      summary: Update a Product Category
-      description: Updates a Product Category.
-      x-authenticated: true
-      parameters:
-        - in: path
-          name: id
-          required: true
-          description: The ID of the Product Category.
-          schema:
-            type: string
-        - in: query
-          name: expand
-          description: >-
-            (Comma separated) Which fields should be expanded in each product
-            category.
-          schema:
-            type: string
-        - in: query
-          name: fields
-          description: >-
-            (Comma separated) Which fields should be retrieved in each product
-            category.
-          schema:
-            type: string
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/AdminPostProductCategoriesCategoryReq'
-      x-codeSamples:
-        - lang: Shell
-          label: cURL
-          source: >
-            curl --location --request POST
-            'https://medusa-url.com/admin/product-categories/{id}' \
-
-            --header 'Authorization: Bearer {api_token}' \
-
-            --header 'Content-Type: application/json' \
-
-            --data-raw '{
-                "name": "Skinny Jeans"
-            }'
       security:
         - api_token: []
         - cookie_auth: []
@@ -10557,7 +11003,19 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/AdminProductTagsListRes'
+                type: object
+                properties:
+                  product_tags:
+                    $ref: '#/components/schemas/ProductTag'
+                  count:
+                    type: integer
+                    description: The total number of items available
+                  offset:
+                    type: integer
+                    description: The number of items skipped before these items
+                  limit:
+                    type: integer
+                    description: The number of items per page
         '400':
           $ref: '#/components/responses/400_error'
         '401':
@@ -10700,7 +11158,19 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/AdminProductTypesListRes'
+                type: object
+                properties:
+                  product_types:
+                    $ref: '#/components/schemas/ProductType'
+                  count:
+                    type: integer
+                    description: The total number of items available
+                  offset:
+                    type: integer
+                    description: The number of items skipped before these items
+                  limit:
+                    type: integer
+                    description: The number of items per page
         '400':
           $ref: '#/components/responses/400_error'
         '401':
@@ -10773,7 +11243,10 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/AdminProductsRes'
+                type: object
+                properties:
+                  product:
+                    $ref: '#/components/schemas/Product'
         '400':
           $ref: '#/components/responses/400_error'
         '401':
@@ -10841,7 +11314,10 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/AdminProductsRes'
+                type: object
+                properties:
+                  product:
+                    $ref: '#/components/schemas/Product'
         '400':
           $ref: '#/components/responses/400_error'
         '401':
@@ -11095,7 +11571,21 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/AdminProductsListRes'
+                type: object
+                properties:
+                  products:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Product'
+                  count:
+                    type: integer
+                    description: The total number of items available
+                  offset:
+                    type: integer
+                    description: The number of items skipped before these items
+                  limit:
+                    type: integer
+                    description: The number of items per page
         '400':
           $ref: '#/components/responses/400_error'
         '401':
@@ -11195,7 +11685,10 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/AdminProductsRes'
+                type: object
+                properties:
+                  product:
+                    $ref: '#/components/schemas/Product'
         '400':
           $ref: '#/components/responses/400_error'
         '401':
@@ -11261,7 +11754,21 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/AdminProductsListVariantsRes'
+                type: object
+                properties:
+                  variants:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/ProductVariant'
+                  count:
+                    type: integer
+                    description: The total number of items available
+                  offset:
+                    type: integer
+                    description: The number of items skipped before these items
+                  limit:
+                    type: integer
+                    description: The number of items per page
         '400':
           $ref: '#/components/responses/400_error'
         '401':
@@ -11331,7 +11838,21 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/AdminProductsDeleteOptionRes'
+                type: object
+                properties:
+                  option_id:
+                    type: string
+                    description: The ID of the deleted Product Option
+                  object:
+                    type: string
+                    description: The type of the object that was deleted.
+                    default: option
+                  deleted:
+                    type: boolean
+                    description: Whether or not the items were deleted.
+                    default: true
+                  product:
+                    $ref: '#/components/schemas/Product'
         '400':
           $ref: '#/components/responses/400_error'
         '401':
@@ -11409,7 +11930,10 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/AdminProductsRes'
+                type: object
+                properties:
+                  product:
+                    $ref: '#/components/schemas/Product'
         '400':
           $ref: '#/components/responses/400_error'
         '401':
@@ -11469,7 +11993,19 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/AdminProductsDeleteRes'
+                type: object
+                properties:
+                  id:
+                    type: string
+                    description: The ID of the deleted Product.
+                  object:
+                    type: string
+                    description: The type of the object that was deleted.
+                    default: product
+                  deleted:
+                    type: boolean
+                    description: Whether or not the items were deleted.
+                    default: true
         '400':
           $ref: '#/components/responses/400_error'
         '401':
@@ -11528,7 +12064,10 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/AdminProductsRes'
+                type: object
+                properties:
+                  product:
+                    $ref: '#/components/schemas/Product'
         '400':
           $ref: '#/components/responses/400_error'
         '401':
@@ -11601,7 +12140,10 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/AdminProductsRes'
+                type: object
+                properties:
+                  product:
+                    $ref: '#/components/schemas/Product'
         '400':
           $ref: '#/components/responses/400_error'
         '401':
@@ -11667,7 +12209,21 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/AdminProductsDeleteVariantRes'
+                type: object
+                properties:
+                  variant_id:
+                    type: string
+                    description: The ID of the deleted Product Variant.
+                  object:
+                    type: string
+                    description: The type of the object that was deleted.
+                    default: variant
+                  deleted:
+                    type: boolean
+                    description: Whether or not the items were deleted.
+                    default: true
+                  product:
+                    $ref: '#/components/schemas/Product'
         '400':
           $ref: '#/components/responses/400_error'
         '401':
@@ -11764,7 +12320,10 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/AdminProductsRes'
+                type: object
+                properties:
+                  product:
+                    $ref: '#/components/schemas/Product'
         '400':
           $ref: '#/components/responses/400_error'
         '401':
@@ -11817,7 +12376,21 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/AdminProductsListTagsRes'
+                type: object
+                properties:
+                  tags:
+                    type: array
+                    items:
+                      properties:
+                        id:
+                          description: The ID of the tag.
+                          type: string
+                        usage_count:
+                          description: The number of products that use this tag.
+                          type: string
+                        value:
+                          description: The value of the tag.
+                          type: string
         '400':
           $ref: '#/components/responses/400_error'
         '401':
@@ -11871,7 +12444,12 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/AdminProductsListTypesRes'
+                type: object
+                properties:
+                  types:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/ProductType'
         '400':
           $ref: '#/components/responses/400_error'
         '401':
@@ -11947,7 +12525,10 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/AdminProductsRes'
+                type: object
+                properties:
+                  product:
+                    $ref: '#/components/schemas/Product'
         '400':
           $ref: '#/components/responses/400_error'
         '401':
@@ -12030,7 +12611,9 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/AdminPublishableApiKeysRes'
+                properties:
+                  publishable_api_key:
+                    $ref: '#/components/schemas/PublishableApiKey'
         '400':
           $ref: '#/components/responses/400_error'
         '401':
@@ -12112,7 +12695,9 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/AdminPublishableApiKeysRes'
+                properties:
+                  publishable_api_key:
+                    $ref: '#/components/schemas/PublishableApiKey'
         '400':
           $ref: '#/components/responses/400_error'
         '401':
@@ -12178,7 +12763,10 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/AdminPublishableApiKeysRes'
+                type: object
+                properties:
+                  publishable_api_key:
+                    $ref: '#/components/schemas/PublishableApiKey'
         '400':
           $ref: '#/components/responses/400_error'
         '401':
@@ -12257,7 +12845,11 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/AdminPublishableApiKeysListRes'
+                type: object
+                properties:
+                  publishable_api_keys:
+                    type: array
+                    $ref: '#/components/schemas/PublishableApiKey'
         '400':
           $ref: '#/components/responses/400_error'
         '401':
@@ -12317,7 +12909,19 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/AdminPublishableApiKeyDeleteRes'
+                type: object
+                properties:
+                  id:
+                    type: string
+                    description: The ID of the deleted PublishableApiKey.
+                  object:
+                    type: string
+                    description: The type of the object that was deleted.
+                    format: publishable_api_key
+                  deleted:
+                    type: boolean
+                    description: Whether the PublishableApiKeys was deleted.
+                    default: true
         '400':
           $ref: '#/components/responses/400_error'
     get:
@@ -12366,7 +12970,10 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/AdminPublishableApiKeysRes'
+                type: object
+                properties:
+                  publishable_api_key:
+                    $ref: '#/components/schemas/PublishableApiKey'
         '400':
           $ref: '#/components/responses/400_error'
         '401':
@@ -12431,8 +13038,11 @@ paths:
           content:
             application/json:
               schema:
-                $ref: >-
-                  #/components/schemas/AdminPublishableApiKeysListSalesChannelsRes
+                properties:
+                  sales_channels:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/SalesChannel'
         '400':
           $ref: '#/components/responses/400_error'
         '401':
@@ -12492,7 +13102,10 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/AdminPublishableApiKeysRes'
+                type: object
+                properties:
+                  publishable_api_key:
+                    $ref: '#/components/schemas/PublishableApiKey'
         '400':
           $ref: '#/components/responses/400_error'
         '401':
@@ -12566,7 +13179,10 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/AdminPublishableApiKeysRes'
+                type: object
+                properties:
+                  publishable_api_key:
+                    $ref: '#/components/schemas/PublishableApiKey'
         '400':
           $ref: '#/components/responses/400_error'
         '401':
@@ -12639,7 +13255,10 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/AdminRegionsRes'
+                type: object
+                properties:
+                  region:
+                    $ref: '#/components/schemas/Region'
         '400':
           $ref: '#/components/responses/400_error'
         '401':
@@ -12713,7 +13332,10 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/AdminRegionsRes'
+                type: object
+                properties:
+                  region:
+                    $ref: '#/components/schemas/Region'
         '400':
           $ref: '#/components/responses/400_error'
         '401':
@@ -12786,7 +13408,10 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/AdminRegionsRes'
+                type: object
+                properties:
+                  region:
+                    $ref: '#/components/schemas/Region'
         '400':
           $ref: '#/components/responses/400_error'
         '401':
@@ -12874,7 +13499,10 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/AdminRegionsRes'
+                type: object
+                properties:
+                  region:
+                    $ref: '#/components/schemas/Region'
         '400':
           $ref: '#/components/responses/400_error'
         '401':
@@ -12965,7 +13593,21 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/AdminRegionsListRes'
+                type: object
+                properties:
+                  regions:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Region'
+                  count:
+                    type: integer
+                    description: The total number of items available
+                  offset:
+                    type: integer
+                    description: The number of items skipped before these items
+                  limit:
+                    type: integer
+                    description: The number of items per page
         '400':
           $ref: '#/components/responses/400_error'
         '401':
@@ -13025,7 +13667,19 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/AdminRegionsDeleteRes'
+                type: object
+                properties:
+                  id:
+                    type: string
+                    description: The ID of the deleted Region.
+                  object:
+                    type: string
+                    description: The type of the object that was deleted.
+                    default: region
+                  deleted:
+                    type: boolean
+                    description: Whether or not the items were deleted.
+                    default: true
         '400':
           $ref: '#/components/responses/400_error'
         '401':
@@ -13084,7 +13738,10 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/AdminRegionsRes'
+                type: object
+                properties:
+                  region:
+                    $ref: '#/components/schemas/Region'
         '400':
           $ref: '#/components/responses/400_error'
         '401':
@@ -13156,7 +13813,10 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/AdminRegionsRes'
+                type: object
+                properties:
+                  region:
+                    $ref: '#/components/schemas/Region'
         '400':
           $ref: '#/components/responses/400_error'
         '401':
@@ -13216,8 +13876,22 @@ paths:
           content:
             application/json:
               schema:
-                $ref: >-
-                  #/components/schemas/AdminGetRegionsRegionFulfillmentOptionsRes
+                type: object
+                properties:
+                  fulfillment_options:
+                    type: array
+                    items:
+                      properties:
+                        provider_id:
+                          type: string
+                          description: ID of the fulfillment provider
+                        options:
+                          type: array
+                          description: fulfillment provider options
+                          example:
+                            - id: manual-fulfillment
+                            - id: manual-fulfillment-return
+                              is_return: true
         '400':
           $ref: '#/components/responses/400_error'
         '401':
@@ -13286,7 +13960,10 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/AdminRegionsRes'
+                type: object
+                properties:
+                  region:
+                    $ref: '#/components/schemas/Region'
         '400':
           $ref: '#/components/responses/400_error'
         '401':
@@ -13353,7 +14030,10 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/AdminRegionsRes'
+                type: object
+                properties:
+                  region:
+                    $ref: '#/components/schemas/Region'
         '400':
           $ref: '#/components/responses/400_error'
         '401':
@@ -13420,395 +14100,10 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/AdminRegionsRes'
-        '400':
-          $ref: '#/components/responses/400_error'
-        '401':
-          $ref: '#/components/responses/unauthorized'
-        '404':
-          $ref: '#/components/responses/not_found_error'
-        '409':
-          $ref: '#/components/responses/invalid_state_error'
-        '422':
-          $ref: '#/components/responses/invalid_request_error'
-        '500':
-          $ref: '#/components/responses/500_error'
-  /reservations:
-    post:
-      operationId: PostReservations
-      summary: Creates a Reservation
-      description: >-
-        Creates a Reservation which can be associated with any resource as
-        required.
-      x-authenticated: true
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/AdminPostReservationsReq'
-      x-codeSamples:
-        - lang: JavaScript
-          label: JS Client
-          source: >
-            import Medusa from "@medusajs/medusa-js"
-
-            const medusa = new Medusa({ baseUrl: MEDUSA_BACKEND_URL, maxRetries:
-            3 })
-
-            // must be previously logged in or use api token
-
-            medusa.admin.reservations.create({
-
-            })
-
-            .then(({ reservations }) => {
-              console.log(reservations.id);
-            });
-        - lang: Shell
-          label: cURL
-          source: >
-            curl --location --request POST
-            'https://medusa-url.com/admin/reservations' \
-
-            --header 'Authorization: Bearer {api_token}' \
-
-            --header 'Content-Type: application/json' \
-
-            --data-raw '{
-                "resource_id": "{resource_id}",
-                "resource_type": "order",
-                "value": "We delivered this order"
-            }'
-      security:
-        - api_token: []
-        - cookie_auth: []
-      tags:
-        - Reservation
-      responses:
-        '200':
-          description: OK
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/AdminPostReservationsReq'
-        '400':
-          $ref: '#/components/responses/400_error'
-        '401':
-          $ref: '#/components/responses/unauthorized'
-        '404':
-          $ref: '#/components/responses/not_found_error'
-        '409':
-          $ref: '#/components/responses/invalid_state_error'
-        '422':
-          $ref: '#/components/responses/invalid_request_error'
-        '500':
-          $ref: '#/components/responses/500_error'
-    get:
-      operationId: GetReservations
-      summary: List Reservations
-      description: Retrieve a list of Reservations.
-      x-authenticated: true
-      parameters:
-        - in: query
-          name: location_id
-          style: form
-          explode: false
-          description: Location ids to search for.
-          schema:
-            type: array
-            items:
-              type: string
-        - in: query
-          name: inventory_item_id
-          style: form
-          explode: false
-          description: Inventory Item ids to search for.
-          schema:
-            type: array
-            items:
-              type: string
-        - in: query
-          name: line_item_id
-          style: form
-          explode: false
-          description: Line Item ids to search for.
-          schema:
-            type: array
-            items:
-              type: string
-        - in: query
-          name: quantity
-          description: Filter by reservation quantity
-          schema:
-            type: object
-            properties:
-              lt:
-                type: number
-                description: filter by reservation quantity less than this number
-              gt:
-                type: number
-                description: filter by reservation quantity greater than this number
-              lte:
-                type: number
-                description: >-
-                  filter by reservation quantity less than or equal to this
-                  number
-              gte:
-                type: number
-                description: >-
-                  filter by reservation quantity greater than or equal to this
-                  number
-        - in: query
-          name: offset
-          description: How many Reservations to skip in the result.
-          schema:
-            type: integer
-            default: 0
-        - in: query
-          name: limit
-          description: Limit the number of Reservations returned.
-          schema:
-            type: integer
-            default: 20
-        - in: query
-          name: expand
-          description: >-
-            (Comma separated) Which fields should be expanded in the product
-            category.
-          schema:
-            type: string
-        - in: query
-          name: fields
-          description: >-
-            (Comma separated) Which fields should be included in the product
-            category.
-          schema:
-            type: string
-      x-codeSamples:
-        - lang: Shell
-          label: cURL
-          source: >
-            curl --location --request GET
-            'https://medusa-url.com/admin/product-categories' \
-
-            --header 'Authorization: Bearer {api_token}'
-      security:
-        - api_token: []
-        - cookie_auth: []
-      tags:
-        - Product Category
-      responses:
-        '200':
-          description: OK
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/AdminGetReservationReservationsReq'
-        '400':
-          $ref: '#/components/responses/400_error'
-        '401':
-          $ref: '#/components/responses/unauthorized'
-        '404':
-          $ref: '#/components/responses/not_found_error'
-        '409':
-          $ref: '#/components/responses/invalid_state_error'
-        '422':
-          $ref: '#/components/responses/invalid_request_error'
-        '500':
-          $ref: '#/components/responses/500_error'
-  '/reservations/{id}':
-    delete:
-      operationId: DeleteReservationsReservation
-      summary: Delete a Reservation
-      description: Deletes a Reservation.
-      x-authenticated: true
-      parameters:
-        - in: path
-          name: id
-          required: true
-          description: The ID of the Reservation to delete.
-          schema:
-            type: string
-      x-codeSamples:
-        - lang: JavaScript
-          label: JS Client
-          source: >
-            import Medusa from "@medusajs/medusa-js"
-
-            const medusa = new Medusa({ baseUrl: MEDUSA_BACKEND_URL, maxRetries:
-            3 })
-
-            // must be previously logged in or use api token
-
-            medusa.admin.reservations.delete(reservation.id)
-
-            .then(({ id, object, deleted }) => {
-              console.log(id);
-            });
-        - lang: Shell
-          label: cURL
-          source: >
-            curl --location --request DELETE
-            'https://medusa-url.com/admin/reservations/{id}' \
-
-            --header 'Authorization: Bearer {api_token}'
-      security:
-        - api_token: []
-        - cookie_auth: []
-      tags:
-        - Reservation
-      responses:
-        '200':
-          description: OK
-          content:
-            application/json:
-              schema:
                 type: object
                 properties:
-                  id:
-                    type: string
-                    description: The ID of the deleted Reservation.
-                  object:
-                    type: string
-                    description: The type of the object that was deleted.
-                    default: reservation
-                  deleted:
-                    type: boolean
-                    description: Whether or not the Reservation was deleted.
-                    default: true
-        '400':
-          $ref: '#/components/responses/400_error'
-        '401':
-          $ref: '#/components/responses/unauthorized'
-        '404':
-          $ref: '#/components/responses/not_found_error'
-        '409':
-          $ref: '#/components/responses/invalid_state_error'
-        '422':
-          $ref: '#/components/responses/invalid_request_error'
-        '500':
-          $ref: '#/components/responses/500_error'
-    get:
-      operationId: GetReservationsReservation
-      summary: Get a Reservation
-      description: Retrieves a single reservation using its id
-      x-authenticated: true
-      parameters:
-        - in: path
-          name: id
-          required: true
-          description: The ID of the reservation to retrieve.
-          schema:
-            type: string
-      x-codeSamples:
-        - lang: JavaScript
-          label: JS Client
-          source: >
-            import Medusa from "@medusajs/medusa-js"
-
-            const medusa = new Medusa({ baseUrl: MEDUSA_BACKEND_URL, maxRetries:
-            3 })
-
-            // must be previously logged in or use api token
-
-            medusa.admin.reservations.retrieve(reservation_id)
-
-            .then(({ reservation }) => {
-              console.log(reservation.id);
-            });
-        - lang: Shell
-          label: cURL
-          source: >
-            curl --location --request GET
-            'https://medusa-url.com/admin/reservations/{id}' \
-
-            --header 'Authorization: Bearer {api_token}'
-      security:
-        - api_token: []
-        - cookie_auth: []
-      tags:
-        - Reservation
-      responses:
-        '200':
-          description: OK
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/AdminPostReservationsReq'
-        '400':
-          $ref: '#/components/responses/400_error'
-        '401':
-          $ref: '#/components/responses/unauthorized'
-        '404':
-          $ref: '#/components/responses/not_found_error'
-        '409':
-          $ref: '#/components/responses/invalid_state_error'
-        '422':
-          $ref: '#/components/responses/invalid_request_error'
-        '500':
-          $ref: '#/components/responses/500_error'
-    post:
-      operationId: PostReservationsReservation
-      summary: Updates a Reservation
-      description: >-
-        Updates a Reservation which can be associated with any resource as
-        required.
-      x-authenticated: true
-      parameters:
-        - in: path
-          name: id
-          required: true
-          description: The ID of the Reservation to update.
-          schema:
-            type: string
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/AdminPostReservationsReservationReq'
-      x-codeSamples:
-        - lang: JavaScript
-          label: JS Client
-          source: >
-            import Medusa from "@medusajs/medusa-js"
-
-            const medusa = new Medusa({ baseUrl: MEDUSA_BACKEND_URL, maxRetries:
-            3 })
-
-            // must be previously logged in or use api token
-
-            medusa.admin.reservations.update(reservation.id, {
-              quantity: 3
-            })
-
-            .then(({ reservations }) => {
-              console.log(reservations.id);
-            });
-        - lang: Shell
-          label: cURL
-          source: >
-            curl --location --request POST
-            'https://medusa-url.com/admin/reservations/{id}' \
-
-            --header 'Authorization: Bearer {api_token}' \
-
-            --header 'Content-Type: application/json' \
-
-            --data-raw '{
-               "quantity": 3,
-            }'
-      security:
-        - api_token: []
-        - cookie_auth: []
-      tags:
-        - Reservation
-      responses:
-        '200':
-          description: OK
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/AdminPostReservationsReq'
+                  region:
+                    $ref: '#/components/schemas/Region'
         '400':
           $ref: '#/components/responses/400_error'
         '401':
@@ -13876,7 +14171,10 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/AdminReturnReasonsRes'
+                type: object
+                properties:
+                  return_reason:
+                    $ref: '#/components/schemas/ReturnReason'
         '400':
           $ref: '#/components/responses/400_error'
         '401':
@@ -13928,7 +14226,12 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/AdminReturnReasonsListRes'
+                type: object
+                properties:
+                  return_reasons:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/ReturnReason'
         '400':
           $ref: '#/components/responses/400_error'
         '401':
@@ -13988,7 +14291,19 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/AdminReturnReasonsDeleteRes'
+                type: object
+                properties:
+                  id:
+                    type: string
+                    description: The ID of the deleted return reason
+                  object:
+                    type: string
+                    description: The type of the object that was deleted.
+                    default: return_reason
+                  deleted:
+                    type: boolean
+                    description: Whether or not the items were deleted.
+                    default: true
         '400':
           $ref: '#/components/responses/400_error'
         '401':
@@ -14047,7 +14362,10 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/AdminReturnReasonsRes'
+                type: object
+                properties:
+                  return_reason:
+                    $ref: '#/components/schemas/ReturnReason'
         '400':
           $ref: '#/components/responses/400_error'
         '401':
@@ -14119,7 +14437,10 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/AdminReturnReasonsRes'
+                type: object
+                properties:
+                  return_reason:
+                    $ref: '#/components/schemas/ReturnReason'
         '400':
           $ref: '#/components/responses/400_error'
         '401':
@@ -14178,7 +14499,10 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/AdminReturnsCancelRes'
+                type: object
+                properties:
+                  order:
+                    $ref: '#/components/schemas/Order'
         '400':
           $ref: '#/components/responses/400_error'
         '401':
@@ -14243,7 +14567,21 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/AdminReturnsListRes'
+                type: object
+                properties:
+                  returns:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Return'
+                  count:
+                    type: integer
+                    description: The total number of items available
+                  offset:
+                    type: integer
+                    description: The number of items skipped before these items
+                  limit:
+                    type: integer
+                    description: The number of items per page
         '400':
           $ref: '#/components/responses/400_error'
         '401':
@@ -14327,7 +14665,10 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/AdminReturnsRes'
+                type: object
+                properties:
+                  return:
+                    $ref: '#/components/schemas/Return'
         '400':
           $ref: '#/components/responses/400_error'
         '401':
@@ -14409,7 +14750,10 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/AdminSalesChannelsRes'
+                type: object
+                properties:
+                  sales_channel:
+                    $ref: '#/components/schemas/SalesChannel'
         '400':
           $ref: '#/components/responses/400_error'
         '401':
@@ -14490,7 +14834,10 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/AdminSalesChannelsRes'
+                type: object
+                properties:
+                  sales_channel:
+                    $ref: '#/components/schemas/SalesChannel'
         '400':
           $ref: '#/components/responses/400_error'
         '401':
@@ -14564,7 +14911,10 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/AdminSalesChannelsRes'
+                type: object
+                properties:
+                  sales_channel:
+                    $ref: '#/components/schemas/SalesChannel'
         '400':
           $ref: '#/components/responses/400_error'
         '401':
@@ -14637,7 +14987,19 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/AdminSalesChannelsDeleteLocationRes'
+                type: object
+                properties:
+                  id:
+                    type: string
+                    description: The ID of the removed stock location from a sales channel
+                  object:
+                    type: string
+                    description: The type of the object that was removed.
+                    default: stock-location
+                  deleted:
+                    type: boolean
+                    description: Whether or not the items were deleted.
+                    default: true
         '400':
           $ref: '#/components/responses/400_error'
         '401':
@@ -14704,7 +15066,10 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/AdminSalesChannelsRes'
+                type: object
+                properties:
+                  sales_channel:
+                    $ref: '#/components/schemas/SalesChannel'
         '400':
           $ref: '#/components/responses/400_error'
         '401':
@@ -14874,7 +15239,21 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/AdminSalesChannelsListRes'
+                type: object
+                properties:
+                  sales_channels:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/SalesChannel'
+                  count:
+                    type: integer
+                    description: The total number of items available
+                  offset:
+                    type: integer
+                    description: The number of items skipped before these items
+                  limit:
+                    type: integer
+                    description: The number of items per page
         '400':
           $ref: '#/components/responses/400_error'
         '401':
@@ -14934,7 +15313,19 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/AdminSalesChannelsDeleteRes'
+                type: object
+                properties:
+                  id:
+                    type: string
+                    description: The ID of the deleted sales channel
+                  object:
+                    type: string
+                    description: The type of the object that was deleted.
+                    default: sales-channel
+                  deleted:
+                    type: boolean
+                    description: Whether or not the items were deleted.
+                    default: true
         '400':
           $ref: '#/components/responses/400_error'
         '401':
@@ -14993,7 +15384,10 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/AdminSalesChannelsRes'
+                type: object
+                properties:
+                  sales_channel:
+                    $ref: '#/components/schemas/SalesChannel'
         '400':
           $ref: '#/components/responses/400_error'
         '401':
@@ -15065,7 +15459,10 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/AdminSalesChannelsRes'
+                type: object
+                properties:
+                  sales_channel:
+                    $ref: '#/components/schemas/SalesChannel'
         '400':
           $ref: '#/components/responses/400_error'
         '401':
@@ -15140,7 +15537,10 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/AdminShippingOptionsRes'
+                type: object
+                properties:
+                  shipping_option:
+                    $ref: '#/components/schemas/ShippingOption'
         '400':
           $ref: '#/components/responses/400_error'
         '401':
@@ -15208,7 +15608,15 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/AdminShippingOptionsListRes'
+                type: object
+                properties:
+                  shipping_options:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/ShippingOption'
+                  count:
+                    type: integer
+                    description: The total number of items available
         '400':
           $ref: '#/components/responses/400_error'
         '401':
@@ -15268,7 +15676,19 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/AdminShippingOptionsDeleteRes'
+                type: object
+                properties:
+                  id:
+                    type: string
+                    description: The ID of the deleted Shipping Option.
+                  object:
+                    type: string
+                    description: The type of the object that was deleted.
+                    default: shipping-option
+                  deleted:
+                    type: boolean
+                    description: Whether or not the items were deleted.
+                    default: true
         '400':
           $ref: '#/components/responses/400_error'
         '401':
@@ -15327,7 +15747,10 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/AdminShippingOptionsRes'
+                type: object
+                properties:
+                  shipping_option:
+                    $ref: '#/components/schemas/ShippingOption'
         '400':
           $ref: '#/components/responses/400_error'
         '401':
@@ -15411,7 +15834,10 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/AdminShippingOptionsRes'
+                type: object
+                properties:
+                  shipping_option:
+                    $ref: '#/components/schemas/ShippingOption'
         '400':
           $ref: '#/components/responses/400_error'
         '401':
@@ -15477,7 +15903,10 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/AdminShippingProfilesRes'
+                type: object
+                properties:
+                  shipping_profile:
+                    $ref: '#/components/schemas/ShippingProfile'
         '400':
           $ref: '#/components/responses/400_error'
         '401':
@@ -15529,7 +15958,12 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/AdminShippingProfilesListRes'
+                type: object
+                properties:
+                  shipping_profiles:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/ShippingProfile'
         '400':
           $ref: '#/components/responses/400_error'
         '401':
@@ -15589,7 +16023,19 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/AdminDeleteShippingProfileRes'
+                type: object
+                properties:
+                  id:
+                    type: string
+                    description: The ID of the deleted Shipping Profile.
+                  object:
+                    type: string
+                    description: The type of the object that was deleted.
+                    default: shipping_profile
+                  deleted:
+                    type: boolean
+                    description: Whether or not the items were deleted.
+                    default: true
         '400':
           $ref: '#/components/responses/400_error'
         '401':
@@ -15648,7 +16094,10 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/AdminShippingProfilesRes'
+                type: object
+                properties:
+                  shipping_profile:
+                    $ref: '#/components/schemas/ShippingProfile'
         '400':
           $ref: '#/components/responses/400_error'
         '401':
@@ -15719,7 +16168,10 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/AdminShippingProfilesRes'
+                type: object
+                properties:
+                  shipping_profile:
+                    $ref: '#/components/schemas/ShippingProfile'
         '400':
           $ref: '#/components/responses/400_error'
         '401':
@@ -15797,7 +16249,10 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/AdminStockLocationsRes'
+                type: object
+                properties:
+                  stock_location:
+                    $ref: '#/components/schemas/StockLocationDTO'
         '400':
           $ref: '#/components/responses/400_error'
         '401':
@@ -15957,7 +16412,21 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/AdminStockLocationsListRes'
+                type: object
+                properties:
+                  stock_locations:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/StockLocationDTO'
+                  count:
+                    type: integer
+                    description: The total number of items available
+                  offset:
+                    type: integer
+                    description: The number of items skipped before these items
+                  limit:
+                    type: integer
+                    description: The number of items per page
         '400':
           $ref: '#/components/responses/400_error'
         '401':
@@ -16027,7 +16496,10 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/AdminStockLocationsRes'
+                type: object
+                properties:
+                  stock_location:
+                    $ref: '#/components/schemas/StockLocationDTO'
     post:
       operationId: PostStockLocationsStockLocation
       summary: Update a Stock Location
@@ -16097,7 +16569,10 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/AdminStockLocationsRes'
+                type: object
+                properties:
+                  stock_location:
+                    $ref: '#/components/schemas/StockLocationDTO'
         '400':
           $ref: '#/components/responses/400_error'
         '401':
@@ -16160,7 +16635,10 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/AdminStoresRes'
+                type: object
+                properties:
+                  store:
+                    $ref: '#/components/schemas/Store'
         '400':
           $ref: '#/components/responses/400_error'
         '401':
@@ -16222,7 +16700,10 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/AdminStoresRes'
+                type: object
+                properties:
+                  store:
+                    $ref: '#/components/schemas/Store'
         '400':
           $ref: '#/components/responses/400_error'
         '401':
@@ -16273,7 +16754,10 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/AdminStoresRes'
+                type: object
+                properties:
+                  store:
+                    $ref: '#/components/schemas/Store'
         '400':
           $ref: '#/components/responses/400_error'
         '401':
@@ -16338,7 +16822,10 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/AdminStoresRes'
+                type: object
+                properties:
+                  store:
+                    $ref: '#/components/schemas/Store'
         '400':
           $ref: '#/components/responses/400_error'
         '401':
@@ -16391,7 +16878,12 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/AdminPaymentProvidersList'
+                type: object
+                properties:
+                  payment_providers:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/PaymentProvider'
         '400':
           $ref: '#/components/responses/400_error'
         '401':
@@ -16444,7 +16936,12 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/AdminTaxProvidersList'
+                type: object
+                properties:
+                  tax_providers:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/TaxProvider'
         '400':
           $ref: '#/components/responses/400_error'
         '401':
@@ -16504,7 +17001,10 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/AdminSwapsRes'
+                type: object
+                properties:
+                  swap:
+                    $ref: '#/components/schemas/Swap'
         '400':
           $ref: '#/components/responses/400_error'
         '401':
@@ -16568,7 +17068,21 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/AdminSwapsListRes'
+                type: object
+                properties:
+                  swaps:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Swap'
+                  count:
+                    type: integer
+                    description: The total number of items available
+                  offset:
+                    type: integer
+                    description: The number of items skipped before these items
+                  limit:
+                    type: integer
+                    description: The number of items per page
         '400':
           $ref: '#/components/responses/400_error'
         '401':
@@ -16663,7 +17177,10 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/AdminTaxRatesRes'
+                type: object
+                properties:
+                  tax_rate:
+                    $ref: '#/components/schemas/TaxRate'
         '400':
           $ref: '#/components/responses/400_error'
         '401':
@@ -16757,7 +17274,10 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/AdminTaxRatesRes'
+                type: object
+                properties:
+                  tax_rate:
+                    $ref: '#/components/schemas/TaxRate'
         '400':
           $ref: '#/components/responses/400_error'
         '401':
@@ -16852,7 +17372,10 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/AdminTaxRatesRes'
+                type: object
+                properties:
+                  tax_rate:
+                    $ref: '#/components/schemas/TaxRate'
         '400':
           $ref: '#/components/responses/400_error'
         '401':
@@ -16946,7 +17469,10 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/AdminTaxRatesRes'
+                type: object
+                properties:
+                  tax_rate:
+                    $ref: '#/components/schemas/TaxRate'
         '400':
           $ref: '#/components/responses/400_error'
         '401':
@@ -17042,7 +17568,10 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/AdminTaxRatesRes'
+                type: object
+                properties:
+                  tax_rate:
+                    $ref: '#/components/schemas/TaxRate'
         '400':
           $ref: '#/components/responses/400_error'
         '401':
@@ -17138,7 +17667,10 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/AdminTaxRatesRes'
+                type: object
+                properties:
+                  tax_rate:
+                    $ref: '#/components/schemas/TaxRate'
         '400':
           $ref: '#/components/responses/400_error'
         '401':
@@ -17227,7 +17759,10 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/AdminTaxRatesRes'
+                type: object
+                properties:
+                  tax_rate:
+                    $ref: '#/components/schemas/TaxRate'
         '400':
           $ref: '#/components/responses/400_error'
         '401':
@@ -17353,7 +17888,21 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/AdminTaxRatesListRes'
+                type: object
+                properties:
+                  tax_rates:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/TaxRate'
+                  count:
+                    type: integer
+                    description: The total number of items available
+                  offset:
+                    type: integer
+                    description: The number of items skipped before these items
+                  limit:
+                    type: integer
+                    description: The number of items per page
         '400':
           $ref: '#/components/responses/400_error'
         '401':
@@ -17413,7 +17962,19 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/AdminTaxRatesDeleteRes'
+                type: object
+                properties:
+                  id:
+                    type: string
+                    description: The ID of the deleted Shipping Option.
+                  object:
+                    type: string
+                    description: The type of the object that was deleted.
+                    default: tax-rate
+                  deleted:
+                    type: boolean
+                    description: Whether or not the items were deleted.
+                    default: true
         '400':
           $ref: '#/components/responses/400_error'
         '401':
@@ -17490,7 +18051,10 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/AdminTaxRatesRes'
+                type: object
+                properties:
+                  tax_rate:
+                    $ref: '#/components/schemas/TaxRate'
         '400':
           $ref: '#/components/responses/400_error'
         '401':
@@ -17580,7 +18144,10 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/AdminTaxRatesRes'
+                type: object
+                properties:
+                  tax_rate:
+                    $ref: '#/components/schemas/TaxRate'
         '400':
           $ref: '#/components/responses/400_error'
         '401':
@@ -17650,7 +18217,17 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/AdminUploadsRes'
+                type: object
+                properties:
+                  uploads:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        url:
+                          type: string
+                          description: The URL of the uploaded file.
+                          format: uri
         '400':
           $ref: '#/components/responses/400_error'
         '401':
@@ -17720,7 +18297,17 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/AdminUploadsRes'
+                type: object
+                properties:
+                  uploads:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        url:
+                          type: string
+                          description: The URL of the uploaded file.
+                          format: uri
         '400':
           $ref: '#/components/responses/400_error'
         '401':
@@ -17785,7 +18372,19 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/AdminDeleteUploadsRes'
+                type: object
+                properties:
+                  id:
+                    type: string
+                    description: The file key of the upload deleted
+                  object:
+                    type: string
+                    description: The type of the object that was deleted.
+                    default: file
+                  deleted:
+                    type: boolean
+                    description: Whether or not the items were deleted.
+                    default: true
         '400':
           $ref: '#/components/responses/400_error'
         '401':
@@ -17851,7 +18450,11 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/AdminUploadsDownloadUrlRes'
+                type: object
+                properties:
+                  download_url:
+                    type: string
+                    description: The Download URL of the file
         '400':
           $ref: '#/components/responses/400_error'
         '401':
@@ -17919,7 +18522,10 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/AdminUserRes'
+                type: object
+                properties:
+                  user:
+                    $ref: '#/components/schemas/User'
         '400':
           $ref: '#/components/responses/400_error'
         '401':
@@ -17969,7 +18575,12 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/AdminUsersListRes'
+                type: object
+                properties:
+                  users:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/User'
         '400':
           $ref: '#/components/responses/400_error'
         '401':
@@ -18029,7 +18640,19 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/AdminDeleteUserRes'
+                type: object
+                properties:
+                  id:
+                    type: string
+                    description: The ID of the deleted user.
+                  object:
+                    type: string
+                    description: The type of the object that was deleted.
+                    default: user
+                  deleted:
+                    type: boolean
+                    description: Whether or not the items were deleted.
+                    default: true
         '400':
           $ref: '#/components/responses/400_error'
         '401':
@@ -18088,7 +18711,10 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/AdminUserRes'
+                type: object
+                properties:
+                  user:
+                    $ref: '#/components/schemas/User'
         '400':
           $ref: '#/components/responses/400_error'
         '401':
@@ -18160,7 +18786,10 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/AdminUserRes'
+                type: object
+                properties:
+                  user:
+                    $ref: '#/components/schemas/User'
         '400':
           $ref: '#/components/responses/400_error'
         '401':
@@ -18294,7 +18923,10 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/AdminUserRes'
+                type: object
+                properties:
+                  user:
+                    $ref: '#/components/schemas/User'
         '400':
           $ref: '#/components/responses/400_error'
         '401':
@@ -18439,7 +19071,21 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/AdminVariantsListRes'
+                type: object
+                properties:
+                  variants:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/ProductVariant'
+                  count:
+                    type: integer
+                    description: The total number of items available
+                  offset:
+                    type: integer
+                    description: The number of items skipped before these items
+                  limit:
+                    type: integer
+                    description: The number of items per page
         '400':
           $ref: '#/components/responses/400_error'
         '401':
@@ -22454,41 +23100,6 @@ components:
           description: An optional key-value map with additional details
           example:
             car: white
-    ProductVariantInventoryItem:
-      title: Product Variant Inventory Item
-      description: >-
-        Product Variant Inventory Items link variants with inventory items and
-        denote the number of inventory items constituting a variant.
-      type: object
-      properties:
-        id:
-          type: string
-          description: The product variant inventory item's ID
-          example: pvitem_01G8X9A7ESKAJXG2H0E6F1MW7A
-        inventory_item_id:
-          description: The id of the inventory item
-          type: string
-        variant_id:
-          description: The id of the variant.
-          type: string
-        required_quantity:
-          description: >-
-            The quantity of an inventory item required for one quantity of the
-            variant.
-          type: integer
-          default: 1
-        created_at:
-          type: string
-          description: The date with timezone at which the resource was created.
-          format: date-time
-        updated_at:
-          type: string
-          description: The date with timezone at which the resource was updated.
-          format: date-time
-        deleted_at:
-          type: string
-          description: The date with timezone at which the resource was deleted.
-          format: date-time
     ProductVariant:
       title: Product Variant
       description: >-
@@ -22646,6 +23257,46 @@ components:
           description: An optional key-value map with additional details
           example:
             car: white
+    ProductVariantPricesFields:
+      title: Product Variant Prices Fields
+      description: Product Variants Prices Fields that are only available in some requests.
+      type: object
+      properties:
+        original_price:
+          type: number
+          description: >-
+            The original price of the variant without any discounted prices
+            applied.
+        calculated_price:
+          type: number
+          description: The calculated price of the variant. Can be a discounted price.
+        original_price_incl_tax:
+          type: number
+          description: The original price of the variant including taxes.
+        calculated_price_incl_tax:
+          type: number
+          description: The calculated price of the variant including taxes.
+        original_tax:
+          type: number
+          description: The taxes applied on the original price.
+        calculated_tax:
+          type: number
+          description: The taxes applied on the calculated price.
+        tax_rates:
+          type: array
+          description: An array of applied tax rates
+          items:
+            type: object
+            properties:
+              rate:
+                type: number
+                description: The tax rate value
+              name:
+                type: string
+                description: The name of the tax rate
+              code:
+                type: string
+                description: The code of the tax rate
     Product:
       title: Product
       description: >-
@@ -24170,98 +24821,6 @@ components:
           description: An optional key-value map with additional details
           example:
             car: white
-    ReservationItemDTO:
-      title: Reservation item
-      description: Represents a reservation of an inventory item at a stock location
-      type: object
-      required:
-        - id
-        - location_id
-        - inventory_item_id
-        - quantity
-      properties:
-        id:
-          description: The id of the reservation item
-          type: string
-        location_id:
-          description: The id of the location of the reservation
-          type: string
-        inventory_item_id:
-          description: The id of the inventory item the reservation relates to
-          type: string
-        quantity:
-          description: The id of the reservation item
-          type: number
-        metadata:
-          type: object
-          description: An optional key-value map with additional details
-          example:
-            car: white
-        created_at:
-          type: string
-          description: The date with timezone at which the resource was created.
-          format: date-time
-        updated_at:
-          type: string
-          description: The date with timezone at which the resource was updated.
-          format: date-time
-        deleted_at:
-          type: string
-          description: The date with timezone at which the resource was deleted.
-          format: date-time
-    PricedVariant:
-      title: Priced Product Variant
-      type: object
-      allOf:
-        - $ref: '#/components/schemas/ProductVariant'
-        - type: object
-          properties:
-            original_price:
-              type: number
-              description: >-
-                The original price of the variant without any discounted prices
-                applied.
-            calculated_price:
-              type: number
-              description: The calculated price of the variant. Can be a discounted price.
-            original_price_incl_tax:
-              type: number
-              description: The original price of the variant including taxes.
-            calculated_price_incl_tax:
-              type: number
-              description: The calculated price of the variant including taxes.
-            original_tax:
-              type: number
-              description: The taxes applied on the original price.
-            calculated_tax:
-              type: number
-              description: The taxes applied on the calculated price.
-            tax_rates:
-              type: array
-              description: An array of applied tax rates
-              items:
-                type: object
-                properties:
-                  rate:
-                    type: number
-                    description: The tax rate value
-                  name:
-                    type: string
-                    description: The name of the tax rate
-                  code:
-                    type: string
-                    description: The code of the tax rate
-    PricedProduct:
-      title: Priced Product
-      type: object
-      allOf:
-        - $ref: '#/components/schemas/Product'
-        - type: object
-          properties:
-            variants:
-              type: array
-              items:
-                $ref: '#/components/schemas/PricedVariant'
     StockLocationAddressDTO:
       title: Stock Location Address
       description: Represents a Stock Location Address
@@ -24494,18 +25053,6 @@ components:
         code:
           type: string
           description: The code for the generated token.
-    AdminAppsRes:
-      type: object
-      properties:
-        apps:
-          $ref: '#/components/schemas/OAuth'
-    AdminAppsListRes:
-      type: object
-      properties:
-        apps:
-          type: array
-          items:
-            $ref: '#/components/schemas/OAuth'
     AdminPostAuthReq:
       type: object
       required:
@@ -24520,11 +25067,6 @@ components:
           type: string
           description: The User's password.
           format: password
-    AdminAuthRes:
-      type: object
-      properties:
-        user:
-          $ref: '#/components/schemas/User'
     AdminPostBatchesReq:
       type: object
       required:
@@ -24562,27 +25104,6 @@ components:
             Set a batch job in dry_run mode to get some information on what will
             be done without applying any modifications.
           default: false
-    AdminBatchJobRes:
-      type: object
-      properties:
-        batch_job:
-          $ref: '#/components/schemas/BatchJob'
-    AdminBatchJobListRes:
-      type: object
-      properties:
-        batch_jobs:
-          type: array
-          items:
-            $ref: '#/components/schemas/BatchJob'
-        count:
-          type: integer
-          description: The total number of items available
-        offset:
-          type: integer
-          description: The number of items skipped before these items
-        limit:
-          type: integer
-          description: The number of items per page
     AdminPostProductsToCollectionReq:
       type: object
       required:
@@ -24610,57 +25131,6 @@ components:
         metadata:
           description: An optional set of key-value pairs to hold additional information.
           type: object
-    AdminCollectionsListRes:
-      type: object
-      properties:
-        collections:
-          type: array
-          items:
-            $ref: '#/components/schemas/ProductCollection'
-        count:
-          type: integer
-          description: The total number of items available
-        offset:
-          type: integer
-          description: The number of items skipped before these items
-        limit:
-          type: integer
-          description: The number of items per page
-    AdminCollectionsDeleteRes:
-      type: object
-      properties:
-        id:
-          type: string
-          description: The ID of the deleted Collection
-        object:
-          type: string
-          description: The type of the object that was deleted.
-          default: product-collection
-        deleted:
-          type: boolean
-          description: Whether the collection was deleted successfully or not.
-          default: true
-    AdminDeleteProductsFromCollectionRes:
-      type: object
-      properties:
-        id:
-          type: string
-          description: The ID of the collection
-        object:
-          type: string
-          description: The type of object the removal was executed on
-          default: product-collection
-        removed_products:
-          description: The IDs of the products removed from the collection
-          type: array
-          items:
-            description: The ID of a Product to add to the Product Collection.
-            type: string
-    AdminCollectionsRes:
-      type: object
-      properties:
-        collection:
-          $ref: '#/components/schemas/ProductCollection'
     AdminDeleteProductsFromCollectionReq:
       type: object
       required:
@@ -24686,27 +25156,6 @@ components:
         metadata:
           description: An optional set of key-value pairs to hold additional information.
           type: object
-    AdminCurrenciesListRes:
-      type: object
-      properties:
-        currencies:
-          type: array
-          items:
-            $ref: '#/components/schemas/Currency'
-        count:
-          type: integer
-          description: The total number of items available
-        offset:
-          type: integer
-          description: The number of items skipped before these items
-        limit:
-          type: integer
-          description: The number of items per page
-    AdminCurrenciesRes:
-      type: object
-      properties:
-        currency:
-          $ref: '#/components/schemas/Currency'
     AdminPostCurrenciesCurrencyReq:
       type: object
       properties:
@@ -24743,41 +25192,6 @@ components:
               id:
                 description: ID of the customer
                 type: string
-    AdminCustomerGroupsRes:
-      type: object
-      properties:
-        customer_group:
-          $ref: '#/components/schemas/CustomerGroup'
-    AdminCustomerGroupsDeleteRes:
-      type: object
-      properties:
-        id:
-          type: string
-          description: The ID of the deleted customer group.
-        object:
-          type: string
-          description: The type of the object that was deleted.
-          default: customer_group
-        deleted:
-          type: boolean
-          description: Whether the customer group was deleted successfully or not.
-          default: true
-    AdminCustomerGroupsListRes:
-      type: object
-      properties:
-        customer_groups:
-          type: array
-          items:
-            $ref: '#/components/schemas/CustomerGroup'
-        count:
-          type: integer
-          description: The total number of items available
-        offset:
-          type: integer
-          description: The number of items skipped before these items
-        limit:
-          type: integer
-          description: The number of items per page
     AdminPostCustomerGroupsGroupReq:
       type: object
       properties:
@@ -24815,27 +25229,6 @@ components:
         metadata:
           description: An optional set of key-value pairs to hold additional information.
           type: object
-    AdminCustomersRes:
-      type: object
-      properties:
-        customer:
-          $ref: '#/components/schemas/Customer'
-    AdminCustomersListRes:
-      type: object
-      properties:
-        customers:
-          type: array
-          items:
-            $ref: '#/components/schemas/Customer'
-        count:
-          type: integer
-          description: The total number of items available
-        offset:
-          type: integer
-          description: The number of items skipped before these items
-        limit:
-          type: integer
-          description: The number of items per page
     AdminPostCustomersCustomerReq:
       type: object
       properties:
@@ -25074,63 +25467,6 @@ components:
               id:
                 description: The id of the item
                 type: string
-    AdminDiscountsRes:
-      type: object
-      properties:
-        discount:
-          $ref: '#/components/schemas/Discount'
-    AdminDiscountConditionsRes:
-      type: object
-      properties:
-        discount_condition:
-          $ref: '#/components/schemas/DiscountCondition'
-    AdminDiscountsDeleteRes:
-      type: object
-      properties:
-        id:
-          type: string
-          description: The ID of the deleted Discount
-        object:
-          type: string
-          description: The type of the object that was deleted.
-          default: discount
-        deleted:
-          type: boolean
-          description: Whether the discount was deleted successfully or not.
-          default: true
-    AdminDiscountConditionsDeleteRes:
-      type: object
-      properties:
-        id:
-          type: string
-          description: The ID of the deleted DiscountCondition
-        object:
-          type: string
-          description: The type of the object that was deleted.
-          default: discount-condition
-        deleted:
-          type: boolean
-          description: Whether the discount condition was deleted successfully or not.
-          default: true
-        discount:
-          description: The Discount to which the condition used to belong
-          $ref: '#/components/schemas/Discount'
-    AdminDiscountsListRes:
-      type: object
-      properties:
-        discounts:
-          type: array
-          items:
-            $ref: '#/components/schemas/Discount'
-        count:
-          type: integer
-          description: The total number of items available
-        offset:
-          type: integer
-          description: The number of items skipped before these items
-        limit:
-          type: integer
-          description: The number of items per page
     AdminPostDiscountsDiscountConditionsCondition:
       type: object
       properties:
@@ -25399,46 +25735,6 @@ components:
             The optional key-value map with additional details about the Line
             Item.
           type: object
-    AdminPostDraftOrdersDraftOrderRegisterPaymentRes:
-      type: object
-      properties:
-        order:
-          $ref: '#/components/schemas/Order'
-    AdminDraftOrdersRes:
-      type: object
-      properties:
-        draft_order:
-          $ref: '#/components/schemas/DraftOrder'
-    AdminDraftOrdersDeleteRes:
-      type: object
-      properties:
-        id:
-          type: string
-          description: The ID of the deleted Draft Order.
-        object:
-          type: string
-          description: The type of the object that was deleted.
-          default: draft-order
-        deleted:
-          type: boolean
-          description: Whether the draft order was deleted successfully or not.
-          default: true
-    AdminDraftOrdersListRes:
-      type: object
-      properties:
-        draft_orders:
-          type: array
-          items:
-            $ref: '#/components/schemas/DraftOrder'
-        count:
-          type: integer
-          description: The total number of items available
-        offset:
-          type: integer
-          description: The number of items skipped before these items
-        limit:
-          type: integer
-          description: The number of items per page
     AdminPostDraftOrdersDraftOrderReq:
       type: object
       properties:
@@ -25525,41 +25821,6 @@ components:
         metadata:
           description: An optional set of key-value pairs to hold additional information.
           type: object
-    AdminGiftCardsRes:
-      type: object
-      properties:
-        gift_card:
-          $ref: '#/components/schemas/GiftCard'
-    AdminGiftCardsDeleteRes:
-      type: object
-      properties:
-        id:
-          type: string
-          description: The ID of the deleted Gift Card
-        object:
-          type: string
-          description: The type of the object that was deleted.
-          default: gift-card
-        deleted:
-          type: boolean
-          description: Whether the gift card was deleted successfully or not.
-          default: true
-    AdminGiftCardsListRes:
-      type: object
-      properties:
-        gift_cards:
-          type: array
-          items:
-            $ref: '#/components/schemas/GiftCard'
-        count:
-          type: integer
-          description: The total number of items available
-        offset:
-          type: integer
-          description: The number of items skipped before these items
-        limit:
-          type: integer
-          description: The number of items per page
     AdminPostGiftCardsGiftCardReq:
       type: object
       properties:
@@ -25625,27 +25886,6 @@ components:
             - admin
             - member
             - developer
-    AdminInviteDeleteRes:
-      type: object
-      properties:
-        id:
-          type: string
-          description: The ID of the deleted Invite.
-        object:
-          type: string
-          description: The type of the object that was deleted.
-          default: invite
-        deleted:
-          type: boolean
-          description: Whether or not the Invite was deleted.
-          default: true
-    AdminListInvitesRes:
-      type: object
-      properties:
-        invites:
-          type: array
-          items:
-            $ref: '#/components/schemas/Invite'
     AdminPostNotesReq:
       type: object
       required:
@@ -25662,41 +25902,6 @@ components:
         value:
           type: string
           description: The content of the Note to create.
-    AdminNotesRes:
-      type: object
-      properties:
-        note:
-          $ref: '#/components/schemas/Note'
-    AdminNotesDeleteRes:
-      type: object
-      properties:
-        id:
-          type: string
-          description: The ID of the deleted Note.
-        object:
-          type: string
-          description: The type of the object that was deleted.
-          default: note
-        deleted:
-          type: boolean
-          description: Whether or not the Note was deleted.
-          default: true
-    AdminNotesListRes:
-      type: object
-      properties:
-        notes:
-          type: array
-          items:
-            $ref: '#/components/schemas/Note'
-        count:
-          type: integer
-          description: The total number of items available
-        offset:
-          type: integer
-          description: The number of items skipped before these items
-        limit:
-          type: integer
-          description: The number of items per page
     AdminPostNotesNoteReq:
       type: object
       required:
@@ -25705,18 +25910,6 @@ components:
         value:
           type: string
           description: The updated description of the Note.
-    AdminNotificationsListRes:
-      type: object
-      properties:
-        notifications:
-          type: array
-          items:
-            $ref: '#/components/schemas/Notification'
-    AdminNotificationsRes:
-      type: object
-      properties:
-        notification:
-          $ref: '#/components/schemas/Notification'
     AdminPostNotificationsNotificationResendReq:
       type: object
       properties:
@@ -25751,55 +25944,6 @@ components:
         internal_note:
           description: An optional note to create for the order edit.
           type: string
-    AdminOrderEditsRes:
-      type: object
-      properties:
-        order_edit:
-          $ref: '#/components/schemas/OrderEdit'
-    AdminOrderEditsListRes:
-      type: object
-      properties:
-        order_edits:
-          type: array
-          items:
-            $ref: '#/components/schemas/OrderEdit'
-        count:
-          type: integer
-          description: The total number of items available
-        offset:
-          type: integer
-          description: The number of items skipped before these items
-        limit:
-          type: integer
-          description: The number of items per page
-    AdminOrderEditDeleteRes:
-      type: object
-      properties:
-        id:
-          type: string
-          description: The ID of the deleted Order Edit.
-        object:
-          type: string
-          description: The type of the object that was deleted.
-          default: order_edit
-        deleted:
-          type: boolean
-          description: Whether or not the Order Edit was deleted.
-          default: true
-    AdminOrderEditItemChangeDeleteRes:
-      type: object
-      properties:
-        id:
-          type: string
-          description: The ID of the deleted Order Edit Item Change.
-        object:
-          type: string
-          description: The type of the object that was deleted.
-          default: item_change
-        deleted:
-          type: boolean
-          description: Whether or not the Order Edit Item Change was deleted.
-          default: true
     AdminPostOrderEditsEditLineItemsLineItemReq:
       type: object
       required:
@@ -25961,17 +26105,6 @@ components:
         metadata:
           description: An optional set of key-value pairs to hold additional information.
           type: object
-    AdminOrdersOrderLineItemReservationReq:
-      type: object
-      required:
-        - location_id
-      properties:
-        location_id:
-          description: The id of the location of the reservation
-          type: string
-        quantity:
-          description: The quantity to reserve
-          type: number
     AdminPostOrdersOrderShipmentReq:
       type: object
       required:
@@ -26100,27 +26233,6 @@ components:
         no_notification:
           description: If set to true no notification will be send related to this Claim.
           type: boolean
-    AdminOrdersRes:
-      type: object
-      properties:
-        order:
-          $ref: '#/components/schemas/Order'
-    AdminOrdersListRes:
-      type: object
-      properties:
-        orders:
-          type: array
-          items:
-            $ref: '#/components/schemas/Order'
-        count:
-          type: integer
-          description: The total number of items available
-        offset:
-          type: integer
-          description: The number of items skipped before these items
-        limit:
-          type: integer
-          description: The number of items per page
     AdminPostOrdersOrderRefundsReq:
       type: object
       required:
@@ -26340,25 +26452,6 @@ components:
             A flag to indicate if no notifications should be emitted related to
             the updated order.
           type: boolean
-    AdminPaymentCollectionsRes:
-      type: object
-      properties:
-        payment_collection:
-          $ref: '#/components/schemas/PaymentCollection'
-    AdminPaymentCollectionDeleteRes:
-      type: object
-      properties:
-        id:
-          type: string
-          description: The ID of the deleted Payment Collection.
-        object:
-          type: string
-          description: The type of the object that was deleted.
-          default: payment_collection
-        deleted:
-          type: boolean
-          description: Whether or not the Payment Collection was deleted.
-          default: true
     AdminUpdatePaymentCollectionsReq:
       type: object
       properties:
@@ -26368,16 +26461,6 @@ components:
         metadata:
           description: An optional set of key-value pairs to hold additional information.
           type: object
-    AdminPaymentRes:
-      type: object
-      properties:
-        payment:
-          $ref: '#/components/schemas/Payment'
-    AdminRefundRes:
-      type: object
-      properties:
-        refund:
-          $ref: '#/components/schemas/Refund'
     AdminPostPaymentRefundsReq:
       type: object
       required:
@@ -26525,105 +26608,6 @@ components:
           type: array
           items:
             type: string
-    AdminPriceListRes:
-      type: object
-      properties:
-        price_list:
-          $ref: '#/components/schemas/PriceList'
-    AdminPriceListDeleteBatchRes:
-      type: object
-      properties:
-        ids:
-          type: array
-          items:
-            type: string
-            description: The IDs of the deleted Money Amounts (Prices).
-        object:
-          type: string
-          description: The type of the object that was deleted.
-          default: money-amount
-        deleted:
-          type: boolean
-          description: Whether or not the items were deleted.
-          default: true
-    AdminPriceListDeleteProductPricesRes:
-      type: object
-      properties:
-        ids:
-          type: array
-          description: The price ids that have been deleted.
-          items:
-            type: string
-        object:
-          type: string
-          description: The type of the object that was deleted.
-          default: money-amount
-        deleted:
-          type: boolean
-          description: Whether or not the items were deleted.
-          default: true
-    AdminPriceListDeleteVariantPricesRes:
-      type: object
-      properties:
-        ids:
-          type: array
-          description: The price ids that have been deleted.
-          items:
-            type: string
-        object:
-          type: string
-          description: The type of the object that was deleted.
-          default: money-amount
-        deleted:
-          type: boolean
-          description: Whether or not the items were deleted.
-          default: true
-    AdminPriceListDeleteRes:
-      type: object
-      properties:
-        id:
-          type: string
-          description: The ID of the deleted Price List.
-        object:
-          type: string
-          description: The type of the object that was deleted.
-          default: price-list
-        deleted:
-          type: boolean
-          description: Whether or not the items were deleted.
-          default: true
-    AdminPriceListsListRes:
-      type: object
-      properties:
-        price_lists:
-          type: array
-          items:
-            $ref: '#/components/schemas/PriceList'
-        count:
-          type: integer
-          description: The total number of items available
-        offset:
-          type: integer
-          description: The number of items skipped before these items
-        limit:
-          type: integer
-          description: The number of items per page
-    AdminPriceListsProductsListRes:
-      type: object
-      properties:
-        products:
-          type: array
-          items:
-            $ref: '#/components/schemas/Product'
-        count:
-          type: integer
-          description: The total number of items available
-        offset:
-          type: integer
-          description: The number of items skipped before these items
-        limit:
-          type: integer
-          description: The number of items per page
     AdminPostPriceListsPriceListPriceListReq:
       type: object
       properties:
@@ -26724,56 +26708,6 @@ components:
         parent_category_id:
           type: string
           description: The ID of the parent product category
-    AdminPostProductCategoriesCategoryReq:
-      type: object
-      properties:
-        name:
-          type: string
-          description: The name to identify the Product Category by.
-        handle:
-          type: string
-          description: A handle to be used in slugs.
-        is_internal:
-          type: boolean
-          description: A flag to make product category an internal category for admins
-        is_active:
-          type: boolean
-          description: A flag to make product category visible/hidden in the store front
-        parent_category_id:
-          type: string
-          description: The ID of the parent product category
-    AdminProductTagsListRes:
-      type: object
-      properties:
-        product_tags:
-          type: array
-          items:
-            $ref: '#/components/schemas/ProductTag'
-        count:
-          type: integer
-          description: The total number of items available
-        offset:
-          type: integer
-          description: The number of items skipped before these items
-        limit:
-          type: integer
-          description: The number of items per page
-    AdminProductTypesListRes:
-      type: object
-      properties:
-        product_types:
-          type: array
-          items:
-            $ref: '#/components/schemas/ProductType'
-        count:
-          type: integer
-          description: The total number of items available
-        offset:
-          type: integer
-          description: The number of items skipped before these items
-        limit:
-          type: integer
-          description: The number of items per page
     AdminPostProductsProductOptionsReq:
       type: object
       required:
@@ -27048,7 +26982,6 @@ components:
             Whether Medusa should keep track of the inventory for this Product
             Variant.
           type: boolean
-          default: true
         weight:
           description: The wieght of the Product Variant.
           type: number
@@ -27117,114 +27050,6 @@ components:
               value:
                 description: The value to give for the Product Option.
                 type: string
-    AdminProductsDeleteOptionRes:
-      type: object
-      properties:
-        option_id:
-          type: string
-          description: The ID of the deleted Product Option
-        object:
-          type: string
-          description: The type of the object that was deleted.
-          default: option
-        deleted:
-          type: boolean
-          description: Whether or not the items were deleted.
-          default: true
-        product:
-          $ref: '#/components/schemas/Product'
-    AdminProductsDeleteVariantRes:
-      type: object
-      properties:
-        variant_id:
-          type: string
-          description: The ID of the deleted Product Variant.
-        object:
-          type: string
-          description: The type of the object that was deleted.
-          default: product-variant
-        deleted:
-          type: boolean
-          description: Whether or not the items were deleted.
-          default: true
-        product:
-          $ref: '#/components/schemas/Product'
-    AdminProductsDeleteRes:
-      type: object
-      properties:
-        id:
-          type: string
-          description: The ID of the deleted Product.
-        object:
-          type: string
-          description: The type of the object that was deleted.
-          default: product
-        deleted:
-          type: boolean
-          description: Whether or not the items were deleted.
-          default: true
-    AdminProductsListRes:
-      type: object
-      properties:
-        products:
-          type: array
-          items:
-            oneOf:
-              - $ref: '#/components/schemas/Product'
-              - $ref: '#/components/schemas/PricedProduct'
-        count:
-          type: integer
-          description: The total number of items available
-        offset:
-          type: integer
-          description: The number of items skipped before these items
-        limit:
-          type: integer
-          description: The number of items per page
-    AdminProductsListVariantsRes:
-      type: object
-      properties:
-        variants:
-          type: array
-          items:
-            $ref: '#/components/schemas/ProductVariant'
-        count:
-          type: integer
-          description: The total number of items available
-        offset:
-          type: integer
-          description: The number of items skipped before these items
-        limit:
-          type: integer
-          description: The number of items per page
-    AdminProductsListTypesRes:
-      type: object
-      properties:
-        types:
-          type: array
-          items:
-            $ref: '#/components/schemas/ProductType'
-    AdminProductsListTagsRes:
-      type: object
-      properties:
-        tags:
-          type: array
-          items:
-            properties:
-              id:
-                description: The ID of the tag.
-                type: string
-              usage_count:
-                description: The number of products that use this tag.
-                type: string
-              value:
-                description: The value of the tag.
-                type: string
-    AdminProductsRes:
-      type: object
-      properties:
-        product:
-          $ref: '#/components/schemas/Product'
     AdminPostProductsProductMetadataReq:
       type: object
       required:
@@ -27597,48 +27422,6 @@ components:
               id:
                 type: string
                 description: The ID of the sales channel
-    AdminPublishableApiKeysRes:
-      type: object
-      properties:
-        publishable_api_key:
-          $ref: '#/components/schemas/PublishableApiKey'
-    AdminPublishableApiKeysListRes:
-      type: object
-      properties:
-        publishable_api_keys:
-          type: array
-          items:
-            $ref: '#/components/schemas/PublishableApiKey'
-        count:
-          type: integer
-          description: The total number of items available
-        offset:
-          type: integer
-          description: The number of items skipped before these items
-        limit:
-          type: integer
-          description: The number of items per page
-    AdminPublishableApiKeyDeleteRes:
-      type: object
-      properties:
-        id:
-          type: string
-          description: The ID of the deleted PublishableApiKey.
-        object:
-          type: string
-          description: The type of the object that was deleted.
-          default: publishable_api_key
-        deleted:
-          type: boolean
-          description: Whether the PublishableApiKeys was deleted.
-          default: true
-    AdminPublishableApiKeysListSalesChannelsRes:
-      type: object
-      properties:
-        sales_channels:
-          type: array
-          items:
-            $ref: '#/components/schemas/SalesChannel'
     AdminPostPublishableApiKeysPublishableApiKeyReq:
       type: object
       properties:
@@ -27722,59 +27505,6 @@ components:
         includes_tax:
           description: '[EXPERIMENTAL] Tax included in prices of region'
           type: boolean
-    AdminRegionsRes:
-      type: object
-      properties:
-        region:
-          $ref: '#/components/schemas/Region'
-    AdminRegionsListRes:
-      type: object
-      properties:
-        regions:
-          type: array
-          items:
-            $ref: '#/components/schemas/Region'
-        count:
-          type: integer
-          description: The total number of items available
-        offset:
-          type: integer
-          description: The number of items skipped before these items
-        limit:
-          type: integer
-          description: The number of items per page
-    AdminRegionsDeleteRes:
-      type: object
-      properties:
-        id:
-          type: string
-          description: The ID of the deleted Region.
-        object:
-          type: string
-          description: The type of the object that was deleted.
-          default: region
-        deleted:
-          type: boolean
-          description: Whether or not the items were deleted.
-          default: true
-    AdminGetRegionsRegionFulfillmentOptionsRes:
-      type: object
-      properties:
-        fulfillment_options:
-          type: array
-          items:
-            type: object
-            properties:
-              provider_id:
-                type: string
-                description: ID of the fulfillment provider
-              options:
-                type: array
-                description: fulfillment provider options
-                example:
-                  - id: manual-fulfillment
-                  - id: manual-fulfillment-return
-                    is_return: true
     AdminPostRegionsRegionReq:
       type: object
       properties:
@@ -27830,41 +27560,6 @@ components:
           type: array
           items:
             type: string
-    AdminPostReservationsReq:
-      type: object
-      required:
-        - reservation
-      properties:
-        reservation:
-          $ref: '#/components/schemas/ReservationItemDTO'
-    AdminGetReservationReservationsReq:
-      type: object
-      properties:
-        reservations:
-          type: array
-          items:
-            $ref: '#/components/schemas/ReservationItemDTO'
-        count:
-          type: integer
-          description: The total number of items available
-        offset:
-          type: integer
-          description: The number of items skipped before these items
-        limit:
-          type: integer
-          description: The number of items per page
-    AdminPostReservationsReservationReq:
-      type: object
-      properties:
-        location_id:
-          description: The id of the location of the reservation
-          type: string
-        quantity:
-          description: The id of the reservation item
-          type: number
-        metadata:
-          description: An optional set of key-value pairs with additional information.
-          type: object
     AdminPostReturnReasonsReq:
       type: object
       required:
@@ -27888,32 +27583,6 @@ components:
         metadata:
           description: An optional set of key-value pairs with additional information.
           type: object
-    AdminReturnReasonsRes:
-      type: object
-      properties:
-        return_reason:
-          $ref: '#/components/schemas/ReturnReason'
-    AdminReturnReasonsListRes:
-      type: object
-      properties:
-        return_reasons:
-          type: array
-          items:
-            $ref: '#/components/schemas/ReturnReason'
-    AdminReturnReasonsDeleteRes:
-      type: object
-      properties:
-        id:
-          type: string
-          description: The ID of the deleted return reason
-        object:
-          type: string
-          description: The type of the object that was deleted.
-          default: return_reason
-        deleted:
-          type: boolean
-          description: Whether or not the items were deleted.
-          default: true
     AdminPostReturnReasonsReasonReq:
       type: object
       properties:
@@ -27931,32 +27600,6 @@ components:
         metadata:
           description: An optional set of key-value pairs with additional information.
           type: object
-    AdminReturnsCancelRes:
-      type: object
-      properties:
-        order:
-          $ref: '#/components/schemas/Order'
-    AdminReturnsListRes:
-      type: object
-      properties:
-        returns:
-          type: array
-          items:
-            $ref: '#/components/schemas/Return'
-        count:
-          type: integer
-          description: The total number of items available
-        offset:
-          type: integer
-          description: The number of items skipped before these items
-        limit:
-          type: integer
-          description: The number of items per page
-    AdminReturnsRes:
-      type: object
-      properties:
-        return:
-          $ref: '#/components/schemas/Return'
     AdminPostReturnsReturnReceiveReq:
       type: object
       required:
@@ -28033,55 +27676,6 @@ components:
               id:
                 description: The ID of a product
                 type: string
-    AdminSalesChannelsRes:
-      type: object
-      properties:
-        sales_channel:
-          $ref: '#/components/schemas/SalesChannel'
-    AdminSalesChannelsDeleteRes:
-      type: object
-      properties:
-        id:
-          type: string
-          description: The ID of the deleted sales channel
-        object:
-          type: string
-          description: The type of the object that was deleted.
-          default: sales-channel
-        deleted:
-          type: boolean
-          description: Whether or not the items were deleted.
-          default: true
-    AdminSalesChannelsDeleteLocationRes:
-      type: object
-      properties:
-        id:
-          type: string
-          description: The ID of the removed stock location from a sales channel
-        object:
-          type: string
-          description: The type of the object that was removed.
-          default: stock-location
-        deleted:
-          type: boolean
-          description: Whether or not the items were deleted.
-          default: true
-    AdminSalesChannelsListRes:
-      type: object
-      properties:
-        sales_channels:
-          type: array
-          items:
-            $ref: '#/components/schemas/SalesChannel'
-        count:
-          type: integer
-          description: The total number of items available
-        offset:
-          type: integer
-          description: The number of items skipped before these items
-        limit:
-          type: integer
-          description: The number of items per page
     AdminDeleteSalesChannelsChannelStockLocationsReq:
       type: object
       required:
@@ -28170,35 +27764,6 @@ components:
         includes_tax:
           description: '[EXPERIMENTAL] Tax included in prices of shipping option'
           type: boolean
-    AdminShippingOptionsListRes:
-      type: object
-      properties:
-        shipping_options:
-          type: array
-          items:
-            $ref: '#/components/schemas/ShippingOption'
-        count:
-          type: integer
-          description: The total number of items available
-    AdminShippingOptionsRes:
-      type: object
-      properties:
-        shipping_option:
-          $ref: '#/components/schemas/ShippingOption'
-    AdminShippingOptionsDeleteRes:
-      type: object
-      properties:
-        id:
-          type: string
-          description: The ID of the deleted Shipping Option.
-        object:
-          type: string
-          description: The type of the object that was deleted.
-          default: shipping-option
-        deleted:
-          type: boolean
-          description: Whether or not the items were deleted.
-          default: true
     AdminPostShippingOptionsOptionReq:
       type: object
       required:
@@ -28249,32 +27814,6 @@ components:
         name:
           description: The name of the Shipping Profile
           type: string
-    AdminDeleteShippingProfileRes:
-      type: object
-      properties:
-        id:
-          type: string
-          description: The ID of the deleted Shipping Profile.
-        object:
-          type: string
-          description: The type of the object that was deleted.
-          default: shipping_profile
-        deleted:
-          type: boolean
-          description: Whether or not the items were deleted.
-          default: true
-    AdminShippingProfilesRes:
-      type: object
-      properties:
-        shipping_profile:
-          $ref: '#/components/schemas/ShippingProfile'
-    AdminShippingProfilesListRes:
-      type: object
-      properties:
-        shipping_profiles:
-          type: array
-          items:
-            $ref: '#/components/schemas/ShippingProfile'
     AdminPostShippingProfilesProfileReq:
       type: object
       properties:
@@ -28299,27 +27838,6 @@ components:
             car: white
         address:
           $ref: '#/components/schemas/StockLocationAddressInput'
-    AdminStockLocationsRes:
-      type: object
-      properties:
-        stock_location:
-          $ref: '#/components/schemas/StockLocationDTO'
-    AdminStockLocationsListRes:
-      type: object
-      properties:
-        stock_locations:
-          type: array
-          items:
-            $ref: '#/components/schemas/StockLocationDTO'
-        count:
-          type: integer
-          description: The total number of items available
-        offset:
-          type: integer
-          description: The number of items skipped before these items
-        limit:
-          type: integer
-          description: The number of items per page
     AdminPostStockLocationsLocationReq:
       type: object
       properties:
@@ -28336,25 +27854,6 @@ components:
             car: white
         address:
           $ref: '#/components/schemas/StockLocationAddressInput'
-    AdminStoresRes:
-      type: object
-      properties:
-        store:
-          $ref: '#/components/schemas/Store'
-    AdminTaxProvidersList:
-      type: object
-      properties:
-        tax_providers:
-          type: array
-          items:
-            $ref: '#/components/schemas/TaxProvider'
-    AdminPaymentProvidersList:
-      type: object
-      properties:
-        payment_providers:
-          type: array
-          items:
-            $ref: '#/components/schemas/PaymentProvider'
     AdminPostStoreReq:
       type: object
       properties:
@@ -28390,27 +27889,6 @@ components:
         metadata:
           description: An optional set of key-value pairs with additional information.
           type: object
-    AdminSwapsListRes:
-      type: object
-      properties:
-        swaps:
-          type: array
-          items:
-            $ref: '#/components/schemas/Swap'
-        count:
-          type: integer
-          description: The total number of items available
-        offset:
-          type: integer
-          description: The number of items skipped before these items
-        limit:
-          type: integer
-          description: The number of items per page
-    AdminSwapsRes:
-      type: object
-      properties:
-        swap:
-          $ref: '#/components/schemas/Swap'
     AdminPostTaxRatesTaxRateProductTypesReq:
       type: object
       required:
@@ -28475,41 +27953,6 @@ components:
           description: The IDs of the types of products associated with this tax rate
           items:
             type: string
-    AdminTaxRatesDeleteRes:
-      type: object
-      properties:
-        id:
-          type: string
-          description: The ID of the deleted Shipping Option.
-        object:
-          type: string
-          description: The type of the object that was deleted.
-          default: tax-rate
-        deleted:
-          type: boolean
-          description: Whether or not the items were deleted.
-          default: true
-    AdminTaxRatesListRes:
-      type: object
-      properties:
-        tax_rates:
-          type: array
-          items:
-            $ref: '#/components/schemas/TaxRate'
-        count:
-          type: integer
-          description: The total number of items available
-        offset:
-          type: integer
-          description: The number of items skipped before these items
-        limit:
-          type: integer
-          description: The number of items per page
-    AdminTaxRatesRes:
-      type: object
-      properties:
-        tax_rate:
-          $ref: '#/components/schemas/TaxRate'
     AdminDeleteTaxRatesTaxRateProductTypesReq:
       type: object
       required:
@@ -28590,38 +28033,6 @@ components:
         file_key:
           description: key of the file to obtain the download link for
           type: string
-    AdminUploadsRes:
-      type: object
-      properties:
-        uploads:
-          type: array
-          items:
-            type: object
-            properties:
-              url:
-                type: string
-                description: The URL of the uploaded file.
-                format: uri
-    AdminDeleteUploadsRes:
-      type: object
-      properties:
-        id:
-          type: string
-          description: The file key of the upload deleted
-        object:
-          type: string
-          description: The type of the object that was deleted.
-          default: file
-        deleted:
-          type: boolean
-          description: Whether or not the items were deleted.
-          default: true
-    AdminUploadsDownloadUrlRes:
-      type: object
-      properties:
-        download_url:
-          type: string
-          description: The Download URL of the file
     AdminCreateUserRequest:
       type: object
       required:
@@ -28649,32 +28060,6 @@ components:
           description: The Users password.
           type: string
           format: password
-    AdminUserRes:
-      type: object
-      properties:
-        user:
-          $ref: '#/components/schemas/User'
-    AdminUsersListRes:
-      type: object
-      properties:
-        users:
-          type: array
-          items:
-            $ref: '#/components/schemas/User'
-    AdminDeleteUserRes:
-      type: object
-      properties:
-        id:
-          type: string
-          description: The ID of the deleted user.
-        object:
-          type: string
-          description: The type of the object that was deleted.
-          default: user
-        deleted:
-          type: boolean
-          description: Whether or not the items were deleted.
-          default: true
     AdminResetPasswordTokenRequest:
       type: object
       required:
@@ -28723,19 +28108,3 @@ components:
         metadata:
           description: An optional set of key-value pairs with additional information.
           type: object
-    AdminVariantsListRes:
-      type: object
-      properties:
-        variants:
-          type: array
-          items:
-            $ref: '#/components/schemas/ProductVariant'
-        count:
-          type: integer
-          description: The total number of items available
-        offset:
-          type: integer
-          description: The number of items skipped before these items
-        limit:
-          type: integer
-          description: The number of items per page

@@ -28,7 +28,10 @@ post:
       content:
         application/json:
           schema:
-            $ref: ../components/schemas/AdminBatchJobRes.yaml
+            type: object
+            properties:
+              batch_job:
+                $ref: ../components/schemas/BatchJob.yaml
     '400':
       $ref: ../components/responses/400_error.yaml
     '401':
@@ -302,7 +305,21 @@ get:
       content:
         application/json:
           schema:
-            $ref: ../components/schemas/AdminBatchJobListRes.yaml
+            type: object
+            properties:
+              batch_jobs:
+                type: array
+                items:
+                  $ref: ../components/schemas/BatchJob.yaml
+              count:
+                type: integer
+                description: The total number of items available
+              offset:
+                type: integer
+                description: The number of items skipped before these items
+              limit:
+                type: integer
+                description: The number of items per page
     '400':
       $ref: ../components/responses/400_error.yaml
     '401':

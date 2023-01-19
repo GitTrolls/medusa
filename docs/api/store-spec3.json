@@ -175,7 +175,10 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/StoreAuthRes'
+                type: object
+                properties:
+                  customer:
+                    $ref: '#/components/schemas/Customer'
         '400':
           $ref: '#/components/responses/400_error'
         '401':
@@ -271,7 +274,10 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/StoreAuthRes'
+                type: object
+                properties:
+                  customer:
+                    $ref: '#/components/schemas/Customer'
         '400':
           $ref: '#/components/responses/400_error'
         '401':
@@ -322,7 +328,11 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/StoreGetAuthEmailRes'
+                type: object
+                properties:
+                  exists:
+                    type: boolean
+                    description: Whether email exists or not.
         '400':
           $ref: '#/components/responses/400_error'
         '404':
@@ -380,7 +390,10 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/StoreCartsRes'
+                type: object
+                properties:
+                  cart:
+                    $ref: '#/components/schemas/Cart'
         '400':
           $ref: '#/components/responses/400_error'
         '404':
@@ -437,7 +450,10 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/StoreCartsRes'
+                type: object
+                properties:
+                  cart:
+                    $ref: '#/components/schemas/Cart'
         '400':
           $ref: '#/components/responses/400_error'
         '404':
@@ -497,7 +513,42 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/StoreCompleteCartRes'
+                type: object
+                properties:
+                  type:
+                    type: string
+                    description: The type of the data property.
+                    enum:
+                      - order
+                      - cart
+                      - swap
+                  data:
+                    type: object
+                    description: >-
+                      The data of the result object. Its type depends on the
+                      type field.
+                    oneOf:
+                      - type: object
+                        description: >-
+                          Cart was successfully authorized and order was placed
+                          successfully.
+                        properties:
+                          order:
+                            $ref: '#/components/schemas/Order'
+                      - type: object
+                        description: >-
+                          Cart was successfully authorized but requires further
+                          actions.
+                        properties:
+                          cart:
+                            $ref: '#/components/schemas/Cart'
+                      - type: object
+                        description: >-
+                          When cart is used for a swap and it has been completed
+                          successfully.
+                        properties:
+                          cart:
+                            $ref: '#/components/schemas/Swap'
         '400':
           $ref: '#/components/responses/400_error'
         '404':
@@ -549,7 +600,10 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/StoreCartsRes'
+                type: object
+                properties:
+                  cart:
+                    $ref: '#/components/schemas/Cart'
         '400':
           $ref: '#/components/responses/400_error'
         '404':
@@ -601,7 +655,10 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/StoreCartsRes'
+                type: object
+                properties:
+                  cart:
+                    $ref: '#/components/schemas/Cart'
         '400':
           $ref: '#/components/responses/400_error'
         '404':
@@ -657,7 +714,10 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/StoreCartsRes'
+                type: object
+                properties:
+                  cart:
+                    $ref: '#/components/schemas/Cart'
         '400':
           $ref: '#/components/responses/400_error'
         '404':
@@ -713,7 +773,10 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/StoreCartsRes'
+                type: object
+                properties:
+                  cart:
+                    $ref: '#/components/schemas/Cart'
         '400':
           $ref: '#/components/responses/400_error'
         '404':
@@ -776,7 +839,10 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/StoreCartsRes'
+                type: object
+                properties:
+                  cart:
+                    $ref: '#/components/schemas/Cart'
         '400':
           $ref: '#/components/responses/400_error'
         '404':
@@ -847,7 +913,10 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/StoreCartsRes'
+                type: object
+                properties:
+                  cart:
+                    $ref: '#/components/schemas/Cart'
         '400':
           $ref: '#/components/responses/400_error'
         '404':
@@ -911,7 +980,10 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/StoreCartsRes'
+                type: object
+                properties:
+                  cart:
+                    $ref: '#/components/schemas/Cart'
         '400':
           $ref: '#/components/responses/400_error'
         '404':
@@ -972,7 +1044,10 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/StoreCartsRes'
+                type: object
+                properties:
+                  cart:
+                    $ref: '#/components/schemas/Cart'
         '400':
           $ref: '#/components/responses/400_error'
         '404':
@@ -1034,7 +1109,10 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/StoreCartsRes'
+                type: object
+                properties:
+                  cart:
+                    $ref: '#/components/schemas/Cart'
         '400':
           $ref: '#/components/responses/400_error'
         '404':
@@ -1094,7 +1172,10 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/StoreCartsRes'
+                type: object
+                properties:
+                  cart:
+                    $ref: '#/components/schemas/Cart'
         '400':
           $ref: '#/components/responses/400_error'
         '404':
@@ -1154,7 +1235,10 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/StoreCartsRes'
+                type: object
+                properties:
+                  cart:
+                    $ref: '#/components/schemas/Cart'
         '400':
           $ref: '#/components/responses/400_error'
         '404':
@@ -1215,7 +1299,10 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/StoreCollectionsRes'
+                type: object
+                properties:
+                  collection:
+                    $ref: '#/components/schemas/ProductCollection'
         '400':
           $ref: '#/components/responses/400_error'
         '404':
@@ -1317,7 +1404,21 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/StoreCollectionsListRes'
+                type: object
+                properties:
+                  collections:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/ProductCollection'
+                  count:
+                    type: integer
+                    description: The total number of items available
+                  offset:
+                    type: integer
+                    description: The number of items skipped before these items
+                  limit:
+                    type: integer
+                    description: The number of items per page
         '400':
           $ref: '#/components/responses/400_error'
         '404':
@@ -1399,7 +1500,10 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/StoreCustomersRes'
+                type: object
+                properties:
+                  customer:
+                    $ref: '#/components/schemas/Customer'
         '400':
           $ref: '#/components/responses/400_error'
         '401':
@@ -1463,7 +1567,10 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/StoreCustomersRes'
+                type: object
+                properties:
+                  customer:
+                    $ref: '#/components/schemas/Customer'
         '400':
           $ref: '#/components/responses/400_error'
         '404':
@@ -1540,7 +1647,10 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/StoreCustomersRes'
+                type: object
+                properties:
+                  customer:
+                    $ref: '#/components/schemas/Customer'
         '400':
           $ref: '#/components/responses/400_error'
         '401':
@@ -1612,7 +1722,10 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/StoreCustomersRes'
+                type: object
+                properties:
+                  customer:
+                    $ref: '#/components/schemas/Customer'
         '400':
           $ref: '#/components/responses/400_error'
         '401':
@@ -1666,7 +1779,10 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/StoreCustomersRes'
+                type: object
+                properties:
+                  customer:
+                    $ref: '#/components/schemas/Customer'
         '400':
           $ref: '#/components/responses/400_error'
         '401':
@@ -1730,7 +1846,10 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/StoreCustomersRes'
+                type: object
+                properties:
+                  customer:
+                    $ref: '#/components/schemas/Customer'
         '400':
           $ref: '#/components/responses/400_error'
         '401':
@@ -1785,7 +1904,22 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/StoreCustomersListPaymentMethodsRes'
+                type: object
+                properties:
+                  payment_methods:
+                    type: array
+                    items:
+                      properties:
+                        provider_id:
+                          type: string
+                          description: >-
+                            The id of the Payment Provider where the payment
+                            method is saved.
+                        data:
+                          type: object
+                          description: >-
+                            The data needed for the Payment Provider to use the
+                            saved payment method.
         '400':
           $ref: '#/components/responses/400_error'
         '401':
@@ -2002,7 +2136,21 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/StoreCustomersListOrdersRes'
+                type: object
+                properties:
+                  orders:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Order'
+                  count:
+                    type: integer
+                    description: The total number of items available
+                  offset:
+                    type: integer
+                    description: The number of items skipped before these items
+                  limit:
+                    type: integer
+                    description: The number of items per page
         '400':
           $ref: '#/components/responses/400_error'
         '401':
@@ -2127,7 +2275,10 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/StoreCustomersRes'
+                type: object
+                properties:
+                  customer:
+                    $ref: '#/components/schemas/Customer'
         '400':
           $ref: '#/components/responses/400_error'
         '401':
@@ -2179,7 +2330,10 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/StoreGiftCardsRes'
+                type: object
+                properties:
+                  gift_card:
+                    $ref: '#/components/schemas/GiftCard'
         '400':
           $ref: '#/components/responses/400_error'
         '404':
@@ -2228,7 +2382,10 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/StoreOrderEditsRes'
+                type: object
+                properties:
+                  order_edit:
+                    $ref: '#/components/schemas/OrderEdit'
         '400':
           $ref: '#/components/responses/400_error'
         '401':
@@ -2280,7 +2437,10 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/StoreOrderEditsRes'
+                type: object
+                properties:
+                  order_edit:
+                    $ref: '#/components/schemas/OrderEdit'
         '400':
           $ref: '#/components/responses/400_error'
         '401':
@@ -2328,7 +2488,10 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/StoreOrderEditsRes'
+                type: object
+                properties:
+                  order_edit:
+                    $ref: '#/components/schemas/OrderEdit'
         '400':
           $ref: '#/components/responses/400_error'
         '401':
@@ -2447,7 +2610,10 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/StoreOrdersRes'
+                type: object
+                properties:
+                  order:
+                    $ref: '#/components/schemas/Order'
         '400':
           $ref: '#/components/responses/400_error'
         '404':
@@ -2497,7 +2663,10 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/StoreOrdersRes'
+                type: object
+                properties:
+                  order:
+                    $ref: '#/components/schemas/Order'
         '400':
           $ref: '#/components/responses/400_error'
         '404':
@@ -2570,7 +2739,10 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/StoreOrdersRes'
+                type: object
+                properties:
+                  order:
+                    $ref: '#/components/schemas/Order'
         '400':
           $ref: '#/components/responses/400_error'
         '404':
@@ -2697,7 +2869,9 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/StorePaymentCollectionsRes'
+                properties:
+                  payment_collection:
+                    $ref: '#/components/schemas/PaymentCollection'
         '400':
           $ref: '#/components/responses/400_error'
         '401':
@@ -2761,7 +2935,9 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/StorePaymentCollectionsSessionRes'
+                properties:
+                  payment_session:
+                    $ref: '#/components/schemas/PaymentSession'
         '400':
           $ref: '#/components/responses/400_error'
         '401':
@@ -2828,7 +3004,10 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/StorePaymentCollectionsRes'
+                type: object
+                properties:
+                  payment_collection:
+                    $ref: '#/components/schemas/PaymentCollection'
         '400':
           $ref: '#/components/responses/400_error'
         '401':
@@ -2918,7 +3097,9 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/StorePaymentCollectionsRes'
+                properties:
+                  payment_collection:
+                    $ref: '#/components/schemas/PaymentCollection'
         '400':
           $ref: '#/components/responses/400_error'
         '401':
@@ -2986,7 +3167,9 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/StorePaymentCollectionsRes'
+                properties:
+                  payment_collection:
+                    $ref: '#/components/schemas/PaymentCollection'
         '400':
           $ref: '#/components/responses/400_error'
         '401':
@@ -3048,306 +3231,12 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/StorePaymentCollectionsSessionRes'
-        '400':
-          $ref: '#/components/responses/400_error'
-        '404':
-          $ref: '#/components/responses/not_found_error'
-        '409':
-          $ref: '#/components/responses/invalid_state_error'
-        '422':
-          $ref: '#/components/responses/invalid_request_error'
-        '500':
-          $ref: '#/components/responses/500_error'
-  '/product-categories/{id}':
-    get:
-      operationId: GetProductCategoriesCategory
-      summary: Get a Product Category
-      description: Retrieves a Product Category.
-      x-authenticated: false
-      parameters:
-        - in: path
-          name: id
-          required: true
-          description: The ID of the Product Category
-          schema:
-            type: string
-        - in: query
-          name: expand
-          description: >-
-            (Comma separated) Which fields should be expanded in each product
-            category.
-          schema:
-            type: string
-        - in: query
-          name: fields
-          description: >-
-            (Comma separated) Which fields should be retrieved in each product
-            category.
-          schema:
-            type: string
-      x-codeSamples:
-        - lang: JavaScript
-          label: JS Client
-          source: >
-            import Medusa from "@medusajs/medusa-js"
-
-            const medusa = new Medusa({ baseUrl: MEDUSA_BACKEND_URL, maxRetries:
-            3 })
-
-            // must be previously logged in or use api token
-
-            medusa.productCategories.retrieve("pcat-id")
-
-            .then(({ productCategory }) => {
-              console.log(productCategory.id);
-            });
-        - lang: Shell
-          label: cURL
-          source: >
-            curl --location --request GET
-            'https://medusa-url.com/store/product-categories/{id}' \
-
-            --header 'Authorization: Bearer {api_token}'
-      security:
-        - api_token: []
-        - cookie_auth: []
-      tags:
-        - Product Category
-      responses:
-        '200':
-          description: OK
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/StoreGetProductCategoryRes'
-        '400':
-          $ref: '#/components/responses/400_error'
-        '401':
-          $ref: '#/components/responses/unauthorized'
-        '404':
-          $ref: '#/components/responses/not_found_error'
-        '409':
-          $ref: '#/components/responses/invalid_state_error'
-        '422':
-          $ref: '#/components/responses/invalid_request_error'
-        '500':
-          $ref: '#/components/responses/500_error'
-  /product-categories:
-    get:
-      operationId: GetProductCategories
-      summary: List Product Categories
-      description: Retrieve a list of product categories.
-      x-authenticated: false
-      parameters:
-        - in: query
-          name: q
-          description: Query used for searching product category names orhandles.
-          schema:
-            type: string
-        - in: query
-          name: parent_category_id
-          description: Returns categories scoped by parent
-          schema:
-            type: string
-        - in: query
-          name: offset
-          description: How many product categories to skip in the result.
-          schema:
-            type: integer
-            default: 0
-        - in: query
-          name: limit
-          description: Limit the number of product categories returned.
-          schema:
-            type: integer
-            default: 100
-      x-codeSamples:
-        - lang: Shell
-          label: cURL
-          source: >
-            curl --location --request GET
-            'https://medusa-url.com/store/product-categories' \
-
-            --header 'Authorization: Bearer {api_token}'
-      security:
-        - api_token: []
-        - cookie_auth: []
-      tags:
-        - Product Category
-      responses:
-        '200':
-          description: OK
-          content:
-            application/json:
-              schema:
                 type: object
                 properties:
-                  product_categories:
-                    type: array
-                    items:
-                      $ref: '#/components/schemas/ProductCategory'
-                  count:
-                    type: integer
-                    description: The total number of items available
-                  offset:
-                    type: integer
-                    description: The number of items skipped before these items
-                  limit:
-                    type: integer
-                    description: The number of items per page
+                  payment_session:
+                    $ref: '#/components/schemas/PaymentSession'
         '400':
           $ref: '#/components/responses/400_error'
-        '401':
-          $ref: '#/components/responses/unauthorized'
-        '404':
-          $ref: '#/components/responses/not_found_error'
-        '409':
-          $ref: '#/components/responses/invalid_state_error'
-        '422':
-          $ref: '#/components/responses/invalid_request_error'
-        '500':
-          $ref: '#/components/responses/500_error'
-  /product-tags:
-    get:
-      operationId: GetProductTags
-      summary: List Product Tags
-      description: Retrieve a list of Product Tags.
-      x-authenticated: true
-      parameters:
-        - in: query
-          name: limit
-          description: The number of types to return.
-          schema:
-            type: integer
-            default: 20
-        - in: query
-          name: offset
-          description: The number of items to skip before the results.
-          schema:
-            type: integer
-            default: 0
-        - in: query
-          name: order
-          description: The field to sort items by.
-          schema:
-            type: string
-        - in: query
-          name: discount_condition_id
-          description: The discount condition id on which to filter the product tags.
-          schema:
-            type: string
-        - in: query
-          name: value
-          style: form
-          explode: false
-          description: The tag values to search for
-          schema:
-            type: array
-            items:
-              type: string
-        - in: query
-          name: id
-          style: form
-          explode: false
-          description: The tag IDs to search for
-          schema:
-            type: array
-            items:
-              type: string
-        - in: query
-          name: q
-          description: A query string to search values for
-          schema:
-            type: string
-        - in: query
-          name: created_at
-          description: Date comparison for when resulting product tags were created.
-          schema:
-            type: object
-            properties:
-              lt:
-                type: string
-                description: filter by dates less than this date
-                format: date
-              gt:
-                type: string
-                description: filter by dates greater than this date
-                format: date
-              lte:
-                type: string
-                description: filter by dates less than or equal to this date
-                format: date
-              gte:
-                type: string
-                description: filter by dates greater than or equal to this date
-                format: date
-        - in: query
-          name: updated_at
-          description: Date comparison for when resulting product tags were updated.
-          schema:
-            type: object
-            properties:
-              lt:
-                type: string
-                description: filter by dates less than this date
-                format: date
-              gt:
-                type: string
-                description: filter by dates greater than this date
-                format: date
-              lte:
-                type: string
-                description: filter by dates less than or equal to this date
-                format: date
-              gte:
-                type: string
-                description: filter by dates greater than or equal to this date
-                format: date
-      x-codeSamples:
-        - lang: JavaScript
-          label: JS Client
-          source: >
-            import Medusa from "@medusajs/medusa-js"
-
-            const medusa = new Medusa({ baseUrl: MEDUSA_BACKEND_URL, maxRetries:
-            3 })
-
-            medusa.store.productTags.list()
-
-            .then(({ product_tags }) => {
-              console.log(product_tags.length);
-            });
-        - lang: Shell
-          label: cURL
-          source: >
-            curl --location --request GET
-            'https://medusa-url.com/store/product-tags'
-      tags:
-        - Product Tag
-      responses:
-        '200':
-          description: OK
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  product_tags:
-                    $ref: '#/components/schemas/ProductTag'
-                  count:
-                    type: integer
-                    description: The total number of items available
-                  offset:
-                    type: integer
-                    description: The number of items skipped before these items
-                  limit:
-                    type: integer
-                    description: The number of items per page
-        '400':
-          $ref: '#/components/responses/400_error'
-        '401':
-          $ref: '#/components/responses/unauthorized'
         '404':
           $ref: '#/components/responses/not_found_error'
         '409':
@@ -3486,7 +3375,19 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/StoreProductTypesListRes'
+                type: object
+                properties:
+                  product_types:
+                    $ref: '#/components/schemas/ProductType'
+                  count:
+                    type: integer
+                    description: The total number of items available
+                  offset:
+                    type: integer
+                    description: The number of items skipped before these items
+                  limit:
+                    type: integer
+                    description: The number of items per page
         '400':
           $ref: '#/components/responses/400_error'
         '401':
@@ -3562,7 +3463,20 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/StoreProductsRes'
+                type: object
+                properties:
+                  product:
+                    allOf:
+                      - $ref: '#/components/schemas/Product'
+                      - type: object
+                        properties:
+                          variants:
+                            type: array
+                            items:
+                              allOf:
+                                - $ref: '#/components/schemas/ProductVariant'
+                                - $ref: >-
+                                    #/components/schemas/ProductVariantPricesFields
         '400':
           $ref: '#/components/responses/400_error'
         '404':
@@ -3755,7 +3669,31 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/StoreProductsListRes'
+                type: object
+                properties:
+                  products:
+                    type: array
+                    items:
+                      allOf:
+                        - $ref: '#/components/schemas/Product'
+                        - type: object
+                          properties:
+                            variants:
+                              type: array
+                              items:
+                                allOf:
+                                  - $ref: '#/components/schemas/ProductVariant'
+                                  - $ref: >-
+                                      #/components/schemas/ProductVariantPricesFields
+                  count:
+                    type: integer
+                    description: The total number of items available
+                  offset:
+                    type: integer
+                    description: The number of items skipped before these items
+                  limit:
+                    type: integer
+                    description: The number of items per page
         '400':
           $ref: '#/components/responses/400_error'
         '404':
@@ -3819,7 +3757,13 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/StorePostSearchRes'
+                type: object
+                properties:
+                  hits:
+                    type: array
+                    description: >-
+                      Array of results. The format of the items depends on the
+                      search engine installed on the server.
         '400':
           $ref: '#/components/responses/400_error'
         '404':
@@ -3869,7 +3813,10 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/StoreRegionsRes'
+                type: object
+                properties:
+                  region:
+                    $ref: '#/components/schemas/Region'
         '400':
           $ref: '#/components/responses/400_error'
         '404':
@@ -3968,7 +3915,12 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/StoreRegionsListRes'
+                type: object
+                properties:
+                  regions:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Region'
         '400':
           $ref: '#/components/responses/400_error'
         '404':
@@ -4018,7 +3970,10 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/StoreReturnReasonsRes'
+                type: object
+                properties:
+                  return_reason:
+                    $ref: '#/components/schemas/ReturnReason'
         '400':
           $ref: '#/components/responses/400_error'
         '404':
@@ -4061,7 +4016,12 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/StoreReturnReasonsListRes'
+                type: object
+                properties:
+                  return_reasons:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/ReturnReason'
         '400':
           $ref: '#/components/responses/400_error'
         '404':
@@ -4129,7 +4089,10 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/StoreReturnsRes'
+                type: object
+                properties:
+                  return:
+                    $ref: '#/components/schemas/Return'
         '400':
           $ref: '#/components/responses/400_error'
         '404':
@@ -4190,7 +4153,12 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/StoreShippingOptionsListRes'
+                type: object
+                properties:
+                  shipping_options:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/ShippingOption'
         '400':
           $ref: '#/components/responses/400_error'
         '404':
@@ -4240,7 +4208,12 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/StoreShippingOptionsListRes'
+                type: object
+                properties:
+                  shipping_options:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/ShippingOption'
         '400':
           $ref: '#/components/responses/400_error'
         '404':
@@ -4322,7 +4295,10 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/StoreSwapsRes'
+                type: object
+                properties:
+                  swap:
+                    $ref: '#/components/schemas/Swap'
         '400':
           $ref: '#/components/responses/400_error'
         '404':
@@ -4372,7 +4348,10 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/StoreSwapsRes'
+                type: object
+                properties:
+                  swap:
+                    $ref: '#/components/schemas/Swap'
         '400':
           $ref: '#/components/responses/400_error'
         '404':
@@ -4429,7 +4408,12 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/StoreVariantsRes'
+                type: object
+                properties:
+                  variant:
+                    allOf:
+                      - $ref: '#/components/schemas/ProductVariant'
+                      - $ref: '#/components/schemas/ProductVariantPricesFields'
         '400':
           $ref: '#/components/responses/400_error'
         '404':
@@ -4521,7 +4505,14 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/StoreVariantsListRes'
+                type: object
+                properties:
+                  variants:
+                    type: array
+                    items:
+                      allOf:
+                        - $ref: '#/components/schemas/ProductVariant'
+                        - $ref: '#/components/schemas/ProductVariantPricesFields'
         '400':
           $ref: '#/components/responses/400_error'
         '404':
@@ -4583,7 +4574,10 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/StoreCartsRes'
+                type: object
+                properties:
+                  cart:
+                    $ref: '#/components/schemas/Cart'
         '400':
           $ref: '#/components/responses/400_error'
         '404':
@@ -8545,41 +8539,6 @@ components:
           description: An optional key-value map with additional details
           example:
             car: white
-    ProductVariantInventoryItem:
-      title: Product Variant Inventory Item
-      description: >-
-        Product Variant Inventory Items link variants with inventory items and
-        denote the number of inventory items constituting a variant.
-      type: object
-      properties:
-        id:
-          type: string
-          description: The product variant inventory item's ID
-          example: pvitem_01G8X9A7ESKAJXG2H0E6F1MW7A
-        inventory_item_id:
-          description: The id of the inventory item
-          type: string
-        variant_id:
-          description: The id of the variant.
-          type: string
-        required_quantity:
-          description: >-
-            The quantity of an inventory item required for one quantity of the
-            variant.
-          type: integer
-          default: 1
-        created_at:
-          type: string
-          description: The date with timezone at which the resource was created.
-          format: date-time
-        updated_at:
-          type: string
-          description: The date with timezone at which the resource was updated.
-          format: date-time
-        deleted_at:
-          type: string
-          description: The date with timezone at which the resource was deleted.
-          format: date-time
     ProductVariant:
       title: Product Variant
       description: >-
@@ -8737,6 +8696,46 @@ components:
           description: An optional key-value map with additional details
           example:
             car: white
+    ProductVariantPricesFields:
+      title: Product Variant Prices Fields
+      description: Product Variants Prices Fields that are only available in some requests.
+      type: object
+      properties:
+        original_price:
+          type: number
+          description: >-
+            The original price of the variant without any discounted prices
+            applied.
+        calculated_price:
+          type: number
+          description: The calculated price of the variant. Can be a discounted price.
+        original_price_incl_tax:
+          type: number
+          description: The original price of the variant including taxes.
+        calculated_price_incl_tax:
+          type: number
+          description: The calculated price of the variant including taxes.
+        original_tax:
+          type: number
+          description: The taxes applied on the original price.
+        calculated_tax:
+          type: number
+          description: The taxes applied on the calculated price.
+        tax_rates:
+          type: array
+          description: An array of applied tax rates
+          items:
+            type: object
+            properties:
+              rate:
+                type: number
+                description: The tax rate value
+              name:
+                type: string
+                description: The name of the tax rate
+              code:
+                type: string
+                description: The code of the tax rate
     Product:
       title: Product
       description: >-
@@ -10261,98 +10260,6 @@ components:
           description: An optional key-value map with additional details
           example:
             car: white
-    ReservationItemDTO:
-      title: Reservation item
-      description: Represents a reservation of an inventory item at a stock location
-      type: object
-      required:
-        - id
-        - location_id
-        - inventory_item_id
-        - quantity
-      properties:
-        id:
-          description: The id of the reservation item
-          type: string
-        location_id:
-          description: The id of the location of the reservation
-          type: string
-        inventory_item_id:
-          description: The id of the inventory item the reservation relates to
-          type: string
-        quantity:
-          description: The id of the reservation item
-          type: number
-        metadata:
-          type: object
-          description: An optional key-value map with additional details
-          example:
-            car: white
-        created_at:
-          type: string
-          description: The date with timezone at which the resource was created.
-          format: date-time
-        updated_at:
-          type: string
-          description: The date with timezone at which the resource was updated.
-          format: date-time
-        deleted_at:
-          type: string
-          description: The date with timezone at which the resource was deleted.
-          format: date-time
-    PricedVariant:
-      title: Priced Product Variant
-      type: object
-      allOf:
-        - $ref: '#/components/schemas/ProductVariant'
-        - type: object
-          properties:
-            original_price:
-              type: number
-              description: >-
-                The original price of the variant without any discounted prices
-                applied.
-            calculated_price:
-              type: number
-              description: The calculated price of the variant. Can be a discounted price.
-            original_price_incl_tax:
-              type: number
-              description: The original price of the variant including taxes.
-            calculated_price_incl_tax:
-              type: number
-              description: The calculated price of the variant including taxes.
-            original_tax:
-              type: number
-              description: The taxes applied on the original price.
-            calculated_tax:
-              type: number
-              description: The taxes applied on the calculated price.
-            tax_rates:
-              type: array
-              description: An array of applied tax rates
-              items:
-                type: object
-                properties:
-                  rate:
-                    type: number
-                    description: The tax rate value
-                  name:
-                    type: string
-                    description: The name of the tax rate
-                  code:
-                    type: string
-                    description: The code of the tax rate
-    PricedProduct:
-      title: Priced Product
-      type: object
-      allOf:
-        - $ref: '#/components/schemas/Product'
-        - type: object
-          properties:
-            variants:
-              type: array
-              items:
-                $ref: '#/components/schemas/PricedVariant'
     StockLocationAddressDTO:
       title: Stock Location Address
       description: Represents a Stock Location Address
@@ -10569,17 +10476,6 @@ components:
         type:
           type: string
           description: A slug indicating the type of the error.
-    StoreAuthRes:
-      type: object
-      properties:
-        customer:
-          $ref: '#/components/schemas/Customer'
-    StoreGetAuthEmailRes:
-      type: object
-      properties:
-        exists:
-          type: boolean
-          description: Whether email exists or not.
     StorePostCartReq:
       type: object
       properties:
@@ -10620,43 +10516,6 @@ components:
           example:
             ip: '::1'
             user_agent: Chrome
-    StoreCartsRes:
-      type: object
-      properties:
-        cart:
-          $ref: '#/components/schemas/Cart'
-    StoreCompleteCartRes:
-      type: object
-      properties:
-        type:
-          type: string
-          description: The type of the data property.
-          enum:
-            - order
-            - cart
-            - swap
-        data:
-          type: object
-          description: The data of the result object. Its type depends on the type field.
-          oneOf:
-            - type: object
-              allOf:
-                - description: >-
-                    Cart was successfully authorized and order was placed
-                    successfully.
-                - $ref: '#/components/schemas/Order'
-            - type: object
-              allOf:
-                - description: >-
-                    Cart was successfully authorized but requires further
-                    actions.
-                - $ref: '#/components/schemas/Cart'
-            - type: object
-              allOf:
-                - description: >-
-                    When cart is used for a swap and it has been completed
-                    successfully.
-                - $ref: '#/components/schemas/Swap'
     StorePostCartsCartReq:
       type: object
       properties:
@@ -10720,27 +10579,6 @@ components:
           example:
             ip: '::1'
             user_agent: Chrome
-    StoreCollectionsListRes:
-      type: object
-      properties:
-        collections:
-          type: array
-          items:
-            $ref: '#/components/schemas/ProductCollection'
-        count:
-          type: integer
-          description: The total number of items available
-        offset:
-          type: integer
-          description: The number of items skipped before these items
-        limit:
-          type: integer
-          description: The number of items per page
-    StoreCollectionsRes:
-      type: object
-      properties:
-        collection:
-          $ref: '#/components/schemas/ProductCollection'
     StorePostCustomersCustomerAddressesReq:
       type: object
       required:
@@ -10783,45 +10621,6 @@ components:
         phone:
           description: The Customer's phone number.
           type: string
-    StoreCustomersRes:
-      type: object
-      properties:
-        customer:
-          $ref: '#/components/schemas/Customer'
-    StoreCustomersListOrdersRes:
-      type: object
-      properties:
-        orders:
-          type: array
-          items:
-            $ref: '#/components/schemas/Order'
-        count:
-          type: integer
-          description: The total number of items available
-        offset:
-          type: integer
-          description: The number of items skipped before these items
-        limit:
-          type: integer
-          description: The number of items per page
-    StoreCustomersListPaymentMethodsRes:
-      type: object
-      properties:
-        payment_methods:
-          type: array
-          items:
-            type: object
-            properties:
-              provider_id:
-                type: string
-                description: >-
-                  The id of the Payment Provider where the payment method is
-                  saved.
-              data:
-                type: object
-                description: >-
-                  The data needed for the Payment Provider to use the saved
-                  payment method.
     StorePostCustomersCustomerPasswordTokenReq:
       type: object
       required:
@@ -10880,22 +10679,12 @@ components:
         metadata:
           description: Metadata about the customer.
           type: object
-    StoreGiftCardsRes:
-      type: object
-      properties:
-        gift_card:
-          $ref: '#/components/schemas/GiftCard'
     StorePostOrderEditsOrderEditDecline:
       type: object
       properties:
         declined_reason:
           type: string
           description: The reason for declining the OrderEdit.
-    StoreOrderEditsRes:
-      type: object
-      properties:
-        order_edit:
-          $ref: '#/components/schemas/OrderEdit'
     StorePostCustomersCustomerAcceptClaimReq:
       type: object
       required:
@@ -10904,11 +10693,6 @@ components:
         token:
           description: The invite token provided by the admin.
           type: string
-    StoreOrdersRes:
-      type: object
-      properties:
-        order:
-          $ref: '#/components/schemas/Order'
     StorePostCustomersCustomerOrderClaimReq:
       type: object
       required:
@@ -10929,16 +10713,6 @@ components:
           type: array
           items:
             type: string
-    StorePaymentCollectionsRes:
-      type: object
-      properties:
-        payment_collection:
-          $ref: '#/components/schemas/PaymentCollection'
-    StorePaymentCollectionsSessionRes:
-      type: object
-      properties:
-        payment_session:
-          $ref: '#/components/schemas/PaymentSession'
     StorePostPaymentCollectionsBatchSessionsReq:
       type: object
       required:
@@ -10972,80 +10746,6 @@ components:
         provider_id:
           type: string
           description: The ID of the Payment Provider.
-    StoreGetProductCategoryRes:
-      type: object
-      properties:
-        product_category:
-          $ref: '#/components/schemas/ProductCategory'
-    StoreProductTypesListRes:
-      type: object
-      properties:
-        product_types:
-          type: array
-          items:
-            $ref: '#/components/schemas/ProductType'
-        count:
-          type: integer
-          description: The total number of items available
-        offset:
-          type: integer
-          description: The number of items skipped before these items
-        limit:
-          type: integer
-          description: The number of items per page
-    StoreProductsRes:
-      type: object
-      properties:
-        product:
-          $ref: '#/components/schemas/PricedProduct'
-    StorePostSearchRes:
-      type: object
-      properties:
-        hits:
-          type: array
-          description: >-
-            Array of results. The format of the items depends on the search
-            engine installed on the server.
-    StoreProductsListRes:
-      type: object
-      properties:
-        products:
-          type: array
-          items:
-            $ref: '#/components/schemas/PricedProduct'
-        count:
-          type: integer
-          description: The total number of items available
-        offset:
-          type: integer
-          description: The number of items skipped before these items
-        limit:
-          type: integer
-          description: The number of items per page
-    StoreRegionsListRes:
-      type: object
-      properties:
-        regions:
-          type: array
-          items:
-            $ref: '#/components/schemas/Region'
-    StoreRegionsRes:
-      type: object
-      properties:
-        region:
-          $ref: '#/components/schemas/Region'
-    StoreReturnReasonsListRes:
-      type: object
-      properties:
-        return_reasons:
-          type: array
-          items:
-            $ref: '#/components/schemas/ReturnReason'
-    StoreReturnReasonsRes:
-      type: object
-      properties:
-        return_reason:
-          $ref: '#/components/schemas/ReturnReason'
     StorePostReturnsReq:
       type: object
       required:
@@ -11089,18 +10789,6 @@ components:
               description: >-
                 The ID of the Shipping Option to create the Shipping Method
                 from.
-    StoreReturnsRes:
-      type: object
-      properties:
-        return:
-          $ref: '#/components/schemas/Return'
-    StoreShippingOptionsListRes:
-      type: object
-      properties:
-        shipping_options:
-          type: array
-          items:
-            $ref: '#/components/schemas/ShippingOption'
     StorePostSwapsReq:
       type: object
       required:
@@ -11148,20 +10836,3 @@ components:
               quantity:
                 description: The quantity to send of the variant.
                 type: integer
-    StoreSwapsRes:
-      type: object
-      properties:
-        swap:
-          $ref: '#/components/schemas/Swap'
-    StoreVariantsRes:
-      type: object
-      properties:
-        variant:
-          $ref: '#/components/schemas/PricedVariant'
-    StoreVariantsListRes:
-      type: object
-      properties:
-        variants:
-          type: array
-          items:
-            $ref: '#/components/schemas/PricedVariant'

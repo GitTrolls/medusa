@@ -35,7 +35,10 @@ post:
       content:
         application/json:
           schema:
-            $ref: ../components/schemas/AdminRefundRes.yaml
+            type: object
+            properties:
+              refund:
+                $ref: ../components/schemas/Refund.yaml
     '400':
       $ref: ../components/responses/400_error.yaml
     '401':

@@ -28,7 +28,10 @@ post:
       content:
         application/json:
           schema:
-            $ref: ../components/schemas/AdminProductsRes.yaml
+            type: object
+            properties:
+              product:
+                $ref: ../components/schemas/Product.yaml
     '400':
       $ref: ../components/responses/400_error.yaml
     '401':
@@ -268,7 +271,21 @@ get:
       content:
         application/json:
           schema:
-            $ref: ../components/schemas/AdminProductsListRes.yaml
+            type: object
+            properties:
+              products:
+                type: array
+                items:
+                  $ref: ../components/schemas/Product.yaml
+              count:
+                type: integer
+                description: The total number of items available
+              offset:
+                type: integer
+                description: The number of items skipped before these items
+              limit:
+                type: integer
+                description: The number of items per page
     '400':
       $ref: ../components/responses/400_error.yaml
     '401':

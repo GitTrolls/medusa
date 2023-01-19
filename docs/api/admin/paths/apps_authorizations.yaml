@@ -24,7 +24,10 @@ post:
       content:
         application/json:
           schema:
-            $ref: ../components/schemas/AdminAppsRes.yaml
+            type: object
+            properties:
+              apps:
+                $ref: ../components/schemas/OAuth.yaml
     '400':
       $ref: ../components/responses/400_error.yaml
     '401':

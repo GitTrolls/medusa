@@ -27,7 +27,10 @@ post:
       content:
         application/json:
           schema:
-            $ref: ../components/schemas/StoreCustomersRes.yaml
+            type: object
+            properties:
+              customer:
+                $ref: ../components/schemas/Customer.yaml
     '400':
       $ref: ../components/responses/400_error.yaml
     '401':

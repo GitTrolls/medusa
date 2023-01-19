@@ -30,7 +30,10 @@ post:
       content:
         application/json:
           schema:
-            $ref: ../components/schemas/AdminBatchJobRes.yaml
+            type: object
+            properties:
+              batch_job:
+                $ref: ../components/schemas/BatchJob.yaml
     '400':
       $ref: ../components/responses/400_error.yaml
     '401':

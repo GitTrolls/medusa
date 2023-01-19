@@ -28,7 +28,10 @@ post:
       content:
         application/json:
           schema:
-            $ref: ../components/schemas/AdminDraftOrdersRes.yaml
+            type: object
+            properties:
+              draft_order:
+                $ref: ../components/schemas/DraftOrder.yaml
     '400':
       $ref: ../components/responses/400_error.yaml
     '401':
@@ -86,7 +89,21 @@ get:
       content:
         application/json:
           schema:
-            $ref: ../components/schemas/AdminDraftOrdersListRes.yaml
+            type: object
+            properties:
+              draft_orders:
+                type: array
+                items:
+                  $ref: ../components/schemas/DraftOrder.yaml
+              count:
+                type: integer
+                description: The total number of items available
+              offset:
+                type: integer
+                description: The number of items skipped before these items
+              limit:
+                type: integer
+                description: The number of items per page
     '400':
       $ref: ../components/responses/400_error.yaml
     '401':

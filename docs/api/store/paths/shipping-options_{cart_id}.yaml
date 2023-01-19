@@ -26,7 +26,12 @@ get:
       content:
         application/json:
           schema:
-            $ref: ../components/schemas/StoreShippingOptionsListRes.yaml
+            type: object
+            properties:
+              shipping_options:
+                type: array
+                items:
+                  $ref: ../components/schemas/ShippingOption.yaml
     '400':
       $ref: ../components/responses/400_error.yaml
     '404':

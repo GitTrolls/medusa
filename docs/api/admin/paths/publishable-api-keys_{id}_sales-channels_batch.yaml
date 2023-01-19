@@ -38,7 +38,9 @@ post:
       content:
         application/json:
           schema:
-            $ref: ../components/schemas/AdminPublishableApiKeysRes.yaml
+            properties:
+              publishable_api_key:
+                $ref: ../components/schemas/PublishableApiKey.yaml
     '400':
       $ref: ../components/responses/400_error.yaml
     '401':
@@ -91,7 +93,9 @@ delete:
       content:
         application/json:
           schema:
-            $ref: ../components/schemas/AdminPublishableApiKeysRes.yaml
+            properties:
+              publishable_api_key:
+                $ref: ../components/schemas/PublishableApiKey.yaml
     '400':
       $ref: ../components/responses/400_error.yaml
     '401':

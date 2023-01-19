@@ -38,7 +38,10 @@ delete:
       content:
         application/json:
           schema:
-            $ref: ../components/schemas/AdminDraftOrdersRes.yaml
+            type: object
+            properties:
+              draft_order:
+                $ref: ../components/schemas/DraftOrder.yaml
     '400':
       $ref: ../components/responses/400_error.yaml
     '401':
@@ -97,7 +100,10 @@ post:
       content:
         application/json:
           schema:
-            $ref: ../components/schemas/AdminDraftOrdersRes.yaml
+            type: object
+            properties:
+              draft_order:
+                $ref: ../components/schemas/DraftOrder.yaml
     '400':
       $ref: ../components/responses/400_error.yaml
     '401':

@@ -30,7 +30,19 @@ delete:
       content:
         application/json:
           schema:
-            $ref: ../components/schemas/AdminOrderEditDeleteRes.yaml
+            type: object
+            properties:
+              id:
+                type: string
+                description: The ID of the deleted Order Edit.
+              object:
+                type: string
+                description: The type of the object that was deleted.
+                format: order_edit
+              deleted:
+                type: boolean
+                description: Whether or not the Order Edit was deleted.
+                default: true
     '400':
       $ref: ../components/responses/400_error.yaml
 get:
@@ -75,7 +87,10 @@ get:
       content:
         application/json:
           schema:
-            $ref: ../components/schemas/AdminOrderEditsRes.yaml
+            type: object
+            properties:
+              order_edit:
+                $ref: ../components/schemas/OrderEdit.yaml
     '400':
       $ref: ../components/responses/400_error.yaml
     '401':
@@ -125,7 +140,10 @@ post:
       content:
         application/json:
           schema:
-            $ref: ../components/schemas/AdminOrderEditsRes.yaml
+            type: object
+            properties:
+              order_edit:
+                $ref: ../components/schemas/OrderEdit.yaml
     '400':
       $ref: ../components/responses/400_error.yaml
     '401':

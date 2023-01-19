@@ -42,7 +42,12 @@ get:
       content:
         application/json:
           schema:
-            $ref: ../components/schemas/StoreVariantsRes.yaml
+            type: object
+            properties:
+              variant:
+                allOf:
+                  - $ref: ../components/schemas/ProductVariant.yaml
+                  - $ref: ../components/schemas/ProductVariantPricesFields.yaml
     '400':
       $ref: ../components/responses/400_error.yaml
     '404':

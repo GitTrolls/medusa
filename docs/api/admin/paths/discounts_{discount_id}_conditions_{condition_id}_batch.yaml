@@ -58,7 +58,10 @@ post:
       content:
         application/json:
           schema:
-            $ref: ../components/schemas/AdminDiscountsRes.yaml
+            type: object
+            properties:
+              discount:
+                $ref: ../components/schemas/Discount.yaml
     '400':
       $ref: ../components/responses/400_error.yaml
     '401':
@@ -131,7 +134,10 @@ delete:
       content:
         application/json:
           schema:
-            $ref: ../components/schemas/AdminDiscountsRes.yaml
+            type: object
+            properties:
+              discount:
+                $ref: ../components/schemas/Discount.yaml
     '400':
       $ref: ../components/responses/400_error.yaml
     '401':

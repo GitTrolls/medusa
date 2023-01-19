@@ -28,7 +28,10 @@ post:
       content:
         application/json:
           schema:
-            $ref: ../components/schemas/AdminShippingProfilesRes.yaml
+            type: object
+            properties:
+              shipping_profile:
+                $ref: ../components/schemas/ShippingProfile.yaml
     '400':
       $ref: ../components/responses/400_error.yaml
     '401':
@@ -66,7 +69,12 @@ get:
       content:
         application/json:
           schema:
-            $ref: ../components/schemas/AdminShippingProfilesListRes.yaml
+            type: object
+            properties:
+              shipping_profiles:
+                type: array
+                items:
+                  $ref: ../components/schemas/ShippingProfile.yaml
     '400':
       $ref: ../components/responses/400_error.yaml
     '401':

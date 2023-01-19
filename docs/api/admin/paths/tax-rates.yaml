@@ -47,7 +47,10 @@ post:
       content:
         application/json:
           schema:
-            $ref: ../components/schemas/AdminTaxRatesRes.yaml
+            type: object
+            properties:
+              tax_rate:
+                $ref: ../components/schemas/TaxRate.yaml
     '400':
       $ref: ../components/responses/400_error.yaml
     '401':
@@ -159,7 +162,21 @@ get:
       content:
         application/json:
           schema:
-            $ref: ../components/schemas/AdminTaxRatesListRes.yaml
+            type: object
+            properties:
+              tax_rates:
+                type: array
+                items:
+                  $ref: ../components/schemas/TaxRate.yaml
+              count:
+                type: integer
+                description: The total number of items available
+              offset:
+                type: integer
+                description: The number of items skipped before these items
+              limit:
+                type: integer
+                description: The number of items per page
     '400':
       $ref: ../components/responses/400_error.yaml
     '401':

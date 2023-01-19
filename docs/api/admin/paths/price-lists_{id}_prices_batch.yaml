@@ -35,7 +35,10 @@ post:
       content:
         application/json:
           schema:
-            $ref: ../components/schemas/AdminPriceListRes.yaml
+            type: object
+            properties:
+              price_list:
+                $ref: ../components/schemas/PriceList.yaml
     '400':
       $ref: ../components/responses/400_error.yaml
     '401':
@@ -88,7 +91,21 @@ delete:
       content:
         application/json:
           schema:
-            $ref: ../components/schemas/AdminPriceListDeleteBatchRes.yaml
+            type: object
+            properties:
+              ids:
+                type: array
+                items:
+                  type: string
+                  description: The IDs of the deleted Money Amounts (Prices).
+              object:
+                type: string
+                description: The type of the object that was deleted.
+                default: money-amount
+              deleted:
+                type: boolean
+                description: Whether or not the items were deleted.
+                default: true
     '400':
       $ref: ../components/responses/400_error.yaml
     '401':

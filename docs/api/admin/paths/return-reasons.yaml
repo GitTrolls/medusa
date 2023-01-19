@@ -28,7 +28,10 @@ post:
       content:
         application/json:
           schema:
-            $ref: ../components/schemas/AdminReturnReasonsRes.yaml
+            type: object
+            properties:
+              return_reason:
+                $ref: ../components/schemas/ReturnReason.yaml
     '400':
       $ref: ../components/responses/400_error.yaml
     '401':
@@ -66,7 +69,12 @@ get:
       content:
         application/json:
           schema:
-            $ref: ../components/schemas/AdminReturnReasonsListRes.yaml
+            type: object
+            properties:
+              return_reasons:
+                type: array
+                items:
+                  $ref: ../components/schemas/ReturnReason.yaml
     '400':
       $ref: ../components/responses/400_error.yaml
     '401':

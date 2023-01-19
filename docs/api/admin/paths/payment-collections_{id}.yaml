@@ -30,7 +30,19 @@ delete:
       content:
         application/json:
           schema:
-            $ref: ../components/schemas/AdminPaymentCollectionDeleteRes.yaml
+            type: object
+            properties:
+              id:
+                type: string
+                description: The ID of the deleted Payment Collection.
+              object:
+                type: string
+                description: The type of the object that was deleted.
+                format: payment_collection
+              deleted:
+                type: boolean
+                description: Whether or not the Payment Collection was deleted.
+                default: true
     '400':
       $ref: ../components/responses/400_error.yaml
     '401':
@@ -77,7 +89,10 @@ get:
       content:
         application/json:
           schema:
-            $ref: ../components/schemas/AdminPaymentCollectionsRes.yaml
+            type: object
+            properties:
+              payment_collection:
+                $ref: ../components/schemas/PaymentCollection.yaml
     '400':
       $ref: ../components/responses/400_error.yaml
     '401':
@@ -127,7 +142,10 @@ post:
       content:
         application/json:
           schema:
-            $ref: ../components/schemas/AdminPaymentCollectionsRes.yaml
+            type: object
+            properties:
+              payment_collection:
+                $ref: ../components/schemas/PaymentCollection.yaml
     '400':
       $ref: ../components/responses/400_error.yaml
     '401':

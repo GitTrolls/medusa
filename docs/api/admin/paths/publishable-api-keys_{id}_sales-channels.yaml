@@ -37,8 +37,11 @@ get:
       content:
         application/json:
           schema:
-            $ref: >-
-              ../components/schemas/AdminPublishableApiKeysListSalesChannelsRes.yaml
+            properties:
+              sales_channels:
+                type: array
+                items:
+                  $ref: ../components/schemas/SalesChannel.yaml
     '400':
       $ref: ../components/responses/400_error.yaml
     '401':

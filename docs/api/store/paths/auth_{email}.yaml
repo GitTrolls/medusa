@@ -27,7 +27,11 @@ get:
       content:
         application/json:
           schema:
-            $ref: ../components/schemas/StoreGetAuthEmailRes.yaml
+            type: object
+            properties:
+              exists:
+                type: boolean
+                description: Whether email exists or not.
     '400':
       $ref: ../components/responses/400_error.yaml
     '404':
