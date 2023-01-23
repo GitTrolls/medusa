@@ -19,8 +19,6 @@ import {
  *     application/json:
  *       schema:
  *         $ref: "#/components/schemas/StorePostOrderEditsOrderEditDecline"
- * x-codegen:
- *   method: decline
  * x-codeSamples:
  *   - lang: JavaScript
  *     label: JS Client

@@ -7,8 +7,6 @@ import { CartService } from "../../../../services"
  * description: "Retrieves a Cart."
  * parameters:
  *   - (path) id=* {string} The id of the Cart.
- * x-codegen:
- *   method: retrieve
  * x-codeSamples:
  *   - lang: JavaScript
  *     label: JS Client

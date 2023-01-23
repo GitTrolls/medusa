@@ -10,13 +10,9 @@ import { validator } from "../../../../utils/validator"
  * operationId: "PostAuth"
  * summary: "Customer Login"
  * description: "Logs a Customer in and authorizes them to view their details. Successful authentication will set a session cookie in the Customer's browser."
- * requestBody:
- *   content:
- *     application/json:
- *       schema:
- *         $ref: "#/components/schemas/StorePostAuthReq"
- * x-codegen:
- *   method: authenticate
+ * parameters:
+ *   - (body) email=* {string} The Customer's email.
+ *   - (body) password=* {string} The Customer's password.
  * x-codeSamples:
  *   - lang: JavaScript
  *     label: JS Client
@@ -97,20 +93,6 @@ export default async (req, res) => {
   res.json({ customer })
 }
 
-/**
- * @schema StorePostAuthReq
- * type: object
- * required:
- *   - email
- *   - password
- * properties:
- *   email:
- *     type: string
- *     description: The Customer's email.
- *   password:
- *     type: string
- *     description: The Customer's password.
- */
 export class StorePostAuthReq {
   @IsEmail()
   email: string
