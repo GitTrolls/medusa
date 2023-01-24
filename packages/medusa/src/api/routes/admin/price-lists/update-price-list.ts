@@ -34,8 +34,6 @@ import { validator } from "../../../../utils/validator"
  *     application/json:
  *       schema:
  *         $ref: "#/components/schemas/AdminPostPriceListsPriceListPriceListReq"
- * x-codegen:
- *   method: update
  * x-codeSamples:
  *   - lang: JavaScript
  *     label: JS Client

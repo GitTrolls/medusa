@@ -4,19 +4,17 @@ import {
   AdminPostStockLocationsLocationReq,
   AdminPostStockLocationsReq,
   AdminStockLocationsListRes,
-  AdminStockLocationsDeleteRes,
 } from "@medusajs/medusa"
 import { ResponsePromise } from "../../typings"
 import BaseResource from "../base"
 import qs from "qs"
 
 class AdminStockLocationsResource extends BaseResource {
-  /**
-   * Create a Stock Location
+  /** retrieve an stock location
    * @experimental This feature is under development and may change in the future.
    * To use this feature please install @medusajs/stock-location
-   * @description gets a medusa Stock Location
-   * @returns a medusa Stock Location
+   * @description gets a medusa stock location
+   * @returns a medusa stock location
    */
   create(
     payload: AdminPostStockLocationsReq,
@@ -26,12 +24,11 @@ class AdminStockLocationsResource extends BaseResource {
     return this.client.request("POST", path, payload, {}, customHeaders)
   }
 
-  /**
-   * Retrieve a Stock Location
+  /** retrieve an stock location
    * @experimental This feature is under development and may change in the future.
    * To use this feature please install @medusajs/stock-location
-   * @description gets a medusa Stock Location
-   * @returns a medusa Stock Location
+   * @description gets a medusa stock location
+   * @returns a medusa stock location
    */
   retrieve(
     itemId: string,
@@ -41,12 +38,11 @@ class AdminStockLocationsResource extends BaseResource {
     return this.client.request("GET", path, undefined, {}, customHeaders)
   }
 
-  /**
-   * Update a Stock Location
+  /** update an stock location
    * @experimental This feature is under development and may change in the future.
    * To use this feature please install @medusajs/stock-location
-   * @description updates a Stock Location
-   * @returns the updated medusa Stock Location
+   * @description updates an stock location
+   * @returns the updated medusa stock location
    */
   update(
     stockLocationId: string,
@@ -58,25 +54,11 @@ class AdminStockLocationsResource extends BaseResource {
   }
 
   /**
-   * Delete a Stock Location
+   * Retrieve a list of stock locations
    * @experimental This feature is under development and may change in the future.
    * To use this feature please install @medusajs/stock-location
-   * @description deletes a Stock Location
-   */
-  delete(
-    id: string,
-    customHeaders: Record<string, any> = {}
-  ): ResponsePromise<AdminStockLocationsDeleteRes> {
-    const path = `/admin/stock-locations/${id}`
-    return this.client.request("DELETE", path, undefined, {}, customHeaders)
-  }
-
-  /**
-   * Retrieve a list of Stock Locations
-   * @experimental This feature is under development and may change in the future.
-   * To use this feature please install @medusajs/stock-location
-   * @description Retrieve a list of Stock Locations
-   * @returns the list of Stock Locations as well as the pagination properties
+   * @description Retrieve a list of stock locations
+   * @returns the list of stock locations as well as the pagination properties
    */
   list(
     query?: AdminGetStockLocationsParams,

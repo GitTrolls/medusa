@@ -14,8 +14,6 @@ import { PaymentCollectionService } from "../../../../services"
  *     application/json:
  *       schema:
  *         $ref: "#/components/schemas/StorePostPaymentCollectionsBatchSessionsAuthorizeReq"
- * x-codegen:
- *   method: authorizePaymentSessionsBatch
  * x-codeSamples:
  *   - lang: JavaScript
  *     label: JS Client

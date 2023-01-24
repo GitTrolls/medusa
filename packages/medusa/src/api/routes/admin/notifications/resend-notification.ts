@@ -22,8 +22,6 @@ import { validator } from "../../../../utils/validator"
  *     application/json:
  *       schema:
  *         $ref: "#/components/schemas/AdminPostNotificationsNotificationResendReq"
- * x-codegen:
- *   method: resend
  * x-codeSamples:
  *   - lang: JavaScript
  *     label: JS Client
