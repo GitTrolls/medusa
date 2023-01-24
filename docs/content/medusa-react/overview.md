@@ -55,7 +55,7 @@ import React from "react"
 
 const queryClient = new QueryClient()
 
-const App = () => {
+function App() {
   return (
     <MedusaProvider
       queryClientProviderProps={{ client: queryClient }}
@@ -73,15 +73,6 @@ In the example above, you wrap the `Storefront` component with the `MedusaProvid
 
 The `Storefront` component and its child components can now use hooks exposed by Medusa React.
 
-### MedusaProvider Optional Props
-
-You can also pass the following props to Medusa Provider:
-
-| Props               | Default                   | Description                                               |
-| ------------------- | ------------------------- | --------------------------------------------------------- |
-| `apiKey`            | `''`                      | Optional API key used for authenticating admin requests.  |
-| `publishableApiKey` | `''`                      | Optional publishable API key used for storefront requests.|
-
 ### Queries
 
 To fetch data from the Medusa server (in other words, perform `GET` requests), you can use [Queries](https://tanstack.com/query/v4/docs/react/guides/queries). Query hooks simply wrap around Tanstack Query's `useQuery` hook to fetch data from your medusa server.
@@ -89,6 +80,8 @@ To fetch data from the Medusa server (in other words, perform `GET` requests), y
 For example, to fetch products from your Medusa server:
 
 ```tsx title=src/Products.ts
+import * as React from "react"
+
 import { Product } from "@medusajs/medusa"
 import { useProducts } from "medusa-react"
 
@@ -134,6 +127,8 @@ To create, update, or delete data on the Medusa server (in other words, perform 
 For example, to create a cart:
 
 ```tsx title=src/Cart.ts
+import * as React from "react"
+
 import { useCreateCart } from "medusa-react"
 
 const Cart = () => {
@@ -456,7 +451,7 @@ import React from "react"
 
 const queryClient = new QueryClient()
 
-const App = () => {
+function App() {
   return (
     <MedusaProvider
       queryClientProviderProps={{ client: queryClient }}
