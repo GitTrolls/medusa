@@ -9,8 +9,6 @@ import InviteService from "../../../../services/invite"
  * x-authenticated: true
  * parameters:
  *   - (path) invite_id=* {string} The ID of the Invite
- * x-codegen:
- *   method: delete
  * x-codeSamples:
  *   - lang: JavaScript
  *     label: JS Client

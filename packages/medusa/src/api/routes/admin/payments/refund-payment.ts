@@ -22,8 +22,6 @@ import { PaymentService } from "../../../../services"
  *     application/json:
  *       schema:
  *         $ref: "#/components/schemas/AdminPostPaymentRefundsReq"
- * x-codegen:
- *   method: refundPayment
  * x-codeSamples:
  *   - lang: JavaScript
  *     label: JS Client

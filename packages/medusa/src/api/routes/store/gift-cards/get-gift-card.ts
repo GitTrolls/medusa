@@ -9,8 +9,6 @@ import GiftCardService from "../../../../services/gift-card"
  * description: "Retrieves a Gift Card by its associated unqiue code."
  * parameters:
  *   - (path) code=* {string} The unique Gift Card code.
- * x-codegen:
- *   method: retrieve
  * x-codeSamples:
  *   - lang: JavaScript
  *     label: JS Client

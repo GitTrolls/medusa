@@ -15,8 +15,6 @@ import {
  * description: "Completes an OrderEdit."
  * parameters:
  *   - (path) id=* {string} The ID of the Order Edit.
- * x-codegen:
- *   method: complete
  * x-codeSamples:
  *   - lang: JavaScript
  *     label: JS Client

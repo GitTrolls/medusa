@@ -1,7 +1,6 @@
 import { generateEntityId } from "../utils/generate-entity-id"
 import { SoftDeletableEntity } from "../interfaces/models/soft-deletable-entity"
 import { kebabCase } from "lodash"
-import { Product } from "."
 import {
   BeforeInsert,
   Index,
@@ -13,8 +12,6 @@ import {
   TreeParent,
   TreeLevelColumn,
   JoinColumn,
-  ManyToMany,
-  JoinTable,
 } from "typeorm"
 
 @Entity()
@@ -51,20 +48,6 @@ export class ProductCategory extends SoftDeletableEntity {
 
   @TreeChildren({ cascade: true })
   category_children: ProductCategory[]
-
-  @ManyToMany(() => Product, { cascade: ["remove", "soft-remove"] })
-  @JoinTable({
-    name: "product_category_product",
-    joinColumn: {
-      name: "product_id",
-      referencedColumnName: "id",
-    },
-    inverseJoinColumn: {
-      name: "product_category_id",
-      referencedColumnName: "id",
-    },
-  })
-  products: Product[]
 
   @BeforeInsert()
   private beforeInsert(): void {

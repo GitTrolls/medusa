@@ -94,10 +94,6 @@ class StockLocationAddress {
 
   @IsOptional()
   @IsString()
-  company?: string
-
-  @IsOptional()
-  @IsString()
   city?: string
 
   @IsString()
