@@ -19,8 +19,6 @@ import { IInventoryService } from "../../../../interfaces"
  * parameters:
  *   - (path) id=* {string} The ID of the Order which the Fulfillment relates to.
  *   - (path) fulfillment_id=* {string} The ID of the Fulfillment
- * x-codegen:
- *   method: cancelFulfillment
  * x-codeSamples:
  *   - lang: JavaScript
  *     label: JS Client

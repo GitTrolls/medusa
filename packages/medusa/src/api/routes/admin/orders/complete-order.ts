@@ -9,8 +9,6 @@ import { EntityManager } from "typeorm"
  * x-authenticated: true
  * parameters:
  *   - (path) id=* {string} The ID of the Order.
- * x-codegen:
- *   method: complete
  * x-codeSamples:
  *   - lang: JavaScript
  *     label: JS Client

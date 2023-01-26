@@ -21,8 +21,6 @@ import {
  *     application/json:
  *       schema:
  *         $ref: "#/components/schemas/AdminPostOrderEditsOrderEditReq"
- * x-codegen:
- *   method: update
  * x-codeSamples:
  *   - lang: JavaScript
  *     label: JS Client

@@ -16,8 +16,6 @@ import ProductCollectionService from "../../../../services/product-collection"
  *     application/json:
  *       schema:
  *         $ref: "#/components/schemas/AdminPostCollectionsCollectionReq"
- * x-codegen:
- *   method: update
  * x-codeSamples:
  *   - lang: JavaScript
  *     label: JS Client

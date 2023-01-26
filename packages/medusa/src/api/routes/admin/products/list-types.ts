@@ -7,8 +7,6 @@ import { ProductService } from "../../../../services"
  * summary: "List Product Types"
  * description: "Retrieves a list of Product Types."
  * x-authenticated: true
- * x-codegen:
- *   method: listTypes
  * x-codeSamples:
  *   - lang: JavaScript
  *     label: JS Client

@@ -12,8 +12,6 @@ import { EntityManager } from "typeorm"
  * description: "Registers a Return as canceled."
  * parameters:
  *   - (path) id=* {string} The ID of the Return.
- * x-codegen:
- *   method: cancel
  * x-codeSamples:
  *   - lang: JavaScript
  *     label: JS Client

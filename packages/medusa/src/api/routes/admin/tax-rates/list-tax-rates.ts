@@ -71,9 +71,6 @@ import { validator } from "../../../../utils/validator"
  *       type: array
  *       items:
  *         type: string
- * x-codegen:
- *   method: list
- *   queryParams: AdminGetTaxRatesParams
  * x-codeSamples:
  *   - lang: JavaScript
  *     label: JS Client

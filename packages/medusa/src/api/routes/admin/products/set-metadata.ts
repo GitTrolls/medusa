@@ -17,8 +17,6 @@ import { EntityManager } from "typeorm"
  *     application/json:
  *       schema:
  *         $ref: "#/components/schemas/AdminPostProductsProductMetadataReq"
- * x-codegen:
- *   method: setMetadata
  * x-codeSamples:
  *   - lang: JavaScript
  *     label: JS Client

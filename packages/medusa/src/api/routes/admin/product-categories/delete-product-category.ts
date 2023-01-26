@@ -11,8 +11,6 @@ import { ProductCategoryService } from "../../../../services"
  * x-authenticated: true
  * parameters:
  *   - (path) id=* {string} The ID of the Product Category
- * x-codegen:
- *   method: delete
  * x-codeSamples:
  *   - lang: Shell
  *     label: cURL

@@ -9,8 +9,6 @@ import { EntityManager } from "typeorm"
  * x-authenticated: true
  * parameters:
  *   - (path) id=* {string} The ID of the Draft Order.
- * x-codegen:
- *   method: delete
  * x-codeSamples:
  *   - lang: JavaScript
  *     label: JS Client

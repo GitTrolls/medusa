@@ -8,8 +8,6 @@ import NoteService from "../../../../services/note"
  * x-authenticated: true
  * parameters:
  *   - (path) id=* {string} The ID of the note to retrieve.
- * x-codegen:
- *   method: retrieve
  * x-codeSamples:
  *   - lang: JavaScript
  *     label: JS Client
