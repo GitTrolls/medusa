@@ -1,7 +1,3 @@
----
-description: 'Learn what subscribers are in the Medusa server. Subscribers are used to listen to triggered events to perform an action.'
----
-
 # Subscribers
 
 In this document, you'll learn what Subscribers are in Medusa.

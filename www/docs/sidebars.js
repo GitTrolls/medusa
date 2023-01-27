@@ -32,18 +32,17 @@ module.exports = {
           items: [
             {
               type: "doc",
-              id: "usage/create-medusa-app",
-              label: 'create-medusa-app'
+              id: "quickstart/quick-start",
+              label: "Quickstart Guide",
             },
             {
               type: "doc",
-              id: "quickstart/quick-start",
-              label: "Server Quickstart",
+              id: "usage/create-medusa-app",
+              label: 'Use create-medusa-app'
             },
             {
               type:"doc",
               id: "quickstart/quick-start-docker",
-              label: "Server Quickstart: Docker",
             },
           ]
         },

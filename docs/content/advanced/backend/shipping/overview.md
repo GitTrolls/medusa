@@ -1,7 +1,3 @@
----
-description: 'Learn how the shipping architecture is implemented in the Medusa server. This includes an overview of what the Fulfillment Provider, Shipping Profile, Shipping Option, and Shipping Methods.'
----
-
 # Shipping Architecture Overview
 
 This document gives an overview of the shipping architecture and its four most important components.

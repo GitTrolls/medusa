@@ -1,8 +1,3 @@
----
-description: 'Learn how to create a batch job strategy in the Medusa server. This guide also includes how to test your batch job strategy.'
-addHowToData: true
----
-
 import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
 
