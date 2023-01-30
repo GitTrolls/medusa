@@ -24,8 +24,6 @@ import { isDefined } from "medusa-core-utils"
  *     application/json:
  *       schema:
  *         $ref: "#/components/schemas/AdminPostReturnsReturnReceiveReq"
- * x-codegen:
- *   method: receive
  * x-codeSamples:
  *   - lang: JavaScript
  *     label: JS Client

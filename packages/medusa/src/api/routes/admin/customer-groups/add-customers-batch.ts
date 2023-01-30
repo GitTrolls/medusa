@@ -20,8 +20,6 @@ import { validator } from "../../../../utils/validator"
  *     application/json:
  *       schema:
  *         $ref: "#/components/schemas/AdminPostCustomerGroupsGroupCustomersBatchReq"
- * x-codegen:
- *   method: addCustomers
  * x-codeSamples:
  *   - lang: JavaScript
  *     label: JS Client

@@ -25,8 +25,6 @@ import { validator } from "../../../../utils/validator"
  *     application/json:
  *       schema:
  *         $ref: "#/components/schemas/AdminPostOrdersOrderShipmentReq"
- * x-codegen:
- *   method: createShipment
  * x-codeSamples:
  *   - lang: JavaScript
  *     label: JS Client

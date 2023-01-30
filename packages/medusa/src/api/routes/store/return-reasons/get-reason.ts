@@ -11,8 +11,6 @@ import ReturnReasonService from "../../../../services/return-reason"
  * description: "Retrieves a Return Reason."
  * parameters:
  *   - (path) id=* {string} The id of the Return Reason.
- * x-codegen:
- *   method: retrieve
  * x-codeSamples:
  *   - lang: JavaScript
  *     label: JS Client

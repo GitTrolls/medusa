@@ -8,8 +8,6 @@ import { defaultAdminGiftCardFields, defaultAdminGiftCardRelations } from "./"
  * x-authenticated: true
  * parameters:
  *   - (path) id=* {string} The ID of the Gift Card.
- * x-codegen:
- *   method: retrieve
  * x-codeSamples:
  *   - lang: JavaScript
  *     label: JS Client

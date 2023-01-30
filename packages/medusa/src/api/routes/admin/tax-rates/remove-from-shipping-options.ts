@@ -37,9 +37,6 @@ import { validator } from "../../../../utils/validator"
  *     application/json:
  *       schema:
  *         $ref: "#/components/schemas/AdminDeleteTaxRatesTaxRateShippingOptionsReq"
- * x-codegen:
- *   method: removeShippingOptions
- *   queryParams: AdminDeleteTaxRatesTaxRateShippingOptionsParams
  * x-codeSamples:
  *   - lang: JavaScript
  *     label: JS Client

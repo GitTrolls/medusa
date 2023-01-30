@@ -6,8 +6,6 @@ import { OauthService } from "../../../../services"
  * summary: "List Applications"
  * description: "Retrieve a list of applications."
  * x-authenticated: true
- * x-codegen:
- *   method: list
  * x-codeSamples:
  *   - lang: Shell
  *     label: cURL

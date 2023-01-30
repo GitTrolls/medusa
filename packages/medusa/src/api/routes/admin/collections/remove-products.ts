@@ -17,8 +17,6 @@ import ProductCollectionService from "../../../../services/product-collection"
  *     application/json:
  *       schema:
  *         $ref: "#/components/schemas/AdminDeleteProductsFromCollectionReq"
- * x-codegen:
- *   method: removeProducts
  * x-codeSamples:
  *   - lang: Shell
  *     label: cURL

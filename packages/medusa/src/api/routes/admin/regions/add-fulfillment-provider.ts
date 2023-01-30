@@ -19,8 +19,6 @@ import { validator } from "../../../../utils/validator"
  *     application/json:
  *       schema:
  *         $ref: "#/components/schemas/AdminPostRegionsRegionFulfillmentProvidersReq"
- * x-codegen:
- *   method: addFulfillmentProvider
  * x-codeSamples:
  *   - lang: JavaScript
  *     label: JS Client

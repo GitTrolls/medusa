@@ -17,8 +17,6 @@ import { validator } from "../../../../utils/validator"
  *     application/json:
  *       schema:
  *         $ref: "#/components/schemas/StorePostCustomersCustomerAddressesReq"
- * x-codegen:
- *   method: addAddress
  * x-codeSamples:
  *   - lang: JavaScript
  *     label: JS Client

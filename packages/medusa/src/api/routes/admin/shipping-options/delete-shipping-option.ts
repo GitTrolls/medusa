@@ -8,8 +8,6 @@ import { EntityManager } from "typeorm"
  * x-authenticated: true
  * parameters:
  *   - (path) id=* {string} The ID of the Shipping Option.
- * x-codegen:
- *   method: delete
  * x-codeSamples:
  *   - lang: JavaScript
  *     label: JS Client

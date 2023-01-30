@@ -9,8 +9,6 @@ import { OrderEditService } from "../../../../services"
  * x-authenticated: true
  * parameters:
  *   - (path) id=* {string} The ID of the Order Edit to delete.
- * x-codegen:
- *   method: delete
  * x-codeSamples:
  *   - lang: JavaScript
  *     label: JS Client
