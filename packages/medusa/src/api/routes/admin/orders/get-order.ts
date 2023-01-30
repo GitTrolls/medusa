@@ -1,5 +1,4 @@
 import { OrderService } from "../../../../services"
-import { FindParams } from "../../../../types/common"
 
 /**
  * @oas [get] /orders/{id}
@@ -9,11 +8,6 @@ import { FindParams } from "../../../../types/common"
  * x-authenticated: true
  * parameters:
  *   - (path) id=* {string} The ID of the Order.
- *   - (query) expand {string} Comma separated list of relations to include in the results.
- *   - (query) fields {string} Comma separated list of fields to include in the results.
- * x-codegen:
- *   method: retrieve
- *   queryParams: AdminGetOrdersOrderParams
  * x-codeSamples:
  *   - lang: JavaScript
  *     label: JS Client
@@ -64,5 +58,3 @@ export default async (req, res) => {
 
   res.json({ order })
 }
-
-export class AdminGetOrdersOrderParams extends FindParams {}

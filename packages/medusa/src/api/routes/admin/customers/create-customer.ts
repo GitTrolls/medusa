@@ -15,8 +15,8 @@ import { EntityManager } from "typeorm"
  *     application/json:
  *       schema:
  *         $ref: "#/components/schemas/AdminPostCustomersReq"
- * x-codegen:
- *   method: create
+ * tags:
+ *   - Customer
  * x-codeSamples:
  *   - lang: JavaScript
  *     label: JS Client
@@ -48,8 +48,6 @@ import { EntityManager } from "typeorm"
  * security:
  *   - api_token: []
  *   - cookie_auth: []
- * tags:
- *   - Customer
  * responses:
  *   201:
  *     description: OK

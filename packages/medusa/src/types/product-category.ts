@@ -38,8 +38,3 @@ export class AdminProductCategoriesReqBase {
   })
   parent_category_id?: string | null
 }
-
-export class ProductBatchProductCategory {
-  @IsString()
-  id: string
-}

@@ -100,7 +100,6 @@ export const defaultAdminProductRelations = [
   "tags",
   "type",
   "collection",
-  "categories",
 ]
 
 export const defaultAdminProductFields: (keyof Product)[] = [

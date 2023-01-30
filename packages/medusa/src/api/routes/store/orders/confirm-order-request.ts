@@ -16,8 +16,6 @@ import {
  *     application/json:
  *       schema:
  *         $ref: "#/components/schemas/StorePostCustomersCustomerAcceptClaimReq"
- * x-codegen:
- *   method: confirmRequest
  * x-codeSamples:
  *   - lang: JavaScript
  *     label: JS Client

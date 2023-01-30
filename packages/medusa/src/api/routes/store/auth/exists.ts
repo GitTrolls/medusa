@@ -13,8 +13,6 @@ import CustomerService from "../../../../services/customer"
  *       format: email
  *     required: true
  *     description: The email to check if exists.
- * x-codegen:
- *   method: exists
  * x-codeSamples:
  *   - lang: JavaScript
  *     label: JS Client

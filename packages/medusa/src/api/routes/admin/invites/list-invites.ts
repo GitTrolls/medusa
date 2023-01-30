@@ -6,8 +6,6 @@ import InviteService from "../../../../services/invite"
  * summary: "Lists Invites"
  * description: "Lists all Invites"
  * x-authenticated: true
- * x-codegen:
- *   method: list
  * x-codeSamples:
  *   - lang: JavaScript
  *     label: JS Client

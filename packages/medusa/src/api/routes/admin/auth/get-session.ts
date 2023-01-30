@@ -7,8 +7,6 @@ import _ from "lodash"
  * summary: "Get Current User"
  * x-authenticated: true
  * description: "Gets the currently logged in User."
- * x-codegen:
- *   method: getSession
  * x-codeSamples:
  *   - lang: JavaScript
  *     label: JS Client
