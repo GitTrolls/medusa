@@ -1,6 +1,7 @@
 import { PropSidebarItem, PropSidebarItemLink } from '@docusaurus/plugin-content-docs'
 
 export default function filterListItems (items: PropSidebarItemLink[], pathPattern: string | RegExp): PropSidebarItemLink[] {
+  console.log(items)
   if (!items.length) {
     return items
   }

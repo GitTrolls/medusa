@@ -1,7 +1,3 @@
----
-description: 'Learn what Customer Groups are and how they can be used in the Medusa server. Customer Groups allow to combine customers with similar attributes into a single group.'
----
-
 # Customer Groups
 
 In this document, you’ll learn about Customer Groups and how they can be used in Medusa.

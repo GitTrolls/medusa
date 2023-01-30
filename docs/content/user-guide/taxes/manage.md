@@ -1,7 +1,5 @@
 ---
 sidebar_position: 2
-description: 'This user guide explains how to manage taxes on the Medusa admin. Learn how to edit their configurations.'
-addHowToData: true
 ---
 
 # Manage Taxes
