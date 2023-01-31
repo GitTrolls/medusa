@@ -33,8 +33,6 @@ import { Fulfillment, LineItem } from "../../../../models"
  *     application/json:
  *       schema:
  *         $ref: "#/components/schemas/AdminPostOrdersOrderFulfillmentsReq"
- * x-codegen:
- *   method: createFulfillment
  * x-codeSamples:
  *   - lang: JavaScript
  *     label: JS Client

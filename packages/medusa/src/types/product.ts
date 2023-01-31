@@ -14,7 +14,6 @@ import {
   ProductOptionValue,
   ProductStatus,
   SalesChannel,
-  ProductCategory,
 } from "../models"
 import { FeatureFlagDecorators } from "../utils/feature-flag-decorators"
 import { optionalBooleanMapper } from "../utils/validators/is-boolean"
@@ -75,10 +74,6 @@ export class FilterableProductProps {
   @FeatureFlagDecorators(SalesChannelFeatureFlag.key, [IsOptional(), IsArray()])
   sales_channel_id?: string[]
 
-  @IsArray()
-  @IsOptional()
-  category_id?: string[]
-
   @IsString()
   @IsOptional()
   discount_condition_id?: string
@@ -106,7 +101,6 @@ export type ProductSelector =
       discount_condition_id?: string
       price_list_id?: string[] | FindOperator<PriceList>
       sales_channel_id?: string[] | FindOperator<SalesChannel>
-      category_id?: string[] | FindOperator<ProductCategory>
     })
 
 /**
@@ -130,7 +124,6 @@ export type CreateProductInput = {
   options?: CreateProductProductOption[]
   variants?: CreateProductProductVariantInput[]
   sales_channels?: CreateProductProductSalesChannelInput[] | null
-  categories?: CreateProductProductCategoryInput[] | null
   weight?: number
   length?: number
   height?: number
@@ -149,10 +142,6 @@ export type CreateProductProductTagInput = {
 }
 
 export type CreateProductProductSalesChannelInput = {
-  id: string
-}
-
-export type CreateProductProductCategoryInput = {
   id: string
 }
 
@@ -233,11 +222,6 @@ export type ProductOptionInput = {
 export type FindProductConfig = FindConfig<Product> & PriceListLoadConfig
 
 export class ProductSalesChannelReq {
-  @IsString()
-  id: string
-}
-
-export class ProductProductCategoryReq {
   @IsString()
   id: string
 }

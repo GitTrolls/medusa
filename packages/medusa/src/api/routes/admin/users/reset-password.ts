@@ -19,8 +19,6 @@ import { EntityManager } from "typeorm"
  *     application/json:
  *       schema:
  *         $ref: "#/components/schemas/AdminResetPasswordRequest"
- * x-codegen:
- *   method: resetPassword
  * x-codeSamples:
  *   - lang: JavaScript
  *     label: JS Client

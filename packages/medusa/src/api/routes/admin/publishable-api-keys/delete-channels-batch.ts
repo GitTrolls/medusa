@@ -19,8 +19,6 @@ import PublishableApiKeyService from "../../../../services/publishable-api-key"
  *     application/json:
  *       schema:
  *         $ref: "#/components/schemas/AdminDeletePublishableApiKeySalesChannelsBatchReq"
- * x-codegen:
- *   method: deleteSalesChannelsBatch
  * x-codeSamples:
  *   - lang: JavaScript
  *     label: JS Client

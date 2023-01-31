@@ -8,8 +8,6 @@ import UserService from "../../../../services/user"
  * x-authenticated: true
  * parameters:
  *   - (path) id=* {string} The ID of the User.
- * x-codegen:
- *   method: retrieve
  * x-codeSamples:
  *   - lang: JavaScript
  *     label: JS Client

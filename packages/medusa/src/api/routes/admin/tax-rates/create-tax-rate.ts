@@ -39,9 +39,6 @@ import { validator } from "../../../../utils/validator"
  *     application/json:
  *       schema:
  *         $ref: "#/components/schemas/AdminPostTaxRatesReq"
- * x-codegen:
- *   method: create
- *   queryParams: AdminPostTaxRatesParams
  * x-codeSamples:
  *   - lang: JavaScript
  *     label: JS Client

@@ -17,7 +17,6 @@ import {
 } from "../../../../services"
 import {
   ProductSalesChannelReq,
-  ProductProductCategoryReq,
   ProductTagReq,
   ProductTypeReq,
 } from "../../../../types/product"
@@ -44,8 +43,6 @@ import { validator } from "../../../../utils/validator"
  *     application/json:
  *       schema:
  *         $ref: "#/components/schemas/AdminPostProductsReq"
- * x-codegen:
- *   method: create
  * x-codeSamples:
  *   - lang: JavaScript
  *     label: JS Client
@@ -341,16 +338,6 @@ class ProductVariantReq {
  *         id:
  *           description: The ID of an existing Sales channel.
  *           type: string
- *   categories:
- *     description: "Categories to add the Product to."
- *     type: array
- *     items:
- *       required:
- *         - id
- *       properties:
- *         id:
- *           description: The ID of a Product Category.
- *           type: string
  *   options:
  *     description: The Options that the Product should have. These define on which properties the Product's Product Variants will differ.
  *     type: array
@@ -537,12 +524,6 @@ export class AdminPostProductsReq {
     IsArray(),
   ])
   sales_channels?: ProductSalesChannelReq[]
-
-  @IsOptional()
-  @Type(() => ProductProductCategoryReq)
-  @ValidateNested({ each: true })
-  @IsArray()
-  categories?: ProductProductCategoryReq[]
 
   @IsOptional()
   @Type(() => ProductOptionReq)

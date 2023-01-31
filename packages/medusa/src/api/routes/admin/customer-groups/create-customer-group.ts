@@ -11,13 +11,9 @@ import { validator } from "../../../../utils/validator"
  * summary: "Create a Customer Group"
  * description: "Creates a CustomerGroup."
  * x-authenticated: true
- * requestBody:
- *   content:
- *     application/json:
- *       schema:
- *         $ref: "#/components/schemas/AdminPostCustomerGroupsReq"
- * x-codegen:
- *   method: create
+ * parameters:
+ *   - (body) name=* {string} Name of the customer group
+ *   - (body) metadata {object} Metadata for the customer.
  * x-codeSamples:
  *   - lang: JavaScript
  *     label: JS Client
@@ -85,19 +81,6 @@ export default async (req: Request, res: Response) => {
   res.status(200).json({ customer_group: customerGroup })
 }
 
-/**
- * @schema AdminPostCustomerGroupsReq
- * type: object
- * required:
- *   - name
- * properties:
- *   name:
- *     type: string
- *     description: Name of the customer group
- *   metadata:
- *     type: object
- *     description: Metadata for the customer.
- */
 export class AdminPostCustomerGroupsReq {
   @IsString()
   name: string

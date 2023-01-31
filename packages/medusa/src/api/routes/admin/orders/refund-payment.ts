@@ -24,8 +24,6 @@ import { EntityManager } from "typeorm"
  *     application/json:
  *       schema:
  *         $ref: "#/components/schemas/AdminPostOrdersOrderRefundsReq"
- * x-codegen:
- *   method: refundPayment
  * x-codeSamples:
  *   - lang: JavaScript
  *     label: JS Client

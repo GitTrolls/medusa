@@ -15,8 +15,6 @@ import { ModulesHelper } from "../../../../utils/module-helper"
  * summary: "Get Store details"
  * description: "Retrieves the Store details"
  * x-authenticated: true
- * x-codegen:
- *   method: retrieve
  * x-codeSamples:
  *   - lang: JavaScript
  *     label: JS Client

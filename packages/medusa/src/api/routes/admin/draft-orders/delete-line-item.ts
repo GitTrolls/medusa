@@ -18,8 +18,6 @@ import { MedusaError } from "medusa-core-utils"
  * parameters:
  *   - (path) id=* {string} The ID of the Draft Order.
  *   - (path) line_id=* {string} The ID of the Draft Order.
- * x-codegen:
- *   method: removeLineItem
  * x-codeSamples:
  *   - lang: JavaScript
  *     label: JS Client
