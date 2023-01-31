@@ -98,10 +98,6 @@ html[data-theme="dark"] .docusaurus-highlight-code-line {
   border-radius: var(--ifm-code-border-radius);
 }
 
-.code-action-copy {
-  display: flex;
-}
-
 .code-action {
   background-color: transparent;
   border: none;

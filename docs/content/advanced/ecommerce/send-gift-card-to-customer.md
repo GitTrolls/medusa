@@ -1,9 +1,4 @@
----
-description: 'Learn how to send a gift card code to the customer. Once the customer purchases a gift card, an email can be sent with the code so that they can redeem the gift card.'
-addHowToData: true
----
-
-# How to Send Gift Card Code to Customer
+# Send Gift Card Code to Customer
 
 In this document, you’ll learn how to send a customer the gift card code they purchased.
 

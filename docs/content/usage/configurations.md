@@ -1,8 +1,4 @@
----
-description: 'Learn about the different configurations available in a Medusa server. This includes configurations related to the database, CORS, plugins, redis, and more.'
----
-
-# Configure Medusa Server
+# Configure your Server
 
 In this document, you’ll learn what configurations you can add to your Medusa server and how to add them.
 

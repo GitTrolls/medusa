@@ -1,7 +1,3 @@
-.theme-doc-breadcrumbs {
-  display: none;
-}
-
 article {
   max-width: var(--ifm-docs-page-max-width);
 }
