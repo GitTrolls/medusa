@@ -22,8 +22,6 @@ import { MedusaError } from "medusa-core-utils"
  * x-authenticated: true
  * parameters:
  *   - (path) id=* {String} The Draft Order id.
- * x-codegen:
- *   method: markPaid
  * x-codeSamples:
  *   - lang: JavaScript
  *     label: JS Client

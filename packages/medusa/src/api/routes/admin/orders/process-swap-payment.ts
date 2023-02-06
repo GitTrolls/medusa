@@ -12,8 +12,6 @@ import { EntityManager } from "typeorm"
  * parameters:
  *   - (path) id=* {string} The ID of the Order.
  *   - (path) swap_id=* {string} The ID of the Swap.
- * x-codegen:
- *   method: processSwapPayment
  * x-codeSamples:
  *   - lang: JavaScript
  *     label: JS Client

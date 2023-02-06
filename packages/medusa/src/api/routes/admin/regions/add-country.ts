@@ -19,8 +19,6 @@ import { validator } from "../../../../utils/validator"
  *     application/json:
  *       schema:
  *         $ref: "#/components/schemas/AdminPostRegionsRegionCountriesReq"
- * x-codegen:
- *   method: addCountry
  * x-codeSamples:
  *   - lang: JavaScript
  *     label: JS Client

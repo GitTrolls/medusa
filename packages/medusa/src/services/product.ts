@@ -1,7 +1,7 @@
 import { FlagRouter } from "../utils/flag-router"
 
 import { isDefined, MedusaError } from "medusa-core-utils"
-import { EntityManager, In } from "typeorm"
+import { EntityManager } from "typeorm"
 import { ProductVariantService, SearchService } from "."
 import { TransactionBaseService } from "../interfaces"
 import SalesChannelFeatureFlag from "../loaders/feature-flags/sales-channels"
@@ -12,14 +12,12 @@ import {
   ProductType,
   ProductVariant,
   SalesChannel,
-  ProductCategory,
 } from "../models"
 import { ImageRepository } from "../repositories/image"
 import {
   FindWithoutRelationsOptions,
   ProductRepository,
 } from "../repositories/product"
-import { ProductCategoryRepository } from "../repositories/product-category"
 import { ProductOptionRepository } from "../repositories/product-option"
 import { ProductTagRepository } from "../repositories/product-tag"
 import { ProductTypeRepository } from "../repositories/product-type"
@@ -44,7 +42,6 @@ type InjectedDependencies = {
   productTypeRepository: typeof ProductTypeRepository
   productTagRepository: typeof ProductTagRepository
   imageRepository: typeof ImageRepository
-  productCategoryRepository: typeof ProductCategoryRepository
   productVariantService: ProductVariantService
   searchService: SearchService
   eventBusService: EventBusService
@@ -61,8 +58,6 @@ class ProductService extends TransactionBaseService {
   protected readonly productTypeRepository_: typeof ProductTypeRepository
   protected readonly productTagRepository_: typeof ProductTagRepository
   protected readonly imageRepository_: typeof ImageRepository
-  // eslint-disable-next-line max-len
-  protected readonly productCategoryRepository_: typeof ProductCategoryRepository
   protected readonly productVariantService_: ProductVariantService
   protected readonly searchService_: SearchService
   protected readonly eventBus_: EventBusService
@@ -84,7 +79,6 @@ class ProductService extends TransactionBaseService {
     productVariantService,
     productTypeRepository,
     productTagRepository,
-    productCategoryRepository,
     imageRepository,
     searchService,
     featureFlagRouter,
@@ -98,7 +92,6 @@ class ProductService extends TransactionBaseService {
     this.productVariantRepository_ = productVariantRepository
     this.eventBus_ = eventBusService
     this.productVariantService_ = productVariantService
-    this.productCategoryRepository_ = productCategoryRepository
     this.productTypeRepository_ = productTypeRepository
     this.productTagRepository_ = productTagRepository
     this.imageRepository_ = imageRepository
@@ -400,7 +393,6 @@ class ProductService extends TransactionBaseService {
         type,
         images,
         sales_channels: salesChannels,
-        categories: categories,
         ...rest
       } = productObject
 
@@ -438,17 +430,6 @@ class ProductService extends TransactionBaseService {
               (id) => ({ id } as SalesChannel)
             )
           }
-        }
-      }
-
-      if (isDefined(categories)) {
-        product.categories = []
-
-        if (categories?.length) {
-          const categoryIds = categories.map((c) => c.id)
-          const categoryRecords = categoryIds.map((id) => ({ id } as ProductCategory))
-
-          product.categories = categoryRecords
         }
       }
 
@@ -504,7 +485,7 @@ class ProductService extends TransactionBaseService {
       )
       const imageRepo = manager.getCustomRepository(this.imageRepository_)
 
-      const relations = ["tags", "images"]
+      const relations = ["variants", "tags", "images"]
 
       if (
         this.featureFlagRouter_.isFeatureEnabled(SalesChannelFeatureFlag.key)
@@ -526,12 +507,12 @@ class ProductService extends TransactionBaseService {
       })
 
       const {
+        variants,
         metadata,
         images,
         tags,
         type,
         sales_channels: salesChannels,
-        categories: categories,
         ...rest
       } = update
 
@@ -555,17 +536,6 @@ class ProductService extends TransactionBaseService {
         product.tags = await productTagRepo.upsertTags(tags)
       }
 
-      if (isDefined(categories)) {
-        product.categories = []
-
-        if (categories?.length) {
-          const categoryIds = categories.map((c) => c.id)
-          const categoryRecords = categoryIds.map((id) => ({ id } as ProductCategory))
-
-          product.categories = categoryRecords
-        }
-      }
-
       if (
         this.featureFlagRouter_.isFeatureEnabled(SalesChannelFeatureFlag.key)
       ) {
@@ -578,6 +548,57 @@ class ProductService extends TransactionBaseService {
             )
           }
         }
+      }
+
+      if (variants) {
+        // Iterate product variants and update their properties accordingly
+        for (const variant of product.variants) {
+          const exists = variants.find((v) => v.id && variant.id === v.id)
+          if (!exists) {
+            await productVariantRepo.remove(variant)
+          }
+        }
+
+        const newVariants: ProductVariant[] = []
+        for (const [i, newVariant] of variants.entries()) {
+          const variant_rank = i
+
+          if (newVariant.id) {
+            const variant = product.variants.find((v) => v.id === newVariant.id)
+
+            if (!variant) {
+              throw new MedusaError(
+                MedusaError.Types.NOT_FOUND,
+                `Variant with id: ${newVariant.id} is not associated with this product`
+              )
+            }
+
+            const saved = await this.productVariantService_
+              .withTransaction(manager)
+              .update(variant, {
+                ...newVariant,
+                variant_rank,
+                product_id: variant.product_id,
+              })
+
+            newVariants.push(saved)
+          } else {
+            // If the provided variant does not have an id, we assume that it
+            // should be created
+            const created = await this.productVariantService_
+              .withTransaction(manager)
+              .create(product.id, {
+                ...newVariant,
+                variant_rank,
+                options: newVariant.options || [],
+                prices: newVariant.prices || [],
+              })
+
+            newVariants.push(created)
+          }
+        }
+
+        product.variants = newVariants
       }
 
       for (const [key, value] of Object.entries(rest)) {

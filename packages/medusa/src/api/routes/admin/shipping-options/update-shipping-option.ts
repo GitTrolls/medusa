@@ -28,8 +28,6 @@ import { validator } from "../../../../utils/validator"
  *     application/json:
  *       schema:
  *         $ref: "#/components/schemas/AdminPostShippingOptionsOptionReq"
- * x-codegen:
- *   method: update
  * x-codeSamples:
  *   - lang: JavaScript
  *     label: JS Client

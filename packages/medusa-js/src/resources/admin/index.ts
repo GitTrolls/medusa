@@ -33,7 +33,6 @@ import AdminUsersResource from "./users"
 import AdminVariantsResource from "./variants"
 import AdminPaymentCollectionsResource from "./payment-collections"
 import AdminPaymentsResource from "./payments"
-import AdminProductCategoriesResource from "./product-categories"
 
 class Admin extends BaseResource {
   public auth = new AdminAuthResource(this.client)
@@ -70,7 +69,6 @@ class Admin extends BaseResource {
   public uploads = new AdminUploadsResource(this.client)
   public paymentCollections = new AdminPaymentCollectionsResource(this.client)
   public payments = new AdminPaymentsResource(this.client)
-  public productCategories = new AdminProductCategoriesResource(this.client)
 }
 
 export default Admin

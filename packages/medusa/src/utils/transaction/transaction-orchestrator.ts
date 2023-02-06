@@ -9,10 +9,9 @@ import {
 } from "."
 import {
   DistributedTransaction,
-  TransactionCheckpoint,
   TransactionPayload,
 } from "./distributed-transaction"
-import { TransactionStep, TransactionStepHandler } from "./transaction-step"
+import { TransactionStep } from "./transaction-step"
 
 export type TransactionFlow = {
   transactionModelId: string
@@ -26,6 +25,12 @@ export type TransactionFlow = {
   }
 }
 
+export type TransactionStepHandler = (
+  actionId: string,
+  handlerType: TransactionHandlerType,
+  payload: TransactionPayload
+) => Promise<unknown>
+
 /**
  * @class TransactionOrchestrator is responsible for managing and executing distributed transactions.
  * It is based on a single transaction definition, which is used to execute all the transaction steps
@@ -35,7 +40,7 @@ export class TransactionOrchestrator extends EventEmitter {
   private invokeSteps: string[] = []
   private compensateSteps: string[] = []
 
-  public DEFAULT_RETRIES = 0
+  public DEFAULT_RETRIES = 3
   constructor(
     public id: string,
     private definition: TransactionStepsDefinition
@@ -213,7 +218,6 @@ export class TransactionOrchestrator extends EventEmitter {
 
       this.emit("finish", transaction)
 
-      // TODO: check TransactionModel if it should delete the checkpoint when the transaction is done
       void transaction.deleteCheckpoint()
     }
 
@@ -249,14 +253,8 @@ export class TransactionOrchestrator extends EventEmitter {
     step: TransactionStep,
     response: unknown
   ): Promise<void> {
-    if (step.saveResponse) {
-      transaction.addResponse(
-        step.definition.action!,
-        step.isCompensating()
-          ? TransactionHandlerType.COMPENSATE
-          : TransactionHandlerType.INVOKE,
-        response
-      )
+    if (step.forwardResponse) {
+      step.saveResponse(response)
     }
 
     step.changeStatus(TransactionStepStatus.OK)
@@ -342,6 +340,17 @@ export class TransactionOrchestrator extends EventEmitter {
 
       step.changeStatus(TransactionStepStatus.WAITING)
 
+      const parent = this.getPreviousStep(flow, step)
+      let payloadData = transaction.payload
+
+      if (parent.forwardResponse) {
+        if (!payloadData) {
+          payloadData = {}
+        }
+
+        payloadData._response = parent.getResponse()
+      }
+
       const payload = new TransactionPayload(
         {
           producer: flow.transactionModelId,
@@ -359,8 +368,7 @@ export class TransactionOrchestrator extends EventEmitter {
           attempt: step.attempts,
           timestamp: Date.now(),
         },
-        transaction.payload,
-        transaction.getContext()
+        payloadData
       )
 
       if (!step.definition.async) {
@@ -426,33 +434,10 @@ export class TransactionOrchestrator extends EventEmitter {
     await this.executeNext(transaction)
   }
 
-  /**
-   * Cancel and revert a transaction compensating all its executed steps. It can be an ongoing transaction or a completed one
-   * @param transaction - The transaction to be reverted
-   */
-  public async cancelTransaction(
-    transaction: DistributedTransaction
-  ): Promise<void> {
-    if (transaction.modelId !== this.id) {
-      throw new Error(
-        `TransactionModel "${transaction.modelId}" cannot be orchestrated by "${this.id}" model.`
-      )
-    }
-
-    const flow = transaction.getFlow()
-    if (flow.state === TransactionState.FAILED) {
-      throw new Error(`Cannot revert a perment failed transaction.`)
-    }
-
-    flow.state = TransactionState.WAITING_TO_COMPENSATE
-
-    await this.executeNext(transaction)
-  }
-
   private async createTransactionFlow(
     transactionId: string
   ): Promise<TransactionFlow> {
-    return {
+    const model: TransactionFlow = {
       transactionModelId: this.id,
       transactionId: transactionId,
       hasFailedSteps: false,
@@ -461,19 +446,16 @@ export class TransactionOrchestrator extends EventEmitter {
       definition: this.definition,
       steps: this.buildSteps(this.definition),
     }
+    return model
   }
 
-  private async loadTransactionById(
+  private async getTransactionFlowById(
     transactionId: string
-  ): Promise<TransactionCheckpoint | null> {
-    const transaction = await DistributedTransaction.loadTransaction(
-      transactionId
-    )
-
-    if (transaction !== null) {
-      const flow = transaction.flow
-      transaction.flow.steps = this.buildSteps(flow.definition, flow.steps)
-      return transaction
+  ): Promise<TransactionFlow | null> {
+    const flow = await DistributedTransaction.loadTransactionFlow(transactionId)
+    if (flow !== null) {
+      flow.steps = this.buildSteps(flow.definition, flow.steps)
+      return flow
     }
 
     return null
@@ -513,7 +495,6 @@ export class TransactionOrchestrator extends EventEmitter {
           level.push(obj.action)
           const id = level.join(".")
           const parent = level.slice(0, level.length - 1).join(".")
-
           states[parent].next?.push(id)
 
           const definitionCopy = { ...obj }
@@ -525,7 +506,7 @@ export class TransactionOrchestrator extends EventEmitter {
               id,
               depth: level.length - 1,
               definition: definitionCopy,
-              saveResponse: definitionCopy.saveResponse,
+              forwardResponse: definitionCopy.forwardResponse,
               invoke: {
                 state: TransactionState.NOT_STARTED,
                 status: TransactionStepStatus.IDLE,
@@ -557,24 +538,15 @@ export class TransactionOrchestrator extends EventEmitter {
     handler: TransactionStepHandler,
     payload?: unknown
   ): Promise<DistributedTransaction> {
-    const existingTransaction = await this.loadTransactionById(transactionId)
+    let modelFlow = await this.getTransactionFlowById(transactionId)
 
     let newTransaction = false
-    let modelFlow
-    if (!existingTransaction) {
+    if (!modelFlow) {
       modelFlow = await this.createTransactionFlow(transactionId)
       newTransaction = true
-    } else {
-      modelFlow = existingTransaction.flow
     }
 
-    const transaction = new DistributedTransaction(
-      modelFlow,
-      handler,
-      payload,
-      existingTransaction?.errors,
-      existingTransaction?.context
-    )
+    const transaction = new DistributedTransaction(modelFlow, handler, payload)
     if (newTransaction) {
       await transaction.saveCheckpoint()
     }
@@ -611,18 +583,18 @@ export class TransactionOrchestrator extends EventEmitter {
     }
 
     if (!transaction) {
-      const existingTransaction = await this.loadTransactionById(transactionId)
+      const existingTransaction = await this.getTransactionFlowById(
+        transactionId
+      )
 
       if (existingTransaction === null) {
-        throw new Error(`Transaction ${transactionId} could not be found.`)
+        throw new Error("Transaction could not be found.")
       }
 
       transaction = new DistributedTransaction(
-        existingTransaction.flow,
+        existingTransaction,
         handler!,
-        payload,
-        existingTransaction.errors,
-        existingTransaction.context
+        payload
       )
     }
 
@@ -644,24 +616,24 @@ export class TransactionOrchestrator extends EventEmitter {
    * @param responseIdempotencyKey - The idempotency key for the step
    * @param handler - The handler function to execute the step
    * @param transaction - The current transaction. If not provided it will be loaded based on the responseIdempotencyKey
-   * @param response - The response of the step
+   * @param payload - The payload of the step
    */
   public async registerStepSuccess(
     responseIdempotencyKey: string,
     handler?: TransactionStepHandler,
     transaction?: DistributedTransaction,
-    response?: unknown
+    payload?: unknown
   ): Promise<DistributedTransaction> {
     const [curTransaction, step] =
       await this.getTransactionAndStepFromIdempotencyKey(
         responseIdempotencyKey,
         handler,
         transaction,
-        response
+        payload
       )
 
     if (step.getStates().status === TransactionStepStatus.WAITING) {
-      await this.setStepSuccess(curTransaction, step, response)
+      await this.setStepSuccess(curTransaction, step, payload)
       this.emit("resume", curTransaction)
       await this.executeNext(curTransaction)
     } else {
@@ -679,21 +651,21 @@ export class TransactionOrchestrator extends EventEmitter {
    * @param error - The error that caused the failure
    * @param handler - The handler function to execute the step
    * @param transaction - The current transaction
-   * @param response - The response of the step
+   * @param payload - The payload of the step
    */
   public async registerStepFailure(
     responseIdempotencyKey: string,
     error: Error | null,
     handler?: TransactionStepHandler,
     transaction?: DistributedTransaction,
-    response?: unknown
+    payload?: unknown
   ): Promise<DistributedTransaction> {
     const [curTransaction, step] =
       await this.getTransactionAndStepFromIdempotencyKey(
         responseIdempotencyKey,
         handler,
         transaction,
-        response
+        payload
       )
 
     if (step.getStates().status === TransactionStepStatus.WAITING) {
@@ -707,5 +679,9 @@ export class TransactionOrchestrator extends EventEmitter {
     }
 
     return curTransaction
+  }
+
+  public cancelTransaction(transactionId: string) {
+    // TODO: stop a transaction while in progress and compensate all executed steps
   }
 }

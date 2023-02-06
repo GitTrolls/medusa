@@ -1,15 +1,14 @@
-import e from "express"
 import { TransactionFlow, TransactionHandlerType, TransactionState } from "."
 
 /**
- * @typedef TransactionMetadata
- * @property producer - The id of the producer that created the transaction (transactionModelId).
- * @property reply_to_topic - The topic to reply to for the transaction.
- * @property idempotency_key - The idempotency key of the transaction.
- * @property action - The action of the transaction.
- * @property action_type - The type of the transaction.
- * @property attempt - The number of attempts for the transaction.
- * @property timestamp - The timestamp of the transaction.
+ * @typedef {Object} TransactionMetadata
+ * @property {string} producer - The id of the producer that created the transaction (transactionModelId).
+ * @property {string} reply_to_topic - The topic to reply to for the transaction.
+ * @property {string} idempotency_key - The idempotency key of the transaction.
+ * @property {string} action - The action of the transaction.
+ * @property {TransactionHandlerType} action_type - The type of the transaction.
+ * @property {number} attempt - The number of attempts for the transaction.
+ * @property {number} timestamp - The timestamp of the transaction.
  */
 export type TransactionMetadata = {
   producer: string
@@ -21,44 +20,16 @@ export type TransactionMetadata = {
   timestamp: number
 }
 
-/**
- * @typedef TransactionContext
- * @property invoke - Object containing responses of Invoke handlers on steps flagged with saveResponse.
- * @property compensate - Object containing responses of Compensate handlers on steps flagged with saveResponse.
- */
-export class TransactionContext {
-  constructor(
-    public invoke: Record<string, unknown> = {},
-    public compensate: Record<string, unknown> = {}
-  ) {}
-}
-
-export class TransactionStepError {
-  constructor(
-    public action: string,
-    public handlerType: TransactionHandlerType,
-    public error: Error | null
-  ) {}
-}
-
-export class TransactionCheckpoint {
-  constructor(
-    public flow: TransactionFlow,
-    public context: TransactionContext,
-    public errors: TransactionStepError[] = []
-  ) {}
-}
-
 export class TransactionPayload {
   /**
    * @param metadata - The metadata of the transaction.
-   * @param data - The initial payload data to begin a transation.
-   * @param context - Object gathering responses of all steps flagged with saveResponse.
+   * @param data - The payload data of the transaction and the response of the previous step if forwardResponse is true.
    */
   constructor(
     public metadata: TransactionMetadata,
-    public data: Record<string, unknown>,
-    public context: TransactionContext
+    public data: Record<string, unknown> & {
+      _response: Record<string, unknown>
+    }
   ) {}
 }
 
@@ -69,10 +40,11 @@ export class TransactionPayload {
 export class DistributedTransaction {
   public modelId: string
   public transactionId: string
-
-  private errors: TransactionStepError[] = []
-
-  private context: TransactionContext = new TransactionContext()
+  public errors: {
+    action: string
+    handlerType: TransactionHandlerType
+    error: Error | null
+  }[] = []
 
   constructor(
     private flow: TransactionFlow,
@@ -81,32 +53,14 @@ export class DistributedTransaction {
       handlerType: TransactionHandlerType,
       payload: TransactionPayload
     ) => Promise<unknown>,
-    public payload?: any,
-    errors?: TransactionStepError[],
-    context?: TransactionContext
+    public payload?: any
   ) {
     this.transactionId = flow.transactionId
     this.modelId = flow.transactionModelId
-
-    if (errors) {
-      this.errors = errors
-    }
-
-    if (context) {
-      this.context = context
-    }
   }
 
   public getFlow() {
     return this.flow
-  }
-
-  public getContext() {
-    return this.context
-  }
-
-  public getErrors() {
-    return this.errors
   }
 
   public addError(
@@ -119,14 +73,6 @@ export class DistributedTransaction {
       handlerType,
       error,
     })
-  }
-
-  public addResponse(
-    action: string,
-    handlerType: TransactionHandlerType,
-    response: unknown
-  ) {
-    this.context[handlerType][action] = response
   }
 
   public hasFinished(): boolean {
@@ -160,22 +106,15 @@ export class DistributedTransaction {
 
   public static keyValueStore: any = {} // TODO: Use Key/Value db
   private static keyPrefix = "dtrans:"
-  public async saveCheckpoint(): Promise<TransactionCheckpoint> {
+  public async saveCheckpoint(): Promise<void> {
     // TODO: Use Key/Value db to save transactions
     const key = DistributedTransaction.keyPrefix + this.transactionId
-    const data = new TransactionCheckpoint(
-      this.getFlow(),
-      this.getContext(),
-      this.getErrors()
-    )
-    DistributedTransaction.keyValueStore[key] = JSON.stringify(data)
-
-    return data
+    DistributedTransaction.keyValueStore[key] = JSON.stringify(this.getFlow())
   }
 
-  public static async loadTransaction(
+  public static async loadTransactionFlow(
     transactionId: string
-  ): Promise<TransactionCheckpoint | null> {
+  ): Promise<TransactionFlow | null> {
     // TODO: Use Key/Value db to load transactions
     const key = DistributedTransaction.keyPrefix + transactionId
     if (DistributedTransaction.keyValueStore[key]) {

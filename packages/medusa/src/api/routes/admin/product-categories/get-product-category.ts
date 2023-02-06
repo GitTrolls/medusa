@@ -12,22 +12,7 @@ import { defaultAdminProductCategoryRelations } from "."
  * x-authenticated: true
  * parameters:
  *   - (path) id=* {string} The ID of the Product Category
- *   - (query) expand {string} (Comma separated) Which fields should be expanded in the results.
- *   - (query) fields {string} (Comma separated) Which fields should be included in the results.
- * x-codegen:
- *   method: retrieve
- *   queryParams: AdminGetProductCategoryParams
  * x-codeSamples:
- *   - lang: JavaScript
- *     label: JS Client
- *     source: |
- *       import Medusa from "@medusajs/medusa-js"
- *       const medusa = new Medusa({ baseUrl: MEDUSA_BACKEND_URL, maxRetries: 3 })
- *       // must be previously logged in or use api token
- *       medusa.admin.productCategories.retrieve(product_category_id)
- *       .then(({ product_category }) => {
- *         console.log(product_category.id);
- *       });
  *   - lang: Shell
  *     label: cURL
  *     source: |
@@ -44,7 +29,10 @@ import { defaultAdminProductCategoryRelations } from "."
  *    content:
  *      application/json:
  *        schema:
- *          $ref: "#/components/schemas/AdminProductCategoriesCategoryRes"
+ *          type: object
+ *          properties:
+ *            product_category:
+ *              $ref: "#/components/schemas/ProductCategory"
  *  "400":
  *    $ref: "#/components/responses/400_error"
  *  "401":

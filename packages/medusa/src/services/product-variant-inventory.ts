@@ -1,29 +1,22 @@
 import { isDefined, MedusaError } from "medusa-core-utils"
 import { EntityManager, In } from "typeorm"
 import {
-  IInventoryService,
   IStockLocationService,
+  IInventoryService,
   TransactionBaseService,
 } from "../interfaces"
-import { LineItem, Product, ProductVariant } from "../models"
 import { ProductVariantInventoryItem } from "../models/product-variant-inventory-item"
+import { ProductVariantService, SalesChannelLocationService } from "./"
 import {
   InventoryItemDTO,
   ReservationItemDTO,
   ReserveQuantityContext,
 } from "../types/inventory"
-import { PricedProduct, PricedVariant } from "../types/pricing"
-import {
-  CacheService,
-  ProductVariantService,
-  SalesChannelInventoryService,
-  SalesChannelLocationService,
-} from "./"
+import { LineItem, ProductVariant } from "../models"
 
 type InjectedDependencies = {
   manager: EntityManager
   salesChannelLocationService: SalesChannelLocationService
-  salesChannelInventoryService: SalesChannelInventoryService
   productVariantService: ProductVariantService
   stockLocationService: IStockLocationService
   inventoryService: IInventoryService
@@ -34,17 +27,14 @@ class ProductVariantInventoryService extends TransactionBaseService {
   protected transactionManager_: EntityManager | undefined
 
   protected readonly salesChannelLocationService_: SalesChannelLocationService
-  protected readonly salesChannelInventoryService_: SalesChannelInventoryService
   protected readonly productVariantService_: ProductVariantService
   protected readonly stockLocationService_: IStockLocationService
   protected readonly inventoryService_: IInventoryService
-  protected readonly cacheService_: CacheService
 
   constructor({
     manager,
     stockLocationService,
     salesChannelLocationService,
-    salesChannelInventoryService,
     productVariantService,
     inventoryService,
   }: InjectedDependencies) {
@@ -53,7 +43,6 @@ class ProductVariantInventoryService extends TransactionBaseService {
 
     this.manager_ = manager
     this.salesChannelLocationService_ = salesChannelLocationService
-    this.salesChannelInventoryService_ = salesChannelInventoryService
     this.stockLocationService_ = stockLocationService
     this.productVariantService_ = productVariantService
     this.inventoryService_ = inventoryService
@@ -249,13 +238,13 @@ class ProductVariantInventoryService extends TransactionBaseService {
    * Attach a variant to an inventory item
    * @param variantId variant id
    * @param inventoryItemId inventory item id
-   * @param requiredQuantity quantity of variant to attach
+   * @param quantity quantity of variant to attach
    * @returns the variant inventory item
    */
   async attachInventoryItem(
     variantId: string,
     inventoryItemId: string,
-    requiredQuantity?: number
+    quantity?: number
   ): Promise<ProductVariantInventoryItem> {
     const manager = this.transactionManager_ || this.manager_
 
@@ -289,14 +278,14 @@ class ProductVariantInventoryService extends TransactionBaseService {
     }
 
     let quantityToStore = 1
-    if (typeof requiredQuantity !== "undefined") {
-      if (requiredQuantity < 1) {
+    if (typeof quantity !== "undefined") {
+      if (quantity < 1) {
         throw new MedusaError(
           MedusaError.Types.INVALID_DATA,
           "Quantity must be greater than 0"
         )
       } else {
-        quantityToStore = requiredQuantity
+        quantityToStore = quantity
       }
     }
 
@@ -608,74 +597,6 @@ class ProductVariantInventoryService extends TransactionBaseService {
         })
       )
     }
-  }
-
-  async setVariantAvailability(
-    variants: ProductVariant[] | PricedVariant[],
-    salesChannelId: string | undefined
-  ): Promise<ProductVariant[] | PricedVariant[]> {
-    if (!this.inventoryService_) {
-      return variants
-    }
-
-    return await Promise.all(
-      variants.map(async (variant) => {
-        if (!variant.id) {
-          return variant
-        }
-
-        if (!salesChannelId) {
-          delete variant.inventory_quantity
-          return variant
-        }
-
-        // first get all inventory items required for a variant
-        const variantInventory = await this.listByVariant(variant.id)
-
-        // the inventory quantity of the variant should be equal to the inventory
-        // item with the smallest stock, adjusted for quantity required to fulfill
-        // the given variant
-        variant.inventory_quantity = Math.min(
-          ...(await Promise.all(
-            variantInventory.map(async (variantInventory) => {
-              // get the total available quantity for the given sales channel
-              // divided by the required quantity to account for how many of the
-              // variant we can fulfill at the current time. Take the minimum we
-              // can fulfill and set that as quantity
-              return (
-                // eslint-disable-next-line max-len
-                (await this.salesChannelInventoryService_.retrieveAvailableItemQuantity(
-                  salesChannelId,
-                  variantInventory.inventory_item_id
-                )) / variantInventory.required_quantity
-              )
-            })
-          ))
-        )
-
-        return variant
-      })
-    )
-  }
-
-  async setProductAvailability(
-    products: (Product | PricedProduct)[],
-    salesChannelId: string | undefined
-  ): Promise<(Product | PricedProduct)[]> {
-    return await Promise.all(
-      products.map(async (product) => {
-        if (!product.variants || product.variants.length === 0) {
-          return product
-        }
-
-        product.variants = await this.setVariantAvailability(
-          product.variants,
-          salesChannelId
-        )
-
-        return product
-      })
-    )
   }
 }
 

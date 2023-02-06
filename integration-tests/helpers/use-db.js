@@ -1,6 +1,5 @@
 const path = require("path")
 
-const { getConfigFile } = require("medusa-core-utils")
 const { dropDatabase } = require("pg-god")
 const { createConnection } = require("typeorm")
 const dbFactory = require("./use-template-db")
@@ -44,7 +43,6 @@ const DbTestUtil = {
     forceDelete = forceDelete || []
 
     const entities = this.db_.entityMetadatas
-
     const manager = this.db_.manager
 
     if (connectionType === "sqlite") {
@@ -81,8 +79,8 @@ const instance = DbTestUtil
 
 module.exports = {
   initDb: async function ({ cwd, database_extra }) {
-    const { configModule } = getConfigFile(cwd, `medusa-config`)
-    const { projectConfig, featureFlags } = configModule
+    const configPath = path.resolve(path.join(cwd, `medusa-config.js`))
+    const { projectConfig, featureFlags } = require(configPath)
 
     const featureFlagsLoader =
       require("@medusajs/medusa/dist/loaders/feature-flags").default
@@ -124,14 +122,11 @@ module.exports = {
 
       const {
         getEnabledMigrations,
-        getModuleSharedResources,
       } = require("@medusajs/medusa/dist/commands/utils/get-migrations")
 
-      const { migrations: moduleMigrations, models: moduleModels } =
-        getModuleSharedResources(configModule, featureFlagsRouter)
-
-      const enabledMigrations = getEnabledMigrations([migrationDir], (flag) =>
-        featureFlagsRouter.isFeatureEnabled(flag)
+      const enabledMigrations = await getEnabledMigrations(
+        [migrationDir],
+        (flag) => featureFlagsRouter.isFeatureEnabled(flag)
       )
 
       const enabledEntities = entities.filter(
@@ -141,8 +136,8 @@ module.exports = {
       const dbConnection = await createConnection({
         type: "postgres",
         url: DB_URL,
-        entities: enabledEntities.concat(moduleModels),
-        migrations: enabledMigrations.concat(moduleMigrations),
+        entities: enabledEntities,
+        migrations: enabledMigrations,
         extra: database_extra ?? {},
         name: "integration-tests",
       })

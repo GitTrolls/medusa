@@ -62,9 +62,9 @@ export default class StockLocationService extends TransactionBaseService {
 
   /**
    * Lists all stock locations that match the given selector.
-   * @param selector - Properties to filter by.
-   * @param config - Additional configuration for the query.
-   * @return A list of stock locations.
+   * @param {FilterableStockLocationProps} [selector={}] - Properties to filter by.
+   * @param {FindConfig} [config={ relations: [], skip: 0, take: 10 }] - Additional configuration for the query.
+   * @return {Promise<StockLocation[]>} A list of stock locations.
    */
   async list(
     selector: FilterableStockLocationProps = {},
@@ -79,9 +79,9 @@ export default class StockLocationService extends TransactionBaseService {
 
   /**
    * Lists all stock locations that match the given selector and returns the count of matching stock locations.
-   * @param selector - Properties to filter by.
-   * @param config - Additional configuration for the query.
-   * @return A list of stock locations and the count of matching stock locations.
+   * @param {FilterableStockLocationProps} [selector={}] - Properties to filter by.
+   * @param {FindConfig} [config={ relations: [], skip: 0, take: 10 }] - Additional configuration for the query.
+   * @return {Promise<[StockLocation[], number]>} A list of stock locations and the count of matching stock locations.
    */
   async listAndCount(
     selector: FilterableStockLocationProps = {},
@@ -95,11 +95,12 @@ export default class StockLocationService extends TransactionBaseService {
   }
 
   /**
-   * Retrieves a Stock Location by its ID.
-   * @param stockLocationId - The ID of the stock location.
-   * @param config - Additional configuration for the query.
-   * @return The stock location.
-   * @throws If the stock location ID is not definedor the stock location with the given ID was not found.
+   * Retrieves a stock location by its ID.
+   * @param {string} stockLocationId - The ID of the stock location.
+   * @param {FindConfig} [config={}] - Additional configuration for the query.
+   * @return {Promise<StockLocation>} The stock location.
+   * @throws {MedusaError} If the stock location ID is not defined.
+   * @throws {MedusaError} If the stock location with the given ID was not found.
    */
   async retrieve(
     stockLocationId: string,
@@ -130,8 +131,8 @@ export default class StockLocationService extends TransactionBaseService {
 
   /**
    * Creates a new stock location.
-   * @param data - The input data for creating a Stock Location.
-   * @returns The created stock location.
+   * @param {CreateStockLocationInput} data - The input data for creating a stock location.
+   * @returns {Promise<StockLocation>} - The created stock location.
    */
   async create(data: CreateStockLocationInput): Promise<StockLocation> {
     return await this.atomicPhase_(async (manager) => {
@@ -144,7 +145,10 @@ export default class StockLocationService extends TransactionBaseService {
       if (isDefined(data.address) || isDefined(data.address_id)) {
         if (typeof data.address === "string" || data.address_id) {
           const addrId = (data.address ?? data.address_id) as string
-          loc.address_id = addrId
+          const address = await this.retrieve(addrId, {
+            select: ["id"],
+          })
+          loc.address_id = address.id
         } else {
           const locAddressRepo = manager.getRepository(StockLocationAddress)
           const locAddress = locAddressRepo.create(data.address!)
@@ -172,9 +176,9 @@ export default class StockLocationService extends TransactionBaseService {
 
   /**
    * Updates an existing stock location.
-   * @param stockLocationId - The ID of the stock location to update.
-   * @param updateData - The update data for the stock location.
-   * @returns The updated stock location.
+   * @param {string} stockLocationId - The ID of the stock location to update.
+   * @param {UpdateStockLocationInput} updateData - The update data for the stock location.
+   * @returns {Promise<StockLocation>} - The updated stock location.
    */
 
   async update(
@@ -219,10 +223,10 @@ export default class StockLocationService extends TransactionBaseService {
   }
 
   /**
-   * Updates an address for a Stock Location.
-   * @param addressId - The ID of the address to update.
-   * @param address - The update data for the address.
-   * @returns The updated stock location address.
+   * Updates an address for a stock location.
+   * @param {string} addressId - The ID of the address to update.
+   * @param {StockLocationAddressInput} address - The update data for the address.
+   * @returns {Promise<StockLocationAddress>} - The updated stock location address.
    */
 
   protected async updateAddress(
@@ -261,9 +265,9 @@ export default class StockLocationService extends TransactionBaseService {
   }
 
   /**
-   * Deletes a Stock Location.
-   * @param id - The ID of the stock location to delete.
-   * @returns An empty promise.
+   * Deletes a stock location.
+   * @param {string} id - The ID of the stock location to delete.
+   * @returns {Promise<void>} - An empty promise.
    */
   async delete(id: string): Promise<void> {
     return await this.atomicPhase_(async (manager) => {

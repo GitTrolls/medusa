@@ -650,9 +650,6 @@ describe("ProductVariantService", () => {
       .mockImplementation(() => Promise.resolve())
 
     const regionService = {
-      withTransaction: function () {
-        return this
-      },
       list: jest.fn().mockImplementation((config) => {
         const idOrIds = config.id
 

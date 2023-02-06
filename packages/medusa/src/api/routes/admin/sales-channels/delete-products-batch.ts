@@ -19,8 +19,6 @@ import { Type } from "class-transformer"
  *     application/json:
  *       schema:
  *         $ref: "#/components/schemas/AdminDeleteSalesChannelsChannelProductsBatchReq"
- * x-codegen:
- *   method: removeProducts
  * x-codeSamples:
  *   - lang: JavaScript
  *     label: JS Client

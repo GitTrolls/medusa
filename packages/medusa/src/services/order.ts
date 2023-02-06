@@ -17,14 +17,14 @@ import {
   PaymentStatus,
   Return,
   Swap,
-  TrackingLink
+  TrackingLink,
 } from "../models"
 import { AddressRepository } from "../repositories/address"
 import { OrderRepository } from "../repositories/order"
 import { FindConfig, QuerySelector, Selector } from "../types/common"
 import {
   CreateFulfillmentOrder,
-  FulFillmentItemType
+  FulFillmentItemType,
 } from "../types/fulfillment"
 import { UpdateOrderInput } from "../types/orders"
 import { CreateShippingMethodDto } from "../types/shipping-options"
@@ -48,7 +48,7 @@ import {
   ShippingOptionService,
   ShippingProfileService,
   TaxProviderService,
-  TotalsService
+  TotalsService,
 } from "."
 
 export const ORDER_CART_ALREADY_EXISTS_ERROR = "Order from cart already exists"
@@ -903,7 +903,8 @@ class OrderService extends TransactionBaseService {
 
       await addrRepo.save({ ...addr, ...address })
     } else {
-      order.billing_address = addrRepo.create({ ...address })
+      const created = addrRepo.create({ ...address })
+      await addrRepo.save(created)
     }
   }
 
@@ -940,7 +941,8 @@ class OrderService extends TransactionBaseService {
 
       await addrRepo.save({ ...addr, ...address })
     } else {
-      order.shipping_address = addrRepo.create({ ...address })
+      const created = addrRepo.create({ ...address })
+      await addrRepo.save(created)
     }
   }
 

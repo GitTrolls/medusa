@@ -16,8 +16,6 @@ import { EntityManager } from "typeorm"
  *    application/json:
  *      schema:
  *        $ref: "#/components/schemas/AdminPostNotesNoteReq"
- * x-codegen:
- *   method: update
  * x-codeSamples:
  *   - lang: JavaScript
  *     label: JS Client

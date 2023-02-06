@@ -6,8 +6,6 @@ import UserService from "../../../../services/user"
  * summary: "List Users"
  * description: "Retrieves all users."
  * x-authenticated: true
- * x-codegen:
- *   method: list
  * x-codeSamples:
  *   - lang: JavaScript
  *     label: JS Client

@@ -15,9 +15,6 @@ import { defaultStoreScope } from "."
  *   - (path) id=* {string} The ID of the Product Category
  *   - (query) expand {string} (Comma separated) Which fields should be expanded in each product category.
  *   - (query) fields {string} (Comma separated) Which fields should be retrieved in each product category.
- * x-codegen:
- *   method: retrieve
- *   queryParams: StoreGetProductCategoryParams
  * x-codeSamples:
  *   - lang: JavaScript
  *     label: JS Client
@@ -25,10 +22,10 @@ import { defaultStoreScope } from "."
  *       import Medusa from "@medusajs/medusa-js"
  *       const medusa = new Medusa({ baseUrl: MEDUSA_BACKEND_URL, maxRetries: 3 })
  *       // must be previously logged in or use api token
- *       medusa.productCategories.retrieve(product_category_id)
- *         .then(({ product_category }) => {
- *           console.log(product_category.id);
- *         });
+ *       medusa.productCategories.retrieve("pcat-id")
+ *       .then(({ productCategory }) => {
+ *         console.log(productCategory.id);
+ *       });
  *   - lang: Shell
  *     label: cURL
  *     source: |
@@ -45,7 +42,7 @@ import { defaultStoreScope } from "."
  *    content:
  *      application/json:
  *        schema:
- *          $ref: "#/components/schemas/StoreGetProductCategoriesCategoryRes"
+ *          $ref: "#/components/schemas/StoreGetProductCategoryRes"
  *  "400":
  *    $ref: "#/components/responses/400_error"
  *  "401":

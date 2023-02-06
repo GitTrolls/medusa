@@ -10,8 +10,6 @@ import IdempotencyKeyService from "../../../../services/idempotency-key"
  * description: "Creates Payment Sessions for each of the available Payment Providers in the Cart's Region."
  * parameters:
  *   - (path) id=* {string} The id of the Cart.
- * x-codegen:
- *   method: createPaymentSessions
  * x-codeSamples:
  *   - lang: JavaScript
  *     label: JS Client

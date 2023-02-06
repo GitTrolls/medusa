@@ -21,8 +21,6 @@ import {
  *       schema:
  *         $ref: "#/components/schemas/AdminPostOrderEditsEditLineItemsReq"
  * x-authenticated: true
- * x-codegen:
- *   method: addLineItem
  * x-codeSamples:
  *   - lang: JavaScript
  *     label: JS Client

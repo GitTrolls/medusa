@@ -10,8 +10,6 @@ import RegionService from "../../../../services/region"
  * x-authenticated: true
  * parameters:
  *   - (path) id=* {string} The ID of the Region.
- * x-codegen:
- *   method: retrieve
  * x-codeSamples:
  *   - lang: JavaScript
  *     label: JS Client

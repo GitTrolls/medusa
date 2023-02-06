@@ -12,7 +12,7 @@ export type TransactionStepsDefinition = {
   timeout?: number
   async?: boolean
   noWait?: boolean
-  saveResponse?: boolean
+  forwardResponse?: boolean
   next?: TransactionStepsDefinition | TransactionStepsDefinition[]
 }
 

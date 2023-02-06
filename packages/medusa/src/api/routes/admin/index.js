@@ -12,7 +12,6 @@ import customerRoutes from "./customers"
 import discountRoutes from "./discounts"
 import draftOrderRoutes from "./draft-orders"
 import giftCardRoutes from "./gift-cards"
-import inventoryItemRoutes from "./inventory-items"
 import inviteRoutes, { unauthenticatedInviteRoutes } from "./invites"
 import noteRoutes from "./notes"
 import notificationRoutes from "./notifications"
@@ -85,7 +84,6 @@ export default (app, container, config) => {
   discountRoutes(route)
   draftOrderRoutes(route)
   giftCardRoutes(route)
-  inventoryItemRoutes(route)
   inviteRoutes(route)
   noteRoutes(route)
   notificationRoutes(route)

@@ -31,9 +31,6 @@ import { validator } from "../../../../utils/validator"
  *       items:
  *         type: string
  * x-authenticated: true
- * x-codegen:
- *   method: retrieve
- *   queryParams: AdminGetTaxRatesTaxRateParams
  * x-codeSamples:
  *   - lang: JavaScript
  *     label: JS Client
