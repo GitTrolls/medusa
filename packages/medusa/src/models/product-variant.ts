@@ -14,7 +14,6 @@ import { Product } from "./product"
 import { ProductOptionValue } from "./product-option-value"
 import { SoftDeletableEntity } from "../interfaces/models/soft-deletable-entity"
 import { generateEntityId } from "../utils/generate-entity-id"
-import { ProductVariantInventoryItem } from "./product-variant-inventory-item"
 
 @Entity()
 export class ProductVariant extends SoftDeletableEntity {
@@ -91,15 +90,6 @@ export class ProductVariant extends SoftDeletableEntity {
     cascade: true,
   })
   options: ProductOptionValue[]
-
-  @OneToMany(
-    () => ProductVariantInventoryItem,
-    (inventoryItem) => inventoryItem.variant,
-    {
-      cascade: ["soft-remove", "remove"],
-    }
-  )
-  inventory_items: ProductVariantInventoryItem[]
 
   @DbAwareColumn({ type: "jsonb", nullable: true })
   metadata: Record<string, unknown>
@@ -209,11 +199,6 @@ export class ProductVariant extends SoftDeletableEntity {
  *     type: array
  *     items:
  *       $ref: "#/components/schemas/ProductOptionValue"
- *   inventory_items:
- *     description: The Inventory Items related to the product variant. Available if the relation `inventory_items` is expanded.
- *     type: array
- *     items:
- *       $ref: "#/components/schemas/ProductVariantInventoryItem"
  *   created_at:
  *     type: string
  *     description: "The date with timezone at which the resource was created."

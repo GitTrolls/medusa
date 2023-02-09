@@ -1,28 +1,17 @@
-import {
-  Index,
-  BeforeInsert,
-  Column,
-  Entity,
-  ManyToOne,
-  JoinColumn,
-} from "typeorm"
-import { SoftDeletableEntity } from "../interfaces"
-import { generateEntityId } from "../utils"
-import { ProductVariant } from "./product-variant"
+import { Index, Unique, BeforeInsert, Column, Entity } from "typeorm"
+import { BaseEntity } from "../interfaces/models/base-entity"
+import { DbAwareColumn, generateEntityId } from "../utils"
 
 @Entity()
-export class ProductVariantInventoryItem extends SoftDeletableEntity {
+@Unique(["variant_id", "inventory_item_id"])
+export class ProductVariantInventoryItem extends BaseEntity {
   @Index()
-  @Column({ type: "text" })
+  @DbAwareColumn({ type: "text" })
   inventory_item_id: string
 
   @Index()
-  @Column({ type: "text" })
+  @DbAwareColumn({ type: "text" })
   variant_id: string
-
-  @ManyToOne(() => ProductVariant, (variant) => variant.inventory_items)
-  @JoinColumn({ name: "variant_id" })
-  variant: ProductVariant
 
   @Column({ type: "int", default: 1 })
   required_quantity: number

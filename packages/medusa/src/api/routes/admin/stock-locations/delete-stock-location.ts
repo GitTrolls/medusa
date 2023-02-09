@@ -1,6 +1,5 @@
 import { EntityManager } from "typeorm"
 import { IStockLocationService } from "../../../../interfaces"
-import { SalesChannelLocationService } from "../../../../services"
 
 /**
  * @oas [delete] /stock-locations/{id}
@@ -60,15 +59,8 @@ export default async (req, res) => {
     "stockLocationService"
   )
 
-  const salesChannelLocationService: SalesChannelLocationService =
-    req.scope.resolve("salesChannelLocationService")
-
   const manager: EntityManager = req.scope.resolve("manager")
   await manager.transaction(async (transactionManager) => {
-    await salesChannelLocationService
-      .withTransaction(transactionManager)
-      .removeLocation(id)
-
     await stockLocationService.withTransaction(transactionManager).delete(id)
   })
 

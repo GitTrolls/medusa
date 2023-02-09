@@ -1,7 +1,6 @@
 import { Request, Response } from "express"
 import { EntityManager } from "typeorm"
 import { IInventoryService } from "../../../../interfaces"
-import { ProductVariantInventoryService } from "../../../../services"
 
 /**
  * @oas [delete] /inventory-items/{id}
@@ -48,15 +47,8 @@ export default async (req: Request, res: Response) => {
   const inventoryService: IInventoryService =
     req.scope.resolve("inventoryService")
 
-  const productVariantInventoryService: ProductVariantInventoryService =
-    req.scope.resolve("productVariantInventoryService")
-
   const manager: EntityManager = req.scope.resolve("manager")
   await manager.transaction(async (transactionManager) => {
-    await productVariantInventoryService
-      .withTransaction(transactionManager)
-      .detachInventoryItem(id)
-
     await inventoryService
       .withTransaction(transactionManager)
       .deleteInventoryItem(id)
