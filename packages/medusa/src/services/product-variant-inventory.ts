@@ -311,12 +311,12 @@ class ProductVariantInventoryService extends TransactionBaseService {
 
   /**
    * Remove a variant from an inventory item
-   * @param variantId variant id or undefined if all the variants will be affected
+   * @param variantId variant id
    * @param inventoryItemId inventory item id
    */
   async detachInventoryItem(
-    inventoryItemId: string,
-    variantId?: string
+    variantId: string,
+    inventoryItemId: string
   ): Promise<void> {
     const manager = this.transactionManager_ || this.manager_
 
@@ -324,19 +324,15 @@ class ProductVariantInventoryService extends TransactionBaseService {
       ProductVariantInventoryItem
     )
 
-    const where: any = {
-      inventory_item_id: inventoryItemId,
-    }
-    if (variantId) {
-      where.variant_id = variantId
-    }
-
-    const varInvItems = await variantInventoryRepo.find({
-      where,
+    const existing = await variantInventoryRepo.findOne({
+      where: {
+        variant_id: variantId,
+        inventory_item_id: inventoryItemId,
+      },
     })
 
-    if (varInvItems.length) {
-      await variantInventoryRepo.remove(varInvItems)
+    if (existing) {
+      await variantInventoryRepo.remove(existing)
     }
   }
 

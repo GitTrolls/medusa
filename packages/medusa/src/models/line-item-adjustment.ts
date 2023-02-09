@@ -59,45 +59,38 @@ export class LineItemAdjustment {
  * description: "Represents a Line Item Adjustment"
  * type: object
  * required:
- *   - amount
- *   - description
- *   - discount_id
- *   - id
  *   - item_id
- *   - metadata
+ *   - description
+ *   - amount
  * properties:
  *   id:
- *     description: The Line Item Adjustment's ID
  *     type: string
+ *     description: The invite's ID
  *     example: lia_01G8TKE4XYCTHSCK2GDEP47RE1
  *   item_id:
- *     description: The ID of the line item
  *     type: string
+ *     description: The ID of the line item
  *     example: item_01G8ZC9GWT6B2GP5FSXRXNFNGN
  *   item:
  *     description: Available if the relation `item` is expanded.
- *     nullable: true
  *     $ref: "#/components/schemas/LineItem"
  *   description:
- *     description: The line item's adjustment description
  *     type: string
+ *     description: The line item's adjustment description
  *     example: Adjusted item's price.
  *   discount_id:
- *     description: The ID of the discount associated with the adjustment
- *     nullable: true
  *     type: string
+ *     description: The ID of the discount associated with the adjustment
  *     example: disc_01F0YESMW10MGHWJKZSDDMN0VN
  *   discount:
  *     description: Available if the relation `discount` is expanded.
- *     nullable: true
  *     $ref: "#/components/schemas/Discount"
  *   amount:
+ *     type: number
  *     description: The adjustment amount
- *     type: integer
  *     example: 1000
  *   metadata:
- *     description: An optional key-value map with additional details
- *     nullable: true
  *     type: object
+ *     description: An optional key-value map with additional details
  *     example: {car: "white"}
  */
