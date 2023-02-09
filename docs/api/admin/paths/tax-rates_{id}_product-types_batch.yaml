@@ -33,18 +33,16 @@ post:
       application/json:
         schema:
           $ref: ../components/schemas/AdminPostTaxRatesTaxRateProductTypesReq.yaml
-  x-codegen:
-    method: addProductTypes
-    queryParams: AdminPostTaxRatesTaxRateProductTypesParams
   x-codeSamples:
     - lang: JavaScript
       label: JS Client
       source:
-        $ref: ../code_samples/JavaScript/tax-rates_{id}_product-types_batch/post.js
+        $ref: >-
+          ../code_samples/JavaScript/tax-rates_{id}_product-types_batch/postundefined
     - lang: Shell
       label: cURL
       source:
-        $ref: ../code_samples/Shell/tax-rates_{id}_product-types_batch/post.sh
+        $ref: ../code_samples/Shell/tax-rates_{id}_product-types_batch/postundefined
   security:
     - api_token: []
     - cookie_auth: []
@@ -104,19 +102,17 @@ delete:
       application/json:
         schema:
           $ref: ../components/schemas/AdminDeleteTaxRatesTaxRateProductTypesReq.yaml
-  x-codegen:
-    method: removeProductTypes
-    queryParams: AdminDeleteTaxRatesTaxRateProductTypesParams
   x-codeSamples:
     - lang: JavaScript
       label: JS Client
       source:
         $ref: >-
-          ../code_samples/JavaScript/tax-rates_{id}_product-types_batch/delete.js
+          ../code_samples/JavaScript/tax-rates_{id}_product-types_batch/deleteundefined
     - lang: Shell
       label: cURL
       source:
-        $ref: ../code_samples/Shell/tax-rates_{id}_product-types_batch/delete.sh
+        $ref: >-
+          ../code_samples/Shell/tax-rates_{id}_product-types_batch/deleteundefined
   security:
     - api_token: []
     - cookie_auth: []

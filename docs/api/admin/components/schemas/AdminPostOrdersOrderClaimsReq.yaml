@@ -17,7 +17,6 @@ properties:
     description: The Claim Items that the Claim will consist of.
     type: array
     items:
-      type: object
       required:
         - item_id
         - quantity
@@ -64,7 +63,6 @@ properties:
     description: The new items to send to the Customer when the Claim type is Replace.
     type: array
     items:
-      type: object
       required:
         - variant_id
         - quantity
@@ -79,7 +77,6 @@ properties:
     description: The Shipping Methods to send the additional Line Items with.
     type: array
     items:
-      type: object
       properties:
         id:
           description: The ID of an existing Shipping Method
@@ -90,9 +87,6 @@ properties:
         price:
           description: The price to charge for the Shipping Method
           type: integer
-        data:
-          description: An optional set of key-value pairs to hold additional information.
-          type: object
   shipping_address:
     type: object
     description: >-

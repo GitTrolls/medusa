@@ -3,24 +3,11 @@ description: Represents a discount that can be applied to a cart for promotional
 type: object
 required:
   - code
-  - created_at
-  - deleted_at
-  - ends_at
-  - id
-  - is_disabled
   - is_dynamic
-  - metadata
-  - parent_discount_id
-  - rule_id
-  - starts_at
-  - updated_at
-  - usage_count
-  - usage_limit
-  - valid_duration
 properties:
   id:
-    description: The discount's ID
     type: string
+    description: The discount's ID
     example: disc_01F0YESMW10MGHWJKZSDDMN0VN
   code:
     description: >-
@@ -35,13 +22,11 @@ properties:
     type: boolean
     example: false
   rule_id:
-    description: The Discount Rule that governs the behaviour of the Discount
-    nullable: true
     type: string
+    description: The Discount Rule that governs the behaviour of the Discount
     example: dru_01F0YESMVK96HVX7N419E3CJ7C
   rule:
     description: Available if the relation `rule` is expanded.
-    nullable: true
     $ref: ./DiscountRule.yaml
   is_disabled:
     description: >-
@@ -50,15 +35,13 @@ properties:
     type: boolean
     example: false
   parent_discount_id:
+    type: string
     description: >-
       The Discount that the discount was created from. This will always be a
       dynamic discount
-    nullable: true
-    type: string
     example: disc_01G8ZH853YPY9B94857DY91YGW
   parent_discount:
     description: Available if the relation `parent_discount` is expanded.
-    nullable: true
     $ref: ./Discount.yaml
   starts_at:
     description: The time at which the discount can be used.
@@ -66,13 +49,11 @@ properties:
     format: date-time
   ends_at:
     description: The time at which the discount can no longer be used.
-    nullable: true
     type: string
     format: date-time
   valid_duration:
-    description: Duration the discount runs between
-    nullable: true
     type: string
+    description: Duration the discount runs between
     example: P3Y6M4DT12H30M5S
   regions:
     description: >-
@@ -80,10 +61,10 @@ properties:
       `regions` is expanded.
     type: array
     items:
-      $ref: ./Region.yaml
+      type: object
+      description: A region object.
   usage_limit:
     description: The maximum number of times that a discount can be used.
-    nullable: true
     type: integer
     example: 100
   usage_count:
@@ -92,21 +73,19 @@ properties:
     example: 50
     default: 0
   created_at:
-    description: The date with timezone at which the resource was created.
     type: string
+    description: The date with timezone at which the resource was created.
     format: date-time
   updated_at:
-    description: The date with timezone at which the resource was updated.
     type: string
+    description: The date with timezone at which the resource was updated.
     format: date-time
   deleted_at:
-    description: The date with timezone at which the resource was deleted.
-    nullable: true
     type: string
+    description: The date with timezone at which the resource was deleted.
     format: date-time
   metadata:
-    description: An optional key-value map with additional details
-    nullable: true
     type: object
+    description: An optional key-value map with additional details
     example:
       car: white

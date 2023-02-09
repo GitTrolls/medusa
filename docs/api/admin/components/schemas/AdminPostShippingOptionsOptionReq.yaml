@@ -20,7 +20,6 @@ properties:
       available.
     type: array
     items:
-      type: object
       required:
         - type
         - amount

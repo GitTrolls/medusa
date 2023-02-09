@@ -26,20 +26,17 @@ delete:
       description: Comma separated list of fields to include in the results.
       schema:
         type: string
-  x-codegen:
-    method: deleteCondition
-    queryParams: AdminDeleteDiscountsDiscountConditionsConditionParams
   x-codeSamples:
     - lang: JavaScript
       label: JS Client
       source:
         $ref: >-
-          ../code_samples/JavaScript/discounts_{discount_id}_conditions_{condition_id}/delete.js
+          ../code_samples/JavaScript/discounts_{discount_id}_conditions_{condition_id}/deleteundefined
     - lang: Shell
       label: cURL
       source:
         $ref: >-
-          ../code_samples/Shell/discounts_{discount_id}_conditions_{condition_id}/delete.sh
+          ../code_samples/Shell/discounts_{discount_id}_conditions_{condition_id}/deleteundefined
   security:
     - api_token: []
     - cookie_auth: []
@@ -92,20 +89,17 @@ get:
       description: Comma separated list of fields to include in the results.
       schema:
         type: string
-  x-codegen:
-    method: getCondition
-    queryParams: AdminGetDiscountsDiscountConditionsConditionParams
   x-codeSamples:
     - lang: JavaScript
       label: JS Client
       source:
         $ref: >-
-          ../code_samples/JavaScript/discounts_{discount_id}_conditions_{condition_id}/get.js
+          ../code_samples/JavaScript/discounts_{discount_id}_conditions_{condition_id}/getundefined
     - lang: Shell
       label: cURL
       source:
         $ref: >-
-          ../code_samples/Shell/discounts_{discount_id}_conditions_{condition_id}/get.sh
+          ../code_samples/Shell/discounts_{discount_id}_conditions_{condition_id}/getundefined
   security:
     - api_token: []
     - cookie_auth: []
@@ -171,20 +165,17 @@ post:
         schema:
           $ref: >-
             ../components/schemas/AdminPostDiscountsDiscountConditionsCondition.yaml
-  x-codegen:
-    method: updateCondition
-    queryParams: AdminPostDiscountsDiscountConditionsConditionParams
   x-codeSamples:
     - lang: JavaScript
       label: JS Client
       source:
         $ref: >-
-          ../code_samples/JavaScript/discounts_{discount_id}_conditions_{condition_id}/post.js
+          ../code_samples/JavaScript/discounts_{discount_id}_conditions_{condition_id}/postundefined
     - lang: Shell
       label: cURL
       source:
         $ref: >-
-          ../code_samples/Shell/discounts_{discount_id}_conditions_{condition_id}/post.sh
+          ../code_samples/Shell/discounts_{discount_id}_conditions_{condition_id}/postundefined
   security:
     - api_token: []
     - cookie_auth: []

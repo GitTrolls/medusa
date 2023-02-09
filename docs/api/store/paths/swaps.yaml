@@ -9,17 +9,15 @@ post:
       application/json:
         schema:
           $ref: ../components/schemas/StorePostSwapsReq.yaml
-  x-codegen:
-    method: create
   x-codeSamples:
     - lang: JavaScript
       label: JS Client
       source:
-        $ref: ../code_samples/JavaScript/swaps/post.js
+        $ref: ../code_samples/JavaScript/swaps/postundefined
     - lang: Shell
       label: cURL
       source:
-        $ref: ../code_samples/Shell/swaps/post.sh
+        $ref: ../code_samples/Shell/swaps/postundefined
   tags:
     - Swap
   responses:

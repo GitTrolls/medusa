@@ -4,7 +4,6 @@ properties:
     description: The Claim Items that the Claim will consist of.
     type: array
     items:
-      type: object
       required:
         - id
         - images
@@ -61,7 +60,6 @@ properties:
     description: The Shipping Methods to send the additional Line Items with.
     type: array
     items:
-      type: object
       properties:
         id:
           description: The ID of an existing Shipping Method
@@ -72,9 +70,6 @@ properties:
         price:
           description: The price to charge for the Shipping Method
           type: integer
-        data:
-          description: An optional set of key-value pairs to hold additional information.
-          type: object
   no_notification:
     description: If set to true no notification will be send related to this Swap.
     type: boolean

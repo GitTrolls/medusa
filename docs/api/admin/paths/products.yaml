@@ -8,17 +8,15 @@ post:
       application/json:
         schema:
           $ref: ../components/schemas/AdminPostProductsReq.yaml
-  x-codegen:
-    method: create
   x-codeSamples:
     - lang: JavaScript
       label: JS Client
       source:
-        $ref: ../code_samples/JavaScript/products/post.js
+        $ref: ../code_samples/JavaScript/products/postundefined
     - lang: Shell
       label: cURL
       source:
-        $ref: ../code_samples/Shell/products/post.sh
+        $ref: ../code_samples/Shell/products/postundefined
   security:
     - api_token: []
     - cookie_auth: []
@@ -133,20 +131,6 @@ get:
         type: array
         items:
           type: string
-    - in: query
-      name: category_id
-      style: form
-      explode: false
-      description: Category IDs to filter products by
-      schema:
-        type: array
-        items:
-          type: string
-    - in: query
-      name: include_category_children
-      description: Include category children when filtering by category_id
-      schema:
-        type: boolean
     - in: query
       name: title
       description: title to search for.
@@ -264,18 +248,15 @@ get:
       description: the field used to order the products.
       schema:
         type: string
-  x-codegen:
-    method: list
-    queryParams: AdminGetProductsParams
   x-codeSamples:
     - lang: JavaScript
       label: JS Client
       source:
-        $ref: ../code_samples/JavaScript/products/get.js
+        $ref: ../code_samples/JavaScript/products/getundefined
     - lang: Shell
       label: cURL
       source:
-        $ref: ../code_samples/Shell/products/get.sh
+        $ref: ../code_samples/Shell/products/getundefined
   security:
     - api_token: []
     - cookie_auth: []

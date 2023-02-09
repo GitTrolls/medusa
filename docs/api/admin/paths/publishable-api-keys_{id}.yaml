@@ -10,17 +10,15 @@ delete:
       description: The ID of the PublishableApiKeys to delete.
       schema:
         type: string
-  x-codegen:
-    method: delete
   x-codeSamples:
     - lang: JavaScript
       label: JS Client
       source:
-        $ref: ../code_samples/JavaScript/publishable-api-keys_{id}/delete.js
+        $ref: ../code_samples/JavaScript/publishable-api-keys_{id}/deleteundefined
     - lang: Shell
       label: cURL
       source:
-        $ref: ../code_samples/Shell/publishable-api-keys_{id}/delete.sh
+        $ref: ../code_samples/Shell/publishable-api-keys_{id}/deleteundefined
   security:
     - api_token: []
     - cookie_auth: []
@@ -47,17 +45,15 @@ get:
       schema:
         type: string
   x-authenticated: true
-  x-codegen:
-    method: retrieve
   x-codeSamples:
     - lang: JavaScript
       label: JS Client
       source:
-        $ref: ../code_samples/JavaScript/publishable-api-keys_{id}/get.js
+        $ref: ../code_samples/JavaScript/publishable-api-keys_{id}/getundefined
     - lang: Shell
       label: cURL
       source:
-        $ref: ../code_samples/Shell/publishable-api-keys_{id}/get.sh
+        $ref: ../code_samples/Shell/publishable-api-keys_{id}/getundefined
   security:
     - api_token: []
     - cookie_auth: []

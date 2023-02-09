@@ -19,17 +19,15 @@ post:
       application/json:
         schema:
           $ref: ../components/schemas/AdminPostStockLocationsReq.yaml
-  x-codegen:
-    method: create
   x-codeSamples:
     - lang: JavaScript
       label: JS Client
       source:
-        $ref: ../code_samples/JavaScript/stock-locations/post.js
+        $ref: ../code_samples/JavaScript/stock-locations/postundefined
     - lang: Shell
       label: cURL
       source:
-        $ref: ../code_samples/Shell/stock-locations/post.sh
+        $ref: ../code_samples/Shell/stock-locations/postundefined
   security:
     - api_token: []
     - cookie_auth: []
@@ -167,18 +165,15 @@ get:
         of the result.
       schema:
         type: string
-  x-codegen:
-    method: list
-    queryParams: AdminGetStockLocationsParams
   x-codeSamples:
     - lang: JavaScript
       label: JS Client
       source:
-        $ref: ../code_samples/JavaScript/stock-locations/get.js
+        $ref: ../code_samples/JavaScript/stock-locations/getundefined
     - lang: Shell
       label: cURL
       source:
-        $ref: ../code_samples/Shell/stock-locations/get.sh
+        $ref: ../code_samples/Shell/stock-locations/getundefined
   security:
     - api_token: []
     - cookie_auth: []

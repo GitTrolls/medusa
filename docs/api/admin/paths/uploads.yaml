@@ -18,11 +18,11 @@ post:
     - lang: JavaScript
       label: JS Client
       source:
-        $ref: ../code_samples/JavaScript/uploads/post.js
+        $ref: ../code_samples/JavaScript/uploads/postundefined
     - lang: Shell
       label: cURL
       source:
-        $ref: ../code_samples/Shell/uploads/post.sh
+        $ref: ../code_samples/Shell/uploads/postundefined
   security:
     - api_token: []
     - cookie_auth: []
@@ -61,11 +61,11 @@ delete:
     - lang: JavaScript
       label: JS Client
       source:
-        $ref: ../code_samples/JavaScript/uploads/delete.js
+        $ref: ../code_samples/JavaScript/uploads/deleteundefined
     - lang: Shell
       label: cURL
       source:
-        $ref: ../code_samples/Shell/uploads/delete.sh
+        $ref: ../code_samples/Shell/uploads/deleteundefined
   security:
     - api_token: []
     - cookie_auth: []

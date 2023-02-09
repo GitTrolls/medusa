@@ -1,7 +1,7 @@
 get:
   operationId: GetGiftCardsCode
   summary: Get Gift Card by Code
-  description: Retrieves a Gift Card by its associated unique code.
+  description: Retrieves a Gift Card by its associated unqiue code.
   parameters:
     - in: path
       name: code
@@ -9,17 +9,15 @@ get:
       description: The unique Gift Card code.
       schema:
         type: string
-  x-codegen:
-    method: retrieve
   x-codeSamples:
     - lang: JavaScript
       label: JS Client
       source:
-        $ref: ../code_samples/JavaScript/gift-cards_{code}/get.js
+        $ref: ../code_samples/JavaScript/gift-cards_{code}/getundefined
     - lang: Shell
       label: cURL
       source:
-        $ref: ../code_samples/Shell/gift-cards_{code}/get.sh
+        $ref: ../code_samples/Shell/gift-cards_{code}/getundefined
   tags:
     - Gift Card
   responses:

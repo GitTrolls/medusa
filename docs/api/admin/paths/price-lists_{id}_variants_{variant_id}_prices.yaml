@@ -18,19 +18,17 @@ delete:
       description: The ID of the variant from which the money amount will be deleted.
       schema:
         type: string
-  x-codegen:
-    method: deleteVariantPrices
   x-codeSamples:
     - lang: JavaScript
       label: JS Client
       source:
         $ref: >-
-          ../code_samples/JavaScript/price-lists_{id}_variants_{variant_id}_prices/delete.js
+          ../code_samples/JavaScript/price-lists_{id}_variants_{variant_id}_prices/deleteundefined
     - lang: Shell
       label: cURL
       source:
         $ref: >-
-          ../code_samples/Shell/price-lists_{id}_variants_{variant_id}_prices/delete.sh
+          ../code_samples/Shell/price-lists_{id}_variants_{variant_id}_prices/deleteundefined
   security:
     - api_token: []
     - cookie_auth: []

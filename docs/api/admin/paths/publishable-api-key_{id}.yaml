@@ -16,17 +16,15 @@ post:
         schema:
           $ref: >-
             ../components/schemas/AdminPostPublishableApiKeysPublishableApiKeyReq.yaml
-  x-codegen:
-    method: update
   x-codeSamples:
     - lang: JavaScript
       label: JS Client
       source:
-        $ref: ../code_samples/JavaScript/publishable-api-key_{id}/post.js
+        $ref: ../code_samples/JavaScript/publishable-api-key_{id}/postundefined
     - lang: Shell
       label: cURL
       source:
-        $ref: ../code_samples/Shell/publishable-api-key_{id}/post.sh
+        $ref: ../code_samples/Shell/publishable-api-key_{id}/postundefined
   security:
     - api_token: []
     - cookie_auth: []

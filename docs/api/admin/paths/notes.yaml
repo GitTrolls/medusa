@@ -8,17 +8,15 @@ post:
       application/json:
         schema:
           $ref: ../components/schemas/AdminPostNotesReq.yaml
-  x-codegen:
-    method: create
   x-codeSamples:
     - lang: JavaScript
       label: JS Client
       source:
-        $ref: ../code_samples/JavaScript/notes/post.js
+        $ref: ../code_samples/JavaScript/notes/postundefined
     - lang: Shell
       label: cURL
       source:
-        $ref: ../code_samples/Shell/notes/post.sh
+        $ref: ../code_samples/Shell/notes/postundefined
   security:
     - api_token: []
     - cookie_auth: []
@@ -66,18 +64,15 @@ get:
       description: The ID which the notes belongs to
       schema:
         type: string
-  x-codegen:
-    method: list
-    queryParams: AdminGetNotesParams
   x-codeSamples:
     - lang: JavaScript
       label: JS Client
       source:
-        $ref: ../code_samples/JavaScript/notes/get.js
+        $ref: ../code_samples/JavaScript/notes/getundefined
     - lang: Shell
       label: cURL
       source:
-        $ref: ../code_samples/Shell/notes/get.sh
+        $ref: ../code_samples/Shell/notes/getundefined
   security:
     - api_token: []
     - cookie_auth: []

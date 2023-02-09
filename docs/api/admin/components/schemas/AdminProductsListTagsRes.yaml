@@ -3,7 +3,6 @@ properties:
   tags:
     type: array
     items:
-      type: object
       properties:
         id:
           description: The ID of the tag.

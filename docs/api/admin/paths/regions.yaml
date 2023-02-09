@@ -8,17 +8,15 @@ post:
       application/json:
         schema:
           $ref: ../components/schemas/AdminPostRegionsReq.yaml
-  x-codegen:
-    method: create
   x-codeSamples:
     - lang: JavaScript
       label: JS Client
       source:
-        $ref: ../code_samples/JavaScript/regions/post.js
+        $ref: ../code_samples/JavaScript/regions/postundefined
     - lang: Shell
       label: cURL
       source:
-        $ref: ../code_samples/Shell/regions/post.sh
+        $ref: ../code_samples/Shell/regions/postundefined
   security:
     - api_token: []
     - cookie_auth: []
@@ -87,18 +85,15 @@ get:
       description: >-
         Date comparison for when resulting region was deleted, i.e. less than,
         greater than etc.
-  x-codegen:
-    method: list
-    queryParams: AdminGetRegionsParams
   x-codeSamples:
     - lang: JavaScript
       label: JS Client
       source:
-        $ref: ../code_samples/JavaScript/regions/get.js
+        $ref: ../code_samples/JavaScript/regions/getundefined
     - lang: Shell
       label: cURL
       source:
-        $ref: ../code_samples/Shell/regions/get.sh
+        $ref: ../code_samples/Shell/regions/getundefined
   security:
     - api_token: []
     - cookie_auth: []

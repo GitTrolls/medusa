@@ -8,13 +8,11 @@ post:
       application/json:
         schema:
           $ref: ../components/schemas/AdminPostAppsReq.yaml
-  x-codegen:
-    method: authorize
   x-codeSamples:
     - lang: Shell
       label: cURL
       source:
-        $ref: ../code_samples/Shell/apps_authorizations/post.sh
+        $ref: ../code_samples/Shell/apps_authorizations/postundefined
   security:
     - api_token: []
     - cookie_auth: []

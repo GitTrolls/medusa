@@ -8,17 +8,15 @@ post:
       application/json:
         schema:
           $ref: ../components/schemas/AdminPostInvitesReq.yaml
-  x-codegen:
-    method: create
   x-codeSamples:
     - lang: JavaScript
       label: JS Client
       source:
-        $ref: ../code_samples/JavaScript/invites/post.js
+        $ref: ../code_samples/JavaScript/invites/postundefined
     - lang: Shell
       label: cURL
       source:
-        $ref: ../code_samples/Shell/invites/post.sh
+        $ref: ../code_samples/Shell/invites/postundefined
   security:
     - api_token: []
     - cookie_auth: []
@@ -44,17 +42,15 @@ get:
   summary: Lists Invites
   description: Lists all Invites
   x-authenticated: true
-  x-codegen:
-    method: list
   x-codeSamples:
     - lang: JavaScript
       label: JS Client
       source:
-        $ref: ../code_samples/JavaScript/invites/get.js
+        $ref: ../code_samples/JavaScript/invites/getundefined
     - lang: Shell
       label: cURL
       source:
-        $ref: ../code_samples/Shell/invites/get.sh
+        $ref: ../code_samples/Shell/invites/getundefined
   security:
     - api_token: []
     - cookie_auth: []

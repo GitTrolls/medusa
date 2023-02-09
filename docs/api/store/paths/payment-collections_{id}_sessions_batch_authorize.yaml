@@ -16,19 +16,17 @@ post:
         schema:
           $ref: >-
             ../components/schemas/StorePostPaymentCollectionsBatchSessionsAuthorizeReq.yaml
-  x-codegen:
-    method: authorizePaymentSessionsBatch
   x-codeSamples:
     - lang: JavaScript
       label: JS Client
       source:
         $ref: >-
-          ../code_samples/JavaScript/payment-collections_{id}_sessions_batch_authorize/post.js
+          ../code_samples/JavaScript/payment-collections_{id}_sessions_batch_authorize/postundefined
     - lang: Shell
       label: cURL
       source:
         $ref: >-
-          ../code_samples/Shell/payment-collections_{id}_sessions_batch_authorize/post.sh
+          ../code_samples/Shell/payment-collections_{id}_sessions_batch_authorize/postundefined
   security:
     - api_token: []
     - cookie_auth: []

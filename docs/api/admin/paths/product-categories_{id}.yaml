@@ -10,17 +10,11 @@ delete:
       description: The ID of the Product Category
       schema:
         type: string
-  x-codegen:
-    method: delete
   x-codeSamples:
-    - lang: JavaScript
-      label: JS Client
-      source:
-        $ref: ../code_samples/JavaScript/product-categories_{id}/delete.js
     - lang: Shell
       label: cURL
       source:
-        $ref: ../code_samples/Shell/product-categories_{id}/delete.sh
+        $ref: ../code_samples/Shell/product-categories_{id}/deleteundefined
   security:
     - api_token: []
     - cookie_auth: []
@@ -32,7 +26,19 @@ delete:
       content:
         application/json:
           schema:
-            $ref: ../components/schemas/AdminProductCategoriesCategoryDeleteRes.yaml
+            type: object
+            properties:
+              id:
+                type: string
+                description: The ID of the deleted product category.
+              object:
+                type: string
+                description: The type of the object that was deleted.
+                default: product_category
+              deleted:
+                type: boolean
+                description: Whether the product category was deleted successfully or not.
+                default: true
     '400':
       $ref: ../components/responses/400_error.yaml
     '401':
@@ -57,28 +63,11 @@ get:
       description: The ID of the Product Category
       schema:
         type: string
-    - in: query
-      name: expand
-      description: (Comma separated) Which fields should be expanded in the results.
-      schema:
-        type: string
-    - in: query
-      name: fields
-      description: (Comma separated) Which fields should be included in the results.
-      schema:
-        type: string
-  x-codegen:
-    method: retrieve
-    queryParams: AdminGetProductCategoryParams
   x-codeSamples:
-    - lang: JavaScript
-      label: JS Client
-      source:
-        $ref: ../code_samples/JavaScript/product-categories_{id}/get.js
     - lang: Shell
       label: cURL
       source:
-        $ref: ../code_samples/Shell/product-categories_{id}/get.sh
+        $ref: ../code_samples/Shell/product-categories_{id}/getundefined
   security:
     - api_token: []
     - cookie_auth: []
@@ -90,7 +79,10 @@ get:
       content:
         application/json:
           schema:
-            $ref: ../components/schemas/AdminProductCategoriesCategoryRes.yaml
+            type: object
+            properties:
+              product_category:
+                $ref: ../components/schemas/ProductCategory.yaml
     '400':
       $ref: ../components/responses/400_error.yaml
     '401':
@@ -134,18 +126,11 @@ post:
       application/json:
         schema:
           $ref: ../components/schemas/AdminPostProductCategoriesCategoryReq.yaml
-  x-codegen:
-    method: update
-    queryParams: AdminPostProductCategoriesCategoryParams
   x-codeSamples:
-    - lang: JavaScript
-      label: JS Client
-      source:
-        $ref: ../code_samples/JavaScript/product-categories_{id}/post.js
     - lang: Shell
       label: cURL
       source:
-        $ref: ../code_samples/Shell/product-categories_{id}/post.sh
+        $ref: ../code_samples/Shell/product-categories_{id}/postundefined
   security:
     - api_token: []
     - cookie_auth: []
@@ -157,7 +142,10 @@ post:
       content:
         application/json:
           schema:
-            $ref: ../components/schemas/AdminProductCategoriesCategoryRes.yaml
+            type: object
+            properties:
+              product_category:
+                $ref: ../components/schemas/ProductCategory.yaml
     '400':
       $ref: ../components/responses/400_error.yaml
     '401':

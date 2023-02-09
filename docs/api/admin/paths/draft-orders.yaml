@@ -8,17 +8,15 @@ post:
       application/json:
         schema:
           $ref: ../components/schemas/AdminPostDraftOrdersReq.yaml
-  x-codegen:
-    method: create
   x-codeSamples:
     - lang: JavaScript
       label: JS Client
       source:
-        $ref: ../code_samples/JavaScript/draft-orders/post.js
+        $ref: ../code_samples/JavaScript/draft-orders/postundefined
     - lang: Shell
       label: cURL
       source:
-        $ref: ../code_samples/Shell/draft-orders/post.sh
+        $ref: ../code_samples/Shell/draft-orders/postundefined
   security:
     - api_token: []
     - cookie_auth: []
@@ -68,18 +66,15 @@ get:
         display IDs of draft orders
       schema:
         type: string
-  x-codegen:
-    method: list
-    queryParams: AdminGetDraftOrdersParams
   x-codeSamples:
     - lang: JavaScript
       label: JS Client
       source:
-        $ref: ../code_samples/JavaScript/draft-orders/get.js
+        $ref: ../code_samples/JavaScript/draft-orders/getundefined
     - lang: Shell
       label: cURL
       source:
-        $ref: ../code_samples/Shell/draft-orders/get.sh
+        $ref: ../code_samples/Shell/draft-orders/getundefined
   security:
     - api_token: []
     - cookie_auth: []

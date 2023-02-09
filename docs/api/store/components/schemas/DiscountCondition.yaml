@@ -2,18 +2,13 @@ title: Discount Condition
 description: Holds rule conditions for when a discount is applicable
 type: object
 required:
-  - created_at
-  - deleted_at
-  - discount_rule_id
-  - id
-  - metadata
-  - operator
   - type
-  - updated_at
+  - operator
+  - discount_rule_id
 properties:
   id:
-    description: The discount condition's ID
     type: string
+    description: The discount condition's ID
     example: discon_01G8X9A7ESKAJXG2H0E6F1MW7A
   type:
     description: The type of the Condition
@@ -31,12 +26,11 @@ properties:
       - in
       - not_in
   discount_rule_id:
-    description: The ID of the discount rule associated with the condition
     type: string
+    description: The ID of the discount rule associated with the condition
     example: dru_01F0YESMVK96HVX7N419E3CJ7C
   discount_rule:
     description: Available if the relation `discount_rule` is expanded.
-    nullable: true
     $ref: ./DiscountRule.yaml
   products:
     description: >-
@@ -44,52 +38,55 @@ properties:
       the relation `products` is expanded.
     type: array
     items:
-      $ref: ./Product.yaml
+      type: object
+      description: A product object.
   product_types:
     description: >-
-      Product types associated with this condition if type = product_types.
+      product types associated with this condition if type = product_types.
       Available if the relation `product_types` is expanded.
     type: array
     items:
-      $ref: ./ProductType.yaml
+      type: object
+      description: A product type object.
   product_tags:
     description: >-
-      Product tags associated with this condition if type = product_tags.
+      product tags associated with this condition if type = product_tags.
       Available if the relation `product_tags` is expanded.
     type: array
     items:
-      $ref: ./ProductTag.yaml
+      type: object
+      description: A product tag object.
   product_collections:
     description: >-
-      Product collections associated with this condition if type =
+      product collections associated with this condition if type =
       product_collections. Available if the relation `product_collections` is
       expanded.
     type: array
     items:
-      $ref: ./ProductCollection.yaml
+      type: object
+      description: A product collection object.
   customer_groups:
     description: >-
-      Customer groups associated with this condition if type = customer_groups.
+      customer groups associated with this condition if type = customer_groups.
       Available if the relation `customer_groups` is expanded.
     type: array
     items:
-      $ref: ./CustomerGroup.yaml
+      type: object
+      description: A customer group object.
   created_at:
-    description: The date with timezone at which the resource was created.
     type: string
+    description: The date with timezone at which the resource was created.
     format: date-time
   updated_at:
-    description: The date with timezone at which the resource was updated.
     type: string
+    description: The date with timezone at which the resource was updated.
     format: date-time
   deleted_at:
-    description: The date with timezone at which the resource was deleted.
-    nullable: true
     type: string
+    description: The date with timezone at which the resource was deleted.
     format: date-time
   metadata:
-    description: An optional key-value map with additional details
-    nullable: true
     type: object
+    description: An optional key-value map with additional details
     example:
       car: white

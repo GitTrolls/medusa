@@ -10,17 +10,16 @@ post:
       schema:
         type: string
   x-authenticated: true
-  x-codegen:
-    method: revoke
   x-codeSamples:
     - lang: JavaScript
       label: JS Client
       source:
-        $ref: ../code_samples/JavaScript/publishable-api-keys_{id}_revoke/post.js
+        $ref: >-
+          ../code_samples/JavaScript/publishable-api-keys_{id}_revoke/postundefined
     - lang: Shell
       label: cURL
       source:
-        $ref: ../code_samples/Shell/publishable-api-keys_{id}_revoke/post.sh
+        $ref: ../code_samples/Shell/publishable-api-keys_{id}_revoke/postundefined
   security:
     - api_token: []
     - cookie_auth: []

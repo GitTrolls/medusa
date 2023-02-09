@@ -8,17 +8,15 @@ post:
       application/json:
         schema:
           $ref: ../components/schemas/AdminPostReturnReasonsReq.yaml
-  x-codegen:
-    method: create
   x-codeSamples:
     - lang: JavaScript
       label: JS Client
       source:
-        $ref: ../code_samples/JavaScript/return-reasons/post.js
+        $ref: ../code_samples/JavaScript/return-reasons/postundefined
     - lang: Shell
       label: cURL
       source:
-        $ref: ../code_samples/Shell/return-reasons/post.sh
+        $ref: ../code_samples/Shell/return-reasons/postundefined
   security:
     - api_token: []
     - cookie_auth: []
@@ -48,17 +46,15 @@ get:
   summary: List Return Reasons
   description: Retrieves a list of Return Reasons.
   x-authenticated: true
-  x-codegen:
-    method: list
   x-codeSamples:
     - lang: JavaScript
       label: JS Client
       source:
-        $ref: ../code_samples/JavaScript/return-reasons/get.js
+        $ref: ../code_samples/JavaScript/return-reasons/getundefined
     - lang: Shell
       label: cURL
       source:
-        $ref: ../code_samples/Shell/return-reasons/get.sh
+        $ref: ../code_samples/Shell/return-reasons/getundefined
   security:
     - api_token: []
     - cookie_auth: []

@@ -26,18 +26,11 @@ get:
       schema:
         type: integer
         default: 100
-  x-codegen:
-    method: list
-    queryParams: StoreGetProductCategoriesParams
   x-codeSamples:
-    - lang: JavaScript
-      label: JS Client
-      source:
-        $ref: ../code_samples/JavaScript/product-categories/get.js
     - lang: Shell
       label: cURL
       source:
-        $ref: ../code_samples/Shell/product-categories/get.sh
+        $ref: ../code_samples/Shell/product-categories/getundefined
   security:
     - api_token: []
     - cookie_auth: []
@@ -49,7 +42,21 @@ get:
       content:
         application/json:
           schema:
-            $ref: ../components/schemas/StoreProductCategoriesListRes.yaml
+            type: object
+            properties:
+              product_categories:
+                type: array
+                items:
+                  $ref: ../components/schemas/ProductCategory.yaml
+              count:
+                type: integer
+                description: The total number of items available
+              offset:
+                type: integer
+                description: The number of items skipped before these items
+              limit:
+                type: integer
+                description: The number of items per page
     '400':
       $ref: ../components/responses/400_error.yaml
     '401':

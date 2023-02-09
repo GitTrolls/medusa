@@ -19,10 +19,6 @@ properties:
     type: string
     description: Stock location address' complement
     example: apartment 4432
-  company:
-    type: string
-    description: Stock location company' name
-    example: Medusa
   city:
     type: string
     description: Stock location address' city

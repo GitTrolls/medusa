@@ -3,17 +3,15 @@ get:
   summary: List Tax Providers
   description: Retrieves the configured Tax Providers
   x-authenticated: true
-  x-codegen:
-    method: listTaxProviders
   x-codeSamples:
     - lang: JavaScript
       label: JS Client
       source:
-        $ref: ../code_samples/JavaScript/store_tax-providers/get.js
+        $ref: ../code_samples/JavaScript/store_tax-providers/getundefined
     - lang: Shell
       label: cURL
       source:
-        $ref: ../code_samples/Shell/store_tax-providers/get.sh
+        $ref: ../code_samples/Shell/store_tax-providers/getundefined
   security:
     - api_token: []
     - cookie_auth: []

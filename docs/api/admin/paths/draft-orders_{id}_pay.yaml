@@ -10,17 +10,15 @@ post:
       description: The Draft Order id.
       schema:
         type: string
-  x-codegen:
-    method: markPaid
   x-codeSamples:
     - lang: JavaScript
       label: JS Client
       source:
-        $ref: ../code_samples/JavaScript/draft-orders_{id}_pay/post.js
+        $ref: ../code_samples/JavaScript/draft-orders_{id}_pay/postundefined
     - lang: Shell
       label: cURL
       source:
-        $ref: ../code_samples/Shell/draft-orders_{id}_pay/post.sh
+        $ref: ../code_samples/Shell/draft-orders_{id}_pay/postundefined
   security:
     - api_token: []
     - cookie_auth: []

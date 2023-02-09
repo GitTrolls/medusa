@@ -97,11 +97,11 @@ get:
     - lang: JavaScript
       label: JS Client
       source:
-        $ref: ../code_samples/JavaScript/product-tags/get.js
+        $ref: ../code_samples/JavaScript/product-tags/getundefined
     - lang: Shell
       label: cURL
       source:
-        $ref: ../code_samples/Shell/product-tags/get.sh
+        $ref: ../code_samples/Shell/product-tags/getundefined
   tags:
     - Product Tag
   responses:

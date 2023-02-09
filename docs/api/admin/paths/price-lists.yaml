@@ -8,17 +8,15 @@ post:
       application/json:
         schema:
           $ref: ../components/schemas/AdminPostPriceListsPriceListReq.yaml
-  x-codegen:
-    method: create
   x-codeSamples:
     - lang: JavaScript
       label: JS Client
       source:
-        $ref: ../code_samples/JavaScript/price-lists/post.js
+        $ref: ../code_samples/JavaScript/price-lists/postundefined
     - lang: Shell
       label: cURL
       source:
-        $ref: ../code_samples/Shell/price-lists/post.sh
+        $ref: ../code_samples/Shell/price-lists/postundefined
   security:
     - api_token: []
     - cookie_auth: []
@@ -189,18 +187,15 @@ get:
             type: string
             description: filter by dates greater than or equal to this date
             format: date
-  x-codegen:
-    method: list
-    queryParams: AdminGetPriceListPaginationParams
   x-codeSamples:
     - lang: JavaScript
       label: JS Client
       source:
-        $ref: ../code_samples/JavaScript/price-lists/get.js
+        $ref: ../code_samples/JavaScript/price-lists/getundefined
     - lang: Shell
       label: cURL
       source:
-        $ref: ../code_samples/Shell/price-lists/get.sh
+        $ref: ../code_samples/Shell/price-lists/getundefined
   security:
     - api_token: []
     - cookie_auth: []
