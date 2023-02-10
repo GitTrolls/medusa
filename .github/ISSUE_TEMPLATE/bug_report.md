@@ -1,9 +1,9 @@
 ---
 name: Bug report
-about: Create a report to help us improve Medusa
+about: Create a report to help us improve
 title: ''
-labels: 'status: needs triaging, type: bug'
-assignees: olivermrbl
+labels: 'type: bug'
+assignees: ''
 
 ---
 
