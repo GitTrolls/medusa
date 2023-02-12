@@ -36,38 +36,32 @@ export class Oauth {
  * description: "Represent an OAuth app"
  * type: object
  * required:
- *   - application_name
- *   - data
- *   - display_name
  *   - id
- *   - install_url
- *   - uninstall_url
+ *   - display_name
+ *   - application_name
  * properties:
  *   id:
- *     description: The app's ID
  *     type: string
+ *     description: The app's ID
  *     example: example_app
  *   display_name:
- *     description: The app's display name
  *     type: string
+ *     description: The app's display name
  *     example: Example app
  *   application_name:
- *     description: The app's name
  *     type: string
+ *     description: The app's name
  *     example: example
  *   install_url:
- *     description: The URL to install the app
- *     nullable: true
  *     type: string
+ *     description: The URL to install the app
  *     format: uri
  *   uninstall_url:
- *     description: The URL to uninstall the app
- *     nullable: true
  *     type: string
+ *     description: The URL to uninstall the app
  *     format: uri
  *   data:
- *     description: Any data necessary to the app.
- *     nullable: true
  *     type: object
+ *     description: Any data necessary to the app.
  *     example: {}
  */

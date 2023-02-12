@@ -99,66 +99,44 @@ export class Fulfillment extends BaseEntity {
  * description: "Fulfillments are created once store operators can prepare the purchased goods. Fulfillments will eventually be shipped and hold information about how to track shipments. Fulfillments are created through a provider, which is typically an external shipping aggregator, shipping partner og 3PL, most plugins will have asynchronous communications with these providers through webhooks in order to automatically update and synchronize the state of Fulfillments."
  * type: object
  * required:
- *   - canceled_at
- *   - claim_order_id
- *   - created_at
- *   - data
- *   - id
- *   - idempotency_key
- *   - location_id
- *   - metadata
- *   - no_notification
- *   - order_id
- *   - provider_id
- *   - shipped_at
- *   - swap_id
- *   - tracking_numbers
- *   - updated_at
+ *  - provider_id
  * properties:
  *   id:
- *     description: The fulfillment's ID
  *     type: string
+ *     description: The cart's ID
  *     example: ful_01G8ZRTMQCA76TXNAT81KPJZRF
  *   claim_order_id:
- *     description: The id of the Claim that the Fulfillment belongs to.
- *     nullable: true
+ *     description: "The id of the Claim that the Fulfillment belongs to."
  *     type: string
  *     example: null
  *   claim_order:
  *     description: A claim order object. Available if the relation `claim_order` is expanded.
- *     nullable: true
- *     $ref: "#/components/schemas/ClaimOrder"
+ *     type: object
  *   swap_id:
- *     description: The id of the Swap that the Fulfillment belongs to.
- *     nullable: true
+ *     description: "The id of the Swap that the Fulfillment belongs to."
  *     type: string
  *     example: null
  *   swap:
  *     description: A swap object. Available if the relation `swap` is expanded.
- *     nullable: true
- *     $ref: "#/components/schemas/Swap"
+ *     type: object
  *   order_id:
- *     description: The id of the Order that the Fulfillment belongs to.
- *     nullable: true
+ *     description: "The id of the Order that the Fulfillment belongs to."
  *     type: string
  *     example: order_01G8TJSYT9M6AVS5N4EMNFS1EK
  *   order:
  *     description: An order object. Available if the relation `order` is expanded.
- *     nullable: true
- *     $ref: "#/components/schemas/Order"
+ *     type: object
  *   provider_id:
- *     description: The id of the Fulfillment Provider responsible for handling the fulfillment
+ *     description: "The id of the Fulfillment Provider responsible for handling the fulfillment"
  *     type: string
  *     example: manual
- *   provider:
- *     description: Available if the relation `provider` is expanded.
- *     nullable: true
- *     $ref: "#/components/schemas/FulfillmentProvider"
  *   location_id:
- *     description: The id of the stock location the fulfillment will be shipped from
- *     nullable: true
+ *     description: "The id of the stock location the fulfillment will be shipped from"
  *     type: string
  *     example: sloc_01G8TJSYT9M6AVS5N4EMNFS1EK
+ *   provider:
+ *     description: Available if the relation `provider` is expanded.
+ *     $ref: "#/components/schemas/FulfillmentProvider"
  *   items:
  *     description: The Fulfillment Items in the Fulfillment - these hold information about how many of each Line Item has been fulfilled. Available if the relation `items` is expanded.
  *     type: array
@@ -170,8 +148,8 @@ export class Fulfillment extends BaseEntity {
  *     items:
  *       $ref: "#/components/schemas/TrackingLink"
  *   tracking_numbers:
- *     description: The tracking numbers that can be used to track the status of the fulfillment.
  *     deprecated: true
+ *     description: The tracking numbers that can be used to track the status of the fulfillment.
  *     type: array
  *     items:
  *       type: string
@@ -180,38 +158,37 @@ export class Fulfillment extends BaseEntity {
  *     type: object
  *     example: {}
  *   shipped_at:
- *     description: The date with timezone at which the Fulfillment was shipped.
- *     nullable: true
+ *     description: "The date with timezone at which the Fulfillment was shipped."
  *     type: string
  *     format: date-time
  *   no_notification:
- *     description: Flag for describing whether or not notifications related to this should be sent.
- *     nullable: true
+ *     description: "Flag for describing whether or not notifications related to this should be send."
  *     type: boolean
  *     example: false
  *   canceled_at:
- *     description: The date with timezone at which the Fulfillment was canceled.
- *     nullable: true
+ *     description: "The date with timezone at which the Fulfillment was canceled."
  *     type: string
  *     format: date-time
  *   idempotency_key:
- *     description: Randomly generated key used to continue the completion of the fulfillment in case of failure.
- *     nullable: true
  *     type: string
+ *     description: Randomly generated key used to continue the completion of the fulfillment in case of failure.
  *     externalDocs:
  *       url: https://docs.medusajs.com/advanced/backend/payment/overview#idempotency-key
  *       description: Learn more how to use the idempotency key.
  *   created_at:
- *     description: The date with timezone at which the resource was created.
  *     type: string
+ *     description: "The date with timezone at which the resource was created."
  *     format: date-time
  *   updated_at:
- *     description: The date with timezone at which the resource was updated.
  *     type: string
+ *     description: "The date with timezone at which the resource was updated."
+ *     format: date-time
+ *   deleted_at:
+ *     type: string
+ *     description: "The date with timezone at which the resource was deleted."
  *     format: date-time
  *   metadata:
- *     description: An optional key-value map with additional details
- *     nullable: true
  *     type: object
+ *     description: An optional key-value map with additional details
  *     example: {car: "white"}
  */

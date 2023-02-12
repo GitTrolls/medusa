@@ -17,16 +17,13 @@ export class PublishableApiKeySalesChannel {
  * title: "Publishable API key sales channel"
  * description: "Holds mapping between Publishable API keys and Sales Channels"
  * type: object
- * required:
- *   - publishable_key_id
- *   - sales_channel_id
  * properties:
  *   sales_channel_id:
- *     description: The sales channel's ID
  *     type: string
+ *     description: The sales channel's ID
  *     example: sc_01G1G5V21KADXNGH29BJMAJ4B4
  *   publishable_key_id:
- *     description: The publishable API key's ID
  *     type: string
+ *     description: The publishable API key's ID
  *     example: pak_01G1G5V21KADXNGH29BJMAJ4B4
  */
