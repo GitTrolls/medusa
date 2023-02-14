@@ -655,7 +655,7 @@ class ProductVariantService extends TransactionBaseService {
 
       const variant = await variantRepo.findOne({
         where: { id: variantId },
-        relations: ["prices", "options", "inventory_items"],
+        relations: ["prices", "options"],
       })
 
       if (!variant) {

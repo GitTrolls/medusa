@@ -96,79 +96,72 @@ export class TaxRate extends BaseEntity {
  * description: "A Tax Rate can be used to associate a certain rate to charge on products within a given Region"
  * type: object
  * required:
- *   - code
- *   - created_at
- *   - id
- *   - metadata
  *   - name
- *   - rate
  *   - region_id
- *   - updated_at
  * properties:
  *   id:
- *     description: The tax rate's ID
  *     type: string
+ *     description: The tax rate's ID
  *     example: txr_01G8XDBAWKBHHJRKH0AV02KXBR
  *   rate:
- *     description: The numeric rate to charge
- *     nullable: true
+ *     description: "The numeric rate to charge"
  *     type: number
  *     example: 10
  *   code:
- *     description: A code to identify the tax type by
- *     nullable: true
+ *     description: "A code to identify the tax type by"
  *     type: string
  *     example: tax01
  *   name:
- *     description: A human friendly name for the tax
+ *     description: "A human friendly name for the tax"
  *     type: string
  *     example: Tax Example
  *   region_id:
- *     description: The id of the Region that the rate belongs to
  *     type: string
+ *     description: "The id of the Region that the rate belongs to"
  *     example: reg_01G1G5V26T9H8Y0M4JNE3YGA4G
  *   region:
  *     description: A region object. Available if the relation `region` is expanded.
- *     nullable: true
- *     $ref: "#/components/schemas/Region"
+ *     type: object
  *   products:
+ *     type: array
  *     description: The products that belong to this tax rate. Available if the relation `products` is expanded.
- *     type: array
  *     items:
- *       $ref: "#/components/schemas/Product"
+ *       type: object
+ *       description: A product object.
  *   product_types:
- *     description: The product types that belong to this tax rate. Available if the relation `product_types` is expanded.
  *     type: array
+ *     description: The product types that belong to this tax rate. Available if the relation `product_types` is expanded.
  *     items:
- *       $ref: "#/components/schemas/ProductType"
+ *       type: object
+ *       description: A product type object.
  *   shipping_options:
  *     type: array
  *     description: The shipping options that belong to this tax rate. Available if the relation `shipping_options` is expanded.
  *     items:
- *       $ref: "#/components/schemas/ShippingOption"
+ *       type: object
+ *       description: A shipping option object.
  *   product_count:
- *     description: The count of products
+ *     description: "The count of products"
  *     type: integer
- *     example: 10
+ *     example: null
  *   product_type_count:
- *     description: The count of product types
+ *     description: "The count of product types"
  *     type: integer
- *     example: 2
+ *     example: null
  *   shipping_option_count:
- *     description: The count of shipping options
+ *     description: "The count of shipping options"
  *     type: integer
- *     example: 1
+ *     example: null
  *   created_at:
- *     description: The date with timezone at which the resource was created.
  *     type: string
+ *     description: "The date with timezone at which the resource was created."
  *     format: date-time
  *   updated_at:
- *     description: The date with timezone at which the resource was updated.
  *     type: string
+ *     description: "The date with timezone at which the resource was updated."
  *     format: date-time
  *   metadata:
- *     description: An optional key-value map with additional details
- *     nullable: true
  *     type: object
+ *     description: An optional key-value map with additional details
  *     example: {car: "white"}
  */

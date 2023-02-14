@@ -43,15 +43,6 @@ export class Invite extends SoftDeletableEntity {
  * description: "Represents an invite"
  * type: object
  * required:
- *   - accepted
- *   - created_at
- *   - deleted_at
- *   - expires_at
- *   - id
- *   - metadata
- *   - role
- *   - token
- *   - updated_at
  *   - user_email
  * properties:
  *   id:
@@ -59,45 +50,42 @@ export class Invite extends SoftDeletableEntity {
  *     description: The invite's ID
  *     example: invite_01G8TKE4XYCTHSCK2GDEP47RE1
  *   user_email:
- *     description: The email of the user being invited.
  *     type: string
+ *     description: The email of the user being invited.
  *     format: email
  *   role:
- *     description: The user's role.
- *     nullable: true
  *     type: string
+ *     description: The user's role.
  *     enum:
  *       - admin
  *       - member
  *       - developer
  *     default: member
  *   accepted:
- *     description: Whether the invite was accepted or not.
  *     type: boolean
- *     default: false
+ *     description: Whether the invite was accepted or not.
+ *     example: false
  *   token:
+ *     type: string
  *     description: The token used to accept the invite.
+ *   expores_at:
  *     type: string
- *   expires_at:
  *     description: The date the invite expires at.
- *     type: string
  *     format: date-time
  *   created_at:
- *     description: The date with timezone at which the resource was created.
  *     type: string
+ *     description: "The date with timezone at which the resource was created."
  *     format: date-time
  *   updated_at:
- *     description: The date with timezone at which the resource was updated.
  *     type: string
+ *     description: "The date with timezone at which the resource was updated."
  *     format: date-time
  *   deleted_at:
- *     description: The date with timezone at which the resource was deleted.
- *     nullable: true
  *     type: string
+ *     description: "The date with timezone at which the resource was deleted."
  *     format: date-time
  *   metadata:
- *     description: An optional key-value map with additional details
- *     nullable: true
  *     type: object
+ *     description: An optional key-value map with additional details
  *     example: {car: "white"}
  */

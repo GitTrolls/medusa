@@ -112,29 +112,20 @@ export class Region extends SoftDeletableEntity {
  * description: "Regions hold settings for how Customers in a given geographical location shop. The is, for example, where currencies and tax rates are defined. A Region can consist of multiple countries to accomodate common shopping settings across countries."
  * type: object
  * required:
- *   - automatic_taxes
- *   - created_at
- *   - currency_code
- *   - deleted_at
- *   - gift_cards_taxable
- *   - id
- *   - metadata
  *   - name
- *   - tax_code
- *   - tax_provider_id
+ *   - currency_code
  *   - tax_rate
- *   - updated_at
  * properties:
  *   id:
- *     description: The region's ID
  *     type: string
+ *     description: The region's ID
  *     example: reg_01G1G5V26T9H8Y0M4JNE3YGA4G
  *   name:
- *     description: The name of the region as displayed to the customer. If the Region only has one country it is recommended to write the country name.
+ *     description: "The name of the region as displayed to the customer. If the Region only has one country it is recommended to write the country name."
  *     type: string
  *     example: EU
  *   currency_code:
- *     description: The 3 character currency code that the Region uses.
+ *     description: "The 3 character currency code that the Region uses."
  *     type: string
  *     example: usd
  *     externalDocs:
@@ -142,10 +133,9 @@ export class Region extends SoftDeletableEntity {
  *       description: See a list of codes.
  *   currency:
  *     description: Available if the relation `currency` is expanded.
- *     nullable: true
  *     $ref: "#/components/schemas/Currency"
  *   tax_rate:
- *     description: The tax rate that should be charged on purchases in the Region.
+ *     description: "The tax rate that should be charged on purchases in the Region."
  *     type: number
  *     example: 0
  *   tax_rates:
@@ -154,8 +144,7 @@ export class Region extends SoftDeletableEntity {
  *     items:
  *       $ref: "#/components/schemas/TaxRate"
  *   tax_code:
- *     description: The tax code used on purchases in the Region. This may be used by other systems for accounting purposes.
- *     nullable: true
+ *     description: "The tax code used on purchases in the Region. This may be used by other systems for accounting purposes."
  *     type: string
  *     example: null
  *   gift_cards_taxable:
@@ -172,13 +161,11 @@ export class Region extends SoftDeletableEntity {
  *     items:
  *       $ref: "#/components/schemas/Country"
  *   tax_provider_id:
- *     description: The ID of the tax provider used in this region
- *     nullable: true
  *     type: string
+ *     description: The ID of the tax provider used in this region
  *     example: null
  *   tax_provider:
  *     description: Available if the relation `tax_provider` is expanded.
- *     nullable: true
  *     $ref: "#/components/schemas/TaxProvider"
  *   payment_providers:
  *     description: The Payment Providers that can be used to process Payments in the Region. Available if the relation `payment_providers` is expanded.
@@ -186,30 +173,27 @@ export class Region extends SoftDeletableEntity {
  *     items:
  *       $ref: "#/components/schemas/PaymentProvider"
  *   fulfillment_providers:
- *     description: The Fulfillment Providers that can be used to fulfill orders in the Region. Available if the relation `fulfillment_providers` is expanded.
+ *     description: The Fulfillment Providers that can be used to fulfill orders in the Region. Available if the relation `payment_providers` is expanded.
  *     type: array
  *     items:
  *       $ref: "#/components/schemas/FulfillmentProvider"
  *   includes_tax:
  *     description: "[EXPERIMENTAL] Does the prices for the region include tax"
  *     type: boolean
- *     default: false
  *   created_at:
- *     description: The date with timezone at which the resource was created.
  *     type: string
+ *     description: "The date with timezone at which the resource was created."
  *     format: date-time
  *   updated_at:
- *     description: The date with timezone at which the resource was updated.
  *     type: string
+ *     description: "The date with timezone at which the resource was updated."
  *     format: date-time
  *   deleted_at:
- *     description: The date with timezone at which the resource was deleted.
- *     nullable: true
  *     type: string
+ *     description: "The date with timezone at which the resource was deleted."
  *     format: date-time
  *   metadata:
- *     description: An optional key-value map with additional details
- *     nullable: true
  *     type: object
+ *     description: An optional key-value map with additional details
  *     example: {car: "white"}
  */

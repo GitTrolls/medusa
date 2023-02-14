@@ -53,18 +53,16 @@ export default async (req, res) => {
   const cartService: CartService = req.scope.resolve("cartService")
 
   await manager.transaction(async (m) => {
-    const cartServiceTx = cartService.withTransaction(m)
-
     // Remove the line item
-    await cartServiceTx.removeLineItem(id, line_id)
+    await cartService.withTransaction(m).removeLineItem(id, line_id)
 
     // If the cart has payment sessions update these
-    const updated = await cartServiceTx.retrieve(id, {
+    const updated = await cartService.withTransaction(m).retrieve(id, {
       relations: ["payment_sessions"],
     })
 
     if (updated.payment_sessions?.length) {
-      await cartServiceTx.setPaymentSessions(id)
+      await cartService.withTransaction(m).setPaymentSessions(id)
     }
   })
 

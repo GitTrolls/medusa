@@ -172,7 +172,8 @@ export default class NewTotalsService extends TransactionBaseService {
       subtotal = 0 // in that case we need to know the tax rate to compute it later
     }
 
-    const discount_total = lineItemAllocation.discount?.amount ?? 0
+    const discount_total =
+      (lineItemAllocation.discount?.unit_amount || 0) * item.quantity
 
     const totals: LineItemTotals = {
       unit_price: item.unit_price,
@@ -274,7 +275,8 @@ export default class NewTotalsService extends TransactionBaseService {
       subtotal = 0 // in that case we need to know the tax rate to compute it later
     }
 
-    const discount_total = lineItemAllocation.discount?.amount ?? 0
+    const discount_total =
+      (lineItemAllocation.discount?.unit_amount || 0) * item.quantity
 
     const totals: LineItemTotals = {
       unit_price: item.unit_price,
@@ -426,7 +428,8 @@ export default class NewTotalsService extends TransactionBaseService {
         )
 
     const discountAmount =
-      calculationContext.allocation_map[lineItem.id]?.discount?.amount ?? 0
+      (calculationContext.allocation_map[lineItem.id]?.discount?.unit_amount ||
+        0) * lineItem.quantity
 
     const lineSubtotal =
       (lineItem.unit_price - taxAmountIncludedInPrice) * lineItem.quantity -

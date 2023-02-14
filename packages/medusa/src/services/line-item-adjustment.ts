@@ -217,14 +217,11 @@ class LineItemAdjustmentService extends TransactionBaseService {
         return []
       }
 
-      const discountServiceTx = this.discountService.withTransaction(manager)
-
       const lineItemProduct = context.variant.product_id
 
-      const isValid = await discountServiceTx.validateDiscountForProduct(
-        discount.rule_id,
-        lineItemProduct
-      )
+      const isValid = await this.discountService
+        .withTransaction(manager)
+        .validateDiscountForProduct(discount.rule_id, lineItemProduct)
 
       // if discount is not valid for line item, then do nothing
       if (!isValid) {
@@ -233,7 +230,7 @@ class LineItemAdjustmentService extends TransactionBaseService {
 
       // In case of a generated line item the id is not available, it is mocked instead to be used for totals calculations
       lineItem.id = lineItem.id ?? new Date().getTime()
-      const amount = await discountServiceTx.calculateDiscountForLineItem(
+      const amount = await this.discountService.calculateDiscountForLineItem(
         discount.id,
         lineItem,
         calculationContextData
